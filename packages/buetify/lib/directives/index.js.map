@@ -1,0 +1,1 @@
+{"version":3,"sources":["../../src/directives/index.ts"],"names":[],"mappings":"AAAA,cAAc,gBAAd","sourcesContent":["export * from './clickOutside';\n"],"sourceRoot":"","file":"index.js"}

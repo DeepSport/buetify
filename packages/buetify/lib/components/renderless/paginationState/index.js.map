@@ -1,0 +1,1 @@
+{"version":3,"sources":["../../../../src/components/renderless/paginationState/index.ts"],"names":[],"mappings":"AAAA,SAAS,eAAT,QAAgC,mBAAhC;AAEA,SAAS,eAAT;AAEA,eAAe,eAAf","sourcesContent":["import { PaginationState } from './PaginationState';\n\nexport { PaginationState };\n\nexport default PaginationState;\n"],"sourceRoot":"","file":"index.js"}

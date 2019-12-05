@@ -1,0 +1,1 @@
+{"version":3,"sources":["../../../../src/components/renderless/deferRendering/index.ts"],"names":[],"mappings":"AAAA,SAAS,cAAT,QAA+B,kBAA/B;AAEA,SAAS,cAAT;AAEA,eAAe,cAAf","sourcesContent":["import { DeferRendering } from './DeferRendering';\n\nexport { DeferRendering };\n\nexport default DeferRendering;\n"],"sourceRoot":"","file":"index.js"}

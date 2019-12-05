@@ -1,0 +1,1 @@
+{"version":3,"sources":["../../../src/components/accordion/index.ts"],"names":[],"mappings":"AAAA,OAAO,UAAP,MAAuB,cAAvB;AAEA,SAAS,UAAT;AACA,eAAe,UAAf","sourcesContent":["import BAccordion from './BAccordion';\n\nexport { BAccordion };\nexport default BAccordion;\n"],"sourceRoot":"","file":"index.js"}

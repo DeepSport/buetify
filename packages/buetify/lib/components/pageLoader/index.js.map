@@ -1,0 +1,1 @@
+{"version":3,"sources":["../../../src/components/pageLoader/index.ts"],"names":[],"mappings":"AAAA,OAAO,WAAP,MAAwB,eAAxB;AAEA,SAAS,WAAT;AAEA,eAAe,WAAf","sourcesContent":["import BPageLoader from './BPageLoader';\n\nexport { BPageLoader };\n\nexport default BPageLoader;\n"],"sourceRoot":"","file":"index.js"}

@@ -1,0 +1,1 @@
+{"version":3,"sources":["../../../../src/components/form/field/index.ts"],"names":[],"mappings":"AAAA,OAAO,MAAP,MAAmB,UAAnB;AAEA,eAAe,MAAf;AAEA,SAAS,MAAT","sourcesContent":["import BField from './BField';\n\nexport default BField;\n\nexport { BField };\n"],"sourceRoot":"","file":"index.js"}

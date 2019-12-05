@@ -1,0 +1,1 @@
+{"version":3,"sources":["../../../src/transitions/slideRightTransition/index.ts"],"names":[],"mappings":"AAAA,OAAO,oBAAP,MAAiC,wBAAjC;AAEA,SAAS,oBAAT;AAEA,eAAe,oBAAf","sourcesContent":["import SlideRightTransition from './SlideRightTransition';\n\nexport { SlideRightTransition };\n\nexport default SlideRightTransition;\n"],"sourceRoot":"","file":"index.js"}

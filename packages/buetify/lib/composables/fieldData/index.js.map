@@ -1,0 +1,1 @@
+{"version":3,"sources":["../../../src/composables/fieldData/index.ts"],"names":[],"mappings":"AAAA,cAAc,oBAAd;AACA,cAAc,gBAAd","sourcesContent":["export * from './provideFieldData';\nexport * from './useFieldData';\n"],"sourceRoot":"","file":"index.js"}

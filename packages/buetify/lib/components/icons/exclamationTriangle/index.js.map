@@ -1,0 +1,1 @@
+{"version":3,"sources":["../../../../src/components/icons/exclamationTriangle/index.ts"],"names":[],"mappings":"AAAA,OAAO,uBAAP,MAAoC,2BAApC;AAEA,SAAS,uBAAT;AAEA,eAAe,uBAAf","sourcesContent":["import ExclamationTriangleIcon from './ExclamationTriangleIcon';\n\nexport { ExclamationTriangleIcon };\n\nexport default ExclamationTriangleIcon;\n"],"sourceRoot":"","file":"index.js"}

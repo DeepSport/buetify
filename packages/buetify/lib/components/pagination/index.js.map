@@ -1,0 +1,1 @@
+{"version":3,"sources":["../../../src/components/pagination/index.ts"],"names":[],"mappings":"AAAA,OAAO,WAAP,MAAwB,eAAxB;AAEA,SAAS,WAAT;AAEA,eAAe,WAAf","sourcesContent":["import BPagination from './BPagination';\n\nexport { BPagination };\n\nexport default BPagination;\n"],"sourceRoot":"","file":"index.js"}

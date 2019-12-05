@@ -1,0 +1,1 @@
+{"version":3,"sources":["../../../../src/components/layout/columns/index.ts"],"names":[],"mappings":"AAAA,OAAO,QAAP,MAAqB,YAArB;AACA,OAAO,OAAP,MAAoB,WAApB;AAEA,SAAS,QAAT,EAAmB,OAAnB","sourcesContent":["import BColumns from './BColumns';\nimport BColumn from './BColumn';\n\nexport { BColumns, BColumn };\n"],"sourceRoot":"","file":"index.js"}

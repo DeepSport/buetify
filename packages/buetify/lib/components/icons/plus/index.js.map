@@ -1,0 +1,1 @@
+{"version":3,"sources":["../../../../src/components/icons/plus/index.ts"],"names":[],"mappings":"AAAA,OAAO,QAAP,MAAqB,YAArB;AAEA,SAAS,QAAT;AACA,eAAe,QAAf","sourcesContent":["import PlusIcon from './PlusIcon';\n\nexport { PlusIcon };\nexport default PlusIcon;\n"],"sourceRoot":"","file":"index.js"}

@@ -1,0 +1,1 @@
+{"version":3,"sources":["../../../src/components/higherOrder/index.ts"],"names":[],"mappings":"AAAA,cAAc,gCAAd","sourcesContent":["export * from './screenSizeDependentComponent';\n"],"sourceRoot":"","file":"index.js"}

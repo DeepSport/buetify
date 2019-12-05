@@ -1,0 +1,1 @@
+{"version":3,"sources":["../../../../src/components/form/checkbox/index.ts"],"names":[],"mappings":"AAAA,SAAS,SAAT,EAAoB,cAApB,QAA0C,aAA1C;AAEA,SAAS,SAAT,EAAoB,cAApB;AAEA,eAAe,SAAf","sourcesContent":["import { BCheckbox, defineCheckbox } from './BCheckbox';\n\nexport { BCheckbox, defineCheckbox };\n\nexport default BCheckbox;\n"],"sourceRoot":"","file":"index.js"}

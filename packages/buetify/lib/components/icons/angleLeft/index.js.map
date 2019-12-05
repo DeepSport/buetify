@@ -1,0 +1,1 @@
+{"version":3,"sources":["../../../../src/components/icons/angleLeft/index.ts"],"names":[],"mappings":"AAAA,OAAO,aAAP,MAA0B,iBAA1B;AAEA,SAAS,aAAT;AAEA,eAAe,aAAf","sourcesContent":["import AngleLeftIcon from './AngleLeftIcon';\n\nexport { AngleLeftIcon };\n\nexport default AngleLeftIcon;\n"],"sourceRoot":"","file":"index.js"}

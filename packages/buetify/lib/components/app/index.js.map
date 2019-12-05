@@ -1,0 +1,1 @@
+{"version":3,"sources":["../../../src/components/app/index.ts"],"names":[],"mappings":"AAAA,OAAO,IAAP,MAAiB,QAAjB;AAEA,SAAS,IAAT;AACA,eAAe,IAAf","sourcesContent":["import BApp from './BApp';\n\nexport { BApp };\nexport default BApp;\n"],"sourceRoot":"","file":"index.js"}

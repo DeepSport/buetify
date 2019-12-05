@@ -1,0 +1,1 @@
+{"version":3,"sources":["../../../src/components/sheet/index.ts"],"names":[],"mappings":"AAAA,OAAO,MAAP,MAAmB,UAAnB;AAEA,SAAS,MAAT;AAEA,eAAe,MAAf","sourcesContent":["import BSheet from './BSheet';\n\nexport { BSheet };\n\nexport default BSheet;\n"],"sourceRoot":"","file":"index.js"}

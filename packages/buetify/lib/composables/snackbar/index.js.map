@@ -1,0 +1,1 @@
+{"version":3,"sources":["../../../src/composables/snackbar/index.ts"],"names":[],"mappings":"AAAA,cAAc,eAAd","sourcesContent":["export * from './useSnackbar';\n"],"sourceRoot":"","file":"index.js"}

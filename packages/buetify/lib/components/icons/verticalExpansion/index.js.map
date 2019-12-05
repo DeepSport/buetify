@@ -1,0 +1,1 @@
+{"version":3,"sources":["../../../../src/components/icons/verticalExpansion/index.ts"],"names":[],"mappings":"AAAA,OAAO,qBAAP,MAAkC,yBAAlC;AACA,SAAS,qBAAT;AACA,eAAe,qBAAf","sourcesContent":["import VerticalExpansionIcon from './VerticalExpansionIcon';\nexport { VerticalExpansionIcon };\nexport default VerticalExpansionIcon;\n"],"sourceRoot":"","file":"index.js"}

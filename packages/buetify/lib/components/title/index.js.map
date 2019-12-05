@@ -1,0 +1,1 @@
+{"version":3,"sources":["../../../src/components/title/index.ts"],"names":[],"mappings":"AAAA,OAAO,SAAP,MAAsB,aAAtB;AACA,OAAO,MAAP,MAAmB,UAAnB;AAEA,SAAS,SAAT,EAAoB,MAApB","sourcesContent":["import BSubtitle from './BSubtitle';\nimport BTitle from './BTitle';\n\nexport { BSubtitle, BTitle };\n"],"sourceRoot":"","file":"index.js"}

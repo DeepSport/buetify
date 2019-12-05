@@ -1,0 +1,1 @@
+{"version":3,"sources":["../../../src/components/notices/index.ts"],"names":[],"mappings":"AAAA,cAAc,gBAAd;AACA,cAAc,YAAd;AACA,cAAc,SAAd;AACA,cAAc,mBAAd","sourcesContent":["export * from './notification';\nexport * from './snackbar';\nexport * from './toast';\nexport * from './noticeContainer';\n"],"sourceRoot":"","file":"index.js"}

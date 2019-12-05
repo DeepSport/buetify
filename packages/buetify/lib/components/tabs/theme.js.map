@@ -1,0 +1,1 @@
+{"version":3,"sources":["../../../src/components/tabs/theme.ts"],"names":[],"mappings":"AAAA,OAAO,MAAM,YAAY,GAAG;AAC1B,EAAA,IAAI,EAAE,SADoB;AAE1B,EAAA,KAAK,EAAE;AAFmB,CAArB","sourcesContent":["export const TabsThemeMap = {\n  dark: 'is-link',\n  light: ''\n};\n"],"sourceRoot":"","file":"theme.js"}

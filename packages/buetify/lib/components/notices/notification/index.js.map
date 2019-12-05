@@ -1,0 +1,1 @@
+{"version":3,"sources":["../../../../src/components/notices/notification/index.ts"],"names":[],"mappings":"AAAA,OAAO,aAAP,MAA0B,iBAA1B;AAEA,SAAS,aAAT;AAEA,eAAe,aAAf","sourcesContent":["import BNotification from './BNotification';\n\nexport { BNotification };\n\nexport default BNotification;\n"],"sourceRoot":"","file":"index.js"}
