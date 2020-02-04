@@ -1,4 +1,4 @@
-import ExclamationTriangleIcon from "./ExclamationTriangleIcon";
+import ExclamationTriangleIcon from './ExclamationTriangleIcon';
 
 export { ExclamationTriangleIcon };
 

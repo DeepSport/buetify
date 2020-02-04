@@ -1,13 +1,11 @@
-import { elem } from "fp-ts/lib/Array";
-import { fromCompare, geq, leq, Ord } from "fp-ts/lib/Ord";
-import { Ordering } from "fp-ts/lib/Ordering";
+import { elem } from 'fp-ts/lib/Array';
+import { fromCompare, geq, leq, Ord } from 'fp-ts/lib/Ord';
+import { Ordering } from 'fp-ts/lib/Ordering';
 
 export function isDate(value: any): value is Date {
   // from date-fns
   return (
-    value instanceof Date ||
-    (typeof value === "object" &&
-      Object.prototype.toString.call(value) === "[object Date]")
+    value instanceof Date || (typeof value === 'object' && Object.prototype.toString.call(value) === '[object Date]')
   );
 }
 
@@ -68,21 +66,14 @@ export function getEndOfMonth(date: Date): Date {
   return clone;
 }
 
-export function isWithinWeek(
-  date: Date,
-  secondDate: Date,
-  weekStartsOn: WeekdayNumber = 0
-): boolean {
+export function isWithinWeek(date: Date, secondDate: Date, weekStartsOn: WeekdayNumber = 0): boolean {
   return (
     isOnOrAfterDate(date, getStartOfWeek(secondDate, weekStartsOn)) &&
     isOnOrBeforeDate(date, getEndOfWeek(secondDate, weekStartsOn))
   );
 }
 
-export function getStartOfWeek(
-  date: Date,
-  weekStartsOn: WeekdayNumber = 0
-): Date {
+export function getStartOfWeek(date: Date, weekStartsOn: WeekdayNumber = 0): Date {
   const clone = new Date(date.getTime());
   const day = clone.getDay();
   const diff = (day < weekStartsOn ? 7 : 0) + day - weekStartsOn;
@@ -91,10 +82,7 @@ export function getStartOfWeek(
   return clone;
 }
 
-export function getEndOfWeek(
-  date: Date,
-  weekStartsOn: WeekdayNumber = 0
-): Date {
+export function getEndOfWeek(date: Date, weekStartsOn: WeekdayNumber = 0): Date {
   const clone = new Date(date.getTime());
   const day = clone.getDay();
   const diff = (day < weekStartsOn ? -7 : 0) + 6 - (day - weekStartsOn);
@@ -119,10 +107,7 @@ export function addDays(date: Date, days: number): Date {
   return clone;
 }
 
-export function getDatesInWeek(
-  date: Date,
-  weekStartsOn: WeekdayNumber = 0
-): Date[] {
+export function getDatesInWeek(date: Date, weekStartsOn: WeekdayNumber = 0): Date[] {
   const dates = [];
   let day = getStartOfWeek(date, weekStartsOn);
   const end = getEndOfWeek(date, weekStartsOn);

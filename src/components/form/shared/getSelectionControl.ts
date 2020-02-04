@@ -1,23 +1,18 @@
-import { applyMixins } from "../../../utils/applyMixins";
-import { isEnterEvent, isSpaceEvent } from "../../../utils/eventHelpers";
-import { getLabelIdMixin } from "../../../mixins/labelId/LabelIdMixin";
-import { SelectableMixin } from "../../../mixins/selectable/SelectableMixin";
-import { ColorVariant } from "../../../types/ColorVariants";
-import { SizeVariant } from "../../../types/SizeVariants";
-import { PropType, VNode } from "vue";
+import { applyMixins } from '../../../utils/applyMixins';
+import { isEnterEvent, isSpaceEvent } from '../../../utils/eventHelpers';
+import { getLabelIdMixin } from '../../../mixins/labelId/LabelIdMixin';
+import { SelectableMixin } from '../../../mixins/selectable/SelectableMixin';
+import { ColorVariant } from '../../../types/ColorVariants';
+import { SizeVariant } from '../../../types/SizeVariants';
+import { PropType, VNode } from 'vue';
 
-export function getSelectionControl(
-  role: string,
-  type: string,
-  name: string,
-  staticClass: string
-) {
+export function getSelectionControl(role: string, type: string, name: string, staticClass: string) {
   return applyMixins(getLabelIdMixin(role), SelectableMixin).extend({
     name,
     props: {
       variant: {
         type: String as PropType<ColorVariant>,
-        default: "is-primary"
+        default: 'is-primary'
       },
       size: {
         type: String as PropType<SizeVariant>
@@ -34,15 +29,15 @@ export function getSelectionControl(
           role,
           type,
           id: this.computedId,
-          "aria-checked": this.isActive,
-          "aria-disabled": this.isDisabled,
-          "aria-labelledby": this.labelId,
+          'aria-checked': this.isActive,
+          'aria-disabled': this.isDisabled,
+          'aria-labelledby': this.labelId,
           tabindex: -1,
           readonly: this.isReadonly,
           disabled: this.disabled,
           required: this.isRequired,
-          "true-value": this.trueValue,
-          "false-value": this.falseValue
+          'true-value': this.trueValue,
+          'false-value': this.falseValue
         };
       },
       customInputDomProps(): object {
@@ -72,11 +67,11 @@ export function getSelectionControl(
       },
       generateLabel(): VNode {
         return this.$createElement(
-          "label",
+          'label',
           {
             staticClass,
-            class: [this.size, { "is-disabled": this.isDisabled }],
-            ref: "label",
+            class: [this.size, { 'is-disabled': this.isDisabled }],
+            ref: 'label',
             attrs: {
               id: this.labelId,
               for: this.computedId,
@@ -93,7 +88,7 @@ export function getSelectionControl(
         );
       },
       generateInput(): VNode {
-        return this.$createElement("input", {
+        return this.$createElement('input', {
           attrs: this.inputAttrs,
           domProps: this.inputDomProps,
           on: {
@@ -104,16 +99,16 @@ export function getSelectionControl(
         });
       },
       generateCheck(): VNode {
-        return this.$createElement("span", {
-          staticClass: "check",
+        return this.$createElement('span', {
+          staticClass: 'check',
           class: this.variant
         });
       },
       generateLabelText(): VNode {
         return this.$createElement(
-          "span",
+          'span',
           {
-            staticClass: "control-label"
+            staticClass: 'control-label'
           },
           this.$slots.default || this.label
         );

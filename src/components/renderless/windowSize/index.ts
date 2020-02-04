@@ -1,4 +1,4 @@
-import { WindowSize } from "./WindowSize";
+import { WindowSize } from './WindowSize';
 
 export { WindowSize };
 

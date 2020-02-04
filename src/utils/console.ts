@@ -15,7 +15,7 @@ function createMessage(message: string, vm?: any, parent?: any): string | void {
     vm.$_alreadyWarned.push(message);
   }
 
-  return `[Bue] ${message}` + (vm ? generateComponentTrace(vm) : "");
+  return `[Bue] ${message}` + (vm ? generateComponentTrace(vm) : '');
 }
 
 export function consoleInfo(message: string, vm?: any, parent?: any): void {
@@ -33,24 +33,10 @@ export function consoleError(message: string, vm?: any, parent?: any): void {
   newMessage != null && console.error(newMessage);
 }
 
-export function deprecate(
-  original: string,
-  replacement: string,
-  vm?: any,
-  parent?: any
-) {
-  consoleWarn(
-    `[UPGRADE] '${original}' is deprecated, use '${replacement}' instead.`,
-    vm,
-    parent
-  );
+export function deprecate(original: string, replacement: string, vm?: any, parent?: any) {
+  consoleWarn(`[UPGRADE] '${original}' is deprecated, use '${replacement}' instead.`, vm, parent);
 }
-export function breaking(
-  original: string,
-  replacement: string,
-  vm?: any,
-  parent?: any
-) {
+export function breaking(original: string, replacement: string, vm?: any, parent?: any) {
   consoleError(
     `[BREAKING] '${original}' has been removed, use '${replacement}' instead. For more information, see the upgrade guide https://github.com/vuetifyjs/vuetify/releases/tag/v2.0.0#user-content-upgrade-guide`,
     vm,
@@ -59,11 +45,7 @@ export function breaking(
 }
 
 export function removed(original: string, vm?: any, parent?: any) {
-  consoleWarn(
-    `[REMOVED] '${original}' has been removed. You can safely omit it.`,
-    vm,
-    parent
-  );
+  consoleWarn(`[REMOVED] '${original}' has been removed. You can safely omit it.`, vm, parent);
 }
 
 /**
@@ -71,15 +53,14 @@ export function removed(original: string, vm?: any, parent?: any) {
  */
 
 const classifyRE = /(?:^|[-_])(\w)/g;
-const classify = (str: string) =>
-  str.replace(classifyRE, c => c.toUpperCase()).replace(/[-_]/g, "");
+const classify = (str: string) => str.replace(classifyRE, c => c.toUpperCase()).replace(/[-_]/g, '');
 
 function formatComponentName(vm: any, includeFile?: boolean): string {
   if (vm.$root === vm) {
-    return "<Root>";
+    return '<Root>';
   }
   const options =
-    typeof vm === "function" && vm.cid != null
+    typeof vm === 'function' && vm.cid != null
       ? vm.options
       : vm._isVue
       ? vm.$options || vm.constructor.options
@@ -91,10 +72,7 @@ function formatComponentName(vm: any, includeFile?: boolean): string {
     name = match && match[1];
   }
 
-  return (
-    (name ? `<${classify(name)}>` : `<Anonymous>`) +
-    (file && includeFile !== false ? ` at ${file}` : "")
-  );
+  return (name ? `<${classify(name)}>` : `<Anonymous>`) + (file && includeFile !== false ? ` at ${file}` : '');
 }
 
 function generateComponentTrace(vm: any): string {
@@ -117,17 +95,17 @@ function generateComponentTrace(vm: any): string {
       vm = vm.$parent;
     }
     return (
-      "\n\nfound in\n\n" +
+      '\n\nfound in\n\n' +
       tree
         .map(
           (vm, i) =>
-            `${i === 0 ? "---> " : " ".repeat(5 + i * 2)}${
+            `${i === 0 ? '---> ' : ' '.repeat(5 + i * 2)}${
               Array.isArray(vm)
                 ? `${formatComponentName(vm[0])}... (${vm[1]} recursive calls)`
                 : formatComponentName(vm)
             }`
         )
-        .join("\n")
+        .join('\n')
     );
   } else {
     return `\n\n(found in ${formatComponentName(vm)})`;

@@ -1,4 +1,4 @@
-import VerticalExpandTransition from "./VerticalExpandTransition";
+import VerticalExpandTransition from './VerticalExpandTransition';
 
 export { VerticalExpandTransition };
 

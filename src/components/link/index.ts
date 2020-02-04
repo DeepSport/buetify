@@ -1,4 +1,4 @@
-import BLink from "./BLink";
+import BLink from './BLink';
 
 export { BLink };
 

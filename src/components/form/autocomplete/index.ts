@@ -1,4 +1,4 @@
-import BAutocomplete from "./BAutocomplete";
+import BAutocomplete from './BAutocomplete';
 
 export { BAutocomplete };
 

@@ -1,4 +1,4 @@
-import BField from "./BField";
+import BField from './BField';
 
 export default BField;
 

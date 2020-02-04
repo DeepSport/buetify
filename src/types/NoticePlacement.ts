@@ -1,1 +1,1 @@
-export type NoticePlacement = "top" | "bottom";
+export type NoticePlacement = 'top' | 'bottom';

@@ -1,14 +1,14 @@
-import { isEmpty } from "fp-ts/lib/Array";
-import Vue, { PropType, VNode } from "vue";
+import { isEmpty } from 'fp-ts/lib/Array';
+import Vue, { PropType, VNode } from 'vue';
 
 export default Vue.extend({
-  name: "BList",
+  name: 'BList',
   functional: true,
   props: {
     tag: {
       type: [String, Function],
       required: false,
-      default: "div"
+      default: 'div'
     },
     items: {
       type: Array as PropType<unknown[]>,

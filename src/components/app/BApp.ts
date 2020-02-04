@@ -1,21 +1,12 @@
-import "./app.sass";
-import { getItem, setItem } from "fp-ts-local-storage";
-import { constant, constVoid } from "fp-ts/lib/function";
-import { IO, of } from "fp-ts/lib/IO";
-import {
-  fold,
-  fromNullable,
-  getOrElse,
-  isSome,
-  mapNullable,
-  none,
-  Option,
-  some
-} from "fp-ts/lib/Option";
-import { VNode } from "vue";
-import { ToggleMixin } from "../../mixins/toggle/ToggleMixin";
-import { formatTransition } from "../../mixins/fadeTransition/FadeTransitionMixin";
-import { BREAK_POINTS } from "../../mixins/windowSize/WindowSizeMixin";
+import './app.sass';
+import { getItem, setItem } from 'fp-ts-local-storage';
+import { constant, constVoid } from 'fp-ts/lib/function';
+import { IO, of } from 'fp-ts/lib/IO';
+import { fold, fromNullable, getOrElse, isSome, mapNullable, none, Option, some } from 'fp-ts/lib/Option';
+import { VNode } from 'vue';
+import { ToggleMixin } from '../../mixins/toggle/ToggleMixin';
+import { formatTransition } from '../../mixins/fadeTransition/FadeTransitionMixin';
+import { BREAK_POINTS } from '../../mixins/windowSize/WindowSizeMixin';
 import {
   AppInjection,
   ModalInjection,
@@ -24,21 +15,19 @@ import {
   ShowModalOptions,
   ShowNoticeOptions,
   ThemeInjection
-} from "../../types/AppInjection";
-import { NoticePlacement } from "../../types/NoticePlacement";
-import { Theme } from "../../types/Theme";
-import { TransitionClasses } from "../../types/Transition";
-import { applyMixins } from "../../utils/applyMixins";
-import { RenderVNode } from "../../utils/RenderVNode";
+} from '../../types/AppInjection';
+import { NoticePlacement } from '../../types/NoticePlacement';
+import { Theme } from '../../types/Theme';
+import { TransitionClasses } from '../../types/Transition';
+import { applyMixins } from '../../utils/applyMixins';
+import { RenderVNode } from '../../utils/RenderVNode';
 
-let theme = getOrElse<Theme>(constant<Theme>("dark"))(
-  getItem("theme")() as Option<Theme>
-);
+let theme = getOrElse<Theme>(constant<Theme>('dark'))(getItem('theme')() as Option<Theme>);
 
-const DEFAULT_TRANSITION: TransitionClasses = { name: "fade" };
+const DEFAULT_TRANSITION: TransitionClasses = { name: 'fade' };
 
 export default applyMixins(ToggleMixin).extend({
-  name: "BApp",
+  name: 'BApp',
   inheritAttrs: false,
   components: {
     RenderVNode
@@ -91,10 +80,10 @@ export default applyMixins(ToggleMixin).extend({
       const themeInjection = {
         setTheme: this.setTheme
       };
-      Object.defineProperty(themeInjection, "currentTheme", {
+      Object.defineProperty(themeInjection, 'currentTheme', {
         get: () => some(this.theme)
       });
-      Object.defineProperty(themeInjection, "isThemeable", {
+      Object.defineProperty(themeInjection, 'isThemeable', {
         get: () => this.isThemeable
       });
       return themeInjection as any;
@@ -105,7 +94,7 @@ export default applyMixins(ToggleMixin).extend({
         hideNavigationDrawer: this.setOff,
         toggleNavigationDrawer: this.toggle
       };
-      Object.defineProperty(navigationInjection, "navigationDrawerIsVisible", {
+      Object.defineProperty(navigationInjection, 'navigationDrawerIsVisible', {
         get: () => this.isActive
       });
       return navigationInjection as any;
@@ -124,28 +113,18 @@ export default applyMixins(ToggleMixin).extend({
       return this.generatePopupContainer(this.overlay);
     },
     generateTopNoticeContainer(): VNode {
-      return this.generatePopupContainer(this.top, "notices-is-top");
+      return this.generatePopupContainer(this.top, 'notices-is-top');
     },
     generateBottomNoticeContainer(): VNode {
-      return this.generatePopupContainer(this.bottom, "notices-is-bottom");
+      return this.generatePopupContainer(this.bottom, 'notices-is-bottom');
     },
     generatePopupContainer(popup: Popup, staticClass?: string): VNode {
-      return this.$createElement(
-        "div",
-        { staticClass, style: { zIndex: isSome(popup.node) ? 1 : -1 } },
-        [
-          this.$createElement(
-            "transition",
-            { attrs: popup.transition },
-            this.generateRenderNode(popup.node)
-          )
-        ]
-      );
+      return this.$createElement('div', { staticClass, style: { zIndex: isSome(popup.node) ? 1 : -1 } }, [
+        this.$createElement('transition', { attrs: popup.transition }, this.generateRenderNode(popup.node))
+      ]);
     },
     generateRenderNode(node: Option<VNode>): VNode[] {
-      return isSome(node)
-        ? [this.$createElement(RenderVNode, { props: { node: node.value } })]
-        : [];
+      return isSome(node) ? [this.$createElement(RenderVNode, { props: { node: node.value } })] : [];
     },
     setTheme(theme: Theme): void {
       this.theme = theme;
@@ -155,17 +134,12 @@ export default applyMixins(ToggleMixin).extend({
     },
     persistTheme(newTheme: Theme): void {
       theme = newTheme;
-      setItem("theme", newTheme)();
+      setItem('theme', newTheme)();
     },
     shouldQueueNotice(placement: NoticePlacement): boolean {
-      return placement === "top"
-        ? isSome(this.top.node)
-        : isSome(this.bottom.node);
+      return placement === 'top' ? isSome(this.top.node) : isSome(this.bottom.node);
     },
-    showModal({
-      node,
-      transition = DEFAULT_TRANSITION
-    }: ShowModalOptions): IO<void> {
+    showModal({ node, transition = DEFAULT_TRANSITION }: ShowModalOptions): IO<void> {
       this.overlay = {
         transition: formatTransition(transition),
         node: some(node)
@@ -183,11 +157,9 @@ export default applyMixins(ToggleMixin).extend({
         setTimeout(() => this.showNotice(params), 250);
         return constVoid;
       }
-      if (params.placement === "top") {
+      if (params.placement === 'top') {
         this.top = {
-          transition: params.transition
-            ? formatTransition(params.transition)
-            : DEFAULT_TRANSITION,
+          transition: params.transition ? formatTransition(params.transition) : DEFAULT_TRANSITION,
           node: some(params.node)
         };
         if (params.duration === 0) {
@@ -198,9 +170,7 @@ export default applyMixins(ToggleMixin).extend({
         }
       } else {
         this.bottom = {
-          transition: params.transition
-            ? formatTransition(params.transition)
-            : DEFAULT_TRANSITION,
+          transition: params.transition ? formatTransition(params.transition) : DEFAULT_TRANSITION,
           node: some(params.node)
         };
         if (params.duration === 0) {
@@ -213,7 +183,7 @@ export default applyMixins(ToggleMixin).extend({
     }
   },
   render(): VNode {
-    return this.$createElement("div", { staticClass: "b-app" }, [
+    return this.$createElement('div', { staticClass: 'b-app' }, [
       this.generateTopNoticeContainer(),
       this.$slots.default,
       this.generateBottomNoticeContainer(),

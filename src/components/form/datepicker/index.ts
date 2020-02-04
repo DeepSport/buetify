@@ -1,4 +1,4 @@
-import BDatepicker from "./BDatepicker";
+import BDatepicker from './BDatepicker';
 
 export default BDatepicker;
 

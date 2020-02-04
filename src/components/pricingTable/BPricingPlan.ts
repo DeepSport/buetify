@@ -1,9 +1,9 @@
-import "./pricing-table.sass";
-import BPricingPlanPrice from "./BPricingPlanPrice";
-import Vue, { VNode } from "vue";
+import './pricing-table.sass';
+import BPricingPlanPrice from './BPricingPlanPrice';
+import Vue, { VNode } from 'vue';
 
 export default Vue.extend({
-  name: "BPricingTable",
+  name: 'BPricingTable',
   functional: true,
   components: {
     BPricingPlanPrice
@@ -27,27 +27,15 @@ export default Vue.extend({
     const nodes: VNode[] = [];
     const extractedSlots = slots();
     if (extractedSlots.header) {
-      nodes.push(
-        h("div", { staticClass: "plan-header" }, extractedSlots.header)
-      );
+      nodes.push(h('div', { staticClass: 'plan-header' }, extractedSlots.header));
     }
     nodes.push(
-      h(
-        "div",
-        { staticClass: "plan-pricing-container" },
-        extractedSlots.price || h(BPricingPlanPrice, { props })
-      )
+      h('div', { staticClass: 'plan-pricing-container' }, extractedSlots.price || h(BPricingPlanPrice, { props }))
     );
-    nodes.push(h("div", { staticClass: "plan-items" }, extractedSlots.items));
+    nodes.push(h('div', { staticClass: 'plan-items' }, extractedSlots.items));
     if (extractedSlots.footer) {
-      nodes.push(
-        h("div", { staticClass: "plan-footer" }, extractedSlots.footer)
-      );
+      nodes.push(h('div', { staticClass: 'plan-footer' }, extractedSlots.footer));
     }
-    return h(
-      "section",
-      { staticClass: "pricing-plan", class: { "is-active": props.isActive } },
-      nodes
-    );
+    return h('section', { staticClass: 'pricing-plan', class: { 'is-active': props.isActive } }, nodes);
   }
 });

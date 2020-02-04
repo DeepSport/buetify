@@ -1,16 +1,16 @@
-import "./modal.sass";
-import BOverlay from "../overlay/BOverlay";
-import BBox from "../layout/box/BBox";
-import { DisplayModalMixin } from "../../mixins/displayModal/DisplayModalMixin";
-import { applyMixins } from "../../utils/applyMixins";
-import { VNode } from "vue";
+import './modal.sass';
+import BOverlay from '../overlay/BOverlay';
+import BBox from '../layout/box/BBox';
+import { DisplayModalMixin } from '../../mixins/displayModal/DisplayModalMixin';
+import { applyMixins } from '../../utils/applyMixins';
+import { VNode } from 'vue';
 
 const DEFAULT_STYLE = {
-  height: "inherit"
+  height: 'inherit'
 };
 
 export default applyMixins(DisplayModalMixin).extend({
-  name: "BModal",
+  name: 'BModal',
   inheritAttrs: false,
   props: {
     modalStyle: {
@@ -31,39 +31,36 @@ export default applyMixins(DisplayModalMixin).extend({
   },
   methods: {
     generateModal(): VNode {
-      return this.$createElement(
-        BOverlay,
-        { style: this.appliedStyle, on: this.$listeners },
-        [this.generateModalBox()]
-      );
+      return this.$createElement(BOverlay, { style: this.appliedStyle, on: this.$listeners }, [
+        this.generateModalBox()
+      ]);
     },
     generateModalBox(): VNode {
       return this.$createElement(
         BBox,
         {
-          staticClass:
-            "is-paddingless height-100-percent width-100-percent overflow-scroll"
+          staticClass: 'is-paddingless height-100-percent width-100-percent overflow-scroll'
         },
         [
           this.$createElement(
-            "div",
-            { staticClass: "height-100-percent" },
+            'div',
+            { staticClass: 'height-100-percent' },
             this.showExit
-              ? [this.generateCloseButton(), this.regenerateSlot("default")]
-              : [this.regenerateSlot("default")]
+              ? [this.generateCloseButton(), this.regenerateSlot('default')]
+              : [this.regenerateSlot('default')]
           )
         ]
       );
     },
     generateCloseButton(): VNode {
-      return this.$createElement("button", {
-        staticClass: "modal-exit delete is-small",
+      return this.$createElement('button', {
+        staticClass: 'modal-exit delete is-small',
         on: { click: this.closeModal }
       });
     },
     closeModal(e: MouseEvent) {
       e.stopPropagation();
-      this.$emit("close");
+      this.$emit('close');
     }
   }
 });

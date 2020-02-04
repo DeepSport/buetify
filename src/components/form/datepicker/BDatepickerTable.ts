@@ -1,10 +1,5 @@
-import "./datepicker.sass";
-import {
-  DateEvent,
-  DateSelectionData,
-  DEFAULT_DAY_NAMES,
-  DEFAULT_MONTH_NAMES
-} from "./shared";
+import './datepicker.sass';
+import { DateEvent, DateSelectionData, DEFAULT_DAY_NAMES, DEFAULT_MONTH_NAMES } from './shared';
 import {
   addDays,
   getDatesInWeek,
@@ -14,14 +9,14 @@ import {
   isOnOrBeforeDate,
   isWithinWeek,
   WeekdayNumber
-} from "./utils";
-import { alwaysEmptyArray, alwaysNone } from "../../../utils/helpers";
-import { isNonEmpty, rotate } from "fp-ts/lib/Array";
-import { constant } from "fp-ts/lib/function";
-import { fromNullable, Option } from "fp-ts/lib/Option";
-import Vue, { PropType, VNode } from "vue";
-import { PropValidator } from "vue/types/options";
-import BDatepickerTableRow from "./BDatepickerTableRow";
+} from './utils';
+import { alwaysEmptyArray, alwaysNone } from '../../../utils/helpers';
+import { isNonEmpty, rotate } from 'fp-ts/lib/Array';
+import { constant } from 'fp-ts/lib/function';
+import { fromNullable, Option } from 'fp-ts/lib/Option';
+import Vue, { PropType, VNode } from 'vue';
+import { PropValidator } from 'vue/types/options';
+import BDatepickerTableRow from './BDatepickerTableRow';
 
 interface WeekData {
   week: Date[];
@@ -30,7 +25,7 @@ interface WeekData {
 }
 
 export default Vue.extend({
-  name: "BDatepickerTable",
+  name: 'BDatepickerTable',
   props: {
     value: {
       type: [Date, Array] as PropType<Date | Date[]>,
@@ -53,7 +48,7 @@ export default Vue.extend({
       default: alwaysEmptyArray
     },
     indicators: {
-      type: String as PropType<"dots" | "bars">,
+      type: String as PropType<'dots' | 'bars'>,
       required: true
     },
     minDate: {
@@ -129,10 +124,7 @@ export default Vue.extend({
     eventsInThisMonth(): DateEvent[] {
       return this.events.filter(event => {
         const date = isDate(event) ? event : event.date;
-        return (
-          date.getFullYear() === this.dateSelectionData.year &&
-          date.getMonth() === this.dateSelectionData.month
-        );
+        return date.getFullYear() === this.dateSelectionData.year && date.getMonth() === this.dateSelectionData.month;
       });
     },
     weeksData(): WeekData[] {
@@ -143,13 +135,7 @@ export default Vue.extend({
       }));
     },
     weeksInThisMonth(): Date[][] {
-      const startOfMonth = getStartOfMonth(
-        new Date(
-          this.dateSelectionData.year,
-          this.dateSelectionData.month + 1,
-          0
-        )
-      );
+      const startOfMonth = getStartOfMonth(new Date(this.dateSelectionData.year, this.dateSelectionData.month + 1, 0));
       const endOfMonth = getEndOfMonth(startOfMonth);
       const weeks: Date[][] = [];
       let date = startOfMonth;
@@ -162,10 +148,10 @@ export default Vue.extend({
   },
   methods: {
     updateFocusedDate(date: Option<Date>) {
-      this.$emit("new-focus-date", date);
+      this.$emit('new-focus-date', date);
     },
     updateSelectedDate(date: Date) {
-      this.$emit("input", date);
+      this.$emit('input', date);
     },
     getEventsWithinWeek(dates: Date[]): DateEvent[] {
       return this.eventsInThisMonth.filter(event => {
@@ -174,29 +160,19 @@ export default Vue.extend({
       });
     },
     generateTableHeader(): VNode {
-      return this.$createElement(
-        "thead",
-        { staticClass: "datepicker-header" },
-        [
-          this.$createElement(
-            "tr",
-            this.visibleDayNames.map(day =>
-              this.$createElement(
-                "th",
-                { key: day, staticClass: "datepicker-cell" },
-                day
-              )
-            )
-          )
-        ]
-      );
+      return this.$createElement('thead', { staticClass: 'datepicker-header' }, [
+        this.$createElement(
+          'tr',
+          this.visibleDayNames.map(day => this.$createElement('th', { key: day, staticClass: 'datepicker-cell' }, day))
+        )
+      ]);
     },
     generateTableBody(): VNode {
       return this.$createElement(
-        "tbody",
+        'tbody',
         {
-          staticClass: "datepicker-body",
-          class: { "has-events": this.hasEvents }
+          staticClass: 'datepicker-body',
+          class: { 'has-events': this.hasEvents }
         },
         this.weeksData.map(this.generateTableRow)
       );
@@ -221,13 +197,13 @@ export default Vue.extend({
         },
         on: {
           select: this.updateSelectedDate,
-          "new-focus-date": this.updateFocusedDate
+          'new-focus-date': this.updateFocusedDate
         }
       });
     }
   },
   render(): VNode {
-    return this.$createElement("table", { staticClass: "datepicker-table" }, [
+    return this.$createElement('table', { staticClass: 'datepicker-table' }, [
       this.generateTableHeader(),
       this.generateTableBody()
     ]);

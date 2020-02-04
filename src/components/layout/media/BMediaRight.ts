@@ -1,8 +1,4 @@
-import "./media.sass";
-import { getSimpleFunctionalComponent } from "../../../utils/getSimpleFunctionalComponent";
+import './media.sass';
+import { getSimpleFunctionalComponent } from '../../../utils/getSimpleFunctionalComponent';
 
-export default getSimpleFunctionalComponent(
-  "media-right",
-  "BMediaRight",
-  "div"
-);
+export default getSimpleFunctionalComponent('media-right', 'BMediaRight', 'div');

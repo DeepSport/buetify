@@ -1,8 +1,8 @@
-import "./pricing-table.sass";
-import Vue, { VNode } from "vue";
+import './pricing-table.sass';
+import Vue, { VNode } from 'vue';
 
 export default Vue.extend({
-  name: "BPricingTable",
+  name: 'BPricingTable',
   functional: true,
   props: {
     amount: {
@@ -15,13 +15,9 @@ export default Vue.extend({
     }
   },
   render(h, { props, slots }): VNode {
-    return h("div", { staticClass: "plan-price" }, [
-      h("span", { staticClass: "plan-price-amount" }, [
-        h(
-          "span",
-          { staticClass: "plan-price-currency" },
-          slots().currency || "$"
-        ),
+    return h('div', { staticClass: 'plan-price' }, [
+      h('span', { staticClass: 'plan-price-amount' }, [
+        h('span', { staticClass: 'plan-price-currency' }, slots().currency || '$'),
         `${props.amount}`
       ]),
       `/${props.interval}`

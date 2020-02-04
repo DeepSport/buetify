@@ -1,4 +1,4 @@
-import EyeSlashIcon from "./EyeSlashIcon";
+import EyeSlashIcon from './EyeSlashIcon';
 
 export { EyeSlashIcon };
 

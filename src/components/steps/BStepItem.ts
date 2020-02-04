@@ -1,11 +1,11 @@
-import { ColorVariant } from "../../types/ColorVariants";
-import { constant } from "fp-ts/lib/function";
-import { none, Option, toUndefined } from "fp-ts/lib/Option";
-import Vue, { VNode } from "vue";
-import { PropValidator } from "vue/types/options";
-import { ExtendedVue } from "vue/types/vue";
+import { ColorVariant } from '../../types/ColorVariants';
+import { constant } from 'fp-ts/lib/function';
+import { none, Option, toUndefined } from 'fp-ts/lib/Option';
+import Vue, { VNode } from 'vue';
+import { PropValidator } from 'vue/types/options';
+import { ExtendedVue } from 'vue/types/vue';
 
-export const BStepItemName = "BStepItem" as const;
+export const BStepItemName = 'BStepItem' as const;
 
 export interface BStepItemPropsData {
   label: string;
@@ -38,7 +38,7 @@ export default Vue.extend<options>().extend({
     },
     variant: {
       type: String,
-      default: "is-primary"
+      default: 'is-primary'
     } as PropValidator<ColorVariant>,
     icon: Function,
     isClickable: {
@@ -63,9 +63,7 @@ export default Vue.extend<options>().extend({
       return this.destroyOnHide || this.step.destroyOnHide;
     },
     isActive(): boolean {
-      return (
-        this.isVisible && this.label === toUndefined(this.step.activeLabel)
-      );
+      return this.isVisible && this.label === toUndefined(this.step.activeLabel);
     }
   },
   inject: {
@@ -76,13 +74,11 @@ export default Vue.extend<options>().extend({
   methods: {
     generateStepItem(): VNode {
       return this.$createElement(
-        "section",
+        'section',
         {
-          staticClass: "step-item",
-          attrs: { "aria-label": this.label },
-          directives: this.internalDestroyOnHide
-            ? []
-            : [{ name: "show", value: this.isActive }]
+          staticClass: 'step-item',
+          attrs: { 'aria-label': this.label },
+          directives: this.internalDestroyOnHide ? [] : [{ name: 'show', value: this.isActive }]
         },
         this.$scopedSlots.default!({ isActive: this.isActive })
       );

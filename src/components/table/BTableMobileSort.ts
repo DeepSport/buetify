@@ -1,18 +1,14 @@
-import "./table.sass";
+import './table.sass';
 import BSelect from '../form/select/BSelect';
 import VerticalExpansionIcon from '../icons/verticalExpansion/VerticalExpansionIcon';
-import {
-  BTableColumn,
-  BTableColumnData,
-  SortType
-} from "./shared";
-import { findFirst } from "fp-ts/lib/Array";
-import { isSome, map, none, Option, toNullable } from "fp-ts/lib/Option";
-import { pipe } from "fp-ts/lib/pipeable";
-import Vue, { PropType, VNode } from "vue";
-import { PropValidator } from "vue/types/options";
+import { BTableColumn, BTableColumnData, SortType } from './shared';
+import { findFirst } from 'fp-ts/lib/Array';
+import { isSome, map, none, Option, toNullable } from 'fp-ts/lib/Option';
+import { pipe } from 'fp-ts/lib/pipeable';
+import Vue, { PropType, VNode } from 'vue';
+import { PropValidator } from 'vue/types/options';
 export default Vue.extend({
-  name: "BTableMobileSort",
+  name: 'BTableMobileSort',
   props: {
     sortColumn: {
       type: Object as PropType<Option<BTableColumnData<any>>>,
@@ -45,8 +41,8 @@ export default Vue.extend({
       set(val: Option<BTableColumnData<any>>) {
         if (isSome(val)) {
           this.newSortColumn = val;
-          this.$emit("new-sort-column", val.value);
-          this.$emit("update:sortColumn", val);
+          this.$emit('new-sort-column', val.value);
+          this.$emit('update:sortColumn', val);
         }
       }
     },
@@ -56,8 +52,8 @@ export default Vue.extend({
       },
       set(val: SortType) {
         this.newSortType = val;
-        this.$emit("new-sort-type", val);
-        this.$emit("update:sortType", val);
+        this.$emit('new-sort-type', val);
+        this.$emit('update:sortType', val);
       }
     },
     extractedColumnId(): string | null {
@@ -82,24 +78,23 @@ export default Vue.extend({
     }
   },
   methods: {
-    onInput(label: "string"): void {
+    onInput(label: 'string'): void {
       this.internalSortColumn = pipe(
         this.sortableColumns,
         findFirst(column => column.label === label)
       );
     },
     onButtonClick(): void {
-      this.internalSortType =
-        this.internalSortType === "Ascending" ? "Descending" : "Ascending";
+      this.internalSortType = this.internalSortType === 'Ascending' ? 'Descending' : 'Ascending';
     },
     generateBSelect(): VNode {
       return this.$createElement(BSelect, {
         props: {
           placeholder: this.placeholder,
           items: this.sortableColumns,
-          itemKey: "label",
-          itemValue: "label",
-          itemText: "label",
+          itemKey: 'label',
+          itemValue: 'label',
+          itemText: 'label',
           value: this.extractedColumnId,
           isExpanded: true
         },
@@ -109,18 +104,18 @@ export default Vue.extend({
       });
     },
     generateSortDirectionButton(): VNode {
-      return this.$createElement("div", { staticClass: "control" }, [
+      return this.$createElement('div', { staticClass: 'control' }, [
         this.$createElement(
-          "button",
+          'button',
           {
-            staticClass: "button is-primary",
+            staticClass: 'button is-primary',
             on: { click: this.onButtonClick }
           },
           [
             this.$createElement(VerticalExpansionIcon, {
               props: {
-                isExpanded: this.internalSortType === "Descending",
-                size: "is-small"
+                isExpanded: this.internalSortType === 'Descending',
+                size: 'is-small'
               }
             })
           ]
@@ -130,13 +125,13 @@ export default Vue.extend({
   },
   render(): VNode {
     return this.$createElement(
-      "section",
+      'section',
       {
-        staticClass: "field table-mobile-sort",
-        attrs: { "aria-label": "Table Sort Controls" }
+        staticClass: 'field table-mobile-sort',
+        attrs: { 'aria-label': 'Table Sort Controls' }
       },
       [
-        this.$createElement("div", { staticClass: "field has-addons" }, [
+        this.$createElement('div', { staticClass: 'field has-addons' }, [
           this.generateBSelect(),
           this.generateSortDirectionButton()
         ])

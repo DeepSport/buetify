@@ -1,4 +1,4 @@
-import BTooltip from "./BTooltip";
+import BTooltip from './BTooltip';
 
 export { BTooltip };
 

@@ -1,4 +1,4 @@
-import BModal from "./BModal";
+import BModal from './BModal';
 
 export { BModal };
 

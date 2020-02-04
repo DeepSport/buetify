@@ -1,4 +1,4 @@
-import { WatchTimer } from "./WatchTimer";
+import { WatchTimer } from './WatchTimer';
 
 export { WatchTimer };
 

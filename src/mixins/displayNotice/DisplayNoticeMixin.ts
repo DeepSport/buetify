@@ -1,11 +1,11 @@
-import { consoleError } from "bue/components/utils/console";
-import { getNoticeTransition } from "bue/components/utils/helpers";
-import { AllColorsVariant, ColorVariant } from "bue/types/ColorVariants";
-import { PositionVariant } from "bue/types/PositionVariant";
-import Vue, { VNode } from "vue";
-import { PropValidator } from "vue/types/options";
-import { NoticeInjection, ShowNoticeOptions } from "../../types/AppInjection";
-import { constant, constVoid } from "fp-ts/lib/function";
+import { consoleError } from 'bue/components/utils/console';
+import { getNoticeTransition } from 'bue/components/utils/helpers';
+import { AllColorsVariant, ColorVariant } from 'bue/types/ColorVariants';
+import { PositionVariant } from 'bue/types/PositionVariant';
+import Vue, { VNode } from 'vue';
+import { PropValidator } from 'vue/types/options';
+import { NoticeInjection, ShowNoticeOptions } from '../../types/AppInjection';
+import { constant, constVoid } from 'fp-ts/lib/function';
 
 export const DEFAULT_NOTICE_INJECTION: NoticeInjection = {
   showNotice: constant(constVoid)
@@ -16,11 +16,11 @@ interface options extends Vue {
 }
 
 export const DisplayNoticeMixin = Vue.extend<options>().extend({
-  name: "DisplayNoticeInjection",
+  name: 'DisplayNoticeInjection',
   props: {
     position: {
       type: String,
-      default: "is-bottom"
+      default: 'is-bottom'
     } as PropValidator<PositionVariant>,
     duration: {
       type: Number,
@@ -36,7 +36,7 @@ export const DisplayNoticeMixin = Vue.extend<options>().extend({
     },
     variant: {
       type: String,
-      default: "is-primary"
+      default: 'is-primary'
     } as PropValidator<ColorVariant>,
     isIndefinite: {
       type: Boolean,
@@ -80,22 +80,14 @@ export const DisplayNoticeMixin = Vue.extend<options>().extend({
       const position = (params.position || this.position) as PositionVariant;
       this.internalCloseNotice = this.notice.showNotice({
         node: this.generateNotice(this.mergeNoticeParams(params)),
-        placement: position.includes("top") ? "top" : "bottom",
-        duration:
-          params.duration !== undefined
-            ? params.duration
-            : this.internalDuration,
-        shouldQueue:
-          params.shouldQueue !== undefined
-            ? params.shouldQueue
-            : this.shouldQueue,
+        placement: position.includes('top') ? 'top' : 'bottom',
+        duration: params.duration !== undefined ? params.duration : this.internalDuration,
+        shouldQueue: params.shouldQueue !== undefined ? params.shouldQueue : this.shouldQueue,
         transition: getNoticeTransition(position)
       });
     },
     generateNotice(params: OpenNoticeParams): VNode {
-      consoleError(
-        "This is an abstract method, a concrete implementation must be put in place"
-      );
+      consoleError('This is an abstract method, a concrete implementation must be put in place');
       return this.$createElement();
     },
     renderNoticeScopedSlot(): VNode {

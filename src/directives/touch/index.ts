@@ -1,5 +1,5 @@
-import { keys } from "../../utils/helpers";
-import { VNodeDirective, VNode } from "vue/types/vnode";
+import { keys } from '../../utils/helpers';
+import { VNodeDirective, VNode } from 'vue/types/vnode';
 
 export interface TouchStoredHandlers {
   touchstart: (e: TouchEvent) => void;
@@ -43,19 +43,13 @@ const handleGesture = (wrapper: TouchWrapper) => {
   wrapper.offsetY = touchendY - touchstartY;
 
   if (Math.abs(wrapper.offsetY) < dirRatio * Math.abs(wrapper.offsetX)) {
-    wrapper.left &&
-      touchendX < touchstartX - minDistance &&
-      wrapper.left(wrapper);
-    wrapper.right &&
-      touchendX > touchstartX + minDistance &&
-      wrapper.right(wrapper);
+    wrapper.left && touchendX < touchstartX - minDistance && wrapper.left(wrapper);
+    wrapper.right && touchendX > touchstartX + minDistance && wrapper.right(wrapper);
   }
 
   if (Math.abs(wrapper.offsetX) < dirRatio * Math.abs(wrapper.offsetY)) {
     wrapper.up && touchendY < touchstartY - minDistance && wrapper.up(wrapper);
-    wrapper.down &&
-      touchendY > touchstartY + minDistance &&
-      wrapper.down(wrapper);
+    wrapper.down && touchendY > touchstartY + minDistance && wrapper.down(wrapper);
   }
 };
 
@@ -124,11 +118,7 @@ function inserted(el: HTMLElement, binding: TouchVNodeDirective, vnode: VNode) {
   target._touchHandlers![vnode.context!._uid] = handlers;
 
   keys(handlers).forEach(eventName => {
-    target.addEventListener(
-      eventName,
-      handlers[eventName] as EventListener,
-      options
-    );
+    target.addEventListener(eventName, handlers[eventName] as EventListener, options);
   });
 }
 

@@ -1,4 +1,4 @@
-import "./table.sass";
-import { getThemeableFunctionalComponent } from "../../utils/getThemeableFunctionalComponent";
+import './table.sass';
+import { getThemeableFunctionalComponent } from '../../utils/getThemeableFunctionalComponent';
 
-export default getThemeableFunctionalComponent("table", "BTable", "table");
+export default getThemeableFunctionalComponent('table', 'BTable', 'table');

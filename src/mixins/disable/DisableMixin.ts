@@ -1,6 +1,6 @@
-import Vue from "vue";
+import Vue from 'vue';
 export const DisableMixin = Vue.extend({
-  name: "DisableMixin",
+  name: 'DisableMixin',
   props: {
     isDisabled: {
       type: Boolean,

@@ -1,7 +1,7 @@
-import Vue, { PropType, VNode } from "vue";
+import Vue, { PropType, VNode } from 'vue';
 
 export const RenderVNode = Vue.extend({
-  name: "RenderVNode",
+  name: 'RenderVNode',
   functional: true,
   props: {
     node: {

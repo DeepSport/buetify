@@ -1,6 +1,3 @@
 import { InputLabelIdMixin, getLabelIdMixin } from './LabelIdMixin';
 
-export {
-	InputLabelIdMixin,
-	getLabelIdMixin
-}
+export { InputLabelIdMixin, getLabelIdMixin };

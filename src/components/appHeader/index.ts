@@ -1,4 +1,4 @@
-import BAppHeader from "./BAppHeader";
+import BAppHeader from './BAppHeader';
 
 export { BAppHeader };
 export default BAppHeader;

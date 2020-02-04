@@ -1,9 +1,9 @@
-import { ToggleMixin } from "../../../mixins/toggle/ToggleMixin";
-import { applyMixins } from "../../../utils/applyMixins";
-import { VNode } from "vue";
+import { ToggleMixin } from '../../../mixins/toggle/ToggleMixin';
+import { applyMixins } from '../../../utils/applyMixins';
+import { VNode } from 'vue';
 
 export const Toggle = applyMixins(ToggleMixin).extend({
-  name: "Toggle",
+  name: 'Toggle',
   render(): VNode {
     return this.$scopedSlots.default!({
       attrs: this.attrs,

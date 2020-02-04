@@ -1,8 +1,4 @@
-import "./pricing-table.sass";
-import { getSimpleFunctionalComponent } from "../../utils/getSimpleFunctionalComponent";
+import './pricing-table.sass';
+import { getSimpleFunctionalComponent } from '../../utils/getSimpleFunctionalComponent';
 
-export default getSimpleFunctionalComponent(
-  "pricing-table",
-  "BPricingTable",
-  "article"
-);
+export default getSimpleFunctionalComponent('pricing-table', 'BPricingTable', 'article');

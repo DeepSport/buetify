@@ -1,14 +1,11 @@
-import {ColorVariant} from '../../types/ColorVariants';
+import { ColorVariant } from '../../types/ColorVariants';
 import BCheckbox from '../form/checkbox/BCheckbox';
-import BTableColumn from "./BTableColumn";
-import {
-  BTableColumn as BTableColumnInterface,
-  SortType
-} from "./shared";
-import Vue, { PropType, VNode } from "vue";
+import BTableColumn from './BTableColumn';
+import { BTableColumn as BTableColumnInterface, SortType } from './shared';
+import Vue, { PropType, VNode } from 'vue';
 
 export default Vue.extend({
-  name: "BTableHeader",
+  name: 'BTableHeader',
   functional: true,
   props: {
     columns: {
@@ -33,7 +30,7 @@ export default Vue.extend({
     },
     checkboxVariant: {
       type: String as PropType<ColorVariant>,
-      default: "is-primary"
+      default: 'is-primary'
     }
   },
   render(h, { props, slots, listeners, data }): VNode {
@@ -46,7 +43,7 @@ export default Vue.extend({
     );
     if (props.isCheckable && listeners.toggle) {
       nodes.unshift(
-        h("th", { staticClass: "checkbox-cell" }, [
+        h('th', { staticClass: 'checkbox-cell' }, [
           h(BCheckbox, {
             props: {
               inputValue: props.isChecked,
@@ -58,6 +55,6 @@ export default Vue.extend({
         ])
       );
     }
-    return h("thead", [h("tr", nodes)]);
+    return h('thead', [h('tr', nodes)]);
   }
 });

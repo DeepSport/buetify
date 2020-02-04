@@ -1,4 +1,4 @@
-import BHorizontalDivider from "./BHorizontalDivider";
-import BVerticalDivider from "./BVerticalDivider";
+import BHorizontalDivider from './BHorizontalDivider';
+import BVerticalDivider from './BVerticalDivider';
 
 export { BHorizontalDivider, BVerticalDivider };

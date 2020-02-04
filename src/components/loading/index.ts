@@ -1,4 +1,4 @@
-import BLoading from "./BLoading";
+import BLoading from './BLoading';
 
 export { BLoading };
 

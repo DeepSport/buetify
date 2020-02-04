@@ -1,25 +1,22 @@
-import "./link.sass";
-import {
-  getThemeInjectionMixin,
-  ThemeColorMap
-} from "../../mixins/themeInjection/ThemeInjectionMixin";
+import './link.sass';
+import { getThemeInjectionMixin, ThemeColorMap } from '../../mixins/themeInjection/ThemeInjectionMixin';
 import {
   getThemeableFunctionalComponentWithText,
   getThemeClasses,
   getThemeClassesFromContext,
   THEME_INJECTION
-} from "../../utils/getThemeableFunctionalComponent";
-import { mergeVNodeStaticClass } from "../../utils/mergeVNodeStaticClass";
-import { constant } from "fp-ts/lib/function";
-import Vue, { PropType, VNode } from "vue";
+} from '../../utils/getThemeableFunctionalComponent';
+import { mergeVNodeStaticClass } from '../../utils/mergeVNodeStaticClass';
+import { constant } from 'fp-ts/lib/function';
+import Vue, { PropType, VNode } from 'vue';
 
 const LINK_THEME_MAP: ThemeColorMap = {
-  dark: "is-warning",
-  light: ""
+  dark: 'is-warning',
+  light: ''
 };
 
 export default Vue.extend({
-  name: "BLink",
+  name: 'BLink',
   functional: true,
   props: {
     themeMap: {
@@ -39,18 +36,18 @@ export default Vue.extend({
     href: {
       type: String,
       required: false,
-      default: "#"
+      default: '#'
     },
     tag: {
       type: String,
-      default: "a"
+      default: 'a'
     }
   },
   inject: {
     ...THEME_INJECTION
   },
   render(h, { data, props, injections, children }): VNode {
-    data.staticClass = mergeVNodeStaticClass("b-link", data.staticClass);
+    data.staticClass = mergeVNodeStaticClass('b-link', data.staticClass);
     data.class = getThemeClassesFromContext({ props, data, injections });
     return h(props.tag, data, props.text ? [props.text] : children);
   }

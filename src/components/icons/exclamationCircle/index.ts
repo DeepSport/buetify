@@ -1,4 +1,4 @@
-import ExclamationCircleIcon from "./ExclamationCircleIcon";
+import ExclamationCircleIcon from './ExclamationCircleIcon';
 
 export { ExclamationCircleIcon };
 

@@ -1,4 +1,4 @@
-import BBox from "./BBox";
+import BBox from './BBox';
 
 export { BBox };
 

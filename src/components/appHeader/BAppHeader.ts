@@ -1,11 +1,11 @@
-import "./app-header.sass";
-import { isEnterEvent } from "../../utils/eventHelpers";
-import { VNode } from "vue";
-import { applyMixins } from "../../utils/applyMixins";
-import { NavigationInjectionMixin } from "../../mixins/navigationInjection/NavigationInjectionMixin";
+import './app-header.sass';
+import { isEnterEvent } from '../../utils/eventHelpers';
+import { VNode } from 'vue';
+import { applyMixins } from '../../utils/applyMixins';
+import { NavigationInjectionMixin } from '../../mixins/navigationInjection/NavigationInjectionMixin';
 
 export default applyMixins(NavigationInjectionMixin).extend({
-  name: "BAppHeader",
+  name: 'BAppHeader',
   props: {
     navigationIcon: {
       type: Function,
@@ -14,11 +14,7 @@ export default applyMixins(NavigationInjectionMixin).extend({
   },
   methods: {
     generateMainSlot(): VNode {
-      return this.$createElement(
-        "div",
-        { staticClass: "main-slot" },
-        this.$slots.default
-      );
+      return this.$createElement('div', { staticClass: 'main-slot' }, this.$slots.default);
     },
     onKeydown(e: KeyboardEvent): void {
       e.preventDefault();
@@ -28,16 +24,16 @@ export default applyMixins(NavigationInjectionMixin).extend({
     },
     generateNavigationButton(): VNode {
       return this.$createElement(
-        "button",
+        'button',
         {
-          staticClass: "navigation-icon",
+          staticClass: 'navigation-icon',
           on: {
             click: this.showNavigationDrawer,
             keydown: this.onKeydown
           },
           attrs: {
-            "aria-label": "Toggle navigation pane",
-            "aria-haspopup": true
+            'aria-label': 'Toggle navigation pane',
+            'aria-haspopup': true
           }
         },
         [this.$createElement(this.navigationIcon)]
@@ -46,10 +42,9 @@ export default applyMixins(NavigationInjectionMixin).extend({
   },
   render(): VNode {
     return this.$createElement(
-      "header",
+      'header',
       {
-        staticClass:
-          "b-app-header is-flex flex-direction-row justify-content-center align-items-center"
+        staticClass: 'b-app-header is-flex flex-direction-row justify-content-center align-items-center'
       },
       this.navigationDrawerIsVisible
         ? [this.generateMainSlot()]

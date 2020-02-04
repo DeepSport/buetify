@@ -1,4 +1,4 @@
-import BNotification from "./BNotification";
+import BNotification from './BNotification';
 
 export { BNotification };
 

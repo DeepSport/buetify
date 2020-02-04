@@ -1,11 +1,11 @@
-import "./loading.sass";
-import { applyMixins } from "../../utils/applyMixins";
-import { isEscEvent } from "../../utils/eventHelpers";
-import { DisplayModalMixin } from "../../mixins/displayModal/DisplayModalMixin";
-import { VNode } from "vue";
+import './loading.sass';
+import { applyMixins } from '../../utils/applyMixins';
+import { isEscEvent } from '../../utils/eventHelpers';
+import { DisplayModalMixin } from '../../mixins/displayModal/DisplayModalMixin';
+import { VNode } from 'vue';
 
 export default applyMixins(DisplayModalMixin).extend({
-  name: "BLoading",
+  name: 'BLoading',
   props: {
     isFullscreen: {
       type: Boolean,
@@ -22,7 +22,7 @@ export default applyMixins(DisplayModalMixin).extend({
     },
     classes(): object {
       return {
-        "is-fullscreen": this.isFullscreen
+        'is-fullscreen': this.isFullscreen
       };
     }
   },
@@ -36,8 +36,8 @@ export default applyMixins(DisplayModalMixin).extend({
       if (this.onCancel) {
         this.onCancel();
       }
-      this.$emit("close");
-      this.$emit("update:is-active", false);
+      this.$emit('close');
+      this.$emit('update:is-active', false);
     },
     onKeyup(event: KeyboardEvent) {
       if (isEscEvent(event)) {
@@ -45,31 +45,25 @@ export default applyMixins(DisplayModalMixin).extend({
       }
     },
     generateModal(): VNode {
-      return this.$createElement(
-        "div",
-        { staticClass: "b-loading-overlay is-active", class: this.classes },
-        [
-          this.$createElement("div", {
-            staticClass: "loading-background",
-            on: { click: this.cancel }
-          }),
-          this.$createElement("div", { staticClass: "loading-icon" })
-        ]
-      );
+      return this.$createElement('div', { staticClass: 'b-loading-overlay is-active', class: this.classes }, [
+        this.$createElement('div', {
+          staticClass: 'loading-background',
+          on: { click: this.cancel }
+        }),
+        this.$createElement('div', { staticClass: 'loading-icon' })
+      ]);
     }
   },
   created() {
-    if (typeof window !== "undefined") {
-      document.addEventListener("keyup", this.onKeyup);
-      this.$once("hook:beforeDestroy", () =>
-        document.removeEventListener("keyup", this.onKeyup)
-      );
+    if (typeof window !== 'undefined') {
+      document.addEventListener('keyup', this.onKeyup);
+      this.$once('hook:beforeDestroy', () => document.removeEventListener('keyup', this.onKeyup));
     }
   },
   render(): VNode {
     if (!this.isFullscreen) {
       return this.$createElement(
-        "transition",
+        'transition',
         { props: { name: this.transition } },
         this.isActive ? [this.generateModal()] : []
       );

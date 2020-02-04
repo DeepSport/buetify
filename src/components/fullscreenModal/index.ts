@@ -1,4 +1,4 @@
-import BFullscreenModal from "./BFullscreenModal";
+import BFullscreenModal from './BFullscreenModal';
 
 export { BFullscreenModal };
 

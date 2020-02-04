@@ -1,21 +1,15 @@
-import "./autocomplete.sass";
-import BDropdown from "../../dropdown/BDropdown";
-import {
-  isArrowDownEvent,
-  isArrowUpEvent,
-  isEnterEvent,
-  isEscEvent,
-  isTabEvent
-} from "../../../utils/eventHelpers";
-import { ExtractPropMixin } from "../../../mixins/extractProp/ExtractPropMixin";
-import { constant, constVoid, flow } from "fp-ts/lib/function";
-import BDropdownDivider from "../../dropdown/BDropdownDivider";
-import BDropdownItem from "../../dropdown/BDropdownItem";
-import { DROPDOWN_THEME_MIXIN } from "../../dropdown/DropdownTheme";
-import { InputMixin } from "../../../mixins/input/InputMixin";
-import { EqMixin } from "../../../mixins/eq/EqMixin";
-import { applyMixins, ExtractVue } from "../../../utils/applyMixins";
-import { findFirst, head, isEmpty, lookup } from "fp-ts/lib/Array";
+import './autocomplete.sass';
+import BDropdown from '../../dropdown/BDropdown';
+import { isArrowDownEvent, isArrowUpEvent, isEnterEvent, isEscEvent, isTabEvent } from '../../../utils/eventHelpers';
+import { ExtractPropMixin } from '../../../mixins/extractProp/ExtractPropMixin';
+import { constant, constVoid, flow } from 'fp-ts/lib/function';
+import BDropdownDivider from '../../dropdown/BDropdownDivider';
+import BDropdownItem from '../../dropdown/BDropdownItem';
+import { DROPDOWN_THEME_MIXIN } from '../../dropdown/DropdownTheme';
+import { InputMixin } from '../../../mixins/input/InputMixin';
+import { EqMixin } from '../../../mixins/eq/EqMixin';
+import { applyMixins, ExtractVue } from '../../../utils/applyMixins';
+import { findFirst, head, isEmpty, lookup } from 'fp-ts/lib/Array';
 import {
   alt,
   apFirst,
@@ -30,10 +24,10 @@ import {
   Option,
   some,
   toUndefined
-} from "fp-ts/lib/Option";
-import { pipe } from "fp-ts/lib/pipeable";
-import { PropType, VNode } from "vue";
-import BInput from "../input";
+} from 'fp-ts/lib/Option';
+import { pipe } from 'fp-ts/lib/pipeable';
+import { PropType, VNode } from 'vue';
+import BInput from '../input';
 
 interface Data {
   hoveredItem: Option<AutocompleteItem<unknown>>;
@@ -48,12 +42,7 @@ interface AutocompleteItem<T> {
   index: number;
 }
 
-const base = applyMixins(
-  InputMixin,
-  EqMixin,
-  DROPDOWN_THEME_MIXIN,
-  ExtractPropMixin
-);
+const base = applyMixins(InputMixin, EqMixin, DROPDOWN_THEME_MIXIN, ExtractPropMixin);
 
 interface options extends ExtractVue<typeof base> {
   $refs: {
@@ -64,7 +53,7 @@ interface options extends ExtractVue<typeof base> {
 }
 
 export default base.extend<options>().extend({
-  name: "BAutocomplete",
+  name: 'BAutocomplete',
   components: {
     BInput,
     BDropdownItem,
@@ -82,11 +71,11 @@ export default base.extend<options>().extend({
     },
     itemId: {
       type: [String, Function] as PropType<string | ((option: any) => string)>,
-      default: "id"
+      default: 'id'
     },
     itemText: {
       type: [String, Function],
-      default: "text"
+      default: 'text'
     },
     closeOnSelect: {
       type: Boolean,
@@ -117,18 +106,14 @@ export default base.extend<options>().extend({
       );
     },
     newAutocomplete(): string {
-      return this.autocomplete || "list";
+      return this.autocomplete || 'list';
     },
     newItems(): readonly AutocompleteItem<any>[] {
       return Object.freeze(
         this.items.map((item, index) => ({
           id: this.extractProp(this.itemId as any, item),
-          isSelected: this.selectedItems.some(i =>
-            this.valueComparator(i, item)
-          ),
-          isHovered: isSome(this.hoveredItem)
-            ? this.valueComparator(item, this.hoveredItem.value.value)
-            : false,
+          isSelected: this.selectedItems.some(i => this.valueComparator(i, item)),
+          isHovered: isSome(this.hoveredItem) ? this.valueComparator(item, this.hoveredItem.value.value) : false,
           text: this.extractProp(this.itemText as any, item),
           value: item,
           index
@@ -143,7 +128,7 @@ export default base.extend<options>().extend({
     },
     classes(): object {
       return {
-        "is-expanded": this.isExpanded
+        'is-expanded': this.isExpanded
       };
     }
   },
@@ -159,10 +144,8 @@ export default base.extend<options>().extend({
     },
     setSelected(item: AutocompleteItem<unknown>) {
       if (!item.isSelected) {
-        this.$emit("select", item.value);
-        this.internalValue = this.clearOnSelect
-          ? ""
-          : this.extractProp(this.itemText as any, item.value);
+        this.$emit('select', item.value);
+        this.internalValue = this.clearOnSelect ? '' : this.extractProp(this.itemText as any, item.value);
         if (this.closeOnSelect) {
           this.$nextTick(this.closeDropdown);
         }
@@ -223,9 +206,7 @@ export default base.extend<options>().extend({
         alt(() => some(0)),
         chain(index =>
           lookup(
-            isUp
-              ? Math.max(index - 1, 0)
-              : Math.min(index + 1, this.newItems.length - 1),
+            isUp ? Math.max(index - 1, 0) : Math.min(index + 1, this.newItems.length - 1),
             this.newItems as AutocompleteItem<unknown>[]
           )
         ),
@@ -236,18 +217,18 @@ export default base.extend<options>().extend({
       if (this.openOnFocus) {
         this.setHovered(this.newItems[0]);
       }
-      this.$emit("focus", event);
+      this.$emit('focus', event);
     },
     onBlur(event: MouseEvent) {
-      this.$emit("blur", event);
+      this.$emit('blur', event);
     },
     generateInput(): VNode {
       return this.$createElement(BInput, {
-        ref: "input",
-        slot: "trigger",
+        ref: 'input',
+        slot: 'trigger',
         props: {
           value: this.internalValue,
-          type: "text",
+          type: 'text',
           size: this.size,
           isLoading: this.isLoading,
           isRounded: this.isRounded,
@@ -258,10 +239,10 @@ export default base.extend<options>().extend({
         },
         attrs: {
           ...this.$attrs,
-          role: "searchbox",
-          "aria-controls": this.computedId,
-          "aria-autocomplete": this.newAutocomplete,
-          "aria-activedescendant": this.activeDescendantId
+          role: 'searchbox',
+          'aria-controls': this.computedId,
+          'aria-autocomplete': this.newAutocomplete,
+          'aria-activedescendant': this.activeDescendantId
         },
         on: {
           input: (val: any) => {
@@ -281,35 +262,21 @@ export default base.extend<options>().extend({
       if (this.isLoading) {
         nodes = [this.generateLoadingItem()];
       } else {
-        nodes = this.displayEmpty
-          ? [this.generateEmptyItem()]
-          : this.generateItems();
+        nodes = this.displayEmpty ? [this.generateEmptyItem()] : this.generateItems();
         if (this.hasHeaderSlot) {
           nodes.unshift(this.generateHeaderItem(), this.generateDivider());
         }
       }
-      return this.$createElement(
-        "ul",
-        { slot: "default", attrs: { id: this.computedId, role: "listbox" } },
-        nodes
-      );
+      return this.$createElement('ul', { slot: 'default', attrs: { id: this.computedId, role: 'listbox' } }, nodes);
     },
     generateLoadingItem(): VNode {
-      return this.$createElement("li", { attrs: { tabindex: -1 } }, [
-        this.$createElement(
-          BDropdownItem,
-          { props: { tag: "div" } },
-          this.$slots.loading || "Loading results..."
-        )
+      return this.$createElement('li', { attrs: { tabindex: -1 } }, [
+        this.$createElement(BDropdownItem, { props: { tag: 'div' } }, this.$slots.loading || 'Loading results...')
       ]);
     },
     generateHeaderItem(): VNode {
-      return this.$createElement("li", { attrs: { tabindex: -1 } }, [
-        this.$createElement(
-          BDropdownItem,
-          { props: { tag: "div" } },
-          this.$slots.header
-        )
+      return this.$createElement('li', { attrs: { tabindex: -1 } }, [
+        this.$createElement(BDropdownItem, { props: { tag: 'div' } }, this.$slots.header)
       ]);
     },
     generateDivider(): VNode {
@@ -323,7 +290,7 @@ export default base.extend<options>().extend({
         BDropdownItem,
         {
           key: item.id,
-          ref: "items",
+          ref: 'items',
           refInFor: true,
           domProps: {
             id: item.id
@@ -332,36 +299,33 @@ export default base.extend<options>().extend({
             isActive: item.isSelected
           },
           attrs: {
-            "aria-selected": item.isSelected,
-            "aria-label": `Option ${index + 1} of ${this.newItems.length}`
+            'aria-selected': item.isSelected,
+            'aria-label': `Option ${index + 1} of ${this.newItems.length}`
           },
-          class: { "is-hovered": item.isHovered },
+          class: { 'is-hovered': item.isHovered },
           on: {
             click: this.getOnClick(item),
             mouseenter: this.getOnMouseenter(item),
             keydown: this.onKeydown
           }
         },
-        this.$scopedSlots.default
-          ? this.$scopedSlots.default!({ option: item, index })
-          : item.text
+        this.$scopedSlots.default ? this.$scopedSlots.default!({ option: item, index }) : item.text
       );
     },
     generateEmptyItem(): VNode {
       return this.$createElement(
         BDropdownItem,
         {
-          staticClass: "is-disabled"
+          staticClass: 'is-disabled'
         },
         this.$slots.empty || `No results for ${this.internalValue}`
       );
     }
   },
   render(): VNode {
-    return this.$createElement(
-      BDropdown,
-      { ref: "dropdown", class: this.classes },
-      [this.generateInput(), this.generateAutocompleteItems()]
-    );
+    return this.$createElement(BDropdown, { ref: 'dropdown', class: this.classes }, [
+      this.generateInput(),
+      this.generateAutocompleteItems()
+    ]);
   }
 });

@@ -1,4 +1,4 @@
-import "bulma/sass/components/level.sass";
-import { getSimpleFunctionalComponent } from "../../../utils/getSimpleFunctionalComponent";
+import 'bulma/sass/components/level.sass';
+import { getSimpleFunctionalComponent } from '../../../utils/getSimpleFunctionalComponent';
 
-export default getSimpleFunctionalComponent("level-right", "BLevelRight");
+export default getSimpleFunctionalComponent('level-right', 'BLevelRight');

@@ -1,4 +1,4 @@
-import { faCheckCircle } from "@fortawesome/free-solid-svg-icons/faCheckCircle";
-import { getIconComponent } from "../utils/getIconComponent";
+import { faCheckCircle } from '@fortawesome/free-solid-svg-icons/faCheckCircle';
+import { getIconComponent } from '../utils/getIconComponent';
 
-export default getIconComponent("CheckCircle", faCheckCircle);
+export default getIconComponent('CheckCircle', faCheckCircle);

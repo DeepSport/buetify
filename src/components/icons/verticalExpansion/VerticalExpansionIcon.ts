@@ -1,11 +1,11 @@
-import "./vertical-expansion-icon.sass";
-import Vue, { VNode } from "vue";
-import { mergeVNodeClasses } from "../../../utils/mergeVNodeClasses";
-import { mergeVNodeStaticClass } from "../../../utils/mergeVNodeStaticClass";
-import { AngleDownIcon } from "../angleDown";
+import './vertical-expansion-icon.sass';
+import Vue, { VNode } from 'vue';
+import { mergeVNodeClasses } from '../../../utils/mergeVNodeClasses';
+import { mergeVNodeStaticClass } from '../../../utils/mergeVNodeStaticClass';
+import { AngleDownIcon } from '../angleDown';
 
 export default Vue.extend({
-  name: "VerticalExpansionIcon",
+  name: 'VerticalExpansionIcon',
   functional: true,
   props: {
     isExpanded: {
@@ -16,12 +16,9 @@ export default Vue.extend({
   render(h, { data, props }): VNode {
     return h(AngleDownIcon, {
       ...data,
-      staticClass: mergeVNodeStaticClass(
-        "vertical-expansion-icon",
-        data.staticClass
-      ),
+      staticClass: mergeVNodeStaticClass('vertical-expansion-icon', data.staticClass),
       class: mergeVNodeClasses(data.class, {
-        "is-expanded": props.isExpanded
+        'is-expanded': props.isExpanded
       })
     });
   }

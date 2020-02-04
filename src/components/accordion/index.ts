@@ -1,4 +1,4 @@
-import BAccordion from "./BAccordion";
+import BAccordion from './BAccordion';
 
 export { BAccordion };
 export default BAccordion;

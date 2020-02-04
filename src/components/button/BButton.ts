@@ -1,31 +1,31 @@
-import "./button.sass";
-import Vue, { VNode } from "vue";
-import { PropValidator } from "vue/types/options";
-import { ColorVariant } from "../../types/ColorVariants";
-import { SizeVariant } from "../../types/SizeVariants";
+import './button.sass';
+import Vue, { VNode } from 'vue';
+import { PropValidator } from 'vue/types/options';
+import { ColorVariant } from '../../types/ColorVariants';
+import { SizeVariant } from '../../types/SizeVariants';
 import {
   getThemeClasses,
   getThemeClassesFromContext,
   getThemeProps,
   THEME_INJECTION
-} from "../../utils/getThemeableFunctionalComponent";
-import { mergeVNodeAttrs } from "../../utils/mergeVNodeAttrs";
-import { mergeVNodeClasses } from "../../utils/mergeVNodeClasses";
-import { mergeVNodeStaticClass } from "../../utils/mergeVNodeStaticClass";
+} from '../../utils/getThemeableFunctionalComponent';
+import { mergeVNodeAttrs } from '../../utils/mergeVNodeAttrs';
+import { mergeVNodeClasses } from '../../utils/mergeVNodeClasses';
+import { mergeVNodeStaticClass } from '../../utils/mergeVNodeStaticClass';
 
 const BUTTON_THEME_MAP = {
-  dark: "is-orange",
-  light: ""
+  dark: 'is-orange',
+  light: ''
 };
 
 export default Vue.extend({
-  name: "BButton",
+  name: 'BButton',
   functional: true,
   props: {
     ...getThemeProps(BUTTON_THEME_MAP),
     variant: {
       type: String,
-      default: "is-primary"
+      default: 'is-primary'
     } as PropValidator<ColorVariant>,
     isRounded: Boolean,
     isLoading: Boolean,
@@ -41,9 +41,9 @@ export default Vue.extend({
     } as PropValidator<SizeVariant>,
     tag: {
       type: String,
-      default: "button",
+      default: 'button',
       validator: value => {
-        return ["button", "a", "input"].includes(value);
+        return ['button', 'a', 'input'].includes(value);
       }
     }
   },
@@ -51,17 +51,14 @@ export default Vue.extend({
     ...THEME_INJECTION
   },
   render(h, { data, props, injections, children }): VNode {
-    data.staticClass = mergeVNodeStaticClass("button", data.staticClass);
+    data.staticClass = mergeVNodeStaticClass('button', data.staticClass);
     data.class = mergeVNodeClasses(
       data.class,
-      mergeVNodeClasses(
-        getButtonClasses(props),
-        getThemeClassesFromContext({ data, props, injections })
-      )
+      mergeVNodeClasses(getButtonClasses(props), getThemeClassesFromContext({ data, props, injections }))
     );
     data.attrs = mergeVNodeAttrs(data.attrs, {
       disabled: props.isDisabled,
-      "aria-disabled": props.isDisabled
+      'aria-disabled': props.isDisabled
     });
     return h(props.tag, data, children);
   }
@@ -83,16 +80,16 @@ interface ButtonProps {
 function getButtonClasses(props: ButtonProps) {
   return [
     props.variant,
-    props.size ? props.size : "",
+    props.size ? props.size : '',
     {
-      "is-rounded": props.isRounded,
-      "is-loading": props.isLoading,
-      "is-outlined": props.isOutlined,
-      "is-inverted": props.isInverted,
-      "is-focused": props.isFocused,
-      "is-active": props.isActive,
-      "is-disabled": props.isDisabled,
-      "is-hovered": props.isHovered
+      'is-rounded': props.isRounded,
+      'is-loading': props.isLoading,
+      'is-outlined': props.isOutlined,
+      'is-inverted': props.isInverted,
+      'is-focused': props.isFocused,
+      'is-active': props.isActive,
+      'is-disabled': props.isDisabled,
+      'is-hovered': props.isHovered
     }
   ];
 }

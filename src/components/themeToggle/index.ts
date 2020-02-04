@@ -1,4 +1,4 @@
-import BThemeToggle from "./BThemeToggle";
+import BThemeToggle from './BThemeToggle';
 
 export { BThemeToggle };
 

@@ -1,8 +1,8 @@
-import Vue, { VNode } from "vue";
-import { IconDefinition } from "@fortawesome/fontawesome-common-types";
-import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome";
-import { BIcon } from "../../icon";
-import { mergeVNodeAttrs } from "../../../utils/mergeVNodeAttrs";
+import Vue, { VNode } from 'vue';
+import { IconDefinition } from '@fortawesome/fontawesome-common-types';
+import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
+import { BIcon } from '../../icon';
+import { mergeVNodeAttrs } from '../../../utils/mergeVNodeAttrs';
 
 export function getIconComponent(name: string, iconDefinition: IconDefinition) {
   const icon = getFontAwesomeIconComponent(iconDefinition);

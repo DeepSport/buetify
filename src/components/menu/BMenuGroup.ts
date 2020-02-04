@@ -1,13 +1,13 @@
-import "./menu.sass";
-import { applyMixins } from "../../utils/applyMixins";
-import { getToggleMixin, ToggleMixin } from "../../mixins/toggle/ToggleMixin";
-import VerticalExpandTransition from "../../transitions/verticalExpandTransition";
-import VerticalExpansionIcon from "../icons/verticalExpansion/VerticalExpansionIcon";
-import BMenuList from "./BMenuList";
-import { VNode } from "vue";
+import './menu.sass';
+import { applyMixins } from '../../utils/applyMixins';
+import { getToggleMixin, ToggleMixin } from '../../mixins/toggle/ToggleMixin';
+import VerticalExpandTransition from '../../transitions/verticalExpandTransition';
+import VerticalExpansionIcon from '../icons/verticalExpansion/VerticalExpansionIcon';
+import BMenuList from './BMenuList';
+import { VNode } from 'vue';
 
-export default applyMixins(getToggleMixin("isExpanded")).extend({
-  name: "BMenuGroup",
+export default applyMixins(getToggleMixin('isExpanded')).extend({
+  name: 'BMenuGroup',
   components: {
     VerticalExpansionIcon,
     BMenuList
@@ -25,25 +25,20 @@ export default applyMixins(getToggleMixin("isExpanded")).extend({
   methods: {
     generateTrigger(): VNode {
       return this.$createElement(
-        "div",
+        'div',
         {
-          staticClass:
-            "is-flex flex-direction-row justify-content-space-between align-items-center",
+          staticClass: 'is-flex flex-direction-row justify-content-space-between align-items-center',
           class: this.menuLabelClass
         },
-        [this.$slots["menu-label"], this.generateTriggerButton()]
+        [this.$slots['menu-label'], this.generateTriggerButton()]
       );
     },
     generateTriggerButton(): VNode {
-      return this.$createElement(
-        "button",
-        { on: this.listeners, attrs: this.attrs },
-        [
-          this.$createElement(VerticalExpansionIcon, {
-            props: { isExpanded: this.internalIsOn }
-          })
-        ]
-      );
+      return this.$createElement('button', { on: this.listeners, attrs: this.attrs }, [
+        this.$createElement(VerticalExpansionIcon, {
+          props: { isExpanded: this.internalIsOn }
+        })
+      ]);
     },
     generateMenuList(): VNode {
       return this.$createElement(VerticalExpandTransition, [
@@ -51,8 +46,8 @@ export default applyMixins(getToggleMixin("isExpanded")).extend({
           BMenuList,
           {
             class: this.menuListClass,
-            directives: [{ name: "show", value: this.internalIsOn }],
-            domProps: { "aria-hidden": !this.internalIsOn }
+            directives: [{ name: 'show', value: this.internalIsOn }],
+            domProps: { 'aria-hidden': !this.internalIsOn }
           },
           this.$slots.default
         )
@@ -60,9 +55,6 @@ export default applyMixins(getToggleMixin("isExpanded")).extend({
     }
   },
   render(): VNode {
-    return this.$createElement("div", [
-      this.generateTrigger(),
-      this.generateMenuList()
-    ]);
+    return this.$createElement('div', [this.generateTrigger(), this.generateMenuList()]);
   }
 });

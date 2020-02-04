@@ -1,7 +1,5 @@
-import {DisplayModalMixin} from './DisplayModalMixin';
+import { DisplayModalMixin } from './DisplayModalMixin';
 
-export {
-	DisplayModalMixin
-};
+export { DisplayModalMixin };
 
 export default DisplayModalMixin;

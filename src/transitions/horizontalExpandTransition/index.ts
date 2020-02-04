@@ -1,4 +1,4 @@
-import { HorizontalExpandTransition } from "./HorizontalExpandTransition";
+import { HorizontalExpandTransition } from './HorizontalExpandTransition';
 
 export { HorizontalExpandTransition };
 

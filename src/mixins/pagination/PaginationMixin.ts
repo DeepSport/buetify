@@ -1,12 +1,10 @@
-import { VNode } from "vue";
-import { PropValidator } from "vue/types/options";
-import {applyMixins} from '../../utils/applyMixins';
-import {getProxyableMixin} from '../proxyable/ProxyableMixin';
+import { VNode } from 'vue';
+import { PropValidator } from 'vue/types/options';
+import { applyMixins } from '../../utils/applyMixins';
+import { getProxyableMixin } from '../proxyable/ProxyableMixin';
 
-export const PaginationMixin = applyMixins(
-  getProxyableMixin("value", "input", 1)
-).extend({
-  name: "PaginateMixin",
+export const PaginationMixin = applyMixins(getProxyableMixin('value', 'input', 1)).extend({
+  name: 'PaginateMixin',
   props: {
     // one of items or total is required
     items: {
@@ -32,21 +30,13 @@ export const PaginationMixin = applyMixins(
       return Math.max(this.internalValue as number, 1);
     },
     after(): number {
-      return Math.max(
-        ((this.internalValue as number) - 1) * this.itemsPerPage,
-        0
-      );
+      return Math.max(((this.internalValue as number) - 1) * this.itemsPerPage, 0);
     },
     paginatedItems(): readonly unknown[] {
       const items = this.items
-        ? this.items.slice(
-            this.after,
-            Math.min(this.after + this.itemsPerPage, this.numberOfItems)
-          )
+        ? this.items.slice(this.after, Math.min(this.after + this.itemsPerPage, this.numberOfItems))
         : [];
-      return this.mapper
-        ? Object.freeze(items.map(this.mapper as any))
-        : Object.freeze(items);
+      return this.mapper ? Object.freeze(items.map(this.mapper as any)) : Object.freeze(items);
     },
     nextPage(): number {
       return Math.min(this.numberOfPages, (this.internalValue as number) + 1);

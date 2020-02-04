@@ -1,13 +1,13 @@
-import { constant } from "fp-ts/lib/function";
-import Vue from "vue";
-import { PropValidator } from "vue/types/options";
-import { Transition, TransitionClasses } from "../../types/Transition";
+import { constant } from 'fp-ts/lib/function';
+import Vue from 'vue';
+import { PropValidator } from 'vue/types/options';
+import { Transition, TransitionClasses } from '../../types/Transition';
 
-export type TransitionMode = "in-out" | "out-in";
+export type TransitionMode = 'in-out' | 'out-in';
 
 export function getTransitionMixin(transition: Transition) {
   return Vue.extend({
-    name: "FadeTransitionMixin",
+    name: 'FadeTransitionMixin',
     props: {
       transition: {
         type: [String, Object],
@@ -26,10 +26,8 @@ export function getTransitionMixin(transition: Transition) {
   });
 }
 
-export const FadeTransitionMixin = getTransitionMixin("fade");
+export const FadeTransitionMixin = getTransitionMixin('fade');
 
 export function formatTransition(transition: Transition): TransitionClasses {
-  return typeof transition === "string"
-    ? { name: transition, css: true }
-    : transition;
+  return typeof transition === 'string' ? { name: transition, css: true } : transition;
 }

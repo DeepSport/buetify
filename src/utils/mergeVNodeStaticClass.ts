@@ -1,6 +1,3 @@
-export function mergeVNodeStaticClass(
-  cls: string,
-  existing: string = ""
-): string {
+export function mergeVNodeStaticClass(cls: string, existing: string = ''): string {
   return `${cls} ${existing}`.trim();
 }

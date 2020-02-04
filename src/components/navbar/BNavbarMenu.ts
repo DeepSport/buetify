@@ -1,9 +1,9 @@
-import "bulma/sass/components/navbar.sass";
-import { mergeVNodeClasses } from "../../utils/mergeVNodeClasses";
-import { mergeVNodeStaticClass } from "../../utils/mergeVNodeStaticClass";
-import Vue, { VNode } from "vue";
+import 'bulma/sass/components/navbar.sass';
+import { mergeVNodeClasses } from '../../utils/mergeVNodeClasses';
+import { mergeVNodeStaticClass } from '../../utils/mergeVNodeStaticClass';
+import Vue, { VNode } from 'vue';
 export default Vue.extend({
-  name: "BNavbarMenu",
+  name: 'BNavbarMenu',
   functional: true,
   props: {
     isActive: {
@@ -13,10 +13,10 @@ export default Vue.extend({
     }
   },
   render(h, { data, props, children }): VNode {
-    data.staticClass = mergeVNodeStaticClass("navbar-menu", data.staticClass);
+    data.staticClass = mergeVNodeStaticClass('navbar-menu', data.staticClass);
     if (props.isActive) {
-      data.class = mergeVNodeClasses(data.class, "is-active");
+      data.class = mergeVNodeClasses(data.class, 'is-active');
     }
-    return h("div", data, children);
+    return h('div', data, children);
   }
 });

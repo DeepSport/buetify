@@ -1,4 +1,4 @@
-import BMessage from "./BMessage";
+import BMessage from './BMessage';
 
 export { BMessage };
 

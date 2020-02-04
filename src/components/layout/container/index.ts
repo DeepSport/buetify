@@ -1,4 +1,4 @@
-import BContainer from "./BContainer";
+import BContainer from './BContainer';
 
 export { BContainer };
 

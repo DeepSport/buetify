@@ -1,21 +1,14 @@
-import { applyMixins } from "../../utils/applyMixins";
-import { constant, constFalse, constVoid } from "fp-ts/lib/function";
-import {
-  filter,
-  fold,
-  fromNullable,
-  map,
-  mapNullable,
-  Option
-} from "fp-ts/lib/Option";
-import { pipe } from "fp-ts/lib/pipeable";
-import { isHTMLElement, isObject, isString } from "../../utils/helpers";
-import { DisableMixin } from "../disable/DisableMixin";
-import {RefMixin} from '../ref';
+import { applyMixins } from '../../utils/applyMixins';
+import { constant, constFalse, constVoid } from 'fp-ts/lib/function';
+import { filter, fold, fromNullable, map, mapNullable, Option } from 'fp-ts/lib/Option';
+import { pipe } from 'fp-ts/lib/pipeable';
+import { isHTMLElement, isObject, isString } from '../../utils/helpers';
+import { DisableMixin } from '../disable/DisableMixin';
+import { RefMixin } from '../ref';
 
 export function getValidateMixin(ref: string) {
   return applyMixins(RefMixin, DisableMixin).extend({
-    name: "ValidateMixin",
+    name: 'ValidateMixin',
     props: {
       useNativeValidation: {
         type: Boolean,
@@ -31,7 +24,7 @@ export function getValidateMixin(ref: string) {
       isValid: {
         handler(newValue: boolean, oldValue: boolean) {
           if (newValue !== oldValue) {
-            this.$emit("new-validity", newValue);
+            this.$emit('new-validity', newValue);
           }
         },
         immediate: true
@@ -47,14 +40,14 @@ export function getValidateMixin(ref: string) {
               return () => {
                 if (!el.checkValidity()) {
                   this.$nextTick(() => {
-                    this.$emit("new-variant", "is-danger");
-                    this.$emit("new-message", el.validationMessage);
+                    this.$emit('new-variant', 'is-danger');
+                    this.$emit('new-message', el.validationMessage);
                     this.isValid = false;
                   });
                 } else {
                   this.$nextTick(() => {
-                    this.$emit("new-variant", "");
-                    this.$emit("new-message", "");
+                    this.$emit('new-variant', '');
+                    this.$emit('new-message', '');
                     this.isValid = true;
                   });
                 }
@@ -67,12 +60,9 @@ export function getValidateMixin(ref: string) {
   });
 }
 
-export const InputValidateMixin = getValidateMixin("input");
+export const InputValidateMixin = getValidateMixin('input');
 
 function isHtmlInputElement(el: HTMLElement): el is HTMLInputElement {
   const newEl = (el as unknown) as HTMLInputElement;
-  return (
-    typeof newEl.checkValidity === "function" &&
-    isString(newEl.validationMessage)
-  );
+  return typeof newEl.checkValidity === 'function' && isString(newEl.validationMessage);
 }

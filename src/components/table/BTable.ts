@@ -1,34 +1,13 @@
-import "./table.sass";
-import BSimpleTable from "./BSimpleTable";
-import BTableRowElement from "./BTableRow";
-import BTableHeader from "./BTableHeader";
-import BTableMobileSort from "./BTableMobileSort";
-import {
-  BTableColumn,
-  BTableColumnData,
-  BTableRow,
-  BTableRowData,
-  SortType
-} from "./shared";
-import {
-  alwaysEmptyArray,
-  alwaysZero,
-  isBoolean,
-  isMobile,
-  remove,
-  toggle
-} from "../../utils/helpers";
-import { ColorVariant } from "../../types/ColorVariants";
-import {
-  copy,
-  head,
-  isEmpty,
-  isNonEmpty,
-  reverse,
-  snoc,
-  sort
-} from "fp-ts/lib/Array";
-import { Eq, eq, eqString } from "fp-ts/lib/Eq";
+import './table.sass';
+import BSimpleTable from './BSimpleTable';
+import BTableRowElement from './BTableRow';
+import BTableHeader from './BTableHeader';
+import BTableMobileSort from './BTableMobileSort';
+import { BTableColumn, BTableColumnData, BTableRow, BTableRowData, SortType } from './shared';
+import { alwaysEmptyArray, alwaysZero, isBoolean, isMobile, remove, toggle } from '../../utils/helpers';
+import { ColorVariant } from '../../types/ColorVariants';
+import { copy, head, isEmpty, isNonEmpty, reverse, snoc, sort } from 'fp-ts/lib/Array';
+import { Eq, eq, eqString } from 'fp-ts/lib/Eq';
 import {
   chain,
   exists,
@@ -41,12 +20,12 @@ import {
   Option,
   some,
   toUndefined
-} from "fp-ts/lib/Option";
-import { Ord } from "fp-ts/lib/Ord";
-import { pipe } from "fp-ts/lib/pipeable";
-import Vue, { PropType, VNode } from "vue";
-import { PropValidator } from "vue/types/options";
-import { SizeVariant } from "../../types/SizeVariants";
+} from 'fp-ts/lib/Option';
+import { Ord } from 'fp-ts/lib/Ord';
+import { pipe } from 'fp-ts/lib/pipeable';
+import Vue, { PropType, VNode } from 'vue';
+import { PropValidator } from 'vue/types/options';
+import { SizeVariant } from '../../types/SizeVariants';
 
 interface Data {
   newRows: readonly BTableRow[];
@@ -68,20 +47,11 @@ function getBTableRow(rowProps: RowProps) {
   return (data: BTableRowData, index: number): BTableRow => ({
     ...data,
     index,
-    isDraggable:
-      data.isDraggable !== undefined ? data.isDraggable : rowProps.isDraggable,
-    isSelectable:
-      data.isSelectable !== undefined
-        ? data.isSelectable
-        : rowProps.isSelectable,
-    isCheckable:
-      data.isCheckable !== undefined ? data.isCheckable : rowProps.isCheckable,
-    isChecked: rowProps.checkedRows.some(row =>
-      eqBTableRowData.equals(row, data)
-    ),
-    isSelected: rowProps.selectedRows.some(row =>
-      eqBTableRowData.equals(row, data)
-    )
+    isDraggable: data.isDraggable !== undefined ? data.isDraggable : rowProps.isDraggable,
+    isSelectable: data.isSelectable !== undefined ? data.isSelectable : rowProps.isSelectable,
+    isCheckable: data.isCheckable !== undefined ? data.isCheckable : rowProps.isCheckable,
+    isChecked: rowProps.checkedRows.some(row => eqBTableRowData.equals(row, data)),
+    isSelected: rowProps.selectedRows.some(row => eqBTableRowData.equals(row, data))
   });
 }
 
@@ -91,13 +61,10 @@ const eqBTableRowData: Eq<BTableRowData> = eqBTableRow as Eq<BTableRowData>;
 
 const toggleBTableRow = toggle(eqBTableRow);
 
-export const eqColumnTableData: Eq<BTableColumnData<any>> = eq.contramap(
-  eqString,
-  column => column.label
-);
+export const eqColumnTableData: Eq<BTableColumnData<any>> = eq.contramap(eqString, column => column.label);
 
 export default Vue.extend({
-  name: "BTable",
+  name: 'BTable',
   props: {
     isBordered: {
       type: Boolean,
@@ -172,7 +139,7 @@ export default Vue.extend({
     } as PropValidator<BTableColumnData<any> | undefined>,
     sortType: {
       type: String,
-      default: "Descending"
+      default: 'Descending'
     } as PropValidator<SortType>,
     isFocusable: {
       type: Boolean,
@@ -188,7 +155,7 @@ export default Vue.extend({
     checkboxVariant: {
       type: String as PropType<ColorVariant>,
       required: false,
-      default: "is-primary"
+      default: 'is-primary'
     },
     headerClasses: {
       type: [String, Object, Array],
@@ -229,8 +196,8 @@ export default Vue.extend({
             })
           )
         );
-        this.$emit("new-checked-rows", val);
-        this.$emit("update:checkedRows", val);
+        this.$emit('new-checked-rows', val);
+        this.$emit('update:checkedRows', val);
       }
     },
     internalSelectedRows: {
@@ -250,8 +217,8 @@ export default Vue.extend({
             })
           )
         );
-        this.$emit("new-selected-rows", val);
-        this.$emit("update:selectedRows", val);
+        this.$emit('new-selected-rows', val);
+        this.$emit('update:selectedRows', val);
       }
     },
     internalSortType: {
@@ -260,8 +227,8 @@ export default Vue.extend({
       },
       set(val: SortType): void {
         this.newSortType = val;
-        this.$emit("new-sort-type", val);
-        this.$emit("update:sortType", val);
+        this.$emit('new-sort-type', val);
+        this.$emit('update:sortType', val);
       }
     },
     internalSortColumn: {
@@ -271,20 +238,20 @@ export default Vue.extend({
       set(val: Option<BTableColumnData<any>>): void {
         this.newSortColumn = val;
         if (isSome(val)) {
-          this.$emit("new-sort-column", val.value);
-          this.$emit("update:sortColumn", val.value);
+          this.$emit('new-sort-column', val.value);
+          this.$emit('update:sortColumn', val.value);
         }
       }
     },
     tableClasses(): any {
       return [
         {
-          "is-bordered": this.isBordered,
-          "is-striped": this.isStriped,
-          "is-narrow": this.isNarrow,
-          "is-fullwidth": this.isFullwidth,
-          "is-hoverable": this.isHoverable,
-          "has-mobile-cards": this.useMobileCards
+          'is-bordered': this.isBordered,
+          'is-striped': this.isStriped,
+          'is-narrow': this.isNarrow,
+          'is-fullwidth': this.isFullwidth,
+          'is-hoverable': this.isHoverable,
+          'has-mobile-cards': this.useMobileCards
         },
         this.size
       ];
@@ -294,7 +261,7 @@ export default Vue.extend({
         this.columns.map((column: BTableColumnData<any>) => {
           return {
             ...column,
-            position: column.position || "is-centered",
+            position: column.position || 'is-centered',
             isVisible: isBoolean(column.isVisible) ? column.isVisible : true,
             isSortColumn: this.isCurrentSortColumn(column),
             isSortable: !!column.isSortable || !!column.ord
@@ -306,10 +273,7 @@ export default Vue.extend({
       return this.newRows.every(row => !row.isCheckable);
     },
     allRowsChecked(): boolean {
-      return (
-        this.checkableRows.every(row => row.isChecked) &&
-        this.checkableRows.length > 0
-      );
+      return this.checkableRows.every(row => row.isChecked) && this.checkableRows.length > 0;
     },
     hasCheckableRows(): boolean {
       return this.isCheckable && isNonEmpty(this.checkableRows as BTableRow[]);
@@ -351,10 +315,7 @@ export default Vue.extend({
       this.newRows = Object.freeze(this.rows.map(mapRow));
       this.checkSort();
     },
-    sortColumn(
-      newVal: BTableColumnData<any> | undefined,
-      oldVal: BTableColumnData<any> | undefined
-    ) {
+    sortColumn(newVal: BTableColumnData<any> | undefined, oldVal: BTableColumnData<any> | undefined) {
       if (newVal !== oldVal) {
         this.newSortColumn = fromNullable(this.sortColumn);
       }
@@ -389,25 +350,20 @@ export default Vue.extend({
   },
   methods: {
     checkSort(): void {
-      if (
-        isSome(this.newSortColumn) &&
-        this.newSortColumn.value.ord !== undefined
-      ) {
+      if (isSome(this.newSortColumn) && this.newSortColumn.value.ord !== undefined) {
         this.sortRows(this.newSortColumn.value.ord);
       }
     },
     sortByColumn(column: BTableColumnData<any>): void {
       if (column.ord === undefined && !!column.isSortable) {
         if (this.isCurrentSortColumn(column)) {
-          this.internalSortType =
-            this.newSortType === "Ascending" ? "Descending" : "Ascending";
+          this.internalSortType = this.newSortType === 'Ascending' ? 'Descending' : 'Ascending';
         } else {
           this.internalSortColumn = some(column);
         }
       } else if (column.ord && !!column.isSortable) {
         if (this.isCurrentSortColumn(column)) {
-          this.internalSortType =
-            this.newSortType === "Ascending" ? "Descending" : "Ascending";
+          this.internalSortType = this.newSortType === 'Ascending' ? 'Descending' : 'Ascending';
           this.newRows = Object.freeze(reverse(this.newRows as BTableRow[]));
         } else {
           this.sortRows(column.ord);
@@ -416,9 +372,7 @@ export default Vue.extend({
       }
     },
     sortRows(ord: Ord<BTableRow>) {
-      this.newRows = Object.freeze(
-        pipe(this.newRows as BTableRow[], sort(ord))
-      );
+      this.newRows = Object.freeze(pipe(this.newRows as BTableRow[], sort(ord)));
     },
     isCurrentSortColumn(column: BTableColumnData<any>): boolean {
       return pipe(
@@ -430,11 +384,11 @@ export default Vue.extend({
       this.allRowsChecked ? this.uncheckAllRows() : this.checkAllRows();
     },
     checkAllRows(): void {
-      this.$emit("check-all-rows");
+      this.$emit('check-all-rows');
       this.internalCheckedRows = this.checkableRows;
     },
     uncheckAllRows(): void {
-      this.$emit("uncheck-all-rows");
+      this.$emit('uncheck-all-rows');
       this.internalCheckedRows = [];
     },
     getToggleRowCheck(row: BTableRow) {
@@ -442,10 +396,8 @@ export default Vue.extend({
     },
     toggleRowCheck(row: BTableRow): void {
       if (row.isCheckable) {
-        this.$emit(row.isChecked ? "uncheck-row" : "check-row", row);
-        this.internalCheckedRows = Object.freeze(
-          toggleBTableRow(row, this.internalCheckedRows as BTableRow[])
-        );
+        this.$emit(row.isChecked ? 'uncheck-row' : 'check-row', row);
+        this.internalCheckedRows = Object.freeze(toggleBTableRow(row, this.internalCheckedRows as BTableRow[]));
       }
     },
     getToggleRowSelection(row: BTableRow) {
@@ -453,10 +405,8 @@ export default Vue.extend({
     },
     toggleRowSelection(row: BTableRow): void {
       if (row.isSelectable) {
-        this.internalSelectedRows = Object.freeze(
-          toggleBTableRow(row, this.internalSelectedRows as BTableRow[])
-        );
-        this.$emit(row.isSelected ? "unselect-row" : "select-row", row);
+        this.internalSelectedRows = Object.freeze(toggleBTableRow(row, this.internalSelectedRows as BTableRow[]));
+        this.$emit(row.isSelected ? 'unselect-row' : 'select-row', row);
       }
     },
     selectAllRows(): void {
@@ -467,10 +417,10 @@ export default Vue.extend({
     },
     getDragListeners(row: BTableRow, index: number) {
       return {
-        dragstart: (e: DragEvent) => this.$emit("dragstart", row, e, index),
-        drop: (e: DragEvent) => this.$emit("dragstart", row, e, index),
-        dragenter: (e: DragEvent) => this.$emit("dragenter", row, e, index),
-        dragleave: (e: DragEvent) => this.$emit("leave", row, e, index)
+        dragstart: (e: DragEvent) => this.$emit('dragstart', row, e, index),
+        drop: (e: DragEvent) => this.$emit('dragstart', row, e, index),
+        dragenter: (e: DragEvent) => this.$emit('dragenter', row, e, index),
+        dragleave: (e: DragEvent) => this.$emit('leave', row, e, index)
       };
     },
     onNewSortType(sortType: SortType): void {
@@ -488,7 +438,7 @@ export default Vue.extend({
           footer,
           chain(head),
           mapNullable<VNode, string>(node => node.tag),
-          exists(tag => tag === "th" || tag === "td")
+          exists(tag => tag === 'th' || tag === 'td')
         );
       }
     },
@@ -501,8 +451,8 @@ export default Vue.extend({
           placeholder: this.mobileSortPlaceholder
         },
         on: {
-          "new-sort-type": this.onNewSortType,
-          "new-sort-column": this.onNewSortColumn
+          'new-sort-type': this.onNewSortType,
+          'new-sort-column': this.onNewSortColumn
         }
       });
     },
@@ -518,19 +468,15 @@ export default Vue.extend({
         },
         on: {
           toggle: this.toggleAllRows,
-          "new-sort-type": this.onNewSortType,
-          "new-sort-column": this.onNewSortColumn
+          'new-sort-type': this.onNewSortType,
+          'new-sort-column': this.onNewSortColumn
         }
       });
     },
     generateEmptyTable(): VNode {
-      return this.$createElement("tbody", [
-        this.$createElement("tr", { staticClass: "is-empty" }, [
-          this.$createElement(
-            "td",
-            { attrs: { colspan: this.numberOfVisibleColumns } },
-            this.$slots.empty
-          )
+      return this.$createElement('tbody', [
+        this.$createElement('tr', { staticClass: 'is-empty' }, [
+          this.$createElement('td', { attrs: { colspan: this.numberOfVisibleColumns } }, this.$slots.empty)
         ])
       ]);
     },
@@ -556,17 +502,15 @@ export default Vue.extend({
     generateNonEmptyTable(): VNode {
       if (this.$slots.row) {
         return this.$createElement(
-          "tbody",
-          this.newRows.map(row =>
-            this.$createElement("tr", { key: row.id }, this.$slots.row)
-          )
+          'tbody',
+          this.newRows.map(row => this.$createElement('tr', { key: row.id }, this.$slots.row))
         );
       } else if (this.$scopedSlots.row) {
         return this.$createElement(
-          "tbody",
+          'tbody',
           this.newRows.map((row, index) =>
             this.$createElement(
-              "tr",
+              'tr',
               { key: row.id },
               this.$scopedSlots.row!({
                 row,
@@ -577,28 +521,20 @@ export default Vue.extend({
           )
         );
       } else {
-        return this.$createElement("tbody", this.newRows.map(this.generateRow));
+        return this.$createElement('tbody', this.newRows.map(this.generateRow));
       }
     },
     generateTableBody(): VNode {
-      return this.isEmpty
-        ? this.generateEmptyTable()
-        : this.generateNonEmptyTable();
+      return this.isEmpty ? this.generateEmptyTable() : this.generateNonEmptyTable();
     },
     generateTableFooter(): VNode {
-      return this.$createElement("tfoot", [
+      return this.$createElement('tfoot', [
         this.$createElement(
-          "tr",
-          { staticClass: "table-footer" },
+          'tr',
+          { staticClass: 'table-footer' },
           this.hasCustomFooterSlot()
             ? this.$slots.footer
-            : [
-                this.$createElement(
-                  "th",
-                  { attrs: { colspan: this.numberOfVisibleColumns } },
-                  this.$slots.footer
-                )
-              ]
+            : [this.$createElement('th', { attrs: { colspan: this.numberOfVisibleColumns } }, this.$slots.footer)]
         )
       ]);
     },
@@ -622,10 +558,8 @@ export default Vue.extend({
   },
   render(): VNode {
     return this.$createElement(
-      "div",
-      this.displayMobileSorting
-        ? [this.generateMobileSort(), this.generateTable()]
-        : [this.generateTable()]
+      'div',
+      this.displayMobileSorting ? [this.generateMobileSort(), this.generateTable()] : [this.generateTable()]
     );
   }
 });

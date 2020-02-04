@@ -1,7 +1,5 @@
-import {EqMixin} from './EqMixin';
+import { EqMixin } from './EqMixin';
 
-export {
-	EqMixin
-};
+export { EqMixin };
 
 export default EqMixin;

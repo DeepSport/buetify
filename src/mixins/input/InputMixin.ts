@@ -1,18 +1,13 @@
-import { applyMixins } from "../../utils/applyMixins";
-import { SizeVariant } from "../../types/SizeVariants";
-import { isHTMLElement, isObject, isString } from "../../utils/helpers";
-import { PropType } from "vue";
-import { InputFocusMixin } from "../focus/FocusMixin";
-import { InputLabelIdMixin } from "../labelId/LabelIdMixin";
-import { ModelMixin } from "../model/ModelMixin";
-import { InputValidateMixin } from "../validate/ValidateMixin";
+import { applyMixins } from '../../utils/applyMixins';
+import { SizeVariant } from '../../types/SizeVariants';
+import { isHTMLElement, isObject, isString } from '../../utils/helpers';
+import { PropType } from 'vue';
+import { InputFocusMixin } from '../focus/FocusMixin';
+import { InputLabelIdMixin } from '../labelId/LabelIdMixin';
+import { ModelMixin } from '../model/ModelMixin';
+import { InputValidateMixin } from '../validate/ValidateMixin';
 
-export const InputMixin = applyMixins(
-  ModelMixin,
-  InputFocusMixin,
-  InputValidateMixin,
-  InputLabelIdMixin
-).extend({
+export const InputMixin = applyMixins(ModelMixin, InputFocusMixin, InputValidateMixin, InputLabelIdMixin).extend({
   props: {
     autocomplete: String,
     placeholder: String,
@@ -43,7 +38,7 @@ export const InputMixin = applyMixins(
   },
   computed: {
     statusType(): string | undefined {
-      if (this.messageVariant === "string") {
+      if (this.messageVariant === 'string') {
         return this.messageVariant;
       } else if (isObject(this.messageVariant)) {
         return Object.values(this.messageVariant)[0] as any;
@@ -59,24 +54,24 @@ export const InputMixin = applyMixins(
      */
     iconSize(): SizeVariant | string {
       switch (this.size) {
-        case "is-small":
+        case 'is-small':
           return this.size;
-        case "is-medium":
-          return "";
+        case 'is-medium':
+          return '';
         default:
-          return "";
+          return '';
       }
     }
   },
   methods: {
     onBlur($event: MouseEvent) {
       this.isFocused = false;
-      this.$emit("blur", $event);
+      this.$emit('blur', $event);
       this.validate();
     },
     onFocus($event: MouseEvent) {
       this.isFocused = true;
-      this.$emit("focus", $event);
+      this.$emit('focus', $event);
     }
   }
 });

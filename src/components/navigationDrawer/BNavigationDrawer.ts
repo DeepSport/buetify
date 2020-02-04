@@ -1,18 +1,15 @@
-import "./navigation-drawer.sass";
-import { WindowSize, WindowSizeMixin } from "../../mixins/windowSize/WindowSizeMixin";
-import { SlideRightTransition } from "../../transitions/slideRightTransition";
-import { VNode } from "vue";
-import BOverlay from "../overlay/BOverlay";
-import { NavigationInjectionMixin } from "../../mixins/navigationInjection/NavigationInjectionMixin";
-import {
-  getThemeInjectionMixin,
-  ThemeColorMap
-} from "../../mixins/themeInjection/ThemeInjectionMixin";
-import { applyMixins } from "../../utils/applyMixins";
+import './navigation-drawer.sass';
+import { WindowSize, WindowSizeMixin } from '../../mixins/windowSize/WindowSizeMixin';
+import { SlideRightTransition } from '../../transitions/slideRightTransition';
+import { VNode } from 'vue';
+import BOverlay from '../overlay/BOverlay';
+import { NavigationInjectionMixin } from '../../mixins/navigationInjection/NavigationInjectionMixin';
+import { getThemeInjectionMixin, ThemeColorMap } from '../../mixins/themeInjection/ThemeInjectionMixin';
+import { applyMixins } from '../../utils/applyMixins';
 
 const NAV_DRAWER_THEME_MAP: ThemeColorMap = {
-  dark: "is-black-bis",
-  light: "is-grey-darker"
+  dark: 'is-black-bis',
+  light: 'is-grey-darker'
 };
 
 export default applyMixins(
@@ -20,12 +17,12 @@ export default applyMixins(
   WindowSizeMixin,
   getThemeInjectionMixin(NAV_DRAWER_THEME_MAP)
 ).extend({
-  name: "BNavigationDrawer",
+  name: 'BNavigationDrawer',
   props: {
     tag: {
       type: String,
       required: false,
-      default: "nav"
+      default: 'nav'
     }
   },
   computed: {
@@ -53,7 +50,7 @@ export default applyMixins(
         this.$createElement(
           BOverlay,
           {
-            staticClass: "is-left",
+            staticClass: 'is-left',
             props: { isActive: this.navigationDrawerIsVisible },
             on: { close: this.hideNavigationDrawer }
           },
@@ -65,7 +62,7 @@ export default applyMixins(
       return this.$createElement(
         this.tag,
         {
-          staticClass: "b-navigation-drawer height-100-percent",
+          staticClass: 'b-navigation-drawer height-100-percent',
           class: this.themeClasses
         },
         this.$scopedSlots.default!({

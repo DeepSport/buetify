@@ -1,4 +1,4 @@
-import BNumberInput from "./BNumberInput";
+import BNumberInput from './BNumberInput';
 
 export { BNumberInput };
 

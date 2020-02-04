@@ -1,14 +1,14 @@
-import BOverlay from "../overlay/BOverlay";
-import BSheet from "../sheet/BSheet";
-import { applyMixins } from "../../utils/applyMixins";
-import { DisplayModalMixin } from "../../mixins/displayModal/DisplayModalMixin";
-import { VNode } from "vue";
+import BOverlay from '../overlay/BOverlay';
+import BSheet from '../sheet/BSheet';
+import { applyMixins } from '../../utils/applyMixins';
+import { DisplayModalMixin } from '../../mixins/displayModal/DisplayModalMixin';
+import { VNode } from 'vue';
 
 export default applyMixins(DisplayModalMixin).extend({
-  name: "BFullscreenModal",
+  name: 'BFullscreenModal',
   methods: {
     close() {
-      this.$emit("close");
+      this.$emit('close');
     },
     generateModal(): VNode {
       return this.$createElement(
@@ -19,13 +19,7 @@ export default applyMixins(DisplayModalMixin).extend({
             isActive: this.isActive
           }
         },
-        [
-          this.$createElement(
-            BSheet,
-            { staticClass: "height-100-percent" },
-            this.$slots.default
-          )
-        ]
+        [this.$createElement(BSheet, { staticClass: 'height-100-percent' }, this.$slots.default)]
       );
     }
   }

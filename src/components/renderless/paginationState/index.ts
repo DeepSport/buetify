@@ -1,4 +1,4 @@
-import { PaginationState } from "./PaginationState";
+import { PaginationState } from './PaginationState';
 
 export { PaginationState };
 

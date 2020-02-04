@@ -1,4 +1,4 @@
-import BRadio from "./BRadio";
+import BRadio from './BRadio';
 
 export { BRadio };
 
