@@ -1,0 +1,36 @@
+$flex-grow-levels: 0 1 2 3 4 5
+$flex-align-items-alignments: flex-start flex-end center baseline stretche
+$flex-justify-content-alignments: flex-start flex-end center space-between space-around
+
+.flex-direction-column
+  flex-direction: column
+
+.flex-direction-row
+  flex-direction: row
+
+@each $level in $flex-grow-levels
+  .flex-grow-#{$level}
+    flex-grow: $level
+  .flex-shrink-#{$level}
+    flex-shrink: $level
+
+@each $alignment in $flex-align-items-alignments
+  .align-items-#{$alignment}
+    align-items: $alignment !important
+  .align-self-#{$alignment}
+    align-self: $alignment !important
+
+@each $alignment in $flex-justify-content-alignments
+  .justify-content-#{$alignment}
+    justify-content: $alignment !important
+  .align-content-#{$alignment}
+    align-content: $alignment !important
+
+.flex-wrap-wrap
+  flex-wrap: wrap
+.flex-wrap-wrap-reverse
+  flex-wrap: wrap-reverse
+.flex-wrap-no-wrap
+  flex-wrap: nowrap
+.align-content-stretch
+  align-content: stretch

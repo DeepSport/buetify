@@ -1,0 +1,25 @@
+.b-link
+  color: $link
+  &:hover
+    color: $link-hover
+  &.is-small
+    font-size: $size-small
+  &.is-medium
+    font-size: $size-medium
+  &.is-large
+    font-size: $size-large
+  @each $name, $pair in $all-colors
+    @if length($pair) >= 4
+      $color: nth($pair, 1)
+      $color-dark: nth($pair, 4)
+      &.is-#{$name}
+        color: $color
+        &:hover
+          color: $color-dark
+    @else
+      $color: nth($pair, 1)
+      $color-dark: darken($color, 2.5%)
+      &.is-#{$name}
+        color: $color
+        &:hover
+          color: $color-dark

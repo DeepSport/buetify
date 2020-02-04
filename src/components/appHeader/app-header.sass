@@ -1,0 +1,18 @@
+@import '../../sass/helpers/flex-helpers'
+
+.b-app-header
+  position: relative
+  border-bottom: 1px $border solid
+  min-height: 4rem
+  .navigation-icon
+    position: absolute
+    left: $size-7
+    flex: none
+    cursor: pointer
+  .main-slot
+    width: 90%
++until-widescreen
+  .b-app-header
+    background-color: $primary
+    border-bottom: none
+    color: $white
