@@ -1,11 +1,11 @@
-import Vue, { VNode } from "vue";
+import Vue, { VNode } from 'vue';
 
 export const RegenerateSlotMixin = Vue.extend({
-  name: "RegenerateSlotMixin",
+  name: 'RegenerateSlotMixin',
   methods: {
     regenerateSlot(name: string): VNode {
       return this.$createElement(
-        "template",
+        'template',
         { slot: name },
         // @ts-ignore
         this.$slots[name] ||

@@ -1,4 +1,4 @@
-import BSelect from "./BSelect";
+import BSelect from './BSelect';
 
 export default BSelect;
 

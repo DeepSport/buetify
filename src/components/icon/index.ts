@@ -1,4 +1,4 @@
-import BIcon from "./BIcon";
+import BIcon from './BIcon';
 
 export { BIcon };
 

@@ -1,1 +1,1 @@
-export * from "./screenSizeDependentComponent";
+export * from './screenSizeDependentComponent';

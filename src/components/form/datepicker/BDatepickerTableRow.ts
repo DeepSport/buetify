@@ -1,21 +1,14 @@
-import "./datepicker.sass";
-import BDatepickerTableCell from "./BDatepickerTableCell";
-import { DateCell, DateEvent, DetailedDateEvent } from "./shared";
-import {
-  elemSerialDate,
-  isAfterDay,
-  isDate,
-  isOnOrAfterDate,
-  isOnOrBeforeDate,
-  isSameDay
-} from "./utils";
-import { alwaysEmptyArray, alwaysNone } from "../../../utils/helpers";
-import { isNonEmpty } from "fp-ts/lib/Array";
-import { constFalse, constTrue, identity } from "fp-ts/lib/function";
-import { fold, isSome, none, Option } from "fp-ts/lib/Option";
-import { pipe } from "fp-ts/lib/pipeable";
-import Vue, { PropType, VNode } from "vue";
-import { PropValidator } from "vue/types/options";
+import './datepicker.sass';
+import BDatepickerTableCell from './BDatepickerTableCell';
+import { DateCell, DateEvent, DetailedDateEvent } from './shared';
+import { elemSerialDate, isAfterDay, isDate, isOnOrAfterDate, isOnOrBeforeDate, isSameDay } from './utils';
+import { alwaysEmptyArray, alwaysNone } from '../../../utils/helpers';
+import { isNonEmpty } from 'fp-ts/lib/Array';
+import { constFalse, constTrue, identity } from 'fp-ts/lib/function';
+import { fold, isSome, none, Option } from 'fp-ts/lib/Option';
+import { pipe } from 'fp-ts/lib/pipeable';
+import Vue, { PropType, VNode } from 'vue';
+import { PropValidator } from 'vue/types/options';
 
 interface options extends Vue {
   $refs: {
@@ -24,7 +17,7 @@ interface options extends Vue {
 }
 
 export default Vue.extend<options>().extend({
-  name: "BDatepickerTableRow",
+  name: 'BDatepickerTableRow',
   props: {
     selectedDates: {
       type: Array as PropType<Date[]>,
@@ -79,7 +72,7 @@ export default Vue.extend<options>().extend({
       default: alwaysEmptyArray
     },
     indicators: {
-      type: String as PropType<"dots" | "bars">,
+      type: String as PropType<'dots' | 'bars'>,
       required: true
     },
     dateCreator: {
@@ -91,9 +84,7 @@ export default Vue.extend<options>().extend({
   },
   computed: {
     formattedEvents(): DetailedDateEvent[] {
-      return this.events.map(event =>
-        isDate(event) ? { date: event, variant: "is-primary" } : event
-      );
+      return this.events.map(event => (isDate(event) ? { date: event, variant: 'is-primary' } : event));
     },
     cells(): readonly DateCell[] {
       return Object.freeze(
@@ -116,7 +107,7 @@ export default Vue.extend<options>().extend({
     listeners(): { [key: string]: Function | Function[] } {
       return {
         ...this.$listeners,
-        "new-focus-date": this.onNewFocusDate,
+        'new-focus-date': this.onNewFocusDate,
         select: this.onSelect
       };
     }
@@ -144,14 +135,10 @@ export default Vue.extend<options>().extend({
       );
     },
     onNewFocusDate(date: Option<Date>): void {
-      if (
-        isSome(date) &&
-        this.isAfterMinDate(date.value) &&
-        this.isBeforeMaxDate(date.value)
-      ) {
-        this.$emit("new-focus-date", date);
+      if (isSome(date) && this.isAfterMinDate(date.value) && this.isBeforeMaxDate(date.value)) {
+        this.$emit('new-focus-date', date);
       } else {
-        this.$emit("new-focus-date", none);
+        this.$emit('new-focus-date', none);
       }
     },
     isWithinMonth(date: Date): boolean {
@@ -167,33 +154,28 @@ export default Vue.extend<options>().extend({
       );
     },
     isSelectedDate(date: Date): boolean {
-      return this.selectedDates.some(selectedDate =>
-        isSameDay(date, selectedDate)
-      );
+      return this.selectedDates.some(selectedDate => isSameDay(date, selectedDate));
     },
     isOnSelectableDayOfWeek(date: Date): boolean {
       return !this.unselectableDaysOfWeek.includes(date.getDay());
     },
     onSelect(date: Date): void {
       if (!this.isDisabled && this.isSelectableDate(date)) {
-        this.$emit("select", date);
+        this.$emit('select', date);
       }
     },
     getDateEvents(date: Date): DetailedDateEvent[] {
       return this.formattedEvents.filter(event => isSameDay(date, event.date));
     },
-    getDateClasses(
-      date: Date | undefined | null,
-      hasEvents: boolean = false
-    ): object {
+    getDateClasses(date: Date | undefined | null, hasEvents: boolean = false): object {
       if (isDate(date)) {
         const isSelectable = this.isSelectableDate(date);
         return {
-          "is-selected": this.isSelectedDate(date),
-          "is-today": isSameDay(date, this.dateCreator()),
-          "is-selectable": isSelectable && !this.isDisabled,
-          "is-unselectable": !isSelectable || this.isDisabled,
-          "has-event": hasEvents
+          'is-selected': this.isSelectedDate(date),
+          'is-today': isSameDay(date, this.dateCreator()),
+          'is-selectable': isSelectable && !this.isDisabled,
+          'is-unselectable': !isSelectable || this.isDisabled,
+          'has-event': hasEvents
         };
       } else {
         return {};
@@ -213,25 +195,25 @@ export default Vue.extend<options>().extend({
     },
     generateEvents(events: DetailedDateEvent[]): VNode {
       return this.$createElement(
-        "div",
-        { staticClass: "events" },
+        'div',
+        { staticClass: 'events' },
         events.map((event, index) =>
-          this.$createElement("div", {
+          this.$createElement('div', {
             key: index,
-            staticClass: "event",
+            staticClass: 'event',
             class: event.variant
           })
         )
       );
     },
     generateWeekNumber(): VNode {
-      return this.$createElement("td", [`${this.weekNumber}`]);
+      return this.$createElement('td', [`${this.weekNumber}`]);
     }
   },
   render(): VNode {
     return this.$createElement(
-      "tr",
-      { staticClass: "datepicker-row" },
+      'tr',
+      { staticClass: 'datepicker-row' },
       this.showWeekNumber
         ? [this.generateWeekNumber(), ...this.cells.map(this.generateCell)]
         : this.cells.map(this.generateCell)

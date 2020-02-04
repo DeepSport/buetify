@@ -1,4 +1,4 @@
-import BSwitch from "./BSwitch";
+import BSwitch from './BSwitch';
 
 export default BSwitch;
 

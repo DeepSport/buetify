@@ -1,9 +1,9 @@
-import { FunctionalComponentOptions, VNode } from "vue";
+import { FunctionalComponentOptions, VNode } from 'vue';
 
 export function createJavascriptTransition(
   name: string,
   functions: Record<string, any>,
-  mode = "in-out"
+  mode = 'in-out'
 ): FunctionalComponentOptions {
   return {
     name,
@@ -23,7 +23,7 @@ export function createJavascriptTransition(
         },
         on: functions
       };
-      return h("transition", data, context.children);
+      return h('transition', data, context.children);
     }
   };
 }
@@ -31,7 +31,7 @@ export function createJavascriptTransition(
 export function createJavaScriptTransitionGroup(
   name: string,
   functions: Record<string, any>,
-  mode = "in-out"
+  mode = 'in-out'
 ): FunctionalComponentOptions {
   return {
     name,
@@ -50,7 +50,7 @@ export function createJavaScriptTransitionGroup(
         },
         on: functions
       };
-      return h("transition-group", data, context.children);
+      return h('transition-group', data, context.children);
     }
   };
 }

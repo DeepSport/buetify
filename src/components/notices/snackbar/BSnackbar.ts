@@ -1,22 +1,19 @@
-import "../sass/notices.scss";
-import { applyMixins } from "../../../utils/applyMixins";
-import {
-  DisplayNoticeMixin,
-  OpenNoticeParams
-} from "../../../mixins/displayNotice/DisplayNoticeMixin";
-import { PropValidator } from "vue/types/options";
-import { constVoid } from "fp-ts/lib/function";
-import { IO } from "fp-ts/lib/IO";
-import Vue, { PropType, VNode } from "vue";
-import { AllColorsVariant } from "../../../types/ColorVariants";
-import { PositionVariant } from "../../../types/PositionVariant";
+import '../sass/notices.scss';
+import { applyMixins } from '../../../utils/applyMixins';
+import { DisplayNoticeMixin, OpenNoticeParams } from '../../../mixins/displayNotice/DisplayNoticeMixin';
+import { PropValidator } from 'vue/types/options';
+import { constVoid } from 'fp-ts/lib/function';
+import { IO } from 'fp-ts/lib/IO';
+import Vue, { PropType, VNode } from 'vue';
+import { AllColorsVariant } from '../../../types/ColorVariants';
+import { PositionVariant } from '../../../types/PositionVariant';
 
 export default applyMixins(DisplayNoticeMixin).extend({
-  name: "BSnackbar",
+  name: 'BSnackbar',
   props: {
     actionText: {
       type: String,
-      default: "OK"
+      default: 'OK'
     },
     onAction: {
       type: Function,
@@ -26,37 +23,34 @@ export default applyMixins(DisplayNoticeMixin).extend({
   methods: {
     generateNotice(params: OpenNoticeParams) {
       return this.$createElement(
-        "article",
+        'article',
         {
-          staticClass: "snackbar",
+          staticClass: 'snackbar',
           class: params.position || this.position,
-          attrs: { role: "alert" }
+          attrs: { role: 'alert' }
         },
         [this.generateMessage(), this.generateAction()]
       );
     },
     generateMessage(message?: string): VNode {
       return this.$createElement(
-        "p",
-        { staticClass: "text" },
+        'p',
+        { staticClass: 'text' },
         this.$slots.message ? this.$slots.message : [message || this.message]
       );
     },
-    generateAction(
-      variant?: AllColorsVariant,
-      position?: PositionVariant
-    ): VNode {
+    generateAction(variant?: AllColorsVariant, position?: PositionVariant): VNode {
       return this.$createElement(
-        "div",
+        'div',
         {
-          staticClass: "action",
+          staticClass: 'action',
           class: [variant || this.variant, position || this.position]
         },
         [
           this.$createElement(
-            "button",
+            'button',
             {
-              staticClass: "button",
+              staticClass: 'button',
               on: {
                 click: () => {
                   this.onAction();

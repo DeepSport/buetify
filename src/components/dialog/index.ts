@@ -1,6 +1,6 @@
-import BDialog from "./BDialog";
-import BDialogContent from "./BDialogContent";
-import BDialogOverlay from "./BDialogOverlay";
+import BDialog from './BDialog';
+import BDialogContent from './BDialogContent';
+import BDialogOverlay from './BDialogOverlay';
 
 export { BDialog, BDialogOverlay, BDialogContent };
 

@@ -1,17 +1,13 @@
-import { DisableMixin } from "../disable/DisableMixin";
-import { EqMixin } from "../eq/EqMixin";
-import { applyMixins } from "../../utils/applyMixins";
-import { ModelMixin } from "../model/ModelMixin";
+import { DisableMixin } from '../disable/DisableMixin';
+import { EqMixin } from '../eq/EqMixin';
+import { applyMixins } from '../../utils/applyMixins';
+import { ModelMixin } from '../model/ModelMixin';
 
-export const SelectableMixin = applyMixins(
-  ModelMixin,
-  EqMixin,
-  DisableMixin
-).extend({
-  name: "Selectable",
+export const SelectableMixin = applyMixins(ModelMixin, EqMixin, DisableMixin).extend({
+  name: 'Selectable',
   model: {
-    prop: "inputValue",
-    event: "change"
+    prop: 'inputValue',
+    event: 'change'
   },
   props: {
     trueValue: {
@@ -36,10 +32,7 @@ export const SelectableMixin = applyMixins(
   },
   computed: {
     internalIsMultiple(): boolean {
-      return (
-        this.isMultiple === true ||
-        (this.isMultiple === undefined && Array.isArray(this.newValue))
-      );
+      return this.isMultiple === true || (this.isMultiple === undefined && Array.isArray(this.newValue));
     },
     isActive(): boolean {
       const value = this.value;
@@ -79,13 +72,8 @@ export const SelectableMixin = applyMixins(
         if (input.length === length) {
           input.push(value);
         }
-      } else if (
-        this.trueValue !== undefined &&
-        this.falseValue !== undefined
-      ) {
-        input = this.valueComparator(input, this.trueValue)
-          ? this.falseValue
-          : this.trueValue;
+      } else if (this.trueValue !== undefined && this.falseValue !== undefined) {
+        input = this.valueComparator(input, this.trueValue) ? this.falseValue : this.trueValue;
       } else if (value) {
         input = this.valueComparator(input, value) ? null : value;
       } else {

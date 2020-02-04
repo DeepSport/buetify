@@ -1,8 +1,8 @@
-import "bulma/sass/elements/image.sass";
-import { mergeVNodeStaticClass } from "../../utils/mergeVNodeStaticClass";
-import Vue, { VNode } from "vue";
+import 'bulma/sass/elements/image.sass';
+import { mergeVNodeStaticClass } from '../../utils/mergeVNodeStaticClass';
+import Vue, { VNode } from 'vue';
 export default Vue.extend({
-  name: "BImage",
+  name: 'BImage',
   functional: true,
   props: {
     src: {
@@ -20,22 +20,22 @@ export default Vue.extend({
     },
     imgClass: {
       required: false,
-      default: ""
+      default: ''
     }
   },
   render(h, { data, props }): VNode {
     return h(
-      "figure",
+      'figure',
       {
         ...data,
-        staticClass: mergeVNodeStaticClass("image", data.staticClass)
+        staticClass: mergeVNodeStaticClass('image', data.staticClass)
       },
       [
-        h("img", {
+        h('img', {
           class: [
             props.imgClass,
             {
-              "is-rounded": props.isRounded
+              'is-rounded': props.isRounded
             }
           ],
           attrs: {

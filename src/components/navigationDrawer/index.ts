@@ -1,4 +1,4 @@
-import BNavigationDrawer from "./BNavigationDrawer";
+import BNavigationDrawer from './BNavigationDrawer';
 
 export { BNavigationDrawer };
 

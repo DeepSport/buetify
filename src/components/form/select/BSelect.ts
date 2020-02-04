@@ -1,13 +1,13 @@
-import "./select.sass";
-import { Extractor, ExtractPropMixin } from "../../../mixins/extractProp/ExtractPropMixin";
-import { PropValidator } from "vue/types/options";
-import { ScopedSlotChildren } from "vue/types/vnode";
-import { InputMixin } from "../../../mixins/input/InputMixin";
-import { EqMixin } from "../../../mixins/eq/EqMixin";
-import { ThemeInjectionMixin } from "../../../mixins/themeInjection/ThemeInjectionMixin";
-import { applyMixins } from "../../../utils/applyMixins";
-import { exists, isBoolean, isObject, isPrimitive } from "../../../utils/helpers";
-import { PropType, VNode } from "vue";
+import './select.sass';
+import { Extractor, ExtractPropMixin } from '../../../mixins/extractProp/ExtractPropMixin';
+import { PropValidator } from 'vue/types/options';
+import { ScopedSlotChildren } from 'vue/types/vnode';
+import { InputMixin } from '../../../mixins/input/InputMixin';
+import { EqMixin } from '../../../mixins/eq/EqMixin';
+import { ThemeInjectionMixin } from '../../../mixins/themeInjection/ThemeInjectionMixin';
+import { applyMixins } from '../../../utils/applyMixins';
+import { exists, isBoolean, isObject, isPrimitive } from '../../../utils/helpers';
+import { PropType, VNode } from 'vue';
 
 export interface SelectItem<T> {
   value: T;
@@ -16,13 +16,8 @@ export interface SelectItem<T> {
   isSelected: boolean;
 }
 
-export default applyMixins(
-  EqMixin,
-  InputMixin,
-  ThemeInjectionMixin,
-  ExtractPropMixin
-).extend({
-  name: "BSelect",
+export default applyMixins(EqMixin, InputMixin, ThemeInjectionMixin, ExtractPropMixin).extend({
+  name: 'BSelect',
   inheritAttrs: false,
   props: {
     placeholder: String,
@@ -39,15 +34,15 @@ export default applyMixins(
     } as PropValidator<Extractor<any, any>>,
     itemText: {
       type: [String, Function],
-      default: "text"
+      default: 'text'
     } as PropValidator<Extractor<any, any>>,
     itemValue: {
       type: [String, Function],
-      default: "value"
+      default: 'value'
     } as PropValidator<Extractor<any, any>>,
     itemDisabled: {
       type: [String, Function],
-      default: "isDisabled"
+      default: 'isDisabled'
     } as PropValidator<Extractor<any, any>>,
     displayCount: {
       type: [String, Number]
@@ -55,10 +50,7 @@ export default applyMixins(
   },
   computed: {
     displayPlaceholder(): boolean {
-      return (
-        this.newValue === null &&
-        (exists(this.placeholder) || exists(this.$slots.placeholder))
-      );
+      return this.newValue === null && (exists(this.placeholder) || exists(this.$slots.placeholder));
     },
     newItems(): ReadonlyArray<{
       value: any;
@@ -72,17 +64,9 @@ export default applyMixins(
           const primitive = isPrimitive(item);
           const disabledValue = this.extractProp(this.itemDisabled, item);
           return {
-            key: primitive
-              ? item
-              : this.itemKey
-              ? this.extractProp(this.itemKey, item)
-              : String(index),
+            key: primitive ? item : this.itemKey ? this.extractProp(this.itemKey, item) : String(index),
             value: primitive ? item : this.extractProp(this.itemValue, item),
-            isDisabled: primitive
-              ? false
-              : isBoolean(disabledValue)
-              ? disabledValue
-              : !disabledValue,
+            isDisabled: primitive ? false : isBoolean(disabledValue) ? disabledValue : !disabledValue,
             isSelected: this.isSelected(item),
             text: primitive ? item : this.extractProp(this.itemText, item)
           };
@@ -90,15 +74,12 @@ export default applyMixins(
       );
     },
     internalIsMultiple(): boolean {
-      return (
-        this.isMultiple === true ||
-        (this.isMultiple === undefined && Array.isArray(this.newValue))
-      );
+      return this.isMultiple === true || (this.isMultiple === undefined && Array.isArray(this.newValue));
     },
     controlClasses(): object {
       return {
-        "is-expanded": this.isExpanded,
-        "has-icons-left": !!this.icon
+        'is-expanded': this.isExpanded,
+        'has-icons-left': !!this.icon
       };
     },
     selectClasses(): any {
@@ -106,11 +87,11 @@ export default applyMixins(
         this.size,
         this.statusType,
         {
-          "is-fullwidth": this.isExpanded,
-          "is-loading": this.isLoading,
-          "is-multiple": this.internalIsMultiple,
-          "is-rounded": this.isRounded,
-          "is-empty": this.newValue === null
+          'is-fullwidth': this.isExpanded,
+          'is-loading': this.isLoading,
+          'is-multiple': this.internalIsMultiple,
+          'is-rounded': this.isRounded,
+          'is-empty': this.newValue === null
         }
       ];
     }
@@ -118,11 +99,11 @@ export default applyMixins(
   methods: {
     generateSelect(): VNode {
       return this.$createElement(
-        "select",
+        'select',
         {
           attrs: this.$attrs,
           class: this.themeClasses,
-          ref: "select",
+          ref: 'select',
           domProps: {
             value: this.internalValue,
             size: this.displayCount,
@@ -134,9 +115,7 @@ export default applyMixins(
             input: this.onInput
           }
         },
-        this.displayPlaceholder
-          ? [this.generatePlaceholder()]
-          : this.generateOptions()
+        this.displayPlaceholder ? [this.generatePlaceholder()] : this.generateOptions()
       );
     },
     generateOptions(): VNode[] | ScopedSlotChildren[] {
@@ -144,7 +123,7 @@ export default applyMixins(
         ? this.newItems.map(this.$scopedSlots.default)
         : this.newItems.map(item =>
             this.$createElement(
-              "option",
+              'option',
               {
                 key: item.key,
                 domProps: {
@@ -161,7 +140,7 @@ export default applyMixins(
       return (
         this.$slots.placeholder ||
         this.$createElement(
-          "option",
+          'option',
           {
             domProps: {
               value: this.internalValue,
@@ -181,24 +160,16 @@ export default applyMixins(
       return this.valueComparator(input, item);
     },
     onBlur(event: MouseEvent) {
-      this.$emit("blur", event);
+      this.$emit('blur', event);
       this.validate();
     },
     onFocus(event: Event) {
-      this.$emit("focus", event);
+      this.$emit('focus', event);
     }
   },
   render(): VNode {
-    return this.$createElement(
-      "div",
-      { staticClass: "control", class: this.controlClasses },
-      [
-        this.$createElement(
-          "span",
-          { staticClass: "select", class: this.selectClasses },
-          [this.generateSelect()]
-        )
-      ]
-    );
+    return this.$createElement('div', { staticClass: 'control', class: this.controlClasses }, [
+      this.$createElement('span', { staticClass: 'select', class: this.selectClasses }, [this.generateSelect()])
+    ]);
   }
 });

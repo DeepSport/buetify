@@ -1,4 +1,4 @@
-import EyeIcon from "./EyeIcon";
+import EyeIcon from './EyeIcon';
 
 export { EyeIcon };
 export default EyeIcon;

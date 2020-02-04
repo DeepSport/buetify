@@ -1,12 +1,12 @@
-import "./dialog.sass";
-import BDialogContent from "./BDialogContent";
-import BDialogOverlay from "./BDialogOverlay";
-import { DisplayModalMixin } from "../../mixins/displayModal/DisplayModalMixin";
-import { applyMixins } from "../../utils/applyMixins";
-import { VNode } from "vue";
+import './dialog.sass';
+import BDialogContent from './BDialogContent';
+import BDialogOverlay from './BDialogOverlay';
+import { DisplayModalMixin } from '../../mixins/displayModal/DisplayModalMixin';
+import { applyMixins } from '../../utils/applyMixins';
+import { VNode } from 'vue';
 
 export default applyMixins(DisplayModalMixin).extend({
-  name: "BDialog",
+  name: 'BDialog',
   components: {
     BDialogContent,
     BDialogOverlay
@@ -23,9 +23,9 @@ export default applyMixins(DisplayModalMixin).extend({
         },
         [
           this.$createElement(BDialogContent, [
-            this.regenerateSlot("header"),
-            this.regenerateSlot("default"),
-            this.regenerateSlot("footer")
+            this.regenerateSlot('header'),
+            this.regenerateSlot('default'),
+            this.regenerateSlot('footer')
           ])
         ]
       );

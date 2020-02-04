@@ -1,4 +1,4 @@
-import BPagination from "./BPagination";
+import BPagination from './BPagination';
 
 export { BPagination };
 

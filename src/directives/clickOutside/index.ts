@@ -1,4 +1,4 @@
-import { VNodeDirective } from "vue/types/vnode";
+import { VNodeDirective } from 'vue/types/vnode';
 
 export interface ClickOutsideBindingArgs {
   closeConditional?: (e: Event) => boolean;
@@ -14,11 +14,7 @@ function closeConditional() {
   return false;
 }
 
-function directive(
-  e: PointerEvent,
-  el: HTMLElement,
-  binding: ClickOutsideDirective
-): void {
+function directive(e: PointerEvent, el: HTMLElement, binding: ClickOutsideDirective): void {
   // Args may not always be supplied
   const args = (binding.args as ClickOutsideBindingArgs) || {};
   // If no closeConditional was supplied assign a default
@@ -35,11 +31,7 @@ function directive(
   // Chrome/Firefox support isTrusted property
   // IE/Edge support pointerType property (empty if not triggered
   // by pointing device)
-  if (
-    ("isTrusted" in e && !e.isTrusted) ||
-    ("pointerType" in e && !e.pointerType)
-  )
-    return;
+  if (('isTrusted' in e && !e.isTrusted) || ('pointerType' in e && !e.pointerType)) return;
 
   // Check if additional elements were passed to be included in check
   // (click must be outside all included elements, if any)
@@ -69,16 +61,16 @@ export const ClickOutside = {
     // iOS does not recognize click events on document
     // or body, this is the entire purpose of the v-app
     // component and [data-app], stop removing this
-    const app = document.querySelector(".b-app") || document.body; // This is only for unit tests
-    app.addEventListener("click", onClick, true);
+    const app = document.querySelector('.b-app') || document.body; // This is only for unit tests
+    app.addEventListener('click', onClick, true);
     el._clickOutside = onClick;
   },
 
   unbind(el: HTMLElement) {
     if (!el._clickOutside) return;
 
-    const app = document.querySelector(".b-app") || document.body; // This is only for unit tests
-    app && app.removeEventListener("click", el._clickOutside, true);
+    const app = document.querySelector('.b-app') || document.body; // This is only for unit tests
+    app && app.removeEventListener('click', el._clickOutside, true);
     delete el._clickOutside;
   }
 };

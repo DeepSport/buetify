@@ -1,4 +1,4 @@
-import BList from "./BList";
+import BList from './BList';
 
 export { BList };
 

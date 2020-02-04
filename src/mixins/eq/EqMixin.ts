@@ -1,10 +1,10 @@
-import { deepEqual } from "../../utils/helpers";
-import { Eq, fromEquals } from "fp-ts/lib/Eq";
-import Vue from "vue";
-import { PropValidator } from "vue/types/options";
+import { deepEqual } from '../../utils/helpers';
+import { Eq, fromEquals } from 'fp-ts/lib/Eq';
+import Vue from 'vue';
+import { PropValidator } from 'vue/types/options';
 
 export const EqMixin = Vue.extend({
-  name: "Comparable",
+  name: 'Comparable',
   props: {
     valueComparator: ({
       type: Function,

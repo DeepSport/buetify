@@ -2,57 +2,36 @@
  * Mobile detection
  * https://www.abeautifulsite.net/detecting-mobile-devices-with-javascript
  */
-import { snoc, unsafeDeleteAt } from "fp-ts/lib/Array";
-import { Eq } from "fp-ts/lib/Eq";
-import { constant, not } from "fp-ts/lib/function";
-import { none } from "fp-ts/lib/Option";
-import { NoticePlacement } from "../types/NoticePlacement";
-import { PositionVariant } from "../types/PositionVariant";
+import { snoc, unsafeDeleteAt } from 'fp-ts/lib/Array';
+import { Eq } from 'fp-ts/lib/Eq';
+import { constant, not } from 'fp-ts/lib/function';
+import { none } from 'fp-ts/lib/Option';
+import { NoticePlacement } from '../types/NoticePlacement';
+import { PositionVariant } from '../types/PositionVariant';
 
 export const isMobile = {
   Android: function() {
-    return (
-      typeof window !== "undefined" &&
-      window.navigator.userAgent.match(/Android/i)
-    );
+    return typeof window !== 'undefined' && window.navigator.userAgent.match(/Android/i);
   },
   BlackBerry: function() {
-    return (
-      typeof window !== "undefined" &&
-      window.navigator.userAgent.match(/BlackBerry/i)
-    );
+    return typeof window !== 'undefined' && window.navigator.userAgent.match(/BlackBerry/i);
   },
   iOS: function() {
-    return (
-      typeof window !== "undefined" &&
-      window.navigator.userAgent.match(/iPhone|iPad|iPod/i)
-    );
+    return typeof window !== 'undefined' && window.navigator.userAgent.match(/iPhone|iPad|iPod/i);
   },
   Opera: function() {
-    return (
-      typeof window !== "undefined" &&
-      window.navigator.userAgent.match(/Opera Mini/i)
-    );
+    return typeof window !== 'undefined' && window.navigator.userAgent.match(/Opera Mini/i);
   },
   Windows: function() {
-    return (
-      typeof window !== "undefined" &&
-      window.navigator.userAgent.match(/IEMobile/i)
-    );
+    return typeof window !== 'undefined' && window.navigator.userAgent.match(/IEMobile/i);
   },
   any: function() {
-    return (
-      isMobile.Android() ||
-      isMobile.BlackBerry() ||
-      isMobile.iOS() ||
-      isMobile.Opera() ||
-      isMobile.Windows()
-    );
+    return isMobile.Android() || isMobile.BlackBerry() || isMobile.iOS() || isMobile.Opera() || isMobile.Windows();
   }
 };
 
 export function removeElement(el: HTMLElement) {
-  if (typeof el.remove !== "undefined") {
+  if (typeof el.remove !== 'undefined') {
     el.remove();
   } else if (el.parentNode !== null) {
     el.parentNode.removeChild(el);
@@ -90,32 +69,24 @@ export function deepEqual(a: any, b: any): boolean {
   return props.every(p => deepEqual(a[p], b[p]));
 }
 
-export function getObjectValueByPath(
-  obj: any,
-  path: string,
-  fallback?: any
-): any {
+export function getObjectValueByPath(obj: any, path: string, fallback?: any): any {
   // credit: http://stackoverflow.com/questions/6491463/accessing-nested-javascript-objects-with-string-key#comment55278413_6491621
-  if (obj == null || !path || typeof path !== "string") return fallback;
+  if (obj == null || !path || typeof path !== 'string') return fallback;
   if (obj[path] !== undefined) return obj[path];
-  path = path.replace(/\[(\w+)\]/g, ".$1"); // convert indexes to properties
-  path = path.replace(/^\./, ""); // strip a leading dot
-  return getNestedValue(obj, path.split("."), fallback);
+  path = path.replace(/\[(\w+)\]/g, '.$1'); // convert indexes to properties
+  path = path.replace(/^\./, ''); // strip a leading dot
+  return getNestedValue(obj, path.split('.'), fallback);
 }
 
 export function isBoolean(val: any): val is boolean {
-  return typeof val === "boolean";
+  return typeof val === 'boolean';
 }
 
 export function isObject(obj: any): obj is object {
-  return obj !== null && typeof obj === "object";
+  return obj !== null && typeof obj === 'object';
 }
 
-export function getNestedValue(
-  obj: any,
-  path: (string | number)[],
-  fallback?: any
-): any {
+export function getNestedValue(obj: any, path: (string | number)[], fallback?: any): any {
   const last = path.length - 1;
 
   if (last < 0) return obj === undefined ? fallback : obj;
@@ -133,26 +104,22 @@ export function getNestedValue(
 }
 
 export function isPrimitive(val: any): val is number | string | boolean {
-  return (
-    typeof val === "number" ||
-    typeof val === "string" ||
-    typeof val === "boolean"
-  );
+  return typeof val === 'number' || typeof val === 'string' || typeof val === 'boolean';
 }
 
 export function getNoticePlacement(position: PositionVariant): NoticePlacement {
-  return position.includes("top") ? "top" : "bottom";
+  return position.includes('top') ? 'top' : 'bottom';
 }
 
 export function getNoticeTransition(position: PositionVariant): object {
-  return position.includes("top")
+  return position.includes('top')
     ? {
-        enterActiveClass: "fadeInDown",
-        leaveActiveClass: "fadeOut"
+        enterActiveClass: 'fadeInDown',
+        leaveActiveClass: 'fadeOut'
       }
     : {
-        enterActiveClass: "fadeInUp",
-        leaveActiveClass: "fadeOut"
+        enterActiveClass: 'fadeInUp',
+        leaveActiveClass: 'fadeOut'
       };
 }
 
@@ -163,22 +130,19 @@ export function isNil(arg: any): boolean {
 export const exists = not(isNil);
 
 export function isString(arg: any): arg is string {
-  return typeof arg === "string";
+  return typeof arg === 'string';
 }
 
 export function isHTMLElement(obj: any): obj is HTMLElement {
-  return typeof HTMLElement === "object"
+  return typeof HTMLElement === 'object'
     ? obj instanceof HTMLElement //DOM2
-    : obj &&
-        typeof isObject(obj) &&
-        obj.nodeType === 1 &&
-        typeof obj.nodeName === "string";
+    : obj && typeof isObject(obj) && obj.nodeType === 1 && typeof obj.nodeName === 'string';
 }
 
 const camelizeRE = /-(\w)/g;
 
 export const camelize = (str: string): string => {
-  return str.replace(camelizeRE, (_, c) => (c ? c.toUpperCase() : ""));
+  return str.replace(camelizeRE, (_, c) => (c ? c.toUpperCase() : ''));
 };
 
 export const alwaysEmptyArray = constant([]);

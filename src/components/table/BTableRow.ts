@@ -1,16 +1,12 @@
-import {ColorVariant} from '../../types/ColorVariants';
+import { ColorVariant } from '../../types/ColorVariants';
 import BCheckbox from '../form/checkbox/BCheckbox';
-import {getObjectValueByPath, isString} from '../../utils/helpers';
-import {mergeVNodeClasses} from '../../utils/mergeVNodeClasses';
-import {
-  BTableColumn,
-  BTableColumnPosition,
-  BTableRow
-} from "./shared";
-import Vue, { PropType, VNode } from "vue";
+import { getObjectValueByPath, isString } from '../../utils/helpers';
+import { mergeVNodeClasses } from '../../utils/mergeVNodeClasses';
+import { BTableColumn, BTableColumnPosition, BTableRow } from './shared';
+import Vue, { PropType, VNode } from 'vue';
 
 export default Vue.extend({
-  name: "BTableRow",
+  name: 'BTableRow',
   functional: true,
   props: {
     columns: {
@@ -23,14 +19,14 @@ export default Vue.extend({
     },
     checkboxVariant: {
       type: String as PropType<ColorVariant>,
-      default: "is-primary"
+      default: 'is-primary'
     }
   },
   render(h, { props, slots, listeners, data }): VNode {
     data.class = mergeVNodeClasses(data.class, [
       {
-        "is-selected": props.row.isSelected,
-        "is-checked": props.row.isChecked
+        'is-selected': props.row.isSelected,
+        'is-checked': props.row.isChecked
       },
       props.row.classes
     ]);
@@ -56,24 +52,24 @@ export default Vue.extend({
       }
 
       const textClass =
-        column.position === "is-left"
-          ? "has-text-left"
-          : column.position === "is-centered"
-          ? "has-text-centered"
-          : "has-text-right";
+        column.position === 'is-left'
+          ? 'has-text-left'
+          : column.position === 'is-centered'
+          ? 'has-text-centered'
+          : 'has-text-right';
 
       return h(
-        "td",
+        'td',
         {
-          class: [textClass, { "is-sticky-left": column.isSticky }],
-          attrs: { "data-label": column.label }
+          class: [textClass, { 'is-sticky-left': column.isSticky }],
+          attrs: { 'data-label': column.label }
         },
         children
       );
     });
     if (props.row.isCheckable) {
       columns.unshift(
-        h("td", { staticClass: "checkbox-cell" }, [
+        h('td', { staticClass: 'checkbox-cell' }, [
           h(BCheckbox, {
             props: {
               inputValue: props.row.isChecked,
@@ -84,6 +80,6 @@ export default Vue.extend({
         ])
       );
     }
-    return h("tr", data, columns);
+    return h('tr', data, columns);
   }
 });

@@ -1,17 +1,17 @@
-import "./tabs.sass";
-import { head, lookup } from "fp-ts/lib/Array";
-import { pipe } from "fp-ts/lib/pipeable";
-import BTabItem, { BTabItemName, BTabItemPropsData } from "./BTabItem";
-import { getProxyableMixin, ProxyableMixin } from "../../mixins/proxyable/ProxyableMixin";
-import { VNode, VNodeComponentOptions } from "vue";
-import { PropValidator } from "vue/types/options";
-import { applyMixins } from "../../utils/applyMixins";
-import { getThemeInjectionMixin } from "../../mixins/themeInjection/ThemeInjectionMixin";
-import { map, mapNullable, none, Option, some } from "fp-ts/lib/Option";
+import './tabs.sass';
+import { head, lookup } from 'fp-ts/lib/Array';
+import { pipe } from 'fp-ts/lib/pipeable';
+import BTabItem, { BTabItemName, BTabItemPropsData } from './BTabItem';
+import { getProxyableMixin, ProxyableMixin } from '../../mixins/proxyable/ProxyableMixin';
+import { VNode, VNodeComponentOptions } from 'vue';
+import { PropValidator } from 'vue/types/options';
+import { applyMixins } from '../../utils/applyMixins';
+import { getThemeInjectionMixin } from '../../mixins/themeInjection/ThemeInjectionMixin';
+import { map, mapNullable, none, Option, some } from 'fp-ts/lib/Option';
 
 const TABS_THEME_MAP = {
-  dark: "is-orange",
-  light: ""
+  dark: 'is-orange',
+  light: ''
 };
 
 const TABS_THEME_MIXIN = getThemeInjectionMixin(TABS_THEME_MAP);
@@ -21,22 +21,19 @@ interface TabInjection {
   destroyOnHide: boolean;
 }
 
-export type TabPosition = "is-centered" | "is-right";
+export type TabPosition = 'is-centered' | 'is-right';
 
-export type TabType = "is-boxed" | "is-toggle" | "is-toggle-rounded";
+export type TabType = 'is-boxed' | 'is-toggle' | 'is-toggle-rounded';
 
-export type TabSize = "is-small" | "is-medium" | "is-large";
+export type TabSize = 'is-small' | 'is-medium' | 'is-large';
 
 interface Data {
   injection: TabInjection;
-  transition: "slide-next" | "slide-prev";
+  transition: 'slide-next' | 'slide-prev';
 }
 
-export default applyMixins(
-  TABS_THEME_MIXIN,
-  getProxyableMixin("value", "input", 0)
-).extend({
-  name: "BTabs",
+export default applyMixins(TABS_THEME_MIXIN, getProxyableMixin('value', 'input', 0)).extend({
+  name: 'BTabs',
   props: {
     isExpanded: {
       type: Boolean,
@@ -66,14 +63,14 @@ export default applyMixins(
   },
   data(): Data {
     return {
-      transition: "slide-next",
+      transition: 'slide-next',
       injection: {
         activeLabel: none,
         destroyOnHide: this.destroyOnHide
       }
     };
   },
-  provide(): Record<"tab", TabInjection> {
+  provide(): Record<'tab', TabInjection> {
     return {
       tab: this.injection
     };
@@ -81,7 +78,7 @@ export default applyMixins(
   computed: {
     rootClasses(): object {
       return {
-        "is-fullwidth": this.isExpanded
+        'is-fullwidth': this.isExpanded
       };
     },
     navClasses(): any {
@@ -91,8 +88,8 @@ export default applyMixins(
         this.size,
         this.position,
         {
-          "is-fullwidth": this.isExpanded,
-          "is-toggle-rounded is-toggle": this.type === "is-toggle-rounded"
+          'is-fullwidth': this.isExpanded,
+          'is-toggle-rounded is-toggle': this.type === 'is-toggle-rounded'
         }
       ];
     }
@@ -123,9 +120,7 @@ export default applyMixins(
         node.componentOptions.propsData.isVisible === true
     );
     if (index > -1) {
-      this.injection.activeLabel = some(
-        nodes[index].componentOptions.propsData.label
-      );
+      this.injection.activeLabel = some(nodes[index].componentOptions.propsData.label);
       this.internalValue = index;
     }
   },
@@ -133,10 +128,7 @@ export default applyMixins(
     getOnTabClick(index: number, label: string) {
       return () => {
         if (this.internalValue !== index) {
-          this.transition =
-            index < (this.internalValue as number)
-              ? "slide-next"
-              : "slide-prev";
+          this.transition = index < (this.internalValue as number) ? 'slide-next' : 'slide-prev';
           this.$nextTick(() => {
             this.injection.activeLabel = some(label);
             this.internalValue = index;
@@ -146,48 +138,45 @@ export default applyMixins(
     },
     generateNavHeader(tabs: BTabItemNode[]): VNode {
       return this.$createElement(
-        "nav",
-        { staticClass: "tabs", class: this.navClasses },
-        this.label
-          ? [this.generateNavLabel(this.label), this.generateNavItems(tabs)]
-          : [this.generateNavItems(tabs)]
+        'nav',
+        { staticClass: 'tabs', class: this.navClasses },
+        this.label ? [this.generateNavLabel(this.label), this.generateNavItems(tabs)] : [this.generateNavItems(tabs)]
       );
     },
     generateNavLabel(label: string): VNode {
       return this.$createElement(
-        "label",
+        'label',
         {
-          staticClass: "label is-marginless align-self-center",
+          staticClass: 'label is-marginless align-self-center',
           class: this.size
         },
         label
       );
     },
     generateNavItems(tabs: BTabItemNode[]): VNode {
-      return this.$createElement("ul", tabs.map(this.generateNavItem));
+      return this.$createElement('ul', tabs.map(this.generateNavItem));
     },
     generateNavItem(tab: BTabItemNode, index: number): VNode {
       const propsData = tab.componentOptions.propsData;
       const label = propsData.label;
       return this.$createElement(
-        "li",
+        'li',
         {
           key: label,
           directives: [
             {
-              name: "show",
-              value:
-                propsData.isVisible === undefined ? true : propsData.isVisible
+              name: 'show',
+              value: propsData.isVisible === undefined ? true : propsData.isVisible
             }
           ],
           class: {
-            "is-active": this.internalValue === index,
-            "is-disabled": propsData.isDisabled
+            'is-active': this.internalValue === index,
+            'is-disabled': propsData.isDisabled
           }
         },
         [
           this.$createElement(
-            "a",
+            'a',
             { on: { click: this.getOnTabClick(index, label) } },
             propsData.icon
               ? [
@@ -202,17 +191,9 @@ export default applyMixins(
       );
     },
     generateTabContent(tabs: BTabItemNode[]): VNode {
-      return this.$createElement(
-        "section",
-        { staticClass: "tab-content", attrs: { "aria-label": "Tab Content" } },
-        [
-          this.$createElement(
-            "transition",
-            { props: { name: this.transition } },
-            [tabs[this.internalValue as number]]
-          )
-        ]
-      );
+      return this.$createElement('section', { staticClass: 'tab-content', attrs: { 'aria-label': 'Tab Content' } }, [
+        this.$createElement('transition', { props: { name: this.transition } }, [tabs[this.internalValue as number]])
+      ]);
     },
     parseNodes(): BTabItemNode[] {
       return (this.$slots.default || []).filter(isTab);
@@ -220,11 +201,10 @@ export default applyMixins(
   },
   render(): VNode {
     const tabs = this.parseNodes();
-    return this.$createElement(
-      "article",
-      { staticClass: "b-tabs", class: this.rootClasses },
-      [this.generateNavHeader(tabs), this.generateTabContent(tabs)]
-    );
+    return this.$createElement('article', { staticClass: 'b-tabs', class: this.rootClasses }, [
+      this.generateNavHeader(tabs),
+      this.generateTabContent(tabs)
+    ]);
   }
 });
 
@@ -236,8 +216,5 @@ type BTabItemNode = VNode & {
 };
 
 function isTab(node: VNode): node is BTabItemNode {
-  return (
-    !!node.componentOptions &&
-    node.componentOptions.Ctor.options.name === BTabItemName
-  );
+  return !!node.componentOptions && node.componentOptions.Ctor.options.name === BTabItemName;
 }

@@ -1,4 +1,4 @@
-import BBorderedBox from "./BBorderedBox";
+import BBorderedBox from './BBorderedBox';
 
 export { BBorderedBox };
 export default BBorderedBox;

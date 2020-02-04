@@ -1,4 +1,4 @@
-import { faAngleRight } from "@fortawesome/free-solid-svg-icons/faAngleRight";
-import { getIconComponent } from "../utils/getIconComponent";
+import { faAngleRight } from '@fortawesome/free-solid-svg-icons/faAngleRight';
+import { getIconComponent } from '../utils/getIconComponent';
 
-export default getIconComponent("AngleRight", faAngleRight);
+export default getIconComponent('AngleRight', faAngleRight);

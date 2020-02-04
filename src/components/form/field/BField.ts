@@ -1,33 +1,29 @@
-import "../sass/form.sass";
-import { applyMixins } from "../../../utils/applyMixins";
-import { AllColorsVariant, ColorVariant } from "../../../types/ColorVariants";
-import { not } from "fp-ts/lib/function";
-import { PropType, VNode } from "vue";
-import { ThemeInjectionMixin } from "../../../mixins/themeInjection/ThemeInjectionMixin";
-import {isEmptyString} from '../../../utils/helpers';
+import '../sass/form.sass';
+import { applyMixins } from '../../../utils/applyMixins';
+import { AllColorsVariant, ColorVariant } from '../../../types/ColorVariants';
+import { not } from 'fp-ts/lib/function';
+import { PropType, VNode } from 'vue';
+import { ThemeInjectionMixin } from '../../../mixins/themeInjection/ThemeInjectionMixin';
+import { isEmptyString } from '../../../utils/helpers';
 
-export type FieldPosition = "is-left" | "is-centered" | "is-right";
+export type FieldPosition = 'is-left' | 'is-centered' | 'is-right';
 
 export default applyMixins(ThemeInjectionMixin).extend({
-  name: "BField",
+  name: 'BField',
   inheritAttrs: false,
   components: {
-    BFieldBody: () => import("./BFieldBody")
+    BFieldBody: () => import('./BFieldBody')
   },
   props: {
     variant: {
-      type: [String, Object] as PropType<
-        AllColorsVariant | { [K in AllColorsVariant]: boolean }
-      >,
+      type: [String, Object] as PropType<AllColorsVariant | { [K in AllColorsVariant]: boolean }>,
       required: false
     },
     label: String,
     id: String,
     message: {
       type: [String, Array, Object] as PropType<
-        | string
-        | { [K: string]: boolean }
-        | Array<string | { [K: string]: boolean }>
+        string | { [K: string]: boolean } | Array<string | { [K: string]: boolean }>
       >,
       required: false
     },
@@ -41,7 +37,7 @@ export default applyMixins(ThemeInjectionMixin).extend({
     },
     position: {
       type: String as PropType<FieldPosition>,
-      default: "is-left"
+      default: 'is-left'
     },
     isExpanded: {
       type: Boolean,
@@ -61,7 +57,7 @@ export default applyMixins(ThemeInjectionMixin).extend({
     return {
       newVariant: this.variant,
       newMessage: this.message,
-      fieldLabelSize: ""
+      fieldLabelSize: ''
     };
   },
   computed: {
@@ -74,9 +70,9 @@ export default applyMixins(ThemeInjectionMixin).extend({
     rootClasses(): { [K: string]: boolean } {
       return {
         ...this.positionClasses,
-        "is-expanded": this.isExpanded,
-        "is-grouped-multiline": this.isGroupedMultiline,
-        "is-horizontal": this.isHorizontal
+        'is-expanded': this.isExpanded,
+        'is-grouped-multiline': this.isGroupedMultiline,
+        'is-horizontal': this.isHorizontal
       };
     },
     /**
@@ -88,12 +84,10 @@ export default applyMixins(ThemeInjectionMixin).extend({
      */
     positionClasses(): { [K: string]: boolean } {
       return {
-        "is-grouped-centered":
-          this.isGrouped && this.position === "is-centered",
-        "is-grouped-right": this.isGrouped && this.position === "is-right",
-        "has-addons-centered":
-          !this.isGrouped && this.position === "is-centered",
-        "has-addons-right": !this.isGrouped && this.position === "is-right"
+        'is-grouped-centered': this.isGrouped && this.position === 'is-centered',
+        'is-grouped-right': this.isGrouped && this.position === 'is-right',
+        'has-addons-centered': !this.isGrouped && this.position === 'is-centered',
+        'has-addons-right': !this.isGrouped && this.position === 'is-right'
       };
     },
     /**
@@ -101,13 +95,13 @@ export default applyMixins(ThemeInjectionMixin).extend({
      * (each element is separated by <br> tag)
      */
     formattedMessage(): string {
-      if (typeof this.newMessage === "string") {
+      if (typeof this.newMessage === 'string') {
         return this.newMessage;
       } else {
         const messages = [];
         if (Array.isArray(this.newMessage)) {
           this.newMessage.forEach(message => {
-            if (typeof message === "string") {
+            if (typeof message === 'string') {
               messages.push(message);
             } else {
               for (const key in message) {
@@ -124,7 +118,7 @@ export default applyMixins(ThemeInjectionMixin).extend({
             }
           }
         }
-        return messages.filter(not(isEmptyString)).join(" <br> ");
+        return messages.filter(not(isEmptyString)).join(' <br> ');
       }
     },
     attrs(): object {
@@ -132,32 +126,27 @@ export default applyMixins(ThemeInjectionMixin).extend({
         message: this.newMessage,
         messageVariant: this.newVariant,
         id: this.computedId,
-        ...(this.label ? { "aria-labelledby": this.fieldId } : {})
+        ...(this.label ? { 'aria-labelledby': this.fieldId } : {})
       };
     },
     listeners(): object {
       return {
-        "new-message": this.setMessage,
-        "new-variant": this.setVariant
+        'new-message': this.setMessage,
+        'new-variant': this.setVariant
       };
     },
     showHelpMessage(): boolean {
       return !!this.newMessage && !this.isHorizontal;
     },
     fieldRole(): string {
-      return this.isGrouped ? "group" : "";
+      return this.isGrouped ? 'group' : '';
     }
   },
   watch: {
     variant(value: AllColorsVariant | { [K in AllColorsVariant]: boolean }) {
       this.newVariant = value;
     },
-    message(
-      value:
-        | string
-        | { [K: string]: boolean }
-        | Array<string | { [K: string]: boolean }>
-    ) {
+    message(value: string | { [K: string]: boolean } | Array<string | { [K: string]: boolean }>) {
       this.newMessage = value;
     }
   },
@@ -169,7 +158,7 @@ export default applyMixins(ThemeInjectionMixin).extend({
      * Is a method to be called when component re-render.
      */
     fieldType(): string {
-      if (this.isGrouped) return "is-grouped";
+      if (this.isGrouped) return 'is-grouped';
 
       let renderedNode = 0;
       if (this.$scopedSlots.default) {
@@ -177,14 +166,12 @@ export default applyMixins(ThemeInjectionMixin).extend({
           attrs: this.attrs,
           listeners: this.listeners
         });
-        renderedNode = nodes
-          ? nodes.reduce((i, node) => (node.tag ? i + 1 : i), 0)
-          : 0;
+        renderedNode = nodes ? nodes.reduce((i, node) => (node.tag ? i + 1 : i), 0) : 0;
       }
       if (renderedNode > 1 && this.hasAddons && !this.isHorizontal) {
-        return "has-addons";
+        return 'has-addons';
       } else {
-        return "";
+        return '';
       }
     },
     setMessage(message: string): void {
@@ -204,9 +191,9 @@ export default applyMixins(ThemeInjectionMixin).extend({
     },
     generateHorizontalLabel(): VNode {
       return this.$createElement(
-        "div",
+        'div',
         {
-          staticClass: "field-label",
+          staticClass: 'field-label',
           class: this.fieldLabelSize
         },
         [this.generateInnerLabel()]
@@ -214,10 +201,10 @@ export default applyMixins(ThemeInjectionMixin).extend({
     },
     generateInnerLabel(): VNode {
       return this.$createElement(
-        "label",
+        'label',
         {
           class: [this.customLabelClass, ...this.themeClasses],
-          staticClass: "label",
+          staticClass: 'label',
           domProps: {
             id: this.fieldId,
             for: this.computedId
@@ -239,10 +226,10 @@ export default applyMixins(ThemeInjectionMixin).extend({
     },
     generateFieldBody(): VNode {
       return this.$createElement(
-        "b-field-body",
+        'b-field-body',
         {
           props: {
-            message: this.newMessage ? this.formattedMessage : "",
+            message: this.newMessage ? this.formattedMessage : '',
             variant: this.newVariant
           },
           attrs: {
@@ -256,54 +243,41 @@ export default applyMixins(ThemeInjectionMixin).extend({
       );
     },
     generateHelpMessage(): VNode {
-      return this.$createElement("p", {
-        staticClass: "help",
+      return this.$createElement('p', {
+        staticClass: 'help',
         class: this.newVariant,
         domProps: {
-          "aria-hidden": !this.showHelpMessage,
+          'aria-hidden': !this.showHelpMessage,
           innerHTML: this.formattedMessage
         },
-        directives: [{ name: "show", value: this.showHelpMessage }]
+        directives: [{ name: 'show', value: this.showHelpMessage }]
       });
     }
   },
   mounted() {
     if (this.isHorizontal) {
       // Bulma docs: .is-normal for any .input or .button
-      const elements = this.$el.querySelectorAll(
-        ".input, .select, .button, .textarea"
-      );
+      const elements = this.$el.querySelectorAll('.input, .select, .button, .textarea');
       if (elements.length > 0) {
-        this.fieldLabelSize = "is-normal";
+        this.fieldLabelSize = 'is-normal';
       }
     }
   },
   render(): VNode {
     return this.$createElement(
-      "div",
+      'div',
       {
-        staticClass: "field",
-        class: [
-          this.rootClasses,
-          this.fieldType(),
-          { "is-marginless": this.newMessage && !this.isHorizontal }
-        ],
+        staticClass: 'field',
+        class: [this.rootClasses, this.fieldType(), { 'is-marginless': this.newMessage && !this.isHorizontal }],
         domProps: { role: this.fieldRole }
       },
-      [
-        ...this.generateLabel(),
-        ...this.generateBody(),
-        this.generateHelpMessage()
-      ]
+      [...this.generateLabel(), ...this.generateBody(), this.generateHelpMessage()]
     );
   }
 });
 
 interface Data {
   newVariant: AllColorsVariant | { [K in AllColorsVariant]: boolean };
-  newMessage:
-    | string
-    | { [K: string]: boolean }
-    | Array<string | { [K: string]: boolean }>;
+  newMessage: string | { [K: string]: boolean } | Array<string | { [K: string]: boolean }>;
   fieldLabelSize: string;
 }

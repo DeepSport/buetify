@@ -1,4 +1,4 @@
-import { capitalizeFirstLetter } from "../../utils/helpers";
+import { capitalizeFirstLetter } from '../../utils/helpers';
 
 interface HTMLExpandElement extends HTMLElement {
   _parent?: (Node & ParentNode & HTMLElement) | null;
@@ -11,11 +11,9 @@ interface HTMLExpandElement extends HTMLElement {
   };
 }
 
-export function createExpandTransition(transitionClass = "", x = false) {
-  const sizeProperty = x ? "width" : ("height" as "width" | "height");
-  const offsetProperty = `offset${capitalizeFirstLetter(sizeProperty)}` as
-    | "offsetHeight"
-    | "offsetWidth";
+export function createExpandTransition(transitionClass = '', x = false) {
+  const sizeProperty = x ? 'width' : ('height' as 'width' | 'height');
+  const offsetProperty = `offset${capitalizeFirstLetter(sizeProperty)}` as 'offsetHeight' | 'offsetWidth';
 
   return {
     beforeEnter(el: HTMLExpandElement) {
@@ -32,11 +30,11 @@ export function createExpandTransition(transitionClass = "", x = false) {
       const initialStyle = el._initialStyle;
       const offset = `${el[offsetProperty]}px`;
 
-      el.style.setProperty("transition", "none", "important");
-      el.style.visibility = "hidden";
-      el.style.visibility = initialStyle.visibility ?? "visible";
-      el.style.overflow = "hidden";
-      el.style[sizeProperty] = "0";
+      el.style.setProperty('transition', 'none', 'important');
+      el.style.visibility = 'hidden';
+      el.style.visibility = initialStyle.visibility ?? 'visible';
+      el.style.overflow = 'hidden';
+      el.style[sizeProperty] = '0';
 
       // tslint:disable-next-line
       void el.offsetHeight; // force reflow
@@ -57,17 +55,17 @@ export function createExpandTransition(transitionClass = "", x = false) {
 
     leave(el: HTMLExpandElement) {
       el._initialStyle = {
-        transition: "",
-        visibility: "",
+        transition: '',
+        visibility: '',
         overflow: el.style.overflow,
         [sizeProperty]: el.style[sizeProperty]
       };
 
-      el.style.overflow = "hidden";
+      el.style.overflow = 'hidden';
       el.style[sizeProperty] = `${el[offsetProperty]}px`;
       void el.offsetHeight; // force reflow
 
-      requestAnimationFrame(() => (el.style[sizeProperty] = "0"));
+      requestAnimationFrame(() => (el.style[sizeProperty] = '0'));
     },
 
     afterLeave,
@@ -83,7 +81,7 @@ export function createExpandTransition(transitionClass = "", x = false) {
 
   function resetStyles(el: HTMLExpandElement) {
     const size = el._initialStyle[sizeProperty];
-    el.style.overflow = el._initialStyle.overflow ?? "auto";
+    el.style.overflow = el._initialStyle.overflow ?? 'auto';
     if (size != null) el.style[sizeProperty] = size;
     delete el._initialStyle;
   }

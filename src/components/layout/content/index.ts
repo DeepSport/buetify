@@ -1,4 +1,4 @@
-import BContent from "./BContent";
+import BContent from './BContent';
 
 export { BContent };
 

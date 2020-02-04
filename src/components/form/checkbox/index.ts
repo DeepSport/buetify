@@ -1,4 +1,4 @@
-import BCheckbox from "./BCheckbox";
+import BCheckbox from './BCheckbox';
 
 export { BCheckbox };
 

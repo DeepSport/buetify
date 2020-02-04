@@ -1,17 +1,17 @@
-import "bulma/sass/components/navbar.sass";
-import { replicate } from "fp-ts/lib/Array";
-import Vue, { VNode } from "vue";
-import { mergeVNodeClasses } from "../../utils/mergeVNodeClasses";
-import { mergeVNodeStaticClass } from "../../utils/mergeVNodeStaticClass";
+import 'bulma/sass/components/navbar.sass';
+import { replicate } from 'fp-ts/lib/Array';
+import Vue, { VNode } from 'vue';
+import { mergeVNodeClasses } from '../../utils/mergeVNodeClasses';
+import { mergeVNodeStaticClass } from '../../utils/mergeVNodeStaticClass';
 
 export default Vue.extend({
-  name: "BNavbarBurger",
+  name: 'BNavbarBurger',
   functional: true,
   props: {
     tag: {
       type: String,
       required: false,
-      default: "a"
+      default: 'a'
     },
     isActive: {
       type: Boolean,
@@ -20,13 +20,13 @@ export default Vue.extend({
     }
   },
   render(h, { data, props }): VNode {
-    data.staticClass = mergeVNodeStaticClass("navbar-burger", data.staticClass);
-    data.class = mergeVNodeClasses(data.class, { "is-active": props.isActive });
+    data.staticClass = mergeVNodeStaticClass('navbar-burger', data.staticClass);
+    data.class = mergeVNodeClasses(data.class, { 'is-active': props.isActive });
     data.attrs = {
-      role: "button",
-      "aria-expanded": props.isActive
+      role: 'button',
+      'aria-expanded': props.isActive
     };
-    const hamburgerLine = h("span", { attrs: { "aria-hidden": true } });
+    const hamburgerLine = h('span', { attrs: { 'aria-hidden': true } });
     return h(props.tag, data, replicate(3, hamburgerLine));
   }
 });

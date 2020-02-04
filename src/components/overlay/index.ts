@@ -1,4 +1,4 @@
-import BOverlay from "./BOverlay";
+import BOverlay from './BOverlay';
 
 export { BOverlay };
 

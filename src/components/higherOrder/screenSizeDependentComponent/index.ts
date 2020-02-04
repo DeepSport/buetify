@@ -1,4 +1,4 @@
-import { ScreenSizeDependentComponent } from "./ScreenSizeDependentComponent";
+import { ScreenSizeDependentComponent } from './ScreenSizeDependentComponent';
 
 export { ScreenSizeDependentComponent };
 

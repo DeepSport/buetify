@@ -1,12 +1,7 @@
-import "./checkbox.sass";
-import { getSelectionControl } from "../shared/getSelectionControl";
+import './checkbox.sass';
+import { getSelectionControl } from '../shared/getSelectionControl';
 
-export default getSelectionControl(
-  "checkbox",
-  "checkbox",
-  "BCheckbox",
-  "b-checkbox checkbox"
-).extend({
+export default getSelectionControl('checkbox', 'checkbox', 'BCheckbox', 'b-checkbox checkbox').extend({
   props: {
     indeterminate: {
       type: Boolean,
@@ -30,7 +25,7 @@ export default getSelectionControl(
       this.$nextTick(() => (this.newIndeterminate = val));
     },
     newIndeterminate(val) {
-      this.$emit("update:indeterminate", val);
+      this.$emit('update:indeterminate', val);
     },
     isActive() {
       if (!this.indeterminate) return;

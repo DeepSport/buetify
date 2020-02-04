@@ -1,11 +1,11 @@
-import Vue from "vue";
-export function getLabelIdMixin(prefix: string, labelSlot: string = "label") {
+import Vue from 'vue';
+export function getLabelIdMixin(prefix: string, labelSlot: string = 'label') {
   return Vue.extend({
     props: {
       id: String,
       label: {
         type: String,
-        default: ""
+        default: ''
       }
     },
     computed: {
@@ -22,4 +22,4 @@ export function getLabelIdMixin(prefix: string, labelSlot: string = "label") {
   });
 }
 
-export const InputLabelIdMixin = getLabelIdMixin("input");
+export const InputLabelIdMixin = getLabelIdMixin('input');

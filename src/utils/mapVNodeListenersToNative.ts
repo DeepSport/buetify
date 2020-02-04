@@ -13,14 +13,8 @@ export function mapVNodeListenersToNative(
       return existingListeners;
     } else {
       const normalizedNativeListeners: Function[] =
-        nativeListeners === undefined
-          ? []
-          : Array.isArray(nativeListeners)
-          ? nativeListeners
-          : [nativeListeners];
-      const normalizedVueListeners: Function[] = Array.isArray(vueListeners)
-        ? vueListeners
-        : [vueListeners];
+        nativeListeners === undefined ? [] : Array.isArray(nativeListeners) ? nativeListeners : [nativeListeners];
+      const normalizedVueListeners: Function[] = Array.isArray(vueListeners) ? vueListeners : [vueListeners];
       return {
         ...existingListeners,
         [nativeEvent]: function(...args: any[]) {

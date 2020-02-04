@@ -1,12 +1,12 @@
-import Vue from "vue";
-import {exists} from '../../utils/helpers';
+import Vue from 'vue';
+import { exists } from '../../utils/helpers';
 
 interface options extends Vue {
   $_modelEvent: string;
 }
 
 export const ModelMixin = Vue.extend<options>().extend({
-  name: "ModelMixin",
+  name: 'ModelMixin',
   props: {
     value: null as any
   },
@@ -43,7 +43,6 @@ export const ModelMixin = Vue.extend<options>().extend({
   beforeCreate() {
     // v-radio-group needs to emit a different event
     // https://github.com/vuetifyjs/vuetify/issues/4752
-    this.$_modelEvent =
-      (this.$options.model && this.$options.model.event) || "input";
+    this.$_modelEvent = (this.$options.model && this.$options.model.event) || 'input';
   }
 });

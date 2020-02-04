@@ -1,17 +1,14 @@
-import {
-  DEFAULT_NOTICE_INJECTION,
-  OpenNoticeParams
-} from "../../../mixins/displayNotice/DisplayNoticeMixin";
-import { constant, constVoid } from "fp-ts/lib/function";
-import { AllColorsVariant, ColorVariant } from "../../../types/ColorVariants";
-import { PositionVariant } from "../../../types/PositionVariant";
-import { mergeVNodeClasses } from "../../../utils/mergeVNodeClasses";
-import { mergeVNodeStaticClass } from "../../../utils/mergeVNodeStaticClass";
-import { getNoticePlacement, getNoticeTransition } from "../../../utils/helpers";
-import Vue, { PropType, VNode } from "vue";
+import { DEFAULT_NOTICE_INJECTION, OpenNoticeParams } from '../../../mixins/displayNotice/DisplayNoticeMixin';
+import { constant, constVoid } from 'fp-ts/lib/function';
+import { AllColorsVariant, ColorVariant } from '../../../types/ColorVariants';
+import { PositionVariant } from '../../../types/PositionVariant';
+import { mergeVNodeClasses } from '../../../utils/mergeVNodeClasses';
+import { mergeVNodeStaticClass } from '../../../utils/mergeVNodeStaticClass';
+import { getNoticePlacement, getNoticeTransition } from '../../../utils/helpers';
+import Vue, { PropType, VNode } from 'vue';
 
 export default Vue.extend({
-  name: "BToast",
+  name: 'BToast',
   functional: true,
   props: {
     duration: {
@@ -24,7 +21,7 @@ export default Vue.extend({
     position: {
       type: String as PropType<PositionVariant>,
       required: false,
-      default: "is-bottom-right"
+      default: 'is-bottom-right'
     },
     shouldQueue: {
       type: Boolean,
@@ -32,7 +29,7 @@ export default Vue.extend({
     },
     variant: {
       type: String as PropType<AllColorsVariant>,
-      default: "is-primary"
+      default: 'is-primary'
     }
   },
   inject: {
@@ -42,34 +39,24 @@ export default Vue.extend({
   },
   render(h, { props, data, scopedSlots, injections, children }): VNode {
     function open(params: OpenNoticeParams) {
-      const childrenVNodes =
-        params.message || props.message
-          ? [params.message || props.message]
-          : children;
+      const childrenVNodes = params.message || props.message ? [params.message || props.message] : children;
       const position = params.position || (props.position as PositionVariant);
       const toastNode = h(
-        "div",
+        'div',
         {
-          staticClass: mergeVNodeStaticClass("toast", data.staticClass),
-          class: mergeVNodeClasses(data.class, [
-            position,
-            params.variant || props.variant
-          ]),
+          staticClass: mergeVNodeStaticClass('toast', data.staticClass),
+          class: mergeVNodeClasses(data.class, [position, params.variant || props.variant]),
           attrs: {
-            role: "alert"
+            role: 'alert'
           }
         },
         childrenVNodes
       );
       injections.notice.showNotice({
         node: toastNode,
-        placement: position.includes("top") ? "top" : "bottom",
-        duration:
-          params.duration === undefined ? params.duration : props.duration,
-        shouldQueue:
-          params.shouldQueue == undefined
-            ? params.shouldQueue
-            : props.shouldQueue,
+        placement: position.includes('top') ? 'top' : 'bottom',
+        duration: params.duration === undefined ? params.duration : props.duration,
+        shouldQueue: params.shouldQueue == undefined ? params.shouldQueue : props.shouldQueue,
         transition: getNoticeTransition(position)
       });
     }

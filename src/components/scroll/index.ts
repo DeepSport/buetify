@@ -1,4 +1,4 @@
-import BScroll from "./BScroll";
+import BScroll from './BScroll';
 
 export { BScroll };
 

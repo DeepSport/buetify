@@ -1,4 +1,4 @@
-import BInput from "./BInput";
+import BInput from './BInput';
 
 export default BInput;
 

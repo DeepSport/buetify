@@ -1,4 +1,4 @@
-import PlusIcon from "./PlusIcon";
+import PlusIcon from './PlusIcon';
 
 export { PlusIcon };
 export default PlusIcon;

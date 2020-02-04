@@ -1,7 +1,5 @@
-import { NavigationInjectionMixin} from './NavigationInjectionMixin';
+import { NavigationInjectionMixin } from './NavigationInjectionMixin';
 
-export {
-	NavigationInjectionMixin
-};
+export { NavigationInjectionMixin };
 
-export default NavigationInjectionMixin
+export default NavigationInjectionMixin;

@@ -1,9 +1,9 @@
-import { IO } from "fp-ts/lib/IO";
-import { Option } from "fp-ts/lib/Option";
-import { VNode } from "vue";
-import { NoticePlacement } from "./NoticePlacement";
-import { Theme } from "./Theme";
-import { Transition } from "./Transition";
+import { IO } from 'fp-ts/lib/IO';
+import { Option } from 'fp-ts/lib/Option';
+import { VNode } from 'vue';
+import { NoticePlacement } from './NoticePlacement';
+import { Theme } from './Theme';
+import { Transition } from './Transition';
 
 export interface AppInjection {
   theme: ThemeInjection;

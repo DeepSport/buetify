@@ -1,17 +1,14 @@
-import {
-  getThemeClasses,
-  getThemeProps
-} from "../../utils/getThemeableFunctionalComponent";
-import { ThemeInjection } from "../../types/AppInjection";
-import { Theme } from "../../types/Theme";
-import { constant, constVoid } from "fp-ts/lib/function";
-import { isSome, none } from "fp-ts/lib/Option";
-import Vue, { PropType } from "vue";
+import { getThemeClasses, getThemeProps } from '../../utils/getThemeableFunctionalComponent';
+import { ThemeInjection } from '../../types/AppInjection';
+import { Theme } from '../../types/Theme';
+import { constant, constVoid } from 'fp-ts/lib/function';
+import { isSome, none } from 'fp-ts/lib/Option';
+import Vue, { PropType } from 'vue';
 export type ThemeColorMap = { [K in Theme]: string | string[] };
 
 export const DEFAULT_THEME_COLOR_MAP: ThemeColorMap = {
-  dark: "is-black-ter",
-  light: ""
+  dark: 'is-black-ter',
+  light: ''
 };
 
 interface options extends Vue {
@@ -24,9 +21,7 @@ const DEFAULT_THEME_INJECTION: ThemeInjection = {
   setTheme: constVoid
 };
 
-export function getThemeInjectionMixin(
-  themeMap: ThemeColorMap = DEFAULT_THEME_COLOR_MAP
-) {
+export function getThemeInjectionMixin(themeMap: ThemeColorMap = DEFAULT_THEME_COLOR_MAP) {
   return Vue.extend<options>().extend({
     props: {
       ...getThemeProps(themeMap)
@@ -47,10 +42,10 @@ export function getThemeInjectionMixin(
       },
       toggleTheme(): void {
         if (isSome(this.theme.currentTheme)) {
-          if (this.theme.currentTheme.value === "light") {
-            this.setTheme("dark");
+          if (this.theme.currentTheme.value === 'light') {
+            this.setTheme('dark');
           } else {
-            this.setTheme("light");
+            this.setTheme('light');
           }
         }
       }

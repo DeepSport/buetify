@@ -1,14 +1,14 @@
-import { constVoid } from "fp-ts/lib/function";
-import Vue, { PropType, VNode } from "vue";
+import { constVoid } from 'fp-ts/lib/function';
+import Vue, { PropType, VNode } from 'vue';
 import VerticalExpansionIcon from '../icons/verticalExpansion/VerticalExpansionIcon';
 import BTooltip from '../tooltip/BTooltip';
-import {isString} from '../../utils/helpers';
-import {mergeVNodeAttrs} from '../../utils/mergeVNodeAttrs';
-import {mergeVNodeClasses} from '../../utils/mergeVNodeClasses';
-import {BTableColumn, SortType} from './shared';
+import { isString } from '../../utils/helpers';
+import { mergeVNodeAttrs } from '../../utils/mergeVNodeAttrs';
+import { mergeVNodeClasses } from '../../utils/mergeVNodeClasses';
+import { BTableColumn, SortType } from './shared';
 
 export default Vue.extend({
-  name: "BTableColumn",
+  name: 'BTableColumn',
   functional: true,
   props: {
     column: {
@@ -22,20 +22,15 @@ export default Vue.extend({
   },
   render(h, { props, data }): VNode {
     data.class = mergeVNodeClasses(data.class, {
-      "is-sortable": props.column.isSortable,
-      "is-sticky-left": !!props.column.isSticky
+      'is-sortable': props.column.isSortable,
+      'is-sticky-left': !!props.column.isSticky
     });
-    data.style =
-      props.column.width !== undefined
-        ? { "min-width": formatWidth(props.column.width) }
-        : undefined;
+    data.style = props.column.width !== undefined ? { 'min-width': formatWidth(props.column.width) } : undefined;
     data.attrs = mergeVNodeAttrs(data.attrs, {
-      "data-label": props.column.label
+      'data-label': props.column.label
     });
 
-    const scopedSlot =
-      data.scopedSlots &&
-      (data.scopedSlots[props.column.label] || data.scopedSlots.header);
+    const scopedSlot = data.scopedSlots && (data.scopedSlots[props.column.label] || data.scopedSlots.header);
 
     const children = [];
 
@@ -44,11 +39,7 @@ export default Vue.extend({
     } else {
       children.push(
         isString(props.column.detail)
-          ? h(
-              BTooltip,
-              { props: { label: props.column.detail, position: "is-left" } },
-              props.column.label
-            )
+          ? h(BTooltip, { props: { label: props.column.detail, position: 'is-left' } }, props.column.label)
           : props.column.label
       );
     }
@@ -57,64 +48,44 @@ export default Vue.extend({
       children.push(
         h(VerticalExpansionIcon, {
           on: {
-            click: generateNewSortTypeListener(
-              data.on && data.on["new-sort-type"],
-              props.sortType
-            )
+            click: generateNewSortTypeListener(data.on && data.on['new-sort-type'], props.sortType)
           },
-          props: { isExpanded: props.sortType === "Ascending" }
+          props: { isExpanded: props.sortType === 'Ascending' }
         })
       );
     }
     return h(
-      "th",
+      'th',
       props.column.isSortable && !props.column.isSortColumn
         ? {
             ...data,
             on: {
               ...data.on,
-              click: generateNewSortColumnListener(
-                data.on && data.on["new-sort-column"],
-                props.column
-              )
+              click: generateNewSortColumnListener(data.on && data.on['new-sort-column'], props.column)
             }
           }
         : data,
-      [
-        h(
-          "div",
-          { staticClass: "th-wrap", class: props.column.position },
-          children
-        )
-      ]
+      [h('div', { staticClass: 'th-wrap', class: props.column.position }, children)]
     );
   }
 });
 
-function formatWidth(
-  width: string | number,
-  suffix: "rem" | "em" | "px" = "px"
-): string {
+function formatWidth(width: string | number, suffix: 'rem' | 'em' | 'px' = 'px'): string {
   return isString(width) ? width : `${width}${suffix}`;
 }
 
-function generateNewSortTypeListener(
-  currentListener: Function | Function[] | undefined,
-  sortType: SortType
-): Function {
+function generateNewSortTypeListener(currentListener: Function | Function[] | undefined, sortType: SortType): Function {
   if (currentListener === undefined) {
     return constVoid;
   } else if (Array.isArray(currentListener)) {
     return (e: MouseEvent) => {
       e.stopPropagation();
-      currentListener.forEach(fn =>
-        fn(sortType === "Ascending" ? "Descending" : "Ascending")
-      );
+      currentListener.forEach(fn => fn(sortType === 'Ascending' ? 'Descending' : 'Ascending'));
     };
   } else {
     return (e: MouseEvent) => {
       e.stopPropagation();
-      currentListener(sortType === "Ascending" ? "Descending" : "Ascending");
+      currentListener(sortType === 'Ascending' ? 'Descending' : 'Ascending');
     };
   }
 }

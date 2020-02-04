@@ -1,4 +1,4 @@
-import BImage from "./BImage";
+import BImage from './BImage';
 
 export { BImage };
 export default BImage;

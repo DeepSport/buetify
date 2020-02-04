@@ -1,12 +1,12 @@
-import "./tooltip.sass";
-import { ColorVariant } from "../../types/ColorVariants";
-import { SizeVariant } from "../../types/SizeVariants";
-import { mergeVNodeClasses } from "../../utils/mergeVNodeClasses";
-import Vue, { VNode } from "vue";
-import { PropValidator } from "vue/types/options";
+import './tooltip.sass';
+import { ColorVariant } from '../../types/ColorVariants';
+import { SizeVariant } from '../../types/SizeVariants';
+import { mergeVNodeClasses } from '../../utils/mergeVNodeClasses';
+import Vue, { VNode } from 'vue';
+import { PropValidator } from 'vue/types/options';
 
 export default Vue.extend({
-  name: "BTooltip",
+  name: 'BTooltip',
   functional: true,
   props: {
     isActive: {
@@ -15,14 +15,14 @@ export default Vue.extend({
     },
     variant: {
       type: String,
-      default: "is-primary"
+      default: 'is-primary'
     } as PropValidator<ColorVariant>,
     label: String,
     position: {
       type: String,
-      default: "is-top",
+      default: 'is-top',
       validator(value) {
-        return ["is-top", "is-bottom", "is-left", "is-right"].includes(value);
+        return ['is-top', 'is-bottom', 'is-left', 'is-right'].includes(value);
       }
     } as PropValidator<TooltipPosition>,
     isAlways: Boolean,
@@ -35,22 +35,22 @@ export default Vue.extend({
     isMultilined: Boolean,
     size: {
       type: String,
-      default: "is-medium"
+      default: 'is-medium'
     } as PropValidator<SizeVariant>,
     tag: {
       type: String,
       required: false,
-      default: "span"
+      default: 'span'
     }
   },
   render(h, { data, props, children }): VNode {
     data.class = mergeVNodeClasses(data.class, getTooltipClasses(props));
-    data.attrs = { ...data.attrs, "data-label": props.label };
+    data.attrs = { ...data.attrs, 'data-label': props.label };
     return h(props.tag, data, children);
   }
 });
 
-export type TooltipPosition = "is-top" | "is-bottom" | "is-left" | "is-right";
+export type TooltipPosition = 'is-top' | 'is-bottom' | 'is-left' | 'is-right';
 
 interface TooltipProps {
   isActive: boolean;
@@ -71,12 +71,12 @@ function getTooltipClasses(props: TooltipProps) {
     props.size,
     props.position,
     {
-      "b-tooltip": props.isActive,
-      "is-always": props.isAlways,
-      "is-animated": props.isAnimated,
-      "is-square": props.isSquare,
-      "is-dashed": props.isDashed,
-      "is-multilined": props.isMultilined
+      'b-tooltip': props.isActive,
+      'is-always': props.isAlways,
+      'is-animated': props.isAnimated,
+      'is-square': props.isSquare,
+      'is-dashed': props.isDashed,
+      'is-multilined': props.isMultilined
     }
   ];
 }

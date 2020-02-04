@@ -1,4 +1,4 @@
-import { DeferRendering } from "./DeferRendering";
+import { DeferRendering } from './DeferRendering';
 
 export { DeferRendering };
 

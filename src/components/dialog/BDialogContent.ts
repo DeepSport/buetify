@@ -1,18 +1,18 @@
-import "./dialog.sass";
-import { applyMixins } from "../../utils/applyMixins";
-import { SizeVariant } from "../../types/SizeVariants";
-import Vue, { PropType, VNode } from "vue";
-import { getThemeInjectionMixin } from "../../mixins/themeInjection/ThemeInjectionMixin";
+import './dialog.sass';
+import { applyMixins } from '../../utils/applyMixins';
+import { SizeVariant } from '../../types/SizeVariants';
+import Vue, { PropType, VNode } from 'vue';
+import { getThemeInjectionMixin } from '../../mixins/themeInjection/ThemeInjectionMixin';
 
 const DIALOG_THEME_MAP = {
-  dark: "is-grey-dark",
-  light: ""
+  dark: 'is-grey-dark',
+  light: ''
 };
 
 const DIALOG_THEME_MIXIN = getThemeInjectionMixin(DIALOG_THEME_MAP);
 
 export default applyMixins(DIALOG_THEME_MIXIN).extend({
-  name: "BDialogContent",
+  name: 'BDialogContent',
   props: {
     cardClass: String,
     size: {
@@ -42,41 +42,25 @@ export default applyMixins(DIALOG_THEME_MIXIN).extend({
     },
     generateDialogContent(): VNode {
       return this.$createElement(
-        "article",
+        'article',
         {
-          staticClass: "modal-card",
+          staticClass: 'modal-card',
           class: [this.cardClass, ...this.themeClasses]
         },
         this.generateDialogContentChildren()
       );
     },
     generateFooter(): VNode {
-      return this.$createElement(
-        "footer",
-        { staticClass: "modal-card-foot" },
-        this.$slots.footer
-      );
+      return this.$createElement('footer', { staticClass: 'modal-card-foot' }, this.$slots.footer);
     },
     generateHeader(): VNode {
-      return this.$createElement(
-        "header",
-        { staticClass: "modal-card-head" },
-        this.$slots.header
-      );
+      return this.$createElement('header', { staticClass: 'modal-card-head' }, this.$slots.header);
     },
     generateBody(): VNode {
-      return this.$createElement(
-        "section",
-        { staticClass: "modal-card-body" },
-        this.$slots.default
-      );
+      return this.$createElement('section', { staticClass: 'modal-card-body' }, this.$slots.default);
     }
   },
   render(): VNode {
-    return this.$createElement(
-      "div",
-      { staticClass: "dialog", class: this.size },
-      [this.generateDialogContent()]
-    );
+    return this.$createElement('div', { staticClass: 'dialog', class: this.size }, [this.generateDialogContent()]);
   }
 });

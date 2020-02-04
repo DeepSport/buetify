@@ -1,4 +1,4 @@
-import BToast from "./BToast";
+import BToast from './BToast';
 
 export { BToast };
 

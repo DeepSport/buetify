@@ -1,17 +1,18 @@
-import "./table.sass";
-import BScroll from "../scroll/BScroll";
+import './table.sass';
+import BScroll from '../scroll/BScroll';
+import { DEFAULT_THEME_COLOR_MAP, ThemeInjectionMixin } from '../../mixins/themeInjection/ThemeInjectionMixin';
+import Vue, { VNode } from 'vue';
 import {
-  DEFAULT_THEME_COLOR_MAP,
-  ThemeInjectionMixin
-} from "../../mixins/themeInjection/ThemeInjectionMixin";
-import Vue, { VNode } from "vue";
-import {getThemeClassesFromContext, getThemeProps, THEME_INJECTION} from '../../utils/getThemeableFunctionalComponent';
-import {alwaysEmptyArray} from '../../utils/helpers';
-import {mergeVNodeClasses} from '../../utils/mergeVNodeClasses';
-import {mergeVNodeStaticClass} from '../../utils/mergeVNodeStaticClass';
+  getThemeClassesFromContext,
+  getThemeProps,
+  THEME_INJECTION
+} from '../../utils/getThemeableFunctionalComponent';
+import { alwaysEmptyArray } from '../../utils/helpers';
+import { mergeVNodeClasses } from '../../utils/mergeVNodeClasses';
+import { mergeVNodeStaticClass } from '../../utils/mergeVNodeStaticClass';
 
 export default Vue.extend({
-  name: "BSimpleTable",
+  name: 'BSimpleTable',
   functional: true,
   props: {
     ...getThemeProps(DEFAULT_THEME_COLOR_MAP),
@@ -35,30 +36,23 @@ export default Vue.extend({
     ...THEME_INJECTION
   },
   render(h, { props, data, children, injections }): VNode {
-    const table = h("div", { staticClass: "table-wrapper" }, [
+    const table = h('div', { staticClass: 'table-wrapper' }, [
       h(
-        "table",
+        'table',
         {
-          staticClass: "table",
-          class: mergeVNodeClasses(
-            props.tableClasses,
-            getThemeClassesFromContext({ injections, props, data: {} })
-          )
+          staticClass: 'table',
+          class: mergeVNodeClasses(props.tableClasses, getThemeClassesFromContext({ injections, props, data: {} }))
         },
         children
       )
     ]);
     return h(
-      "div",
+      'div',
       {
-        staticClass: mergeVNodeStaticClass("b-table", data.staticClass),
-        class: mergeVNodeClasses(data.class, { "is-loading": props.isLoading })
+        staticClass: mergeVNodeStaticClass('b-table', data.staticClass),
+        class: mergeVNodeClasses(data.class, { 'is-loading': props.isLoading })
       },
-      [
-        props.isScrollable
-          ? h(BScroll, { staticClass: "width-100-percent" }, [table])
-          : table
-      ]
+      [props.isScrollable ? h(BScroll, { staticClass: 'width-100-percent' }, [table]) : table]
     );
   }
 });

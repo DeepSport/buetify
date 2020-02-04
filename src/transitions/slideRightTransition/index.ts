@@ -1,4 +1,4 @@
-import SlideRightTransition from "./SlideRightTransition";
+import SlideRightTransition from './SlideRightTransition';
 
 export { SlideRightTransition };
 

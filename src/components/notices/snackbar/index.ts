@@ -1,4 +1,4 @@
-import BSnackbar from "./BSnackbar";
+import BSnackbar from './BSnackbar';
 
 export { BSnackbar };
 

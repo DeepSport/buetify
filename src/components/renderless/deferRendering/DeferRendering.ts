@@ -1,7 +1,7 @@
-import Vue, { VNode } from "vue";
+import Vue, { VNode } from 'vue';
 
 export const DeferRendering = Vue.extend({
-  name: "DeferRendering",
+  name: 'DeferRendering',
   props: {
     frames: {
       type: Number,

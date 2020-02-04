@@ -1,4 +1,4 @@
-import InfoCircleIcon from "./InfoCircleIcon";
+import InfoCircleIcon from './InfoCircleIcon';
 
 export { InfoCircleIcon };
 

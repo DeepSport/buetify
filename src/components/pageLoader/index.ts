@@ -1,4 +1,4 @@
-import BPageLoader from "./BPageLoader";
+import BPageLoader from './BPageLoader';
 
 export { BPageLoader };
 

@@ -1,19 +1,19 @@
-import "./pagination.sass";
-import AngleLeftIcon from "../icons/angleLeft/AngleLeftIcon";
-import AngleRightIcon from "../icons/angleRight/AngleRightIcon";
-import { applyMixins } from "../../utils/applyMixins";
-import { PaginationMixin } from "../../mixins/pagination/PaginationMixin";
-import { ThemeInjectionMixin } from "../../mixins/themeInjection/ThemeInjectionMixin";
-import { range } from "fp-ts/lib/Array";
-import { VNode } from "vue";
-import { PropValidator } from "vue/types/options";
+import './pagination.sass';
+import AngleLeftIcon from '../icons/angleLeft/AngleLeftIcon';
+import AngleRightIcon from '../icons/angleRight/AngleRightIcon';
+import { applyMixins } from '../../utils/applyMixins';
+import { PaginationMixin } from '../../mixins/pagination/PaginationMixin';
+import { ThemeInjectionMixin } from '../../mixins/themeInjection/ThemeInjectionMixin';
+import { range } from 'fp-ts/lib/Array';
+import { VNode } from 'vue';
+import { PropValidator } from 'vue/types/options';
 
-export type PaginationSize = "is-small" | "is-medium" | "is-large";
+export type PaginationSize = 'is-small' | 'is-medium' | 'is-large';
 
-export type PaginationPosition = "is-centered" | "is-right";
+export type PaginationPosition = 'is-centered' | 'is-right';
 
 export default applyMixins(PaginationMixin, ThemeInjectionMixin).extend({
-  name: "BPagination",
+  name: 'BPagination',
   props: {
     size: {
       type: String,
@@ -38,16 +38,13 @@ export default applyMixins(PaginationMixin, ThemeInjectionMixin).extend({
         this.position,
         this.size,
         {
-          "is-simple": this.isSimple,
-          "is-rounded": this.isRounded
+          'is-simple': this.isSimple,
+          'is-rounded': this.isRounded
         }
       ];
     },
     firstItem(): number {
-      const firstItem =
-        (this.internalValue as number) * this.itemsPerPage -
-        this.itemsPerPage +
-        1;
+      const firstItem = (this.internalValue as number) * this.itemsPerPage - this.itemsPerPage + 1;
       return firstItem >= 0 ? firstItem : 0;
     },
     hasFirst(): boolean {
@@ -83,42 +80,36 @@ export default applyMixins(PaginationMixin, ThemeInjectionMixin).extend({
   methods: {
     generatePreviousButton(): VNode {
       return this.$createElement(
-        "button",
+        'button',
         {
-          staticClass: "pagination-previous",
+          staticClass: 'pagination-previous',
           class: this.themeClasses,
           attrs: {
             disabled: !this.hasPrevious,
-            "aria-label": this.getAriaLabel(this.previousPage)
+            'aria-label': this.getAriaLabel(this.previousPage)
           },
           on: { click: this.previous }
         },
-        this.$slots.previous
-          ? this.$slots.previous
-          : [this.$createElement(AngleLeftIcon)]
+        this.$slots.previous ? this.$slots.previous : [this.$createElement(AngleLeftIcon)]
       );
     },
     generateNextButton(): VNode {
       return this.$createElement(
-        "button",
+        'button',
         {
-          staticClass: "pagination-next",
+          staticClass: 'pagination-next',
           class: this.themeClasses,
           attrs: {
             disabled: !this.hasNext,
-            "aria-label": this.getAriaLabel(this.nextPage)
+            'aria-label': this.getAriaLabel(this.nextPage)
           },
           on: { click: this.next }
         },
-        this.$slots.next
-          ? this.$slots.next
-          : [this.$createElement(AngleRightIcon)]
+        this.$slots.next ? this.$slots.next : [this.$createElement(AngleRightIcon)]
       );
     },
     generatePaginationList(): VNode {
-      const nodes: VNode[] = this.pagesInRange.map(
-        this.generatePaginationListItem
-      );
+      const nodes: VNode[] = this.pagesInRange.map(this.generatePaginationListItem);
       if (this.hasFirstEllipsis) {
         nodes.unshift(this.generateEllipsis());
       }
@@ -131,11 +122,7 @@ export default applyMixins(PaginationMixin, ThemeInjectionMixin).extend({
       if (this.hasLast) {
         nodes.push(this.generateLastListItem());
       }
-      return this.$createElement(
-        "ul",
-        { staticClass: "pagination-list" },
-        nodes
-      );
+      return this.$createElement('ul', { staticClass: 'pagination-list' }, nodes);
     },
     generateFirstListItem(): VNode {
       return this.generatePaginationListItem({
@@ -144,28 +131,28 @@ export default applyMixins(PaginationMixin, ThemeInjectionMixin).extend({
       });
     },
     generateEllipsis(): VNode {
-      return this.$createElement("li", [
-        this.$createElement("span", {
-          staticClass: "pagination-ellipsis",
+      return this.$createElement('li', [
+        this.$createElement('span', {
+          staticClass: 'pagination-ellipsis',
           domProps: { innerHTML: `&hellip;` }
         })
       ]);
     },
     generatePaginationListItem(page: Page): VNode {
       return this.$createElement(
-        "li",
+        'li',
         {
           key: page.number
         },
         [
           this.$createElement(
-            "button",
+            'button',
             {
-              staticClass: "pagination-link",
-              class: [...this.themeClasses, { "is-current": page.isCurrent }],
+              staticClass: 'pagination-link',
+              class: [...this.themeClasses, { 'is-current': page.isCurrent }],
               attrs: {
-                "aria-label": this.getAriaLabel(page.number),
-                "aria-current": page.isCurrent
+                'aria-label': this.getAriaLabel(page.number),
+                'aria-current': page.isCurrent
               },
               on: {
                 click: (e: MouseEvent) => {
@@ -190,44 +177,32 @@ export default applyMixins(PaginationMixin, ThemeInjectionMixin).extend({
     },
     generateSimpleSummary(): VNode {
       return this.$createElement(
-        "small",
-        { staticClass: "info" },
+        'small',
+        { staticClass: 'info' },
         this.itemsPerPage === 1
           ? `${this.after + 1} / ${this.numberOfItems}`
-          : `${this.after + 1} - ${Math.min(
-              this.after + this.itemsPerPage,
+          : `${this.after + 1} - ${Math.min(this.after + this.itemsPerPage, this.numberOfItems)} / ${
               this.numberOfItems
-            )} / ${this.numberOfItems}`
+            }`
       );
     },
     generatePaginationControls(): VNode {
       return this.$createElement(
-        "section",
+        'section',
         {
-          attrs: { "aria-label": "Pagination Controls" },
-          staticClass: "pagination",
+          attrs: { 'aria-label': 'Pagination Controls' },
+          staticClass: 'pagination',
           class: this.classes
         },
         this.isSimple
-          ? [
-              this.generatePreviousButton(),
-              this.generateNextButton(),
-              this.generateSimpleSummary()
-            ]
-          : [
-              this.generatePreviousButton(),
-              this.generateNextButton(),
-              this.generatePaginationList()
-            ]
+          ? [this.generatePreviousButton(), this.generateNextButton(), this.generateSimpleSummary()]
+          : [this.generatePreviousButton(), this.generateNextButton(), this.generatePaginationList()]
       );
     }
   },
   render(): VNode {
     return this.hasDefaultScopedSlot
-      ? this.$createElement("article", [
-          this.renderDefaultScopedSlot(),
-          this.generatePaginationControls()
-        ])
+      ? this.$createElement('article', [this.renderDefaultScopedSlot(), this.generatePaginationControls()])
       : this.generatePaginationControls();
   }
 });

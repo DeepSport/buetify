@@ -1,22 +1,15 @@
-import "./b-numberinput.sass";
-import { isString } from "../../../utils/helpers";
-import { constant } from "fp-ts/lib/function";
-import {
-  fromNullable,
-  getOrElse,
-  isSome,
-  none,
-  Option,
-  some
-} from "fp-ts/lib/Option";
-import { pipe } from "fp-ts/lib/pipeable";
-import { VNode } from "vue";
-import BButton from "../../button/BButton";
-import BInput, { DEFAULT_INPUT_ICONS } from "../input/BInput";
-import { InputMixin } from "../../../mixins/input/InputMixin";
-import { InputIcons, NumberInputIcons } from "../shared/types";
-import { applyMixins } from "../../../utils/applyMixins";
-import { PropValidator } from "vue/types/options";
+import './b-numberinput.sass';
+import { isString } from '../../../utils/helpers';
+import { constant } from 'fp-ts/lib/function';
+import { fromNullable, getOrElse, isSome, none, Option, some } from 'fp-ts/lib/Option';
+import { pipe } from 'fp-ts/lib/pipeable';
+import { VNode } from 'vue';
+import BButton from '../../button/BButton';
+import BInput, { DEFAULT_INPUT_ICONS } from '../input/BInput';
+import { InputMixin } from '../../../mixins/input/InputMixin';
+import { InputIcons, NumberInputIcons } from '../shared/types';
+import { applyMixins } from '../../../utils/applyMixins';
+import { PropValidator } from 'vue/types/options';
 
 interface Data {
   newValue: number;
@@ -24,26 +17,20 @@ interface Data {
 }
 
 const DEFAULT_NUMBER_INPUT_ICONS: NumberInputIcons = {
-  minus: () => import("../../icons/minus"),
-  plus: () => import("../../icons/plus")
+  minus: () => import('../../icons/minus'),
+  plus: () => import('../../icons/plus')
 };
 
 function parseNumber(val: string | number, orElse: number): number {
-  return isString(val)
-    ? pipe(parseOptionNumber(val), getOrElse(constant(orElse)))
-    : val;
+  return isString(val) ? pipe(parseOptionNumber(val), getOrElse(constant(orElse))) : val;
 }
 
 function parseOptionNumber(val: string | number | undefined): Option<number> {
-  return val === undefined
-    ? none
-    : isString(val)
-    ? fromNullable(parseFloat(val))
-    : some(val);
+  return val === undefined ? none : isString(val) ? fromNullable(parseFloat(val)) : some(val);
 }
 
 export default applyMixins(InputMixin).extend({
-  name: "BNumberInput",
+  name: 'BNumberInput',
   components: {
     BButton,
     BInput
@@ -62,7 +49,7 @@ export default applyMixins(InputMixin).extend({
     },
     variant: {
       type: String,
-      default: "is-primary"
+      default: 'is-primary'
     },
     displayControls: {
       type: Boolean,
@@ -96,12 +83,9 @@ export default applyMixins(InputMixin).extend({
         return this.newValue;
       },
       set(value: string | number): void {
-        const newValue = pipe(
-          parseOptionNumber(value),
-          getOrElse(constant(pipe(this.newMin, getOrElse(constant(0)))))
-        );
+        const newValue = pipe(parseOptionNumber(value), getOrElse(constant(pipe(this.newMin, getOrElse(constant(0))))));
         this.newValue = newValue as number;
-        this.$emit("input", newValue);
+        this.$emit('input', newValue);
         // @ts-ignore
         this.$refs.input.validate();
       }
@@ -114,12 +98,12 @@ export default applyMixins(InputMixin).extend({
     },
     fieldClasses(): object {
       return {
-        "has-addons": this.controlsPosition === "compact",
-        "is-grouped": this.controlsPosition !== "compact"
+        'has-addons': this.controlsPosition === 'compact',
+        'is-grouped': this.controlsPosition !== 'compact'
       };
     },
     buttonClasses(): any[] {
-      return [this.variant, this.size, { "is-rounded": this.controlsRounded }];
+      return [this.variant, this.size, { 'is-rounded': this.controlsRounded }];
     },
     disabledMin(): boolean {
       if (isSome(this.newMin)) {
@@ -157,9 +141,9 @@ export default applyMixins(InputMixin).extend({
     },
     generateControl(isDecrement: boolean): VNode {
       return this.$createElement(
-        "p",
+        'p',
         {
-          staticClass: "control"
+          staticClass: 'control'
         },
         [
           this.$createElement(
@@ -174,12 +158,9 @@ export default applyMixins(InputMixin).extend({
               }
             },
             [
-              this.$createElement(
-                isDecrement
-                  ? this.numberInputIcons.minus
-                  : this.numberInputIcons.plus,
-                { props: { size: this.iconSize } }
-              )
+              this.$createElement(isDecrement ? this.numberInputIcons.minus : this.numberInputIcons.plus, {
+                props: { size: this.iconSize }
+              })
             ]
           )
         ]
@@ -187,10 +168,10 @@ export default applyMixins(InputMixin).extend({
     },
     generateInput(): VNode {
       return this.$createElement(BInput, {
-        ref: "input",
+        ref: 'input',
         props: {
           value: this.internalValue,
-          type: "number",
+          type: 'number',
           size: this.size,
           inputIcons: this.inputIcons,
           isReadonly: this.isReadonly,
@@ -215,16 +196,8 @@ export default applyMixins(InputMixin).extend({
   },
   render(): VNode {
     const nodes = this.displayControls
-      ? [
-          this.generateControl(true),
-          this.generateInput(),
-          this.generateControl(false)
-        ]
+      ? [this.generateControl(true), this.generateInput(), this.generateControl(false)]
       : [this.generateInput()];
-    return this.$createElement(
-      "div",
-      { staticClass: "b-number-input field", class: this.fieldClasses },
-      nodes
-    );
+    return this.$createElement('div', { staticClass: 'b-number-input field', class: this.fieldClasses }, nodes);
   }
 });

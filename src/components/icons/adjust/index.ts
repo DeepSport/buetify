@@ -1,4 +1,4 @@
-import AdjustIcon from "./AdjustIcon";
+import AdjustIcon from './AdjustIcon';
 
 export { AdjustIcon };
 

@@ -1,4 +1,4 @@
-import { Ord } from "fp-ts/lib/Ord";
+import { Ord } from 'fp-ts/lib/Ord';
 
 export interface BTableColumn<T = any> extends BTableColumnData<T> {
   isVisible: boolean;
@@ -7,7 +7,7 @@ export interface BTableColumn<T = any> extends BTableColumnData<T> {
   isSortable: boolean;
 }
 
-export type SortType = "Ascending" | "Descending";
+export type SortType = 'Ascending' | 'Descending';
 
 export interface BTableColumnData<T> {
   label: string;
@@ -24,7 +24,7 @@ export interface BTableColumnData<T> {
   isSticky?: boolean;
 }
 
-export type BTableColumnPosition = "is-left" | "is-centered" | "is-right";
+export type BTableColumnPosition = 'is-left' | 'is-centered' | 'is-right';
 
 export interface BTableRow extends BTableRowData {
   index: number;

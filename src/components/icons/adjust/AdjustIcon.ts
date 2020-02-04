@@ -1,4 +1,4 @@
-import { faAdjust } from "@fortawesome/free-solid-svg-icons/faAdjust";
-import { getIconComponent } from "../utils/getIconComponent";
+import { faAdjust } from '@fortawesome/free-solid-svg-icons/faAdjust';
+import { getIconComponent } from '../utils/getIconComponent';
 
-export default getIconComponent("Adjust", faAdjust);
+export default getIconComponent('Adjust', faAdjust);

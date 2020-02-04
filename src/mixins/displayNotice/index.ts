@@ -1,7 +1,5 @@
-import { DisplayNoticeMixin} from './DisplayNoticeMixin';
+import { DisplayNoticeMixin } from './DisplayNoticeMixin';
 
-export {
-	DisplayNoticeMixin
-};
+export { DisplayNoticeMixin };
 
 export default DisplayNoticeMixin;

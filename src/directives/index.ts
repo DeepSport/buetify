@@ -1,2 +1,2 @@
-export * from "./clickOutside";
-export * from "./touch";
+export * from './clickOutside';
+export * from './touch';

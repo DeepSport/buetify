@@ -1,10 +1,5 @@
-import "./datepicker.sass";
-import {
-  DateEvent,
-  DEFAULT_DAY_NAMES,
-  DEFAULT_MONTH_NAMES,
-  EventIndicator
-} from "./shared";
+import './datepicker.sass';
+import { DateEvent, DEFAULT_DAY_NAMES, DEFAULT_MONTH_NAMES, EventIndicator } from './shared';
 import {
   addMonths,
   getEndOfMonth,
@@ -14,72 +9,45 @@ import {
   isOnOrBeforeDate,
   isSameDay,
   WeekdayNumber
-} from "./utils";
-import BInput from "../input/BInput";
-import {
-  isEnterEvent,
-  isEscEvent,
-  isSpaceEvent
-} from "../../../utils/eventHelpers";
-import { head, range, snoc, unsafeDeleteAt } from "fp-ts/lib/Array";
-import { constant, constVoid } from "fp-ts/lib/function";
-import {
-  alt,
-  chain,
-  fromNullable,
-  getOrElse,
-  isSome,
-  Option,
-  some
-} from "fp-ts/lib/Option";
-import { pipe } from "fp-ts/lib/pipeable";
-import { applyMixins, ExtractVue } from "../../../utils/applyMixins";
-import BDropdown from "../../dropdown/BDropdown";
-import BDatepickerTable from "./BDatepickerTable";
-import BField from "../field/BField";
-import BSelect, { SelectItem } from "../select/BSelect";
-import { PropType, VNode } from "vue";
-import { AsyncComponent, Component, PropValidator } from "vue/types/options";
-import { InputMixin } from "../../../mixins/input/InputMixin";
-import { alwaysEmptyArray, isMobile, isString } from "../../../utils/helpers";
+} from './utils';
+import BInput from '../input/BInput';
+import { isEnterEvent, isEscEvent, isSpaceEvent } from '../../../utils/eventHelpers';
+import { head, range, snoc, unsafeDeleteAt } from 'fp-ts/lib/Array';
+import { constant, constVoid } from 'fp-ts/lib/function';
+import { alt, chain, fromNullable, getOrElse, isSome, Option, some } from 'fp-ts/lib/Option';
+import { pipe } from 'fp-ts/lib/pipeable';
+import { applyMixins, ExtractVue } from '../../../utils/applyMixins';
+import BDropdown from '../../dropdown/BDropdown';
+import BDatepickerTable from './BDatepickerTable';
+import BField from '../field/BField';
+import BSelect, { SelectItem } from '../select/BSelect';
+import { PropType, VNode } from 'vue';
+import { AsyncComponent, Component, PropValidator } from 'vue/types/options';
+import { InputMixin } from '../../../mixins/input/InputMixin';
+import { alwaysEmptyArray, isMobile, isString } from '../../../utils/helpers';
 
-const defaultDateFormatter = (
-  date: Date | Date[],
-  isMultiple: boolean
-): string => {
+const defaultDateFormatter = (date: Date | Date[], isMultiple: boolean): string => {
   const targetDates = Array.isArray(date) ? date : [date];
   const dates = targetDates.map(date => {
-    const yyyyMMdd =
-      date.getFullYear() + "/" + (date.getMonth() + 1) + "/" + date.getDate();
+    const yyyyMMdd = date.getFullYear() + '/' + (date.getMonth() + 1) + '/' + date.getDate();
     const d = new Date(yyyyMMdd);
     return d.toLocaleDateString();
   });
-  return !isMultiple ? dates.join(" - ") : dates.join(", ");
+  return !isMultiple ? dates.join(' - ') : dates.join(', ');
 };
 const defaultDateParser = (date: string) => {
   if (date) {
-    const s = date.split("/");
+    const s = date.split('/');
     const year = s[0].length === 4 ? s[0] : s[1];
     const month = s[0].length === 2 ? s[0] : s[1];
     if (year && month) {
-      return new Date(
-        parseInt(year, 10),
-        parseInt(month, 10) - 1,
-        1,
-        0,
-        0,
-        0,
-        0
-      );
+      return new Date(parseInt(year, 10), parseInt(month, 10) - 1, 1, 0, 0, 0, 0);
     }
   }
   return null;
 };
 
-export type DatepickerPosition =
-  | "is-top-right"
-  | "is-top-left"
-  | "is-bottom-left";
+export type DatepickerPosition = 'is-top-right' | 'is-top-left' | 'is-bottom-left';
 
 export interface BDatepickerIcons {
   next?: Component<any, any, any, any> | AsyncComponent<any, any, any, any>;
@@ -88,9 +56,9 @@ export interface BDatepickerIcons {
 }
 
 const DEFAULT_DATEPICKER_ICONS: BDatepickerIcons = {
-  previous: () => import("../../icons/angleLeft"),
-  next: () => import("../../icons/angleRight"),
-  calendar: () => import("../../icons/calendar")
+  previous: () => import('../../icons/angleLeft'),
+  next: () => import('../../icons/angleRight'),
+  calendar: () => import('../../icons/calendar')
 };
 
 interface Data {
@@ -111,7 +79,7 @@ interface options extends ExtractVue<typeof base> {
   };
 }
 export default base.extend<options>().extend({
-  name: "BDatepicker",
+  name: 'BDatepicker',
   inheritAttrs: false,
   props: {
     value: {
@@ -165,9 +133,7 @@ export default base.extend<options>().extend({
     dateFormatter: ({
       type: Function,
       default: defaultDateFormatter
-    } as any) as PropValidator<
-      (date: Date | Date[], isMultiple: boolean) => string
-    >,
+    } as any) as PropValidator<(date: Date | Date[], isMultiple: boolean) => string>,
     dateParser: ({
       type: Function,
       default: defaultDateParser
@@ -191,7 +157,7 @@ export default base.extend<options>().extend({
     },
     indicators: {
       type: String as PropType<EventIndicator>,
-      default: "bars"
+      default: 'bars'
     },
     yearsRange: ({
       type: Array,
@@ -255,7 +221,7 @@ export default base.extend<options>().extend({
           this.closeDatepicker();
         }
         if (value) {
-          this.$emit("input", this.selected);
+          this.$emit('input', this.selected);
         }
       }
     },
@@ -277,37 +243,19 @@ export default base.extend<options>().extend({
     },
     listOfYears(): number[] {
       const currentYear = this.dateCreator().getFullYear();
-      return range(this.yearsRange[0], this.yearsRange[1]).map(
-        inc => currentYear + inc
-      );
+      return range(this.yearsRange[0], this.yearsRange[1]).map(inc => currentYear + inc);
     },
     endOfPreviousMonth(): Date {
-      return getEndOfMonth(
-        addMonths(
-          new Date(
-            this.dateSelectionData.year,
-            this.dateSelectionData.month,
-            0
-          ),
-          -1
-        )
-      );
+      return getEndOfMonth(addMonths(new Date(this.dateSelectionData.year, this.dateSelectionData.month, 0), -1));
     },
     showPrevious(): boolean {
-      return isDate(this.minDate)
-        ? isOnOrAfterDate(this.endOfPreviousMonth, this.minDate)
-        : !this.isDisabled;
+      return isDate(this.minDate) ? isOnOrAfterDate(this.endOfPreviousMonth, this.minDate) : !this.isDisabled;
     },
     startOfNextMonth(): Date {
-      return addMonths(
-        new Date(this.dateSelectionData.year, this.dateSelectionData.month, 0),
-        1
-      );
+      return addMonths(new Date(this.dateSelectionData.year, this.dateSelectionData.month, 0), 1);
     },
     showNext(): boolean {
-      return isDate(this.maxDate)
-        ? isOnOrBeforeDate(this.startOfNextMonth, this.maxDate)
-        : !this.isDisabled;
+      return isDate(this.maxDate) ? isOnOrBeforeDate(this.startOfNextMonth, this.maxDate) : !this.isDisabled;
     },
     isMobile(): boolean {
       return this.mobileNative && !!isMobile.any();
@@ -333,11 +281,11 @@ export default base.extend<options>().extend({
         };
       }
     },
-    "dateSelectionData.month"(value) {
-      this.$emit("change-month", value);
+    'dateSelectionData.month'(value) {
+      this.$emit('change-month', value);
     },
-    "dateSelectionData.year"(value) {
-      this.$emit("change-year", value);
+    'dateSelectionData.year'(value) {
+      this.$emit('change-year', value);
     }
   },
   methods: {
@@ -367,13 +315,9 @@ export default base.extend<options>().extend({
      */
     formatValue(value: Date | Date[] | null): string | null {
       if (Array.isArray(value)) {
-        return value.every(isDate)
-          ? this.dateFormatter(value, this.isMultiple)
-          : null;
+        return value.every(isDate) ? this.dateFormatter(value, this.isMultiple) : null;
       } else {
-        return isDate(value)
-          ? this.dateFormatter(value, this.isMultiple)
-          : null;
+        return isDate(value) ? this.dateFormatter(value, this.isMultiple) : null;
       }
     },
     previousMonth(e?: Event) {
@@ -414,22 +358,16 @@ export default base.extend<options>().extend({
         const year = date.getFullYear();
         const month = date.getMonth() + 1;
         const day = date.getDate();
-        return (
-          year +
-          "-" +
-          ((month < 10 ? "0" : "") + month) +
-          "-" +
-          ((day < 10 ? "0" : "") + day)
-        );
+        return year + '-' + ((month < 10 ? '0' : '') + month) + '-' + ((day < 10 ? '0' : '') + day);
       }
-      return "";
+      return '';
     },
     /*
      * Parse date from string
      */
     onChangeNativePicker(event: any) {
       const date = event.target.value;
-      this.internalValue = date ? new Date(date + "T00:00:00") : null;
+      this.internalValue = date ? new Date(date + 'T00:00:00') : null;
     },
     updateInternalState(value: Date | Date[] | null) {
       if (value === null) {
@@ -443,14 +381,10 @@ export default base.extend<options>().extend({
         };
       } else {
         if (this.isMultiple) {
-          const existingDates = Array.isArray(this.selected)
-            ? this.selected
-            : [this.selected].filter(isDate);
+          const existingDates = Array.isArray(this.selected) ? this.selected : [this.selected].filter(isDate);
           const newDates = toggleDate(value, existingDates);
           this.selected = newDates;
-          const currentDate = newDates.length
-            ? newDates[0]
-            : this.dateCreator();
+          const currentDate = newDates.length ? newDates[0] : this.dateCreator();
           this.dateSelectionData = {
             month: currentDate.getMonth(),
             year: currentDate.getFullYear()
@@ -516,7 +450,7 @@ export default base.extend<options>().extend({
       return this.$createElement(
         BDropdown,
         {
-          ref: "dropdown",
+          ref: 'dropdown',
           props: {
             position: this.position,
             isDisabled: this.isDisabled,
@@ -528,10 +462,10 @@ export default base.extend<options>().extend({
     },
     generateInput(isNonMobile: boolean): VNode {
       return this.$createElement(BInput, {
-        ref: "input",
+        ref: 'input',
         props: {
-          autocomplete: "off",
-          type: isNonMobile ? "text" : "date",
+          autocomplete: 'off',
+          type: isNonMobile ? 'text' : 'date',
           value: this.formattedInternalValue,
           placeholder: this.placeholder,
           size: this.size,
@@ -556,11 +490,9 @@ export default base.extend<options>().extend({
         nativeOn: {
           click: isNonMobile ? this.onInputClick : constVoid,
           keyup: isNonMobile ? this.keyPress : constVoid,
-          change: isNonMobile
-            ? (e: any) => this.onChange(e.target.value)
-            : this.onChangeNativePicker
+          change: isNonMobile ? (e: any) => this.onChange(e.target.value) : this.onChangeNativePicker
         },
-        ...(isNonMobile ? { slot: "trigger" } : {})
+        ...(isNonMobile ? { slot: 'trigger' } : {})
       });
     },
     generateDatepickerBody(): VNode {
@@ -568,16 +500,12 @@ export default base.extend<options>().extend({
       if (this.$slots.footer) {
         nodes.push(this.generateFooter());
       }
-      return this.$createElement(
-        "div",
-        { staticClass: "padding-size-7" },
-        nodes
-      );
+      return this.$createElement('div', { staticClass: 'padding-size-7' }, nodes);
     },
     generateHeader(): VNode {
       return this.$createElement(
-        "header",
-        { staticClass: "datepicker-header" },
+        'header',
+        { staticClass: 'datepicker-header' },
         this.$scopedSlots.header !== undefined
           ? this.$scopedSlots.header({
               dateSelectionData: this.dateSelectionData,
@@ -593,23 +521,17 @@ export default base.extend<options>().extend({
       );
     },
     generateDefaultHeaderContents(): VNode {
-      return this.$createElement(
-        "div",
-        { staticClass: "pagination field is-centered", class: this.size },
-        [
-          this.generateButton(false),
-          this.generateSelects(),
-          this.generateButton(true)
-        ]
-      );
+      return this.$createElement('div', { staticClass: 'pagination field is-centered', class: this.size }, [
+        this.generateButton(false),
+        this.generateSelects(),
+        this.generateButton(true)
+      ]);
     },
     generateButton(isNext: boolean): VNode {
       return this.$createElement(
-        "button",
+        'button',
         {
-          staticClass: isNext
-            ? "pagination-next datepicker-next"
-            : "pagination-previous datepicker-previous",
+          staticClass: isNext ? 'pagination-next datepicker-next' : 'pagination-previous datepicker-previous',
           attrs: {
             disabled: this.isDisabled
           },
@@ -624,21 +546,15 @@ export default base.extend<options>().extend({
           }
         },
         [
-          this.$createElement(
-            isNext ? this.newIcons.next : this.newIcons.previous,
-            {
-              props: { variant: "is-link", isThemeable: false }
-            }
-          )
+          this.$createElement(isNext ? this.newIcons.next : this.newIcons.previous, {
+            props: { variant: 'is-link', isThemeable: false }
+          })
         ]
       );
     },
     generateSelects(): VNode {
-      return this.$createElement("div", { staticClass: "pagination-list" }, [
-        this.$createElement(BField, [
-          this.generateMonthSelect(),
-          this.generateYearSelect()
-        ])
+      return this.$createElement('div', { staticClass: 'pagination-list' }, [
+        this.$createElement(BField, [this.generateMonthSelect(), this.generateYearSelect()])
       ]);
     },
     generateMonthSelect(): VNode {
@@ -669,12 +585,12 @@ export default base.extend<options>().extend({
     },
     generateCalendar(): VNode {
       return this.$createElement(
-        "section",
+        'section',
         {
-          slot: "default",
-          staticClass: "datepicker-content",
+          slot: 'default',
+          staticClass: 'datepicker-content',
           attrs: {
-            "aria-label": "Datepicker calendar"
+            'aria-label': 'Datepicker calendar'
           }
         },
         [this.generateDatepickerTable()]
@@ -704,7 +620,7 @@ export default base.extend<options>().extend({
         },
         on: {
           close: this.closeDatepicker,
-          "new-focus-date": this.onNewFocusDate,
+          'new-focus-date': this.onNewFocusDate,
           input: (val: Date | Date[]) => {
             this.internalValue = val;
           }
@@ -712,27 +628,21 @@ export default base.extend<options>().extend({
       });
     },
     generateFooter(): VNode {
-      return this.$createElement(
-        "footer",
-        { staticClass: "datepicker-footer" },
-        this.$slots.footer
-      );
+      return this.$createElement('footer', { staticClass: 'datepicker-footer' }, this.$slots.footer);
     }
   },
   created() {
-    if (typeof window !== "undefined") {
-      document.addEventListener("keyup", this.keyPress);
-      this.$once("hook:beforeDestroy", () =>
-        document.removeEventListener("keyup", this.keyPress)
-      );
+    if (typeof window !== 'undefined') {
+      document.addEventListener('keyup', this.keyPress);
+      this.$once('hook:beforeDestroy', () => document.removeEventListener('keyup', this.keyPress));
     }
   },
   render(): VNode {
     return this.$createElement(
-      "article",
+      'article',
       {
-        staticClass: "b-datepicker control",
-        class: [this.size, { "is-expanded": this.isExpanded }]
+        staticClass: 'b-datepicker control',
+        class: [this.size, { 'is-expanded': this.isExpanded }]
       },
       [this.displayNative ? this.input : this.generateDropdown()]
     );

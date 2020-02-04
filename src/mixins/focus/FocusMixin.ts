@@ -1,19 +1,12 @@
-import { applyMixins } from "../../utils/applyMixins";
-import { RefMixin } from "../ref/RefMixin";
-import { constant, constFalse, constVoid } from "fp-ts/lib/function";
-import {
-  filter,
-  fold,
-  fromNullable,
-  map,
-  mapNullable,
-  Option
-} from "fp-ts/lib/Option";
-import { pipe } from "fp-ts/lib/pipeable";
+import { applyMixins } from '../../utils/applyMixins';
+import { RefMixin } from '../ref/RefMixin';
+import { constant, constFalse, constVoid } from 'fp-ts/lib/function';
+import { filter, fold, fromNullable, map, mapNullable, Option } from 'fp-ts/lib/Option';
+import { pipe } from 'fp-ts/lib/pipeable';
 
 export function getFocusMixin(ref: string) {
   return applyMixins(RefMixin).extend({
-    name: "FocusMixin",
+    name: 'FocusMixin',
     methods: {
       focus(): void {
         pipe(
@@ -27,4 +20,4 @@ export function getFocusMixin(ref: string) {
   });
 }
 
-export const InputFocusMixin = getFocusMixin("input");
+export const InputFocusMixin = getFocusMixin('input');

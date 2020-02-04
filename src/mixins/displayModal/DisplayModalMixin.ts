@@ -1,11 +1,11 @@
-import { IO } from "fp-ts/lib/IO";
-import { applyMixins, ExtractVue } from "../../utils/applyMixins";
-import { RegenerateSlotMixin } from "../regenerateSlot/RegenerateSlotMixin";
-import { ModalInjection } from "../../types/AppInjection";
-import { consoleError } from "../../utils/console";
-import { constant, constVoid } from "fp-ts/lib/function";
-import { isSome, none, Option, some } from "fp-ts/lib/Option";
-import { PropType, VNode } from "vue";
+import { IO } from 'fp-ts/lib/IO';
+import { applyMixins, ExtractVue } from '../../utils/applyMixins';
+import { RegenerateSlotMixin } from '../regenerateSlot/RegenerateSlotMixin';
+import { ModalInjection } from '../../types/AppInjection';
+import { consoleError } from '../../utils/console';
+import { constant, constVoid } from 'fp-ts/lib/function';
+import { isSome, none, Option, some } from 'fp-ts/lib/Option';
+import { PropType, VNode } from 'vue';
 
 const base = applyMixins(RegenerateSlotMixin);
 
@@ -18,12 +18,12 @@ const DEFAULT_MODAL_INJECTION: ModalInjection = {
 };
 
 export const DisplayModalMixin = base.extend<options>().extend({
-  name: "DisplayModalMixin",
+  name: 'DisplayModalMixin',
   props: {
     transition: {
       type: String,
 
-      default: "fade"
+      default: 'fade'
     },
     isActive: {
       type: Boolean,
@@ -46,9 +46,7 @@ export const DisplayModalMixin = base.extend<options>().extend({
   },
   computed: {
     node(): Option<VNode> {
-      return this.isActive && this.attachToApp
-        ? some(this.generateModal())
-        : none;
+      return this.isActive && this.attachToApp ? some(this.generateModal()) : none;
     },
     attachToApp(): boolean {
       return true;
@@ -77,9 +75,7 @@ export const DisplayModalMixin = base.extend<options>().extend({
   },
   methods: {
     generateModal(): VNode {
-      consoleError(
-        "This is an abstract method, a concrete implementation must be put in place"
-      );
+      consoleError('This is an abstract method, a concrete implementation must be put in place');
       return this.$createElement();
     }
   },

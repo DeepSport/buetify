@@ -1,27 +1,23 @@
-import { constant } from "fp-ts/lib/function";
-import { VueConstructor } from "vue";
-import Vue from "vue";
+import { constant } from 'fp-ts/lib/function';
+import { VueConstructor } from 'vue';
+import Vue from 'vue';
 
 // from vuetify
-export type Proxyable<T extends string = "value"> = VueConstructor<
+export type Proxyable<T extends string = 'value'> = VueConstructor<
   Vue & {
     internalLazyValue: unknown;
     internalValue: unknown;
   } & Record<T, any>
 >;
 
-export function getProxyableMixin<T extends string = "value">(
+export function getProxyableMixin<T extends string = 'value'>(
   prop?: T,
   event?: string,
   defaultValue?: any
 ): Proxyable<T>;
-export function getProxyableMixin(
-  prop = "value",
-  event = "input",
-  defaultValue?: any
-) {
+export function getProxyableMixin(prop = 'value', event = 'input', defaultValue?: any) {
   return Vue.extend({
-    name: "Proxyable",
+    name: 'Proxyable',
     model: {
       event,
       prop

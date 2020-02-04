@@ -1,5 +1,3 @@
 import { InputFocusMixin, getFocusMixin } from './FocusMixin';
 
-export {
-	InputFocusMixin, getFocusMixin
-};
+export { InputFocusMixin, getFocusMixin };

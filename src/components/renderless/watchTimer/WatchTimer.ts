@@ -1,7 +1,7 @@
-import Vue, { VNode } from "vue";
+import Vue, { VNode } from 'vue';
 
 export const WatchTimer = Vue.extend({
-  name: "WatchTimer",
+  name: 'WatchTimer',
   props: {
     itemToWatch: {
       required: true

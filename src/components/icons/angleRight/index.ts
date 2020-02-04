@@ -1,4 +1,4 @@
-import AngleRightIcon from "./AngleRightIcon";
+import AngleRightIcon from './AngleRightIcon';
 
 export { AngleRightIcon };
 

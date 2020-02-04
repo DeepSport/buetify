@@ -1,4 +1,4 @@
-import CheckCircleIcon from "./CheckCircleIcon";
+import CheckCircleIcon from './CheckCircleIcon';
 
 export { CheckCircleIcon };
 
