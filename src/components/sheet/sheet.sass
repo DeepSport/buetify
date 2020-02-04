@@ -1,0 +1,12 @@
+$sheet-color: $text !default
+$sheet-background-color: $white !default
+
+.b-sheet
+    background-color: $sheet-background-color
+    color: $sheet-color
+    @each $name, $pair in $all-colors
+        $color: nth($pair, 1)
+        $color-invert: findColorInvert($color)
+        &.is-#{$name}
+            background-color: $color
+            color: $color-invert

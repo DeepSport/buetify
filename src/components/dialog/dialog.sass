@@ -1,0 +1,32 @@
+@import '../modal/modal-base'
+
+.dialog 
+	.modal-card 
+		max-width: 540px
+		width: auto
+		.modal-card-head 
+			font-size: $size-5
+			font-weight: $weight-semibold
+		.modal-card-body 
+			& > .field 
+				margin-top: 1rem
+			&.is-titleless 
+				border-top-left-radius: $radius-large
+				border-top-right-radius: $radius-large
+		@include tablet 
+			min-width: 320px
+	&.is-small 
+		.modal-card,
+		.input,
+		.button 
+			@include control-small
+	&.is-medium 
+		.modal-card,
+		.input,
+		.button 
+			@include control-medium
+	&.is-large 
+		.modal-card,
+		.input,
+		.button 
+			@include control-large

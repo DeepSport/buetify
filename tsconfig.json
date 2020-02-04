@@ -12,14 +12,10 @@
     "baseUrl": ".",
     "types": [
       "webpack-env",
+      "dom",
       "mocha",
       "chai"
     ],
-    "paths": {
-      "@/*": [
-        "src/*"
-      ]
-    },
     "lib": [
       "esnext",
       "dom",

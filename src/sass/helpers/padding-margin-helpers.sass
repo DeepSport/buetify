@@ -1,0 +1,108 @@
+@import '../variables'
+
+@each $size in $sizes
+  $i: index($sizes, $size)
+  .margin-left-size-#{$i}
+    margin-left: $size !important
+  .margin-top-size-#{$i}
+    margin-top: $size !important
+  .margin-right-size-#{$i}
+    margin-right: $size !important
+  .margin-bottom-size-#{$i}
+    margin-bottom: $size !important
+  .margin-size-#{$i}
+    margin: $size !important
+  .padding-left-size-#{$i}
+    padding-left: $size !important
+  .padding-top-size-#{$i}
+    padding-top: $size !important
+  .padding-right-size-#{$i}
+    padding-right: $size !important
+  .padding-bottom-size-#{$i}
+    padding-bottom: $size !important
+  .padding-size-#{$i}
+    padding: $size !important
+
+.is-paddingless-left
+  padding-left: 0 !important
+.is-paddingless-top
+  padding-top: 0 !important
+.is-paddingless-right
+  padding-right: 0 !important
+.is-paddingless-bottom
+  padding-bottom: 0 !important
+
+.is-marginless-left
+  margin-left: 0 !important
+.is-marginless-top
+  margin-top: 0 !important
+.is-marginless-right
+  margin-right: 0 !important
+.is-marginless-bottom
+  margin-bottom: 0 !important
+
++mobile
+  .is-marginless-mobile
+    margin: 0 !important
+  .is-paddingless-mobile
+    padding: 0 !important
+  .is-paddingless-left-mobile
+    padding-left: 0 !important
+  .is-paddingless-right-mobile
+    padding-right: 0 !important
+  .is-marginless-left-mobile
+    margin-left: 0 !important
+  .is-marginless-right-mobile
+    margin-right: 0 !important
++tablet
+  .is-marginless-tablet
+    margin: 0 !important
+  .is-paddingless-tablet
+    padding: 0 !important
++tablet-only
+  .is-marginless-tablet-only
+    margin: 0 !important
+  .is-paddingless-tablet-only
+    padding: 0 !important
++touch
+  .is-marginless-touch
+    margin: 0 !important
+  .is-paddingless-touch
+    padding: 0 !important
+  .justify-content-center-touch
+    justify-content: center !important
+  .justify-content-flex-end-touch
+    justify-content: flex-end !important
++desktop
+  .is-marginless-desktop
+    margin: 0 !important
+  .is-paddingless-desktop
+    padding: 0 !important
++desktop-only
+  .is-marginless-desktop-only
+    margin: 0 !important
+  .is-paddingless-desktop-only
+    padding: 0 !important
+  .justify-content-center-desktop-only
+    justify-content: center !important
+  .justify-content-flex-end-desktop-only
+    justify-content: flex-end !important
++widescreen
+  .is-marginless-widescreen
+    margin: 0 !important
+  .is-paddingless-widescreen
+    padding: 0 !important
++widescreen-only
+  .is-marginless-widescreen-only
+    margin: 0 !important
+  .is-paddingless-widescreen-only
+    padding: 0 !important
+  .justify-content-center-widescreen-only
+    justify-content: center !important
+  .justify-content-flex-end-widescreen-only
+    justify-content: flex-end !important
++fullhd
+  .is-marginless-fullhd
+    margin: 0 !important
+  .is-marginless-fullhd
+    padding: 0 !important
