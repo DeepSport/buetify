@@ -1,8 +1,8 @@
 
-> Bue is a modular and lightweight library of responsive UI components for [Vue.js](https://vuejs.org/) incorporating the [Bulma](http://bulma.io/) framework and design.
+> `bulma-vue` is a modular and lightweight library of responsive UI components for [Vue.js](https://vuejs.org/) incorporating the [Bulma](http://bulma.io/) framework and design.
 
 ## WIP
-This is a work in progress. I started Bue in order to gain a better understanding of design principles, accessibility and Vue.
+This is a work in progress. I started `bulma-vue` in order to gain a better understanding of design principles, accessibility and Vue.
 It initially started as a fork of `Buefy` which is awesome and what should be used in a production setting. This library also includes a lot of ideas
 from Vuetify in terms of accessibility and how to incorporate typescript into a Vue project. 
 
@@ -31,14 +31,14 @@ You need [Vue.js](https://vuejs.org/) **version 2.6+**.
 ### 1 Install via npm / yarn
 
 ```bash
-npm install bue
-yarn install bue
+npm install bulma-vue
+yarn install bulma-vue
 ```
 
 ### 2 Create a variables.sass file
 ```sass
 // variables.sass
-@import '~bue/src/sass/variables'
+@import '~bulma-vue/src/sass/variables'
 @import '~bulma/sass/utilities/initial-variables'
 // provide any variable overrides here. Be careful to not include 
 // any actual styles as they will be prepended to every sass file in your bundle.
@@ -100,14 +100,14 @@ module.exports = {
 }
 ```
 
-### 4 Import and use Bue
+### 4 Import and use `bulma-vue`
 
-No need to install Bue as a plugin in your `main.js` file. Just import the components you need where they are needed.
+No need to install `bulma-vue` as a plugin in your `main.js` file. Just import the components you need where they are needed.
 
 Inside Vue component
 ```typescript
 import Vue from 'vue';
-import BApp from 'bue/lib/components/app';
+import BApp from 'bulma-vue/lib/components/app';
 
 export default Vue.extend({
     name: 'MyComponent',
