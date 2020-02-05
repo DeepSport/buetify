@@ -1,7 +1,7 @@
 import Vue from 'vue';
-import { isHTMLElement } from 'bue/components/utils/helpers';
 import { filter, fromNullable, Option } from 'fp-ts/lib/Option';
 import { pipe } from 'fp-ts/lib/pipeable';
+import { isHTMLElement } from '../../utils/helpers';
 
 export const RefMixin = Vue.extend({
   name: 'RefMixin',

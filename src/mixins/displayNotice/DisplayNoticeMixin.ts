@@ -1,11 +1,11 @@
-import { consoleError } from 'bue/components/utils/console';
-import { getNoticeTransition } from 'bue/components/utils/helpers';
-import { AllColorsVariant, ColorVariant } from 'bue/types/ColorVariants';
-import { PositionVariant } from 'bue/types/PositionVariant';
 import Vue, { VNode } from 'vue';
 import { PropValidator } from 'vue/types/options';
 import { NoticeInjection, ShowNoticeOptions } from '../../types/AppInjection';
 import { constant, constVoid } from 'fp-ts/lib/function';
+import { AllColorsVariant, ColorVariant } from '../../types/ColorVariants';
+import { PositionVariant } from '../../types/PositionVariant';
+import { consoleError } from '../../utils/console';
+import { getNoticeTransition } from '../../utils/helpers';
 
 export const DEFAULT_NOTICE_INJECTION: NoticeInjection = {
   showNotice: constant(constVoid)

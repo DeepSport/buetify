@@ -1,14 +1,14 @@
 {
   "name": "bue",
   "version": "0.1.0",
-  "main": "./dist/index.ts",
+  "description": "A Vue component framework based on Bulma",
+  "main": "./src/index.ts",
   "author": {
     "name": "Harry Kightlinger",
     "email": "kightlingerh@gmail.com"
   },
   "scripts": {
-    "clean": "rimraf dist",
-    "build": "yarn run clean && yarn run prettier-write && cp -r ./src ./dist",
+    "build": "yarn run prettier-write",
     "prettier-write": "prettier --write \"./src/**/*.ts\"",
     "prettier-check": "prettier --list-different \"./src/**/*.ts\""
   },
@@ -25,6 +25,9 @@
   "bugs": {
     "url": "https://github.com/kightlingerh/bue/issues"
   },
+  "files": [
+    "src/"
+  ],
   "keywords": [
     "bulma",
     "ui framework",
@@ -32,9 +35,7 @@
     "ui library",
     "component framework"
   ],
-  "peerDependencies": {
-    "vue": "^2.6.10"
-  },
+  "types": "src/globals.d.ts",
   "dependencies": {
     "@fortawesome/fontawesome-svg-core": "^1.2.25",
     "@fortawesome/free-solid-svg-icons": "^5.11.2",
@@ -42,7 +43,8 @@
     "bulma": "^0.8.0",
     "fp-ts": "^2.2.0",
     "fp-ts-local-storage": "^0.2.0",
-    "lodash.debounce": "^4.0.8"
+    "lodash.debounce": "^4.0.8",
+    "vue": "^2.6.11"
   },
   "devDependencies": {
     "@types/lodash.debounce": "^4.0.6",
