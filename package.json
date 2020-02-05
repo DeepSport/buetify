@@ -39,7 +39,6 @@
     "ui library",
     "component framework"
   ],
-  "types": "src/globals.d.ts",
   "peerDependencies": {
     "vue": "^2.6.11"
   },
