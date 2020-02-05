@@ -15,7 +15,7 @@ function createMessage(message: string, vm?: any, parent?: any): string | void {
     vm.$_alreadyWarned.push(message);
   }
 
-  return `[Bue] ${message}` + (vm ? generateComponentTrace(vm) : '');
+  return `[bulma-vue] ${message}` + (vm ? generateComponentTrace(vm) : '');
 }
 
 export function consoleInfo(message: string, vm?: any, parent?: any): void {
