@@ -1,6 +1,6 @@
 import { constant } from 'fp-ts/lib/function';
 import { isSome } from 'fp-ts/lib/Option';
-import Vue, { PropType, VNode } from 'vue';
+import Vue, { VNode } from 'vue';
 import { PropValidator } from 'vue/types/options';
 import { DEFAULT_THEME_COLOR_MAP } from '../mixins/themeInjection/ThemeInjectionMixin';
 import { ThemeInjection } from '../types/AppInjection';

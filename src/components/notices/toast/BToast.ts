@@ -1,10 +1,10 @@
 import { DEFAULT_NOTICE_INJECTION, OpenNoticeParams } from '../../../mixins/displayNotice/DisplayNoticeMixin';
-import { constant, constVoid } from 'fp-ts/lib/function';
-import { AllColorsVariant, ColorVariant } from '../../../types/ColorVariants';
+import { constant } from 'fp-ts/lib/function';
+import { AllColorsVariant } from '../../../types/ColorVariants';
 import { PositionVariant } from '../../../types/PositionVariant';
 import { mergeVNodeClasses } from '../../../utils/mergeVNodeClasses';
 import { mergeVNodeStaticClass } from '../../../utils/mergeVNodeStaticClass';
-import { getNoticePlacement, getNoticeTransition } from '../../../utils/helpers';
+import { getNoticeTransition } from '../../../utils/helpers';
 import Vue, { PropType, VNode } from 'vue';
 
 export default Vue.extend({

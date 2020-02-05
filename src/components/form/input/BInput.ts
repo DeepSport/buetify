@@ -8,7 +8,7 @@ import { applyMixins, ExtractVue } from '../../../utils/applyMixins';
 import { AsyncComponent, Component, PropValidator } from 'vue/types/options';
 import { ThemeInjectionMixin } from '../../../mixins/themeInjection/ThemeInjectionMixin';
 
-interface Data {
+export interface Data {
   newType: string;
   newAutocomplete: string;
   isPasswordVisible: boolean;
@@ -25,7 +25,7 @@ export const DEFAULT_INPUT_ICONS: InputIcons = {
 
 const base = applyMixins(InputMixin, ThemeInjectionMixin);
 
-interface options extends ExtractVue<typeof base> {
+export interface options extends ExtractVue<typeof base> {
   $refs: {
     input: HTMLElement;
   };

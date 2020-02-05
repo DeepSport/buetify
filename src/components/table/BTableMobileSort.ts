@@ -3,7 +3,7 @@ import BSelect from '../form/select/BSelect';
 import VerticalExpansionIcon from '../icons/verticalExpansion/VerticalExpansionIcon';
 import { BTableColumn, BTableColumnData, SortType } from './shared';
 import { findFirst } from 'fp-ts/lib/Array';
-import { isSome, map, none, Option, toNullable } from 'fp-ts/lib/Option';
+import { isSome, map, Option, toNullable } from 'fp-ts/lib/Option';
 import { pipe } from 'fp-ts/lib/pipeable';
 import Vue, { PropType, VNode } from 'vue';
 import { PropValidator } from 'vue/types/options';

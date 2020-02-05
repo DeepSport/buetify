@@ -1,7 +1,7 @@
 import './dialog.sass';
 import { applyMixins } from '../../utils/applyMixins';
 import { SizeVariant } from '../../types/SizeVariants';
-import Vue, { PropType, VNode } from 'vue';
+import { PropType, VNode } from 'vue';
 import { getThemeInjectionMixin } from '../../mixins/themeInjection/ThemeInjectionMixin';
 
 const DIALOG_THEME_MAP = {

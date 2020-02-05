@@ -1,15 +1,6 @@
 import './datepicker.sass';
 import { DateEvent, DEFAULT_DAY_NAMES, DEFAULT_MONTH_NAMES, EventIndicator } from './shared';
-import {
-  addMonths,
-  getEndOfMonth,
-  getStartOfMonth,
-  isDate,
-  isOnOrAfterDate,
-  isOnOrBeforeDate,
-  isSameDay,
-  WeekdayNumber
-} from './utils';
+import { addMonths, getEndOfMonth, isDate, isOnOrAfterDate, isOnOrBeforeDate, isSameDay, WeekdayNumber } from './utils';
 import BInput from '../input/BInput';
 import { isEnterEvent, isEscEvent, isSpaceEvent } from '../../../utils/eventHelpers';
 import { head, range, snoc, unsafeDeleteAt } from 'fp-ts/lib/Array';

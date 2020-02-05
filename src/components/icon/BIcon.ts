@@ -5,7 +5,6 @@ import { PropValidator } from 'vue/types/options';
 import { ColorVariant, ColorVariantFlags } from '../../types/ColorVariants';
 import { SizeVariant } from '../../types/SizeVariants';
 import {
-  getThemeClasses,
   getThemeClassesFromContext,
   getThemeProps,
   isThemeable,

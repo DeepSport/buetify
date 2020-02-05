@@ -1,6 +1,6 @@
 import './menu.sass';
 import { applyMixins } from '../../utils/applyMixins';
-import { getToggleMixin, ToggleMixin } from '../../mixins/toggle/ToggleMixin';
+import { getToggleMixin } from '../../mixins/toggle/ToggleMixin';
 import VerticalExpandTransition from '../../transitions/verticalExpandTransition';
 import VerticalExpansionIcon from '../icons/verticalExpansion/VerticalExpansionIcon';
 import BMenuList from './BMenuList';

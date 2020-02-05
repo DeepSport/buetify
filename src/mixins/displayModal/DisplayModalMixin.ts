@@ -9,7 +9,7 @@ import { PropType, VNode } from 'vue';
 
 const base = applyMixins(RegenerateSlotMixin);
 
-interface options extends ExtractVue<typeof base> {
+export interface options extends ExtractVue<typeof base> {
   modal: ModalInjection;
 }
 

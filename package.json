@@ -8,9 +8,10 @@
     "email": "kightlingerh@gmail.com"
   },
   "scripts": {
-    "build": "yarn run prettier-write",
+    "build": "yarn run prettier-write && node build/build-lib.js",
     "prettier-write": "prettier --write \"./src/**/*.ts\"",
-    "prettier-check": "prettier --list-different \"./src/**/*.ts\""
+    "prettier-check": "prettier --list-different \"./src/**/*.ts\"",
+    "tsc": "tsc"
   },
   "license": "MIT",
   "sideEffects": [
@@ -26,7 +27,10 @@
     "url": "https://github.com/kightlingerh/bue/issues"
   },
   "files": [
-    "src/"
+    "src/",
+    "es5/",
+    "lib/",
+    "types/"
   ],
   "keywords": [
     "bulma",
@@ -36,6 +40,9 @@
     "component framework"
   ],
   "types": "src/globals.d.ts",
+  "peerDependencies": {
+    "vue": "^2.6.11"
+  },
   "dependencies": {
     "@fortawesome/fontawesome-svg-core": "^1.2.25",
     "@fortawesome/free-solid-svg-icons": "^5.11.2",
@@ -43,15 +50,23 @@
     "bulma": "^0.8.0",
     "fp-ts": "^2.2.0",
     "fp-ts-local-storage": "^0.2.0",
-    "lodash.debounce": "^4.0.8",
-    "vue": "^2.6.11"
+    "lodash.debounce": "^4.0.8"
   },
   "devDependencies": {
+    "@babel/cli": "^7.8.4",
+    "@babel/core": "^7.8.4",
+    "@babel/plugin-proposal-object-rest-spread": "^7.8.3",
+    "@babel/preset-env": "^7.8.4",
     "@types/lodash.debounce": "^4.0.6",
+    "babel-plugin-detective": "^2.0.0",
+    "babel-plugin-module-resolver": "^4.0.0",
+    "babel-plugin-transform-define": "^2.0.0",
+    "cross-env": "^7.0.0",
     "prettier": "^1.19.1",
     "rimraf": "^3.0.1",
-    "sass-loader": "^8.0.0",
+    "shelljs": "^0.8.3",
     "typescript": "^3.7.5",
+    "vue": "^2.6.11",
     "vue-meta": "^2.3.1"
   }
 }

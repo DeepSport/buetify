@@ -6,7 +6,7 @@ import { InputMixin } from '../../../mixins/input/InputMixin';
 import { EqMixin } from '../../../mixins/eq/EqMixin';
 import { ThemeInjectionMixin } from '../../../mixins/themeInjection/ThemeInjectionMixin';
 import { applyMixins } from '../../../utils/applyMixins';
-import { exists, isBoolean, isObject, isPrimitive } from '../../../utils/helpers';
+import { exists, isBoolean, isPrimitive } from '../../../utils/helpers';
 import { PropType, VNode } from 'vue';
 
 export interface SelectItem<T> {

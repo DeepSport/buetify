@@ -10,7 +10,7 @@ import {
   isWithinWeek,
   WeekdayNumber
 } from './utils';
-import { alwaysEmptyArray, alwaysNone } from '../../../utils/helpers';
+import { alwaysEmptyArray } from '../../../utils/helpers';
 import { isNonEmpty, rotate } from 'fp-ts/lib/Array';
 import { constant } from 'fp-ts/lib/function';
 import { fromNullable, Option } from 'fp-ts/lib/Option';

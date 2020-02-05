@@ -1,8 +1,8 @@
 import { constant, constVoid } from 'fp-ts/lib/function';
-import Vue, { PropType } from 'vue';
-import { NavigationInjection, ThemeInjection } from '../../types/AppInjection';
+import Vue from 'vue';
+import { NavigationInjection } from '../../types/AppInjection';
 
-interface options extends Vue {
+export interface options extends Vue {
   navigation: NavigationInjection;
 }
 

@@ -1,6 +1,6 @@
 import Vue, { VNode } from 'vue';
 import { PropValidator } from 'vue/types/options';
-import { NoticeInjection, ShowNoticeOptions } from '../../types/AppInjection';
+import { NoticeInjection } from '../../types/AppInjection';
 import { constant, constVoid } from 'fp-ts/lib/function';
 import { AllColorsVariant, ColorVariant } from '../../types/ColorVariants';
 import { PositionVariant } from '../../types/PositionVariant';
@@ -11,7 +11,7 @@ export const DEFAULT_NOTICE_INJECTION: NoticeInjection = {
   showNotice: constant(constVoid)
 };
 
-interface options extends Vue {
+export interface options extends Vue {
   notice: NoticeInjection;
 }
 

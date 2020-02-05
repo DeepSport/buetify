@@ -4,7 +4,7 @@ import { DisplayNoticeMixin, OpenNoticeParams } from '../../../mixins/displayNot
 import { PropValidator } from 'vue/types/options';
 import { constVoid } from 'fp-ts/lib/function';
 import { IO } from 'fp-ts/lib/IO';
-import Vue, { PropType, VNode } from 'vue';
+import { VNode } from 'vue';
 import { AllColorsVariant } from '../../../types/ColorVariants';
 import { PositionVariant } from '../../../types/PositionVariant';
 

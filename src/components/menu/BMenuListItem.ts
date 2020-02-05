@@ -1,5 +1,5 @@
 import './menu.sass';
-import { getThemeInjectionMixin, ThemeColorMap } from '../../mixins/themeInjection/ThemeInjectionMixin';
+import { ThemeColorMap } from '../../mixins/themeInjection/ThemeInjectionMixin';
 import { getThemeableFunctionalComponent } from '../../utils/getThemeableFunctionalComponent';
 
 const MENU_LIST_ITEM_THEME_MAP: ThemeColorMap = {

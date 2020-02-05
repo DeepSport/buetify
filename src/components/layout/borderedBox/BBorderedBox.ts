@@ -1,7 +1,6 @@
 import './bordered-box.sass';
 import { ColorVariant } from '../../../types/ColorVariants';
 import {
-  getThemeClasses,
   getThemeClassesFromContext,
   getThemeProps,
   THEME_INJECTION

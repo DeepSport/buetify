@@ -1,7 +1,7 @@
-import { ColorVariant } from 'bue/types/ColorVariants';
 import { constant } from 'fp-ts/lib/function';
-import Vue, { PropType } from 'vue';
+import Vue from 'vue';
 import { AsyncComponent, Component, PropValidator } from 'vue/types/options';
+import { ColorVariant } from '../../types/ColorVariants';
 
 export type MessageSize = 'is-small' | 'is-medium' | 'is-large';
 
@@ -66,7 +66,7 @@ export const MessageMixin = Vue.extend({
   },
   data() {
     return {
-      internalIsActive: this.isActive
+      internalIsActive: this.isActive as boolean
     };
   },
   computed: {

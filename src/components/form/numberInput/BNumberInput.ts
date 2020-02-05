@@ -11,11 +11,6 @@ import { InputIcons, NumberInputIcons } from '../shared/types';
 import { applyMixins } from '../../../utils/applyMixins';
 import { PropValidator } from 'vue/types/options';
 
-interface Data {
-  newValue: number;
-  newStep: number;
-}
-
 const DEFAULT_NUMBER_INPUT_ICONS: NumberInputIcons = {
   minus: () => import('../../icons/minus'),
   plus: () => import('../../icons/plus')
@@ -29,6 +24,7 @@ function parseOptionNumber(val: string | number | undefined): Option<number> {
   return val === undefined ? none : isString(val) ? fromNullable(parseFloat(val)) : some(val);
 }
 
+// @ts-ignore
 export default applyMixins(InputMixin).extend({
   name: 'BNumberInput',
   components: {
@@ -71,10 +67,10 @@ export default applyMixins(InputMixin).extend({
       default: constant(DEFAULT_NUMBER_INPUT_ICONS)
     } as PropValidator<NumberInputIcons>
   },
-  data(): Data {
+  data() {
     return {
-      newValue: parseNumber(this.value, 0),
-      newStep: parseNumber(this.step, 1)
+      newValue: parseNumber(this.value, 0) as number,
+      newStep: parseNumber(this.step, 1) as number
     };
   },
   computed: {

@@ -4,7 +4,7 @@ import { applyMixins } from '../../utils/applyMixins';
 import { getProxyableMixin } from '../proxyable/ProxyableMixin';
 
 export const PaginationMixin = applyMixins(getProxyableMixin('value', 'input', 1)).extend({
-  name: 'PaginateMixin',
+  name: 'PaginationMixin',
   props: {
     // one of items or total is required
     items: {
