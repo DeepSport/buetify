@@ -2,38 +2,20 @@ import './autocomplete.sass';
 import BDropdown from '../../dropdown/BDropdown';
 import { isArrowDownEvent, isArrowUpEvent, isEnterEvent, isEscEvent, isTabEvent } from '../../../utils/eventHelpers';
 import { ExtractPropMixin } from '../../../mixins/extractProp/ExtractPropMixin';
-import { constant, constVoid, flow } from 'fp-ts/lib/function';
+import { constant, constVoid } from 'fp-ts/lib/function';
 import BDropdownDivider from '../../dropdown/BDropdownDivider';
 import BDropdownItem from '../../dropdown/BDropdownItem';
 import { DROPDOWN_THEME_MIXIN } from '../../dropdown/DropdownTheme';
 import { InputMixin } from '../../../mixins/input/InputMixin';
 import { EqMixin } from '../../../mixins/eq/EqMixin';
 import { applyMixins, ExtractVue } from '../../../utils/applyMixins';
-import { findFirst, head, isEmpty, lookup } from 'fp-ts/lib/Array';
-import {
-  alt,
-  apFirst,
-  chain,
-  fold,
-  fromNullable,
-  getEq,
-  isNone,
-  isSome,
-  map,
-  none,
-  Option,
-  some,
-  toUndefined
-} from 'fp-ts/lib/Option';
+import { head, isEmpty, lookup } from 'fp-ts/lib/Array';
+import { alt, chain, fold, fromNullable, isSome, map, none, Option, some, toUndefined } from 'fp-ts/lib/Option';
 import { pipe } from 'fp-ts/lib/pipeable';
 import { PropType, VNode } from 'vue';
 import BInput from '../input';
 
-interface Data {
-  hoveredItem: Option<AutocompleteItem<unknown>>;
-}
-
-interface AutocompleteItem<T> {
+export interface AutocompleteItem<T> {
   id: string;
   isSelected: boolean;
   isHovered: boolean;
@@ -44,10 +26,10 @@ interface AutocompleteItem<T> {
 
 const base = applyMixins(InputMixin, EqMixin, DROPDOWN_THEME_MIXIN, ExtractPropMixin);
 
-interface options extends ExtractVue<typeof base> {
+export interface options extends ExtractVue<typeof base> {
   $refs: {
     dropdown: InstanceType<typeof BDropdown>;
-    input: ExtractVue<typeof BInput>;
+    input: InstanceType<typeof BInput>;
     items: HTMLLIElement[];
   };
 }
@@ -91,9 +73,9 @@ export default base.extend<options>().extend({
       default: true
     }
   },
-  data(): Data {
+  data() {
     return {
-      hoveredItem: none
+      hoveredItem: none as Option<AutocompleteItem<unknown>>
     };
   },
   computed: {

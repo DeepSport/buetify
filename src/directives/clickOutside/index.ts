@@ -5,7 +5,7 @@ export interface ClickOutsideBindingArgs {
   include?: () => HTMLElement[];
 }
 
-interface ClickOutsideDirective extends VNodeDirective {
+export interface ClickOutsideDirective extends VNodeDirective {
   value?: (e: Event) => void;
   args?: ClickOutsideBindingArgs;
 }

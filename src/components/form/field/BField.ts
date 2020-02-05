@@ -1,6 +1,6 @@
 import '../sass/form.sass';
 import { applyMixins } from '../../../utils/applyMixins';
-import { AllColorsVariant, ColorVariant } from '../../../types/ColorVariants';
+import { AllColorsVariant } from '../../../types/ColorVariants';
 import { not } from 'fp-ts/lib/function';
 import { PropType, VNode } from 'vue';
 import { ThemeInjectionMixin } from '../../../mixins/themeInjection/ThemeInjectionMixin';

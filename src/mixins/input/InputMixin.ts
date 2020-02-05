@@ -1,6 +1,6 @@
 import { applyMixins } from '../../utils/applyMixins';
 import { SizeVariant } from '../../types/SizeVariants';
-import { isHTMLElement, isObject, isString } from '../../utils/helpers';
+import { isObject } from '../../utils/helpers';
 import { PropType } from 'vue';
 import { InputFocusMixin } from '../focus/FocusMixin';
 import { InputLabelIdMixin } from '../labelId/LabelIdMixin';

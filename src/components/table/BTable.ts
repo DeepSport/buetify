@@ -4,23 +4,11 @@ import BTableRowElement from './BTableRow';
 import BTableHeader from './BTableHeader';
 import BTableMobileSort from './BTableMobileSort';
 import { BTableColumn, BTableColumnData, BTableRow, BTableRowData, SortType } from './shared';
-import { alwaysEmptyArray, alwaysZero, isBoolean, isMobile, remove, toggle } from '../../utils/helpers';
+import { alwaysEmptyArray, alwaysZero, isBoolean, isMobile, toggle } from '../../utils/helpers';
 import { ColorVariant } from '../../types/ColorVariants';
-import { copy, head, isEmpty, isNonEmpty, reverse, snoc, sort } from 'fp-ts/lib/Array';
+import { head, isEmpty, isNonEmpty, reverse, sort } from 'fp-ts/lib/Array';
 import { Eq, eq, eqString } from 'fp-ts/lib/Eq';
-import {
-  chain,
-  exists,
-  fold,
-  fromNullable,
-  getOrElse,
-  isNone,
-  isSome,
-  mapNullable,
-  Option,
-  some,
-  toUndefined
-} from 'fp-ts/lib/Option';
+import { chain, exists, fold, fromNullable, isSome, mapNullable, Option, some } from 'fp-ts/lib/Option';
 import { Ord } from 'fp-ts/lib/Ord';
 import { pipe } from 'fp-ts/lib/pipeable';
 import Vue, { PropType, VNode } from 'vue';

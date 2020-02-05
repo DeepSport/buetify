@@ -2,9 +2,9 @@ import Vue from 'vue';
 import debounce from 'lodash.debounce';
 
 export const WindowSizeMixin = Vue.extend({
-  data(): Data {
+  data() {
     return {
-      windowWidth: window.innerWidth
+      windowWidth: window.innerWidth as number
     };
   },
   computed: {
@@ -28,10 +28,6 @@ export const WindowSizeMixin = Vue.extend({
     this.$once('hooks:beforeDestroy', () => window.removeEventListener('resize', resizeHandler));
   }
 });
-
-interface Data {
-  windowWidth: number;
-}
 
 export interface WindowSize {
   windowWidth: number;

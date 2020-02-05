@@ -1,10 +1,10 @@
 import './datepicker.sass';
 import BDatepickerTableCell from './BDatepickerTableCell';
 import { DateCell, DateEvent, DetailedDateEvent } from './shared';
-import { elemSerialDate, isAfterDay, isDate, isOnOrAfterDate, isOnOrBeforeDate, isSameDay } from './utils';
+import { elemSerialDate, isDate, isOnOrAfterDate, isOnOrBeforeDate, isSameDay } from './utils';
 import { alwaysEmptyArray, alwaysNone } from '../../../utils/helpers';
 import { isNonEmpty } from 'fp-ts/lib/Array';
-import { constFalse, constTrue, identity } from 'fp-ts/lib/function';
+import { constTrue, identity } from 'fp-ts/lib/function';
 import { fold, isSome, none, Option } from 'fp-ts/lib/Option';
 import { pipe } from 'fp-ts/lib/pipeable';
 import Vue, { PropType, VNode } from 'vue';

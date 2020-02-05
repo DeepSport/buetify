@@ -1,11 +1,6 @@
 import './link.sass';
-import { getThemeInjectionMixin, ThemeColorMap } from '../../mixins/themeInjection/ThemeInjectionMixin';
-import {
-  getThemeableFunctionalComponentWithText,
-  getThemeClasses,
-  getThemeClassesFromContext,
-  THEME_INJECTION
-} from '../../utils/getThemeableFunctionalComponent';
+import { ThemeColorMap } from '../../mixins/themeInjection/ThemeInjectionMixin';
+import { getThemeClassesFromContext, THEME_INJECTION } from '../../utils/getThemeableFunctionalComponent';
 import { mergeVNodeStaticClass } from '../../utils/mergeVNodeStaticClass';
 import { constant } from 'fp-ts/lib/function';
 import Vue, { PropType, VNode } from 'vue';

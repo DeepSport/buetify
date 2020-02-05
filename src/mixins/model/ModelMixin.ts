@@ -1,7 +1,7 @@
 import Vue from 'vue';
-import { exists } from '../../utils/helpers';
+import { exists, isObject } from '../../utils/helpers';
 
-interface options extends Vue {
+export interface options extends Vue {
   $_modelEvent: string;
 }
 
@@ -12,7 +12,7 @@ export const ModelMixin = Vue.extend<options>().extend({
   },
   data() {
     return {
-      newValue: this.value
+      newValue: this.value as any
     };
   },
   computed: {

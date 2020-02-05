@@ -1,8 +1,8 @@
 import './app.sass';
 import { getItem, setItem } from 'fp-ts-local-storage';
 import { constant, constVoid } from 'fp-ts/lib/function';
-import { IO, of } from 'fp-ts/lib/IO';
-import { fold, fromNullable, getOrElse, isSome, mapNullable, none, Option, some } from 'fp-ts/lib/Option';
+import { IO } from 'fp-ts/lib/IO';
+import { getOrElse, isSome, none, Option, some } from 'fp-ts/lib/Option';
 import { VNode } from 'vue';
 import { ToggleMixin } from '../../mixins/toggle/ToggleMixin';
 import { formatTransition } from '../../mixins/fadeTransition/FadeTransitionMixin';

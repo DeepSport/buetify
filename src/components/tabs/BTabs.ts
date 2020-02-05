@@ -1,13 +1,13 @@
 import './tabs.sass';
-import { head, lookup } from 'fp-ts/lib/Array';
+import { lookup } from 'fp-ts/lib/Array';
 import { pipe } from 'fp-ts/lib/pipeable';
 import BTabItem, { BTabItemName, BTabItemPropsData } from './BTabItem';
-import { getProxyableMixin, ProxyableMixin } from '../../mixins/proxyable/ProxyableMixin';
+import { getProxyableMixin } from '../../mixins/proxyable/ProxyableMixin';
 import { VNode, VNodeComponentOptions } from 'vue';
 import { PropValidator } from 'vue/types/options';
 import { applyMixins } from '../../utils/applyMixins';
 import { getThemeInjectionMixin } from '../../mixins/themeInjection/ThemeInjectionMixin';
-import { map, mapNullable, none, Option, some } from 'fp-ts/lib/Option';
+import { map, none, Option, some } from 'fp-ts/lib/Option';
 
 const TABS_THEME_MAP = {
   dark: 'is-orange',

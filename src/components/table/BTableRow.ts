@@ -2,7 +2,7 @@ import { ColorVariant } from '../../types/ColorVariants';
 import BCheckbox from '../form/checkbox/BCheckbox';
 import { getObjectValueByPath, isString } from '../../utils/helpers';
 import { mergeVNodeClasses } from '../../utils/mergeVNodeClasses';
-import { BTableColumn, BTableColumnPosition, BTableRow } from './shared';
+import { BTableColumn, BTableRow } from './shared';
 import Vue, { PropType, VNode } from 'vue';
 
 export default Vue.extend({

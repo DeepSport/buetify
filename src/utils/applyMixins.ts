@@ -19,4 +19,4 @@ export type ExtractVue<T extends VueConstructor | VueConstructor[]> = T extends 
   ? V
   : never;
 
-type UnionToIntersection<U> = (U extends any ? (k: U) => void : never) extends (k: infer I) => void ? I : never;
+export type UnionToIntersection<U> = (U extends any ? (k: U) => void : never) extends (k: infer I) => void ? I : never;

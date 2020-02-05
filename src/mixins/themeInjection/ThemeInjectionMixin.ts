@@ -3,7 +3,7 @@ import { ThemeInjection } from '../../types/AppInjection';
 import { Theme } from '../../types/Theme';
 import { constant, constVoid } from 'fp-ts/lib/function';
 import { isSome, none } from 'fp-ts/lib/Option';
-import Vue, { PropType } from 'vue';
+import Vue from 'vue';
 export type ThemeColorMap = { [K in Theme]: string | string[] };
 
 export const DEFAULT_THEME_COLOR_MAP: ThemeColorMap = {
@@ -11,7 +11,7 @@ export const DEFAULT_THEME_COLOR_MAP: ThemeColorMap = {
   light: ''
 };
 
-interface options extends Vue {
+export interface options extends Vue {
   theme: ThemeInjection;
 }
 

@@ -1,8 +1,8 @@
 import { applyMixins } from '../../utils/applyMixins';
-import { constant, constFalse, constVoid } from 'fp-ts/lib/function';
-import { filter, fold, fromNullable, map, mapNullable, Option } from 'fp-ts/lib/Option';
+import { constant, constVoid } from 'fp-ts/lib/function';
+import { filter, fold } from 'fp-ts/lib/Option';
 import { pipe } from 'fp-ts/lib/pipeable';
-import { isHTMLElement, isObject, isString } from '../../utils/helpers';
+import { isString } from '../../utils/helpers';
 import { DisableMixin } from '../disable/DisableMixin';
 import { RefMixin } from '../ref';
 

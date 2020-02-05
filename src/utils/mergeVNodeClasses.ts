@@ -1,5 +1,5 @@
 import { identity } from 'fp-ts/lib/function';
-import { exists, isObject, isString } from './helpers';
+import { isObject, isString } from './helpers';
 
 export const mergeVNodeClasses = (existingClasses: any, newClasses: any): any => {
   if (Array.isArray(existingClasses)) {

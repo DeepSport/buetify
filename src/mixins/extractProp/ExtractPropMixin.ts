@@ -1,7 +1,7 @@
 import { isObject, isString } from '../../utils/helpers';
 import Vue from 'vue';
 
-type Result<T, P> = P extends keyof T ? T[P] : P extends (item: T) => any ? ReturnType<P> : T;
+export type Result<T, P> = P extends keyof T ? T[P] : P extends (item: T) => any ? ReturnType<P> : T;
 export type Extractor<T, P> = P extends keyof T ? P : (item: T) => any;
 
 export const ExtractPropMixin = Vue.extend({

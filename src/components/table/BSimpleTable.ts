@@ -1,6 +1,6 @@
 import './table.sass';
 import BScroll from '../scroll/BScroll';
-import { DEFAULT_THEME_COLOR_MAP, ThemeInjectionMixin } from '../../mixins/themeInjection/ThemeInjectionMixin';
+import { DEFAULT_THEME_COLOR_MAP } from '../../mixins/themeInjection/ThemeInjectionMixin';
 import Vue, { VNode } from 'vue';
 import {
   getThemeClassesFromContext,

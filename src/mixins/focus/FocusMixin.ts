@@ -1,7 +1,7 @@
 import { applyMixins } from '../../utils/applyMixins';
 import { RefMixin } from '../ref/RefMixin';
-import { constant, constFalse, constVoid } from 'fp-ts/lib/function';
-import { filter, fold, fromNullable, map, mapNullable, Option } from 'fp-ts/lib/Option';
+import { constant, constVoid } from 'fp-ts/lib/function';
+import { fold } from 'fp-ts/lib/Option';
 import { pipe } from 'fp-ts/lib/pipeable';
 
 export function getFocusMixin(ref: string) {
