@@ -11,7 +11,7 @@
     "test": "echo \"No tests specified\"",
     "pub": "yarn run build && yarn run np",
     "np": "np",
-    "build": "yarn run prettier-write && node build/build-lib.js",
+    "build": "node build/build-lib.js",
     "prettier-write": "prettier --write \"./src/**/*.ts\"",
     "prettier-check": "prettier --list-different \"./src/**/*.ts\"",
     "tsc": "tsc"
