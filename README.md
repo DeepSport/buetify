@@ -38,10 +38,13 @@ yarn install buetify
 ### 2 Create a variables.sass file
 ```sass
 // variables.sass
-@import '~buetify/src/sass/variables'
-@import '~bulma/sass/utilities/initial-variables'
+
 // provide any variable overrides here. Be careful to not include 
 // any actual styles as they will be prepended to every sass file in your bundle.
+
+@import '~buetify/src/sass/variables'
+@import '~bulma/sass/utilities/initial-variables'
+
 ```
 
 ### 3 Update webpack config
