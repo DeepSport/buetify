@@ -8,6 +8,9 @@
     "email": "kightlingerh@gmail.com"
   },
   "scripts": {
+    "test": "echo \"No test specified\"",
+    "publish": "yarn run build && yarn run np",
+    "np": "np",
     "build": "yarn run prettier-write && node build/build-lib.js",
     "prettier-write": "prettier --write \"./src/**/*.ts\"",
     "prettier-check": "prettier --list-different \"./src/**/*.ts\"",
@@ -29,8 +32,7 @@
   "files": [
     "src/",
     "es5/",
-    "lib/",
-    "types/"
+    "lib/"
   ],
   "keywords": [
     "bulma",
@@ -61,6 +63,7 @@
     "babel-plugin-module-resolver": "^4.0.0",
     "babel-plugin-transform-define": "^2.0.0",
     "cross-env": "^7.0.0",
+    "np": "^5.2.1",
     "prettier": "^1.19.1",
     "rimraf": "^3.0.1",
     "shelljs": "^0.8.3",
