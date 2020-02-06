@@ -44,6 +44,9 @@ export const SelectableMixin = applyMixins(ModelMixin, EqMixin, DisableMixin).ex
       }
 
       return this.valueComparator(input, this.trueValue);
+    },
+    disableOnChange(): boolean {
+      return false; // for b-radio to disable toggle off when active
     }
   },
   watch: {
@@ -56,7 +59,7 @@ export const SelectableMixin = applyMixins(ModelMixin, EqMixin, DisableMixin).ex
       this.isFocused = false;
     },
     onChange() {
-      if (this.disabled) return;
+      if (this.disabled || this.disableOnChange) return;
       const value = this.value;
       let input = this.internalValue;
 
