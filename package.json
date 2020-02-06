@@ -8,7 +8,7 @@
     "email": "kightlingerh@gmail.com"
   },
   "scripts": {
-    "test": "echo \"No test specified\"",
+    "test": "echo \"No tests specified\"",
     "pub": "yarn run build && yarn run np",
     "np": "np",
     "build": "yarn run prettier-write && node build/build-lib.js",
