@@ -9,7 +9,7 @@
   },
   "scripts": {
     "test": "echo \"No test specified\"",
-    "publish": "yarn run build && yarn run np",
+    "pub": "yarn run build && yarn run np",
     "np": "np",
     "build": "yarn run prettier-write && node build/build-lib.js",
     "prettier-write": "prettier --write \"./src/**/*.ts\"",
