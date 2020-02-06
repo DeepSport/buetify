@@ -1,6 +1,6 @@
 {
   "name": "buetify",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "description": "A Vue component framework based on Bulma",
   "main": "./src/index.ts",
   "author": {
