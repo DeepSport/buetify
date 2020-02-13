@@ -1,10 +1,5 @@
-
-.height-100-percent
-  height: 100%
 .height-100-vh
   height: 100vh
-.width-100-percent
-  width: 100%
 .width-100-vw
   width: 100vw
 .min-height-100-percent
@@ -12,8 +7,40 @@
 .min-height-100-vh
   min-height: 100vh
 
+.is-fullheight
+  height: 100%
+.is-fullwidth
+  width: 100%
+
 +mobile
-  .width-100-percent-mobile
+  .is-fullheight-mobile
+    height: 100%
+  .is-fullwidth-mobile
     width: 100%
-  .height-auto-mobile
-    height: auto !important
+
++tablet
+  .is-fullheight-tablet
+    height: 100%
+  .is-fullwidth-tablet
+    width: 100%
+
++desktop
+  .is-fullheight-desktop
+    height: 100%
+  .is-fullwidth-desktop
+    width: 100%
+
++widescreen
+  .is-fullheight-widescreen
+    height: 100%
+  .is-fullwidth-widescreen
+    width: 100%
+
++fullhd
+  .is-fullheight-fullhd
+    height: 100%
+  .is-fullwidth-fullhd
+    width: 100%
+
+
+

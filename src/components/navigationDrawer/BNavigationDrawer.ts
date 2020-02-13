@@ -23,11 +23,18 @@ export default applyMixins(
       type: String,
       required: false,
       default: 'nav'
+    },
+    isFullheight: {
+      type: Boolean,
+      default: true
     }
   },
   computed: {
     displayMobileDrawer(): boolean {
       return this.windowSize.isTouch || this.windowSize.isDesktop;
+    },
+    classes(): any {
+      return [{ 'is-fullheight': this.isFullheight }, ...this.themeClasses];
     }
   },
   watch: {
@@ -62,8 +69,8 @@ export default applyMixins(
       return this.$createElement(
         this.tag,
         {
-          staticClass: 'b-navigation-drawer height-100-percent',
-          class: this.themeClasses
+          staticClass: 'b-navigation-drawer',
+          class: this.classes
         },
         this.$scopedSlots.default!({
           showNavigationDrawer: this.showNavigationDrawer,

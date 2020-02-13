@@ -1,6 +1,8 @@
 .b-navigation-drawer
   width: $navigation-drawer-width
-  @each $name, $pair in $all-colors
+  &.is-fullheight
+    height: 100%
+  @each $name, $pair in mergeColorMaps($colors, $shades)
     $color: nth($pair, 1)
     $color-invert: findColorInvert($color)
     &.is-#{$name}

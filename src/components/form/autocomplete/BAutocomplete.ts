@@ -65,7 +65,6 @@ export default base.extend<options>().extend({
     },
     clearOnSelect: {
       type: Boolean,
-
       default: true
     },
     openOnFocus: {
@@ -305,9 +304,10 @@ export default base.extend<options>().extend({
     }
   },
   render(): VNode {
-    return this.$createElement(BDropdown, { ref: 'dropdown', class: this.classes }, [
-      this.generateInput(),
-      this.generateAutocompleteItems()
-    ]);
+    return this.$createElement(
+      BDropdown,
+      { ref: 'dropdown', props: { isMobileModal: false }, staticClass: 'b-autocomplete', class: this.classes },
+      [this.generateInput(), this.generateAutocompleteItems()]
+    );
   }
 });
