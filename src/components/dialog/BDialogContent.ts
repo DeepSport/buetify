@@ -61,6 +61,6 @@ export default applyMixins(DIALOG_THEME_MIXIN).extend({
     }
   },
   render(): VNode {
-    return this.$createElement('div', { staticClass: 'dialog', class: this.size }, [this.generateDialogContent()]);
+    return this.$createElement('div', { staticClass: 'b-dialog', class: this.size }, [this.generateDialogContent()]);
   }
 });
