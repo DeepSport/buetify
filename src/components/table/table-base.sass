@@ -151,6 +151,9 @@ $table-striped-row-even-hover-background-color: $white-ter !default
           color: $color-invert
       tbody
         background-color: $color
+        td,
+        th
+          color: $color-invert
       &.is-hoverable
         tbody
           tr:not(.is-selected)
@@ -164,12 +167,16 @@ $table-striped-row-even-hover-background-color: $white-ter !default
                 &:nth-child(even)
                   background-color: darken($color, 10%)
       &.is-striped
-      tbody
-        tr:not(.is-selected)
-          &:nth-child(even)
-            background-color: darken($color, 2.5%)
-          &:nth-child(odd)
-            background-color: $color
+        tbody
+          tr:not(.is-selected)
+            &:nth-child(even)
+              background-color: darken($color, 2.5%)
+              th
+                background-color: darken($color, 2.5%)
+            &:nth-child(odd)
+              background-color: $color
+              th
+                background-color: $color
 
 .table-container
   @extend %block

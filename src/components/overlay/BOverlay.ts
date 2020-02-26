@@ -33,13 +33,13 @@ export default Vue.extend({
       },
       [
         h('div', {
-          staticClass: 'background',
+          staticClass: 'b-overlay-background',
           on: mapVNodeListenersToNative('click', 'close', data.on)
         }),
         h(
           'div',
           {
-            staticClass: 'content',
+            staticClass: 'b-overlay-content',
             class: { 'is-fullscreen': props.isFullscreen }
           },
           children
