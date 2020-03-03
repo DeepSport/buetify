@@ -4,7 +4,7 @@ import Vue from 'vue';
 import { PropValidator } from 'vue/types/options';
 
 export const EqMixin = Vue.extend({
-  name: 'Comparable',
+  name: 'EqMixin',
   props: {
     valueComparator: ({
       type: Function,
