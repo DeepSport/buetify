@@ -254,6 +254,9 @@ export default base.extend<options>().extend({
     input(): VNode {
       return this.generateInput(!this.isMobile);
     },
+    internalIsReadonly(): boolean {
+      return this.isReadonly || !!isMobile.any();
+    },
     displayNative(): boolean {
       return this.isMobile && !this.isInline;
     }
@@ -289,9 +292,6 @@ export default base.extend<options>().extend({
         };
       }
     },
-    /*
-     * Parse string into date
-     */
     onChange(value: string) {
       const date = this.dateParser(value);
       if (isDate(date)) {
@@ -301,9 +301,6 @@ export default base.extend<options>().extend({
         this.$refs.input.newValue = this.internalValue;
       }
     },
-    /*
-     * Format date into string
-     */
     formatValue(value: Date | Date[] | null): string | null {
       if (Array.isArray(value)) {
         return value.every(isDate) ? this.dateFormatter(value, this.isMultiple) : null;
@@ -340,9 +337,6 @@ export default base.extend<options>().extend({
     formatNative(value: Date) {
       return this.formatYYYYMMDD(value);
     },
-    /*
-     * Format date into string 'YYYY-MM-DD'
-     */
     formatYYYYMMDD(value: Date) {
       const date = new Date(value);
       if (value && isDate(date)) {
@@ -353,9 +347,6 @@ export default base.extend<options>().extend({
       }
       return '';
     },
-    /*
-     * Parse date from string
-     */
     onChangeNativePicker(event: any) {
       const date = event.target.value;
       this.internalValue = date ? new Date(date + 'T00:00:00') : null;
@@ -463,7 +454,7 @@ export default base.extend<options>().extend({
           icon: this.icons.calendar,
           isRounded: this.isRounded,
           isDisabled: this.isDisabled,
-          isReadonly: this.isReadonly,
+          isReadonly: this.internalIsReadonly,
           isLoading: this.isLoading,
           useNativeValidation: this.useNativeValidation
         },
