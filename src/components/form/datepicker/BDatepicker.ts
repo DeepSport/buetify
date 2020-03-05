@@ -482,7 +482,7 @@ export default base.extend<options>().extend({
       if (this.$slots.footer) {
         nodes.push(this.generateFooter());
       }
-      return this.$createElement('div', { staticClass: 'padding-size-7' }, nodes);
+      return this.$createElement('div', nodes);
     },
     generateHeader(): VNode {
       return this.$createElement(
