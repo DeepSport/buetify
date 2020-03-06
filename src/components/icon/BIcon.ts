@@ -14,7 +14,7 @@ import { mergeVNodeClasses } from '../../utils/mergeVNodeClasses';
 import { mergeVNodeStaticClass } from '../../utils/mergeVNodeStaticClass';
 
 const ICON_THEME_MAP = {
-  dark: 'has-text-orange-hover',
+  dark: 'has-text-link-hover',
   light: 'has-text-link-hover'
 };
 

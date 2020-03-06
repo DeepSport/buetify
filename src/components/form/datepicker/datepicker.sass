@@ -39,7 +39,7 @@ $datepicker-item-selected-background-color: $primary !default
 		border-top: 1px solid $grey-lighter
 	.datepicker-table 
 		border-collapse: separate
-		margin: 0 auto 0 auto
+		width: 100%
 		.datepicker-cell 
 			text-align: center
 			vertical-align: middle
@@ -64,7 +64,8 @@ $datepicker-item-selected-background-color: $primary !default
 					width: 33.33%
 					height: 2.5rem
 			.datepicker-cell 
-				&.is-unselectable 
+				width: 100%
+				&.is-unselectable
 					color: $datepicker-item-disabled-color
 				&.is-today 
 					border: $datepicker-today-border
@@ -150,6 +151,8 @@ $datepicker-item-selected-background-color: $primary !default
 							// Ensure indicator is visible when selected
 							&.is-primary 
 								background-color: lighten($primary, 15)
+	+mobile
+		font-size: 1rem
 	&.is-small 
 		@include control-small
 	&.is-medium 

@@ -13,7 +13,7 @@ import { mergeVNodeClasses } from '../../utils/mergeVNodeClasses';
 import { mergeVNodeStaticClass } from '../../utils/mergeVNodeStaticClass';
 
 const BUTTON_THEME_MAP = {
-  dark: 'is-orange',
+  dark: 'is-link',
   light: ''
 };
 
