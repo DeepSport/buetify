@@ -9,7 +9,7 @@ import { mergeVNodeStaticClass } from '../../../utils/mergeVNodeStaticClass';
 import Vue, { PropType, VNode } from 'vue';
 
 const BORDERED_BOX_THEME_MAP = {
-  dark: 'is-orange',
+  dark: 'is-link',
   light: 'is-link'
 };
 

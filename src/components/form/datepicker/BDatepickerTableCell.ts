@@ -100,7 +100,7 @@ export default Vue.extend<options>().extend({
         'button',
         {
           ref: 'button',
-          staticClass: 'datepicker-cell width-100-percent',
+          staticClass: 'datepicker-cell',
           class: [this.cell.classes, this.indicators],
           attrs: {
             disabled: this.cell.isDisabled,
