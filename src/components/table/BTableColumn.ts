@@ -74,6 +74,8 @@ function formatWidth(width: string | number, suffix: 'rem' | 'em' | 'px' = 'px')
   return isString(width) ? width : `${width}${suffix}`;
 }
 
+
+
 function generateNewSortTypeListener(currentListener: Function | Function[] | undefined, sortType: SortType): Function {
   if (currentListener === undefined) {
     return constVoid;

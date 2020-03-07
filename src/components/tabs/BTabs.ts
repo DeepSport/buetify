@@ -10,7 +10,7 @@ import { getThemeInjectionMixin } from '../../mixins/themeInjection/ThemeInjecti
 import { map, none, Option, some } from 'fp-ts/lib/Option';
 
 const TABS_THEME_MAP = {
-  dark: 'is-orange',
+  dark: 'is-link',
   light: ''
 };
 
