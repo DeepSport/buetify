@@ -25,20 +25,20 @@ export default applyMixins(getToggleMixin('isExpanded')).extend({
   methods: {
     generateTrigger(): VNode {
       return this.$createElement(
-        'div',
+        'button',
         {
-          staticClass: 'is-flex flex-direction-row justify-content-space-between align-items-center',
+          staticClass: 'is-flex flex-direction-row justify-content-space-between align-items-center is-fullwidth',
+          on: this.listeners,
+          attrs: this.attrs,
           class: this.menuLabelClass
         },
         [this.$slots['menu-label'], this.generateTriggerButton()]
       );
     },
     generateTriggerButton(): VNode {
-      return this.$createElement('button', { on: this.listeners, attrs: this.attrs }, [
-        this.$createElement(VerticalExpansionIcon, {
-          props: { isExpanded: this.internalIsOn }
-        })
-      ]);
+      return this.$createElement(VerticalExpansionIcon, {
+        props: { isExpanded: this.internalIsOn }
+      });
     },
     generateMenuList(): VNode {
       return this.$createElement(VerticalExpandTransition, [
@@ -55,6 +55,6 @@ export default applyMixins(getToggleMixin('isExpanded')).extend({
     }
   },
   render(): VNode {
-    return this.$createElement('div', [this.generateTrigger(), this.generateMenuList()]);
+    return this.$createElement('section', [this.generateTrigger(), this.generateMenuList()]);
   }
 });

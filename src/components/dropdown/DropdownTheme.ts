@@ -5,7 +5,7 @@ export const DROPDOWN_THEME_MAP = {
 };
 
 export const DROPDOWN_ITEM_THEME_MAP: ThemeColorMap = {
-  dark: 'has-background-orange',
+  dark: 'has-background-link',
   light: 'has-background-link'
 };
 
