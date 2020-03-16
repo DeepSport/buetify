@@ -10,6 +10,7 @@ export default applyMixins(NavigationInjectionMixin).extend({
     navigationIcon: {
       type: Function,
       required: true
+
     }
   },
   methods: {
@@ -28,7 +29,6 @@ export default applyMixins(NavigationInjectionMixin).extend({
         {
           staticClass: 'navigation-icon',
           on: {
-            click: this.showNavigationDrawer,
             keydown: this.onKeydown
           },
           attrs: {
@@ -41,14 +41,23 @@ export default applyMixins(NavigationInjectionMixin).extend({
     }
   },
   render(): VNode {
-    return this.$createElement(
-      'header',
-      {
-        staticClass: 'b-app-header is-flex flex-direction-row justify-content-center align-items-center'
-      },
-      this.navigationDrawerIsVisible
-        ? [this.generateMainSlot()]
-        : [this.generateNavigationButton(), this.generateMainSlot()]
-    );
+    return this.navigationDrawerIsVisible
+      ? this.$createElement(
+          'header',
+          {
+            staticClass: 'b-app-header is-flex flex-direction-row justify-content-center align-items-center'
+          },
+          [this.generateMainSlot()]
+        )
+      : this.$createElement(
+          'header',
+          {
+            on: {
+              click: this.showNavigationDrawer
+            },
+            staticClass: 'b-app-header is-flex flex-direction-row justify-content-center align-items-center'
+          },
+          [this.generateNavigationButton(), this.generateMainSlot()]
+        );
   }
 });

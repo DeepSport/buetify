@@ -47,21 +47,18 @@ export default Vue.extend({
     if (props.column.isSortColumn) {
       children.push(
         h(VerticalExpansionIcon, {
-          on: {
-            click: generateNewSortTypeListener(data.on && data.on['new-sort-type'], props.sortType)
-          },
           props: { isExpanded: props.sortType === 'Ascending' }
         })
       );
     }
     return h(
       'th',
-      props.column.isSortable && !props.column.isSortColumn
+      props.column.isSortable
         ? {
             ...data,
             on: {
               ...data.on,
-              click: generateNewSortColumnListener(data.on && data.on['new-sort-column'], props.column)
+              click: generateColumnListener(data.on, props.sortType, props.column)
             }
           }
         : data,
@@ -74,7 +71,15 @@ function formatWidth(width: string | number, suffix: 'rem' | 'em' | 'px' = 'px')
   return isString(width) ? width : `${width}${suffix}`;
 }
 
-
+function generateColumnListener(
+  listeners: { [key: string]: Function | Function[] } | undefined,
+  sortType: SortType,
+  column: BTableColumn
+): Function {
+  return column.isSortColumn
+    ? generateNewSortTypeListener(listeners && listeners['new-sort-type'], sortType)
+    : generateNewSortColumnListener(listeners && listeners['new-sort-column'], column);
+}
 
 function generateNewSortTypeListener(currentListener: Function | Function[] | undefined, sortType: SortType): Function {
   if (currentListener === undefined) {

@@ -1,5 +1,7 @@
 @import '../../sass/helpers/flex-helpers'
 
+$app-header-background-color: $primary !default
+
 .b-app-header
   position: relative
   border-bottom: 1px $border solid
@@ -9,10 +11,11 @@
     left: $size-7
     flex: none
     cursor: pointer
+    z-index: 1
   .main-slot
     width: 90%
 +until-widescreen
   .b-app-header
-    background-color: $primary
+    background-color: $app-header-background-color
     border-bottom: none
     color: $white
