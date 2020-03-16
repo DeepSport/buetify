@@ -3,8 +3,8 @@ import { ThemeColorMap } from '../../mixins/themeInjection/ThemeInjectionMixin';
 import { getThemeableFunctionalComponent } from '../../utils/getThemeableFunctionalComponent';
 
 const MENU_LIST_ITEM_THEME_MAP: ThemeColorMap = {
-  dark: 'is-primary',
-  light: ''
+  dark: 'is-link',
+  light: 'is-link'
 };
 
 export default getThemeableFunctionalComponent(

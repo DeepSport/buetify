@@ -47,7 +47,7 @@ $dropdown-divider-background-color: $border !default
   box-shadow: $dropdown-content-shadow
   padding-bottom: 0.5rem
   padding-top: 0.5rem
-  @each $name, $pair in $all-colors
+  @each $name, $pair in mergeColorMaps($colors, $shades)
     $color: nth($pair, 1)
     $color-invert: nth($pair, 2)
     &.is-#{$name}
@@ -61,7 +61,7 @@ $dropdown-divider-background-color: $border !default
   line-height: 1.5
   padding: 0.375rem 1rem
   position: relative
-  @each $name, $pair in $all-colors
+  @each $name, $pair in mergeColorMaps($colors, $shades)
     $color-invert: nth($pair, 2)
     &.is-#{$name}
       color: $color-invert
@@ -78,7 +78,7 @@ li.dropdown-item
   &.is-active
     background-color: $dropdown-item-active-background-color
     color: $dropdown-item-active-color
-  @each $name, $pair in $all-colors
+  @each $name, $pair in mergeColorMaps($colors, $shades)
     $color: nth($pair, 1)
     $color-invert: nth($pair, 2)
     &.is-#{$name}
