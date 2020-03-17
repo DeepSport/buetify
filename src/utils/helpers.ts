@@ -86,6 +86,10 @@ export function isObject(obj: any): obj is object {
   return obj !== null && typeof obj === 'object';
 }
 
+export function isFunction(obj: any): obj is Function {
+  return typeof obj === 'function';
+}
+
 export function getNestedValue(obj: any, path: (string | number)[], fallback?: any): any {
   const last = path.length - 1;
 

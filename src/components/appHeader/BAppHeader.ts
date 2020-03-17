@@ -10,7 +10,6 @@ export default applyMixins(NavigationInjectionMixin).extend({
     navigationIcon: {
       type: Function,
       required: true
-
     }
   },
   methods: {
