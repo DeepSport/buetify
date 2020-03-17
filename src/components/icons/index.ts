@@ -9,6 +9,7 @@ export * from './exclamationCircle';
 export * from './exclamationTriangle';
 export * from './eye';
 export * from './eyeSlash';
+export * from './horizontalExpansion';
 export * from './infoCircle';
 export * from './minus';
 export * from './plus';

@@ -6,7 +6,7 @@ import { InputMixin } from '../../../mixins/input/InputMixin';
 import { EqMixin } from '../../../mixins/eq/EqMixin';
 import { ThemeInjectionMixin } from '../../../mixins/themeInjection/ThemeInjectionMixin';
 import { applyMixins } from '../../../utils/applyMixins';
-import { exists, isBoolean, isPrimitive } from '../../../utils/helpers';
+import { exists, isBoolean } from '../../../utils/helpers';
 import { PropType, VNode } from 'vue';
 
 export interface SelectItem<T> {
@@ -61,14 +61,13 @@ export default applyMixins(EqMixin, InputMixin, ThemeInjectionMixin, ExtractProp
     }> {
       return Object.freeze(
         this.items.map((item, index) => {
-          const primitive = isPrimitive(item);
           const disabledValue = this.extractProp(this.itemDisabled, item);
           return {
-            key: primitive ? item : this.itemKey ? this.extractProp(this.itemKey, item) : String(index),
-            value: primitive ? item : this.extractProp(this.itemValue, item),
-            isDisabled: primitive ? false : isBoolean(disabledValue) ? disabledValue : !disabledValue,
+            key: this.itemKey ? this.extractProp(this.itemKey, item) : String(index),
+            value: this.extractProp(this.itemValue, item),
+            isDisabled: isBoolean(disabledValue) ? disabledValue : !disabledValue,
             isSelected: this.isSelected(item),
-            text: primitive ? item : this.extractProp(this.itemText, item)
+            text: this.extractProp(this.itemText, item)
           };
         })
       );
@@ -143,8 +142,9 @@ export default applyMixins(EqMixin, InputMixin, ThemeInjectionMixin, ExtractProp
           'option',
           {
             domProps: {
-              value: this.internalValue,
-              disabled: true
+              value: '',
+              disabled: true,
+              selected: true
             }
           },
           this.placeholder
