@@ -114,7 +114,7 @@ export default applyMixins(EqMixin, InputMixin, ThemeInjectionMixin, ExtractProp
             input: this.onInput
           }
         },
-        this.displayPlaceholder ? [this.generatePlaceholder()] : this.generateOptions()
+        this.displayPlaceholder ? [this.generatePlaceholder(), ...this.generateOptions()] : this.generateOptions()
       );
     },
     generateOptions(): VNode[] | ScopedSlotChildren[] {
