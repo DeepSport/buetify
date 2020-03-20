@@ -52,7 +52,7 @@ export default Vue.extend({
         staticClass: mergeVNodeStaticClass('b-table', data.staticClass),
         class: mergeVNodeClasses(data.class, { 'is-loading': props.isLoading })
       },
-      [props.isScrollable ? h(BScroll, { staticClass: 'width-100-percent' }, [table]) : table]
+      [props.isScrollable ? h(BScroll, { staticClass: 'is-fullwidth' }, [table]) : table]
     );
   }
 });
