@@ -1,6 +1,7 @@
 import './tabs.sass';
 import { lookup } from 'fp-ts/lib/Array';
 import { pipe } from 'fp-ts/lib/pipeable';
+import BScroll from '../scroll/BScroll';
 import BTabItem, { BTabItemName, BTabItemPropsData } from './BTabItem';
 import { getProxyableMixin } from '../../mixins/proxyable/ProxyableMixin';
 import { VNode, VNodeComponentOptions } from 'vue';
@@ -59,6 +60,10 @@ export default applyMixins(TABS_THEME_MIXIN, getProxyableMixin('value', 'input',
     destroyOnHide: {
       type: Boolean,
       default: false
+    },
+    isScrollable: {
+      type: Boolean,
+      default: false
     }
   },
   data(): Data {
@@ -88,7 +93,7 @@ export default applyMixins(TABS_THEME_MIXIN, getProxyableMixin('value', 'input',
         this.size,
         this.position,
         {
-          'is-fullwidth': this.isExpanded,
+          'is-fullwidth': this.isExpanded || this.isScrollable,
           'is-toggle-rounded is-toggle': this.type === 'is-toggle-rounded'
         }
       ];
@@ -137,6 +142,11 @@ export default applyMixins(TABS_THEME_MIXIN, getProxyableMixin('value', 'input',
       };
     },
     generateNavHeader(tabs: BTabItemNode[]): VNode {
+      return this.isScrollable
+        ? this.$createElement(BScroll, { staticClass: 'is-fullwidth' }, [this.generateNavHeaderContent(tabs)])
+        : this.generateNavHeaderContent(tabs);
+    },
+    generateNavHeaderContent(tabs: BTabItemNode[]): VNode {
       return this.$createElement(
         'nav',
         { staticClass: 'tabs', class: this.navClasses },
@@ -201,10 +211,11 @@ export default applyMixins(TABS_THEME_MIXIN, getProxyableMixin('value', 'input',
   },
   render(): VNode {
     const tabs = this.parseNodes();
-    return this.$createElement('article', { staticClass: 'b-tabs', class: this.rootClasses }, [
-      this.generateNavHeader(tabs),
-      this.generateTabContent(tabs)
-    ]);
+    return this.$createElement(
+      'article',
+      { staticClass: this.isScrollable ? 'b-tabs is-scrollable' : 'b-tabs', class: this.rootClasses },
+      [this.generateNavHeader(tabs), this.generateTabContent(tabs)]
+    );
   }
 });
 
