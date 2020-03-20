@@ -113,13 +113,13 @@ export default applyMixins(ToggleMixin).extend({
       return this.generatePopupContainer(this.overlay);
     },
     generateTopNoticeContainer(): VNode {
-      return this.generatePopupContainer(this.top, 'notices-is-top');
+      return this.generatePopupContainer(this.top, 'notices-is-top', 2);
     },
     generateBottomNoticeContainer(): VNode {
-      return this.generatePopupContainer(this.bottom, 'notices-is-bottom');
+      return this.generatePopupContainer(this.bottom, 'notices-is-bottom', 2);
     },
-    generatePopupContainer(popup: Popup, staticClass?: string): VNode {
-      return this.$createElement('div', { staticClass, style: { zIndex: isSome(popup.node) ? 1 : -1 } }, [
+    generatePopupContainer(popup: Popup, staticClass?: string, zIndex: number = 1): VNode {
+      return this.$createElement('div', { staticClass, style: { zIndex: isSome(popup.node) ? zIndex : -1 } }, [
         this.$createElement('transition', { attrs: popup.transition }, this.generateRenderNode(popup.node))
       ]);
     },
