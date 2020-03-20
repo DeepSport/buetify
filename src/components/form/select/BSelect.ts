@@ -114,7 +114,7 @@ export default applyMixins(EqMixin, InputMixin, ThemeInjectionMixin, ExtractProp
             input: this.onInput
           }
         },
-        this.displayPlaceholder ? [this.generatePlaceholder(), ...this.generateOptions()] : this.generateOptions()
+        [this.generatePlaceholder(), ...this.generateOptions()]
       );
     },
     generateOptions(): VNode[] | ScopedSlotChildren[] {
@@ -125,8 +125,10 @@ export default applyMixins(EqMixin, InputMixin, ThemeInjectionMixin, ExtractProp
               'option',
               {
                 key: item.key,
+                attrs: {
+                  value: item.value
+                },
                 domProps: {
-                  value: item.value,
                   selected: item.isSelected,
                   disabled: item.isDisabled
                 }
@@ -141,6 +143,7 @@ export default applyMixins(EqMixin, InputMixin, ThemeInjectionMixin, ExtractProp
         this.$createElement(
           'option',
           {
+            directives: [{ name: 'show', value: this.displayPlaceholder }],
             domProps: {
               value: '',
               disabled: true,
