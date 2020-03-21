@@ -1,11 +1,12 @@
 import './accordion.sass';
 import { VNode } from 'vue';
 import { AsyncComponent, Component, PropValidator } from 'vue/types/options';
+import { ThemeInjectionMixin } from '../../mixins/themeInjection';
 import { ToggleMixin } from '../../mixins/toggle/ToggleMixin';
 import { formatTransition, FadeTransitionMixin } from '../../mixins/fadeTransition/FadeTransitionMixin';
 import { applyMixins } from '../../utils/applyMixins';
 
-export default applyMixins(ToggleMixin, FadeTransitionMixin).extend({
+export default applyMixins(ToggleMixin, FadeTransitionMixin, ThemeInjectionMixin).extend({
   name: 'BAccordion',
   props: {
     title: {
@@ -29,29 +30,20 @@ export default applyMixins(ToggleMixin, FadeTransitionMixin).extend({
         this.$slots.title ? this.$slots.title : [this.title]
       );
     },
-    triggerButton(): VNode | VNode[] {
-      return this.$scopedSlots.trigger
-        ? this.$createElement(
-            'div',
-            { staticClass: 'card-header-icon' },
-            this.$scopedSlots.trigger({
-              attrs: this.attrs,
-              listeners: this.listeners
-            }) as any
-          )
-        : this.$createElement(
-            'button',
-            {
-              staticClass: 'card-header-icon',
-              on: this.listeners,
-              attrs: this.attrs
-            },
-            [
-              this.$createElement(this.icon, {
-                props: { isExpanded: this.isActive }
-              })
-            ]
-          );
+    triggerButton(): VNode {
+      return this.$createElement(
+        'button',
+        {
+          staticClass: 'card-header-icon',
+          on: this.listeners,
+          attrs: this.attrs
+        },
+        [
+          this.$createElement(this.icon, {
+            props: { isExpanded: this.isActive }
+          })
+        ]
+      );
     },
     body(): VNode {
       return this.$createElement('transition', { attrs: formatTransition(this.transition) }, [this.bodyContent]);
@@ -71,6 +63,9 @@ export default applyMixins(ToggleMixin, FadeTransitionMixin).extend({
     }
   },
   render(): VNode {
-    return this.$createElement('article', { staticClass: 'card' }, [this.header, this.body]);
+    return this.$createElement('article', { staticClass: 'b-card card', class: this.themeClasses }, [
+      this.header,
+      this.body
+    ]);
   }
 });
