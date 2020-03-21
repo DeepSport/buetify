@@ -59,7 +59,11 @@ export default base.extend<options>().extend({
       type: Object,
       required: false,
       default: constant(DEFAULT_INPUT_ICONS)
-    } as PropValidator<InputIcons>
+    } as PropValidator<InputIcons>,
+    isRequired: {
+      type: Boolean,
+      default: false
+    }
   },
   data(): Data {
     return {
@@ -175,6 +179,7 @@ export default base.extend<options>().extend({
         },
         attrs: {
           ...this.$attrs,
+          required: this.isRequired,
           readonly: this.isReadonly,
           disabled: this.disabled
         }
