@@ -1,6 +1,7 @@
 @import '../../sass/helpers/flex-helpers'
 
 $app-header-background-color: $primary !default
+$app-header-background-color-invert: findColorInvert($app-header-background-color)
 
 .b-app-header
   position: relative
@@ -18,4 +19,6 @@ $app-header-background-color: $primary !default
   .b-app-header
     background-color: $app-header-background-color
     border-bottom: none
-    color: $white
+    color: $app-header-background-color-invert
+    .title
+      color: $app-header-background-color-invert
