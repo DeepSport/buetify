@@ -13,8 +13,12 @@ export default applyMixins(NavigationInjectionMixin).extend({
     }
   },
   methods: {
-    generateMainSlot(): VNode {
-      return this.$createElement('div', { staticClass: 'main-slot' }, this.$slots.default);
+    generateMainSlot(includeClickHandler: boolean = false): VNode {
+      return this.$createElement(
+        'div',
+        { on: includeClickHandler ? { click: this.showNavigationDrawer } : undefined, staticClass: 'main-slot' },
+        this.$slots.default
+      );
     },
     onKeydown(e: KeyboardEvent): void {
       e.preventDefault();
@@ -28,6 +32,7 @@ export default applyMixins(NavigationInjectionMixin).extend({
         {
           staticClass: 'navigation-icon',
           on: {
+            click: this.showNavigationDrawer,
             keydown: this.onKeydown
           },
           attrs: {
@@ -51,12 +56,9 @@ export default applyMixins(NavigationInjectionMixin).extend({
       : this.$createElement(
           'header',
           {
-            on: {
-              click: this.showNavigationDrawer
-            },
             staticClass: 'b-app-header is-flex flex-direction-row justify-content-center align-items-center'
           },
-          [this.generateNavigationButton(), this.generateMainSlot()]
+          [this.generateNavigationButton(), this.generateMainSlot(true)]
         );
   }
 });
