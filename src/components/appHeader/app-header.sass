@@ -9,7 +9,8 @@ $app-header-background-color-invert: findColorInvert($app-header-background-colo
   min-height: 4rem
   .navigation-icon
     position: absolute
-    left: $size-7
+    left: 0
+    padding: $size-7
     flex: none
     cursor: pointer
     z-index: 1
@@ -17,8 +18,9 @@ $app-header-background-color-invert: findColorInvert($app-header-background-colo
     width: 90%
 +until-widescreen
   .b-app-header
-    background-color: $app-header-background-color
-    border-bottom: none
-    color: $app-header-background-color-invert
-    .title
+    &.has-touch-header
+      background-color: $app-header-background-color
+      border-bottom: none
       color: $app-header-background-color-invert
+      .title
+        color: $app-header-background-color-invert
