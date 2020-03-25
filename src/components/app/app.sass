@@ -1,6 +1,7 @@
 @import '../../sass/helpers/animations'
 $snackbar-background-color: $dark !default
 $snackbar-color: $dark-invert !default
+$all-colors: mergeColorMaps($colors, $shades)
 
 .b-app
 	&.is-fixed
@@ -9,7 +10,12 @@ $snackbar-color: $dark-invert !default
 		bottom: 0
 		left: 0
 		right: 0
-	.toast 
+	&.is-fullheight
+		height: 100vh
+	+mobile
+		&.is-fullheight-mobile
+			height: 100vh
+	.toast
 		margin: 2rem
 		z-index: 1000
 		display: inline-flex
@@ -21,7 +27,7 @@ $snackbar-color: $dark-invert !default
 		padding: 0.75em 1.5em
 		//pointer-events: auto
 		opacity: 0.92
-		@each $name, $pair in mergeColorMaps($colors, $shades)
+		@each $name, $pair in $all-colors
 			$color: nth($pair, 1)
 			$color-invert: nth($pair, 2)
 			&.is-#{$name}
@@ -59,7 +65,7 @@ $snackbar-color: $dark-invert !default
 			.button:active 
 				background: darken($snackbar-background-color, 5%)
 			
-			@each $name, $pair in $colors 
+			@each $name, $pair in $all-colors
 				$color: nth($pair, 1)
 				&.is-#{$name}
 					.button 
