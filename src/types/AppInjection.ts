@@ -1,6 +1,7 @@
 import { IO } from 'fp-ts/lib/IO';
 import { Option } from 'fp-ts/lib/Option';
 import { VNode } from 'vue';
+import { WindowSize } from '../mixins/windowSize/WindowSizeMixin';
 import { NoticePlacement } from './NoticePlacement';
 import { Theme } from './Theme';
 import { Transition } from './Transition';
@@ -10,6 +11,7 @@ export interface AppInjection {
   navigation: NavigationInjection;
   notice: NoticeInjection;
   modal: ModalInjection;
+  windowSize: WindowSize;
 }
 
 export interface ThemeInjection {

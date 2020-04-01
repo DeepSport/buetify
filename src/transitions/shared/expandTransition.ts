@@ -32,7 +32,7 @@ export function createExpandTransition(transitionClass = '', x = false) {
 
       el.style.setProperty('transition', 'none', 'important');
       el.style.visibility = 'hidden';
-      el.style.visibility = initialStyle.visibility ?? 'visible';
+      el.style.visibility = initialStyle.visibility === null ? 'visible' : initialStyle.visibility;
       el.style.overflow = 'hidden';
       el.style[sizeProperty] = '0';
 
@@ -81,7 +81,7 @@ export function createExpandTransition(transitionClass = '', x = false) {
 
   function resetStyles(el: HTMLExpandElement) {
     const size = el._initialStyle[sizeProperty];
-    el.style.overflow = el._initialStyle.overflow ?? 'auto';
+    el.style.overflow = el._initialStyle.overflow === null ? 'auto' : el._initialStyle.overflow;
     if (size != null) el.style[sizeProperty] = size;
     delete el._initialStyle;
   }

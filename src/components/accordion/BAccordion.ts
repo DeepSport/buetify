@@ -5,6 +5,9 @@ import { ThemeInjectionMixin } from '../../mixins/themeInjection';
 import { ToggleMixin } from '../../mixins/toggle/ToggleMixin';
 import { formatTransition, FadeTransitionMixin } from '../../mixins/fadeTransition/FadeTransitionMixin';
 import { applyMixins } from '../../utils/applyMixins';
+import BAccordionContent from './BAccordionContent';
+
+const VerticalExpansionIcon = () => import('../icons/verticalExpansion/VerticalExpansionIcon');
 
 export default applyMixins(ToggleMixin, FadeTransitionMixin, ThemeInjectionMixin).extend({
   name: 'BAccordion',
@@ -15,22 +18,24 @@ export default applyMixins(ToggleMixin, FadeTransitionMixin, ThemeInjectionMixin
       default: ''
     },
     icon: {
-      type: Function,
-      default: () => import('../icons/verticalExpansion/VerticalExpansionIcon')
+      type: Function
     } as PropValidator<Component<any, any, any, any> | AsyncComponent<any, any, any, any>>
   },
-  computed: {
-    header(): VNode {
-      return this.$createElement('header', { staticClass: 'card-header' }, [this.headerTitle, this.triggerButton]);
+  methods: {
+    generateHeader(): VNode {
+      return this.$createElement('header', { staticClass: 'card-header' }, [
+        this.generateHeaderTitle(),
+        this.generateTriggerButton()
+      ]);
     },
-    headerTitle(): VNode {
+    generateHeaderTitle(): VNode {
       return this.$createElement(
         'h1',
         { staticClass: 'card-header-title' },
         this.$slots.title ? this.$slots.title : [this.title]
       );
     },
-    triggerButton(): VNode {
+    generateTriggerButton(): VNode {
       return this.$createElement(
         'button',
         {
@@ -39,33 +44,34 @@ export default applyMixins(ToggleMixin, FadeTransitionMixin, ThemeInjectionMixin
           attrs: this.attrs
         },
         [
-          this.$createElement(this.icon, {
+          this.$createElement(this.icon === undefined ? VerticalExpansionIcon : this.icon, {
             props: { isExpanded: this.isActive }
           })
         ]
       );
     },
-    body(): VNode {
-      return this.$createElement('transition', { attrs: formatTransition(this.transition) }, [this.bodyContent]);
+    generateBody(): VNode {
+      return this.$createElement('transition', { attrs: formatTransition(this.transition) }, [
+        this.generateBodyContent()
+      ]);
     },
-    bodyContent(): VNode {
+    generateBodyContent(): VNode {
       return this.$createElement(
-        'section',
+        BAccordionContent,
         {
           directives: [{ name: 'show', value: this.isActive }],
           attrs: {
-            'aria-hidden': this.isActive
-          },
-          staticClass: 'card-content'
+            'aria-hidden': !this.isActive
+          }
         },
-        this.$slots.default
+        this.$scopedSlots.default!(undefined)
       );
     }
   },
   render(): VNode {
     return this.$createElement('article', { staticClass: 'b-card card', class: this.themeClasses }, [
-      this.header,
-      this.body
+      this.generateHeader(),
+      this.generateBody()
     ]);
   }
 });
