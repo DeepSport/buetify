@@ -228,6 +228,7 @@ export default applyMixins(ThemeInjectionMixin).extend({
       return this.$createElement(
         'b-field-body',
         {
+          staticClass: this.isExpanded ? 'is-expanded' : '',
           props: {
             message: this.newMessage ? this.formattedMessage : '',
             variant: this.newVariant

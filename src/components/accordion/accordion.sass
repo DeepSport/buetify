@@ -10,8 +10,8 @@ $card-header-icon-hover-color: $link
     @each $name, $pair in mergeColorMaps($colors, $shades)
       $color: nth($pair, 1)
       $color-invert: nth($pair, 2)
-      &.is-#{$color}
-        box-shadow: 0 0.5em 1em -0.125em rgba($color-invert, 0.1), 0 0px 0 1px rgba($color-invert, 0.02)
+      &.is-#{$name}
+        box-shadow: 0 2px 3px rgba($color-invert, 0.1), 0 0 0 1px rgba($color-invert, 0.1)
         .card-header
           box-shadow: 0 0.125em 0.25em rgba($color-invert, 0.1)
 
@@ -24,10 +24,17 @@ $card-header-icon-hover-color: $link
 
     .card-content
       background-color: inherit
-      padding: $card-content-padding
+      margin-top: calc(#{$card-content-padding} * 0.5)
+      padding: calc(#{$card-content-padding} * 0.5) $card-content-padding $card-content-padding $card-content-padding
+      @each $name, $pair in mergeColorMaps($colors, $shades)
+        $color: nth($pair, 1)
+        $color-invert: nth($pair, 2)
+        &.is-#{$name}
+          background-color: $color
+          color: $color-invert
       +touch
         padding: $size-6
 
-
     .card-footer
       background-color: transparent
+

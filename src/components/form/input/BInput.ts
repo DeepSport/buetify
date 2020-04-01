@@ -1,4 +1,5 @@
 import '../sass/form.sass';
+import { isEnterEvent } from '../../../utils/eventHelpers';
 import { exists } from '../../../utils/helpers';
 import { constant } from 'fp-ts/lib/function';
 import { VNode } from 'vue';
@@ -63,6 +64,10 @@ export default base.extend<options>().extend({
     isRequired: {
       type: Boolean,
       default: false
+    },
+    blurOnEnterPress: {
+      type: Boolean,
+      default: true
     }
   },
   data(): Data {
@@ -173,6 +178,7 @@ export default base.extend<options>().extend({
           placeholder: this.placeholder
         },
         on: {
+          keydown: this.onKeydown,
           blur: this.onBlur,
           focus: this.onFocus,
           input: this.onInput
@@ -185,6 +191,11 @@ export default base.extend<options>().extend({
         }
       });
     },
+    onKeydown(e: KeyboardEvent): void {
+      if (!this.disabled && this.blurOnEnterPress && isEnterEvent(e)) {
+        this.$refs.input.blur();
+      }
+    },
     generateTextInput(): VNode {
       return this.$createElement('textarea', {
         ref: 'input',
@@ -196,6 +207,7 @@ export default base.extend<options>().extend({
           placeholder: this.placeholder
         },
         on: {
+          keydown: this.onKeydown,
           blur: this.onBlur,
           focus: this.onFocus,
           input: this.onInput

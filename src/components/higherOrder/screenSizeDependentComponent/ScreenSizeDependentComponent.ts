@@ -1,5 +1,4 @@
-import { WindowSizeMixin } from '../../../mixins/windowSize/WindowSizeMixin';
-import { applyMixins } from '../../../utils/applyMixins';
+import { WINDOW_SIZE_INJECTION } from '../../../mixins/windowSize/WindowSizeMixin';
 import Vue, { AsyncComponent, VNode } from 'vue';
 import { ExtendedVue } from 'vue/types/vue';
 
@@ -12,27 +11,24 @@ export interface ComponentsByBreakPoint {
 }
 
 export const ScreenSizeDependentComponent = (components: ComponentsByBreakPoint) =>
-  applyMixins(WindowSizeMixin).extend({
+  Vue.extend({
     name: 'DynamicWindowSizeComponent',
-    computed: {
-      component(): AsyncComponent<any, any, any, any> | ExtendedVue<Vue, unknown, unknown, unknown, unknown> {
-        if (this.windowSize.isMobile) {
-          return components.mobile;
-        } else if (this.windowSize.isTablet) {
-          return components.tablet;
-        } else if (this.windowSize.isDesktop) {
-          return components.desktop;
-        } else if (this.windowSize.isWidescreen) {
-          return components.widescreen;
-        } else {
-          return components.fullHD;
-        }
-      }
+    functional: true,
+    inject: {
+      ...WINDOW_SIZE_INJECTION
     },
-    render(): VNode {
-      return this.$createElement(this.component, {
-        attrs: this.$attrs,
-        on: this.$listeners
-      });
+    render(h, { data, injections, children }): VNode {
+      const windowSize = injections.windowSize;
+      if (windowSize.isMobile) {
+        return h(components.mobile, data, children);
+      } else if (windowSize.isTablet) {
+        return h(components.tablet, data, children);
+      } else if (windowSize.isDesktop) {
+        return h(components.desktop, data, children);
+      } else if (windowSize.isWidescreen) {
+        return h(components.widescreen, data, children);
+      } else {
+        return h(components.fullHD, data, children);
+      }
     }
   });

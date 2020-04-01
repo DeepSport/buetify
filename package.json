@@ -30,7 +30,7 @@
     "url": "https://github.com/kightlingerh/buetify/issues"
   },
   "files": [
-    "src/",
+    "src/*.sass",
     "es5/",
     "lib/"
   ],

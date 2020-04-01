@@ -1,20 +1,31 @@
 @import '../../sass/helpers/animations'
 $snackbar-background-color: $dark !default
 $snackbar-color: $dark-invert !default
-$all-colors: mergeColorMaps($colors, $shades)
+$toast-border-radius: $radius !default
+$snackbar-border-radius: $radius !default
+$all-colors: mergeColorMaps($colors, $shades) !default
 
 .b-app
-	&.is-fixed
-		position: fixed
-		top: 0
-		bottom: 0
-		left: 0
-		right: 0
+	width: 100%
+	position: relative
 	&.is-fullheight
 		height: 100vh
 	+mobile
 		&.is-fullheight-mobile
 			height: 100vh
+	&.has-navigation-drawer
+		.b-app-content
+			+desktop
+				margin-left: $navigation-drawer-width
+			.b-sheet
+				&.is-loading
+					width: calc(100% - #{$navigation-drawer-width})
+
+	.b-app-content
+		.b-sheet
+			&.is-loading
+				width: 100%
+
 	.toast
 		margin: 2rem
 		z-index: 1000
@@ -23,7 +34,7 @@ $all-colors: mergeColorMaps($colors, $shades)
 		margin: 0.5em 0
 		text-align: center
 		box-shadow: 0 1px 4px rgba(0, 0, 0, 0.12), 0 0 6px rgba(0, 0, 0, 0.04)
-		border-radius: 2em
+		border-radius: $toast-border-radius
 		padding: 0.75em 1.5em
 		//pointer-events: auto
 		opacity: 0.92
@@ -42,7 +53,7 @@ $all-colors: mergeColorMaps($colors, $shades)
 		animation-duration: $speed-slow
 		margin: 0.5em 0
 		box-shadow: 0 1px 4px rgba(0, 0, 0, 0.12), 0 0 6px rgba(0, 0, 0, 0.04)
-		border-radius: $radius
+		border-radius: $snackbar-border-radius
 		pointer-events: auto
 		background: $snackbar-background-color
 		color: $snackbar-color
@@ -91,31 +102,32 @@ $all-colors: mergeColorMaps($colors, $shades)
 		&.is-top-right,
 		&.is-bottom-right 
 			align-self: flex-end
+			+mobile
+				align-self: center
 		
 		&.is-top-left,
 		&.is-bottom-left 
 			align-self: flex-start
+			+mobile
+				align-self: center
 		
 		&.is-toast 
 			opacity: 0.92
 	// Modifiers
 	> .notices-is-top
 		width: 100%
-		position: absolute
+		position: fixed
 		top: 0
 		display: flex
 		flex-direction: column
 	> .notices-is-bottom
 		width: 100%
 		padding: 0 2rem 2rem 2rem
-		position: absolute
+		position: fixed
 		bottom: 0
 		display: flex
 		flex-direction: column-reverse
 	&.has-custom-container 
-		position: absolute
-	@include mobile 
-		padding: 0
-		position: fixed !important
+		position: fixed
 	
 

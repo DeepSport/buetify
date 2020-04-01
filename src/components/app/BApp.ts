@@ -4,6 +4,7 @@ import { constant, constVoid } from 'fp-ts/lib/function';
 import { IO } from 'fp-ts/lib/IO';
 import { getOrElse, isSome, none, Option, some } from 'fp-ts/lib/Option';
 import { VNode } from 'vue';
+import { WindowSizeMixin } from '../../mixins/windowSize';
 import { ToggleMixin } from '../../mixins/toggle/ToggleMixin';
 import { formatTransition } from '../../mixins/fadeTransition/FadeTransitionMixin';
 import { BREAK_POINTS } from '../../mixins/windowSize/WindowSizeMixin';
@@ -21,12 +22,13 @@ import { Theme } from '../../types/Theme';
 import { TransitionClasses } from '../../types/Transition';
 import { applyMixins } from '../../utils/applyMixins';
 import { RenderVNode } from '../../utils/RenderVNode';
+import BNavigationDrawer from '../navigationDrawer/BNavigationDrawer';
 
 let theme = getOrElse<Theme>(constant<Theme>('dark'))(getItem('theme')() as Option<Theme>);
 
 const DEFAULT_TRANSITION: TransitionClasses = { name: 'fade' };
 
-export default applyMixins(ToggleMixin).extend({
+export default applyMixins(ToggleMixin, WindowSizeMixin).extend({
   name: 'BApp',
   inheritAttrs: false,
   components: {
@@ -98,15 +100,24 @@ export default applyMixins(ToggleMixin).extend({
         get: () => this.isActive
       });
       return navigationInjection as any;
+    },
+    hasNavigationDrawer(): boolean {
+      return (
+        !!this.$scopedSlots['navigation-drawer'] && this.$scopedSlots['navigation-drawer'](undefined) !== undefined
+      );
     }
   },
   provide(): AppInjection {
-    return {
+    const appInjection = {
       theme: this.themeInjection,
       notice: this.noticeInjection,
       modal: this.modalInjection,
       navigation: this.navigationInjection
     };
+    Object.defineProperty(appInjection, 'windowSize', {
+      get: () => this.windowSize
+    });
+    return appInjection as any;
   },
   methods: {
     generateOverlayContainer(): VNode {
@@ -152,6 +163,14 @@ export default applyMixins(ToggleMixin).extend({
     removeBottomNotice() {
       this.$nextTick(() => (this.bottom.node = none));
     },
+    generateNavigationSlot() {
+      return this.$createElement(BNavigationDrawer, {
+        props: { isFullheight: true },
+        scopedSlots: {
+          default: () => this.$scopedSlots['navigation-drawer']!(undefined)
+        }
+      });
+    },
     showNotice(params: ShowNoticeOptions): IO<void> {
       if (params.shouldQueue && this.shouldQueueNotice(params.placement)) {
         setTimeout(() => this.showNotice(params), 250);
@@ -180,15 +199,26 @@ export default applyMixins(ToggleMixin).extend({
           return constVoid;
         }
       }
+    },
+    generateMainContent(): VNode {
+      return this.$createElement('div', { staticClass: 'b-app-content' }, this.$scopedSlots.default!(undefined));
     }
   },
   render(): VNode {
-    return this.$createElement('div', { staticClass: 'b-app' }, [
+    const nodes = [
       this.generateTopNoticeContainer(),
-      this.$slots.default,
       this.generateBottomNoticeContainer(),
-      this.generateOverlayContainer()
-    ]);
+      this.generateOverlayContainer(),
+      this.generateMainContent()
+    ];
+    if (this.hasNavigationDrawer) {
+      nodes.push(this.generateNavigationSlot());
+    }
+    return this.$createElement(
+      'div',
+      { staticClass: 'b-app', class: { 'has-navigation-drawer': this.hasNavigationDrawer } },
+      nodes
+    );
   }
 });
 
