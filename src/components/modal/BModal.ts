@@ -31,9 +31,17 @@ export default applyMixins(DisplayModalMixin).extend({
   },
   methods: {
     generateModal(): VNode {
-      return this.$createElement(BOverlay, { style: this.appliedStyle, on: this.$listeners }, [
-        this.generateModalBox()
-      ]);
+      return this.$createElement(
+        BOverlay,
+        {
+          style: this.appliedStyle,
+          on: {
+            ...this.listeners,
+            close: this.close.bind(this)
+          }
+        },
+        [this.generateModalBox()]
+      );
     },
     generateModalBox(): VNode {
       return this.$createElement(

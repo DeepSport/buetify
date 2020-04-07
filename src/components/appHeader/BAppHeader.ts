@@ -9,7 +9,7 @@ export default applyMixins(NavigationInjectionMixin).extend({
   props: {
     navigationIcon: {
       type: Function,
-      required: true
+      required: false
     }
   },
   methods: {
@@ -17,7 +17,7 @@ export default applyMixins(NavigationInjectionMixin).extend({
       return this.$createElement(
         'div',
         { on: includeClickHandler ? { click: this.showNavigationDrawer } : undefined, staticClass: 'main-slot' },
-        this.$slots.default
+        this.$scopedSlots.default!(undefined)
       );
     },
     onKeydown(e: KeyboardEvent): void {

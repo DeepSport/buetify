@@ -19,7 +19,10 @@ export default applyMixins(DisplayModalMixin).extend({
           props: {
             isActive: true
           },
-          on: this.$listeners
+          on: {
+            ...this.listeners,
+            close: this.close.bind(this)
+          }
         },
         [
           this.$createElement(BDialogContent, [

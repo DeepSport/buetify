@@ -22,7 +22,6 @@ export const DisplayModalMixin = base.extend<options>().extend({
   props: {
     transition: {
       type: String,
-
       default: 'fade'
     },
     isActive: {
@@ -41,18 +40,41 @@ export const DisplayModalMixin = base.extend<options>().extend({
   },
   data() {
     return {
+      hasMounted: false,
+      lazyIsActive: this.isActive,
       removeModal: constVoid
     };
   },
   computed: {
+    internalIsActive: {
+      get(): boolean {
+        return this.lazyIsActive && this.hasMounted;
+      },
+      set(newVal: boolean) {
+        this.lazyIsActive = newVal;
+        if (newVal === false) {
+          this.$emit('close')
+        }
+      }
+    },
     node(): Option<VNode> {
-      return this.isActive && this.attachToApp ? some(this.generateModal()) : none;
+      return this.internalIsActive && this.attachToApp ? some(this.generateModal()) : none;
     },
     attachToApp(): boolean {
       return true;
+    },
+    listeners(): Record<string, Function | Function[]> {
+      const listeners =  { ...this.$listeners }
+      delete listeners.close;
+      return listeners;
     }
   },
   watch: {
+    isActive(newVal: boolean) {
+      if (newVal !== this.lazyIsActive) {
+        this.lazyIsActive = newVal;
+      }
+    },
     node: {
       handler(newValue: Option<VNode>) {
         if (isSome(newValue)) {
@@ -69,11 +91,17 @@ export const DisplayModalMixin = base.extend<options>().extend({
             this.removeModal = constVoid;
           }, 150);
         }
-      },
-      immediate: true
+      }
     }
   },
+  beforeMount() {
+    this.hasMounted = true;
+  },
   methods: {
+    close() {
+      // @ts-ignore
+      this.internalIsActive = false;
+    },
     generateModal(): VNode {
       consoleError('This is an abstract method, a concrete implementation must be put in place');
       return this.$createElement();

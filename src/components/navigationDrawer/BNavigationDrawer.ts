@@ -59,7 +59,7 @@ export default applyMixins(
           {
             staticClass: 'is-left',
             props: { isActive: this.navigationDrawerIsVisible },
-            on: { close: this.hideNavigationDrawer }
+            on: { close: this.hideNavigationDrawer.bind(this) }
           },
           [this.generateDrawer()]
         )
