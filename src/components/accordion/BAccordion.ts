@@ -23,7 +23,7 @@ export default applyMixins(ToggleMixin, FadeTransitionMixin, ThemeInjectionMixin
   },
   methods: {
     generateHeader(): VNode {
-      return this.$createElement('header', { staticClass: 'card-header' }, [
+      return this.$createElement('header', { staticClass: 'card-header', on: { click: this.toggle } }, [
         this.generateHeaderTitle(),
         this.generateTriggerButton()
       ]);
@@ -32,7 +32,7 @@ export default applyMixins(ToggleMixin, FadeTransitionMixin, ThemeInjectionMixin
       return this.$createElement(
         'h1',
         { staticClass: 'card-header-title' },
-        this.$slots.title ? this.$slots.title : [this.title]
+        this.$scopedSlots.title ? this.$scopedSlots.title!(undefined) : [this.title]
       );
     },
     generateTriggerButton(): VNode {
@@ -40,7 +40,10 @@ export default applyMixins(ToggleMixin, FadeTransitionMixin, ThemeInjectionMixin
         'button',
         {
           staticClass: 'card-header-icon',
-          on: this.listeners,
+          on: {
+            ...this.keyboardToggler,
+            click: this.stopPropagationToggle
+          },
           attrs: this.attrs
         },
         [
@@ -66,6 +69,10 @@ export default applyMixins(ToggleMixin, FadeTransitionMixin, ThemeInjectionMixin
         },
         this.$scopedSlots.default!(undefined)
       );
+    },
+    stopPropagationToggle(e: MouseEvent) {
+      e.stopPropagation();
+      this.toggle();
     }
   },
   render(): VNode {

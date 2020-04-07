@@ -1,5 +1,4 @@
 import './overlay.sass';
-import { mapVNodeListenersToNative } from '../../utils/mapVNodeListenersToNative';
 import { mergeVNodeStaticClass } from '../../utils/mergeVNodeStaticClass';
 import Vue, { VNode } from 'vue';
 import { PropValidator } from 'vue/types/options';
@@ -24,27 +23,53 @@ export default Vue.extend({
     }
   },
   render(h, { data, props, children }): VNode {
-    return h(
-      'div',
-      {
-        staticClass: mergeVNodeStaticClass('b-overlay', data.staticClass),
-        class: props.position,
-        directives: [{ name: 'show', value: props.isActive }]
-      },
-      [
-        h('div', {
-          staticClass: 'b-overlay-background',
-          on: mapVNodeListenersToNative('click', 'close', data.on)
-        }),
-        h(
-          'div',
-          {
-            staticClass: 'b-overlay-content',
-            class: { 'is-fullscreen': props.isFullscreen }
-          },
-          children
-        )
-      ]
-    );
+    function onClick(e: MouseEvent) {
+      if (data.on && data.on.close) {
+        Array.isArray(data.on.close) ? data.on.close.forEach(fn => fn(e)) : data.on.close(e);
+      }
+    }
+    if (props.isFullscreen) {
+      return h(
+        'div',
+        {
+          staticClass: mergeVNodeStaticClass('b-overlay', data.staticClass),
+          class: props.position,
+          directives: [{ name: 'show', value: props.isActive }]
+        },
+        [
+          h(
+            'div',
+            {
+              staticClass: 'b-overlay-content is-fullscreen'
+            },
+            children
+          )
+        ]
+      );
+    } else {
+      return h(
+        'div',
+        {
+          staticClass: mergeVNodeStaticClass('b-overlay', data.staticClass),
+          class: props.position,
+          directives: [{ name: 'show', value: props.isActive }]
+        },
+        [
+          h('div', {
+            staticClass: 'b-overlay-background',
+            on: {
+              click: onClick
+            }
+          }),
+          h(
+            'div',
+            {
+              staticClass: 'b-overlay-content'
+            },
+            children
+          )
+        ]
+      );
+    }
   }
 });

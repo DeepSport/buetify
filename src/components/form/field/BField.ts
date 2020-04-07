@@ -4,7 +4,7 @@ import { AllColorsVariant } from '../../../types/ColorVariants';
 import { not } from 'fp-ts/lib/function';
 import { PropType, VNode } from 'vue';
 import { ThemeInjectionMixin } from '../../../mixins/themeInjection/ThemeInjectionMixin';
-import { isEmptyString } from '../../../utils/helpers';
+import { isEmptyString, isString } from '../../../utils/helpers';
 
 export type FieldPosition = 'is-left' | 'is-centered' | 'is-right';
 
@@ -95,13 +95,13 @@ export default applyMixins(ThemeInjectionMixin).extend({
      * (each element is separated by <br> tag)
      */
     formattedMessage(): string {
-      if (typeof this.newMessage === 'string') {
+      if (isString(this.newMessage)) {
         return this.newMessage;
       } else {
         const messages = [];
         if (Array.isArray(this.newMessage)) {
           this.newMessage.forEach(message => {
-            if (typeof message === 'string') {
+            if (isString(message)) {
               messages.push(message);
             } else {
               for (const key in message) {
@@ -123,7 +123,9 @@ export default applyMixins(ThemeInjectionMixin).extend({
     },
     attrs(): object {
       return {
-        message: this.newMessage,
+        isFullwidth: this.isExpanded,
+        isExpanded: this.isExpanded,
+        message: this.formattedMessage,
         messageVariant: this.newVariant,
         id: this.computedId,
         ...(this.label ? { 'aria-labelledby': this.fieldId } : {})

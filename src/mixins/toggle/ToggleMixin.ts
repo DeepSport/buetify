@@ -160,11 +160,11 @@ export const ToggleMixin = Vue.extend({
   methods: {
     setOn(): void {
       this.internalIsOn = true;
-      this.$emit('set-on', this.isActive);
+      this.$emit('set-on');
     },
     setOff(): void {
       this.internalIsOn = false;
-      this.$emit('set-off', this.isActive);
+      this.$emit('set-off');
     },
     toggle(): void {
       this.internalIsOn = !this.internalIsOn;

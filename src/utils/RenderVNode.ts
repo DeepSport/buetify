@@ -9,7 +9,7 @@ export const RenderVNode = Vue.extend({
       required: false
     }
   },
-  render(h, { props }): VNode {
+  render(_, { props }): VNode {
     return props.node;
   }
 });

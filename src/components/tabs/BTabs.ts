@@ -1,5 +1,5 @@
 import './tabs.sass';
-import { lookup } from 'fp-ts/lib/Array';
+import { head, lookup } from 'fp-ts/lib/Array';
 import { pipe } from 'fp-ts/lib/pipeable';
 import BScroll from '../scroll/BScroll';
 import BTabItem, { BTabItemName, BTabItemPropsData } from './BTabItem';
@@ -8,7 +8,7 @@ import { VNode, VNodeComponentOptions } from 'vue';
 import { PropValidator } from 'vue/types/options';
 import { applyMixins } from '../../utils/applyMixins';
 import { getThemeInjectionMixin } from '../../mixins/themeInjection/ThemeInjectionMixin';
-import { map, none, Option, some } from 'fp-ts/lib/Option';
+import { isSome, map, none, Option, some } from 'fp-ts/lib/Option';
 
 const TABS_THEME_MAP = {
   dark: 'is-link',
@@ -117,16 +117,18 @@ export default applyMixins(TABS_THEME_MIXIN, getProxyableMixin('value', 'input',
   },
   beforeMount(): void {
     const nodes = this.parseNodes();
-    const index = nodes.findIndex(
-      node =>
-        ((node.componentOptions.propsData.isDisabled === undefined ||
-          node.componentOptions.propsData.isDisabled === false) &&
-          node.componentOptions.propsData.isVisible === undefined) ||
-        node.componentOptions.propsData.isVisible === true
-    );
-    if (index > -1) {
-      this.injection.activeLabel = some(nodes[index].componentOptions.propsData.label);
-      this.internalValue = index;
+    const node = lookup(this.internalValue as number, nodes);
+    if (isSome(node)) {
+      this.injection.activeLabel = pipe(
+        node,
+        map(n => n.componentOptions.propsData.label)
+      );
+    } else {
+      this.injection.activeLabel = pipe(
+        head(nodes),
+        map(n => n.componentOptions.propsData.label)
+      );
+      this.internalValue = 0;
     }
   },
   methods: {
@@ -201,7 +203,7 @@ export default applyMixins(TABS_THEME_MIXIN, getProxyableMixin('value', 'input',
       );
     },
     generateTabContent(tabs: BTabItemNode[]): VNode {
-      return this.$createElement('section', { staticClass: 'tab-content', attrs: { 'aria-label': 'Tab Content' } }, [
+      return this.$createElement('div', { staticClass: 'tab-content' }, [
         this.$createElement('transition', { props: { name: this.transition } }, [tabs[this.internalValue as number]])
       ]);
     },
