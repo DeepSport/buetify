@@ -1,4 +1,5 @@
 import BButton from './BButton';
+import { ButtonTheme } from './theme';
 
-export { BButton };
+export { BButton, ButtonTheme };
 export default BButton;

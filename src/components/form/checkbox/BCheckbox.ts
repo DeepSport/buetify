@@ -3,14 +3,14 @@ import { getSelectionControl } from '../shared/getSelectionControl';
 
 export default getSelectionControl('checkbox', 'checkbox', 'BCheckbox', 'b-checkbox checkbox').extend({
   props: {
-    indeterminate: {
+    isIndeterminate: {
       type: Boolean,
       default: false
     }
   },
   data() {
     return {
-      newIndeterminate: this.indeterminate
+      newIndeterminate: this.isIndeterminate
     };
   },
   computed: {
@@ -28,7 +28,7 @@ export default getSelectionControl('checkbox', 'checkbox', 'BCheckbox', 'b-check
       this.$emit('update:indeterminate', val);
     },
     isActive() {
-      if (!this.indeterminate) return;
+      if (!this.isIndeterminate) return;
       this.newIndeterminate = false;
     }
   }

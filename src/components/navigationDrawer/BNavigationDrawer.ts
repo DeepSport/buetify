@@ -4,18 +4,14 @@ import { SlideRightTransition } from '../../transitions/slideRightTransition';
 import { VNode } from 'vue';
 import BOverlay from '../overlay/BOverlay';
 import { NavigationInjectionMixin } from '../../mixins/navigationInjection/NavigationInjectionMixin';
-import { getThemeInjectionMixin, ThemeColorMap } from '../../mixins/themeInjection/ThemeInjectionMixin';
+import { getThemeInjectionMixin } from '../../mixins/themeInjection/ThemeInjectionMixin';
 import { applyMixins } from '../../utils/applyMixins';
-
-const NAV_DRAWER_THEME_MAP: ThemeColorMap = {
-  dark: 'is-black-bis',
-  light: 'is-grey-darker'
-};
+import { NavigationDrawerTheme } from './theme';
 
 export default applyMixins(
   NavigationInjectionMixin,
   WindowSizeMixin,
-  getThemeInjectionMixin(NAV_DRAWER_THEME_MAP)
+  getThemeInjectionMixin(NavigationDrawerTheme)
 ).extend({
   name: 'BNavigationDrawer',
   props: {

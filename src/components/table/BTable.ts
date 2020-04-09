@@ -148,6 +148,10 @@ export default Vue.extend({
     headerClasses: {
       type: [String, Object, Array],
       default: undefined
+    },
+    canCheckAllRows: {
+      type: Boolean,
+      default: true
     }
   },
   data(): Data {
@@ -452,8 +456,10 @@ export default Vue.extend({
           sortType: this.internalSortType,
           checkboxVariant: this.checkboxVariant,
           isCheckable: this.hasCheckableRows,
-          isChecked: this.allRowsChecked
+          isChecked: this.allRowsChecked,
+          isDisabled: !this.canCheckAllRows
         },
+        scopedSlots: this.$scopedSlots,
         on: {
           toggle: this.toggleAllRows,
           'new-sort-type': this.onNewSortType,

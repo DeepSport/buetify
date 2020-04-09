@@ -30,7 +30,7 @@ export default applyMixins(NavigationInjectionMixin).extend({
       return this.$createElement(
         'button',
         {
-          staticClass: 'navigation-icon',
+          staticClass: 'navigation-icon is-hidden-desktop',
           on: {
             click: this.showNavigationDrawer,
             keydown: this.onKeydown
@@ -51,7 +51,7 @@ export default applyMixins(NavigationInjectionMixin).extend({
           {
             staticClass: 'b-app-header is-flex flex-direction-row justify-content-center align-items-center'
           },
-          [this.generateMainSlot()]
+          [this.generateNavigationButton(), this.generateMainSlot()]
         )
       : this.$createElement(
           'header',

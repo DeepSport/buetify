@@ -3,13 +3,9 @@ import { applyMixins } from '../../utils/applyMixins';
 import { SizeVariant } from '../../types/SizeVariants';
 import { PropType, VNode } from 'vue';
 import { getThemeInjectionMixin } from '../../mixins/themeInjection/ThemeInjectionMixin';
+import { DialogTheme } from './theme';
 
-const DIALOG_THEME_MAP = {
-  dark: 'is-grey-dark',
-  light: ''
-};
-
-const DIALOG_THEME_MIXIN = getThemeInjectionMixin(DIALOG_THEME_MAP);
+const DIALOG_THEME_MIXIN = getThemeInjectionMixin(DialogTheme);
 
 export default applyMixins(DIALOG_THEME_MIXIN).extend({
   name: 'BDialogContent',

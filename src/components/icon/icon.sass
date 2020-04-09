@@ -2,6 +2,7 @@ $icon-dimensions: 1.5rem !default
 $icon-dimensions-small: 1rem !default
 $icon-dimensions-medium: 2rem !default
 $icon-dimensions-large: 3rem !default
+$icon-hover-color: $link !default
 
 .icon
 	align-items: center
@@ -9,6 +10,9 @@ $icon-dimensions-large: 3rem !default
 	justify-content: center
 	height: $icon-dimensions
 	width: $icon-dimensions
+	&.is-hoverable
+		&:hover
+			color: $icon-hover-color
 	// Sizes
 	&.is-small
 		height: $icon-dimensions-small
@@ -20,6 +24,10 @@ $icon-dimensions-large: 3rem !default
 		height: $icon-dimensions-large
 		width: $icon-dimensions-large
 	@each $name, $pair in $colors
-		$color-invert: nth($pair, 2)
+		$color: nth($pair, 1)
 		&.is-#{$name}
-			color: $color-invert
+			color: $color
+			&.is-hoverable
+				&:hover
+					color: darken($color, 2.5%)
+
