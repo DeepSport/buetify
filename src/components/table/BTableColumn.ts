@@ -30,7 +30,8 @@ export default Vue.extend({
       'data-label': props.column.label
     });
 
-    const scopedSlot = data.scopedSlots && (data.scopedSlots[props.column.label] || data.scopedSlots.header);
+    const scopedSlot =
+      data.scopedSlots && (data.scopedSlots[`header.${props.column.label}`] || data.scopedSlots.header);
 
     const children = [];
 

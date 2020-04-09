@@ -1,6 +1,7 @@
 import './tabs.sass';
 import { head, lookup } from 'fp-ts/lib/Array';
 import { pipe } from 'fp-ts/lib/pipeable';
+import { AllColorsVariant } from '../../types/ColorVariants';
 import BScroll from '../scroll/BScroll';
 import BTabItem, { BTabItemName, BTabItemPropsData } from './BTabItem';
 import { getProxyableMixin } from '../../mixins/proxyable/ProxyableMixin';
@@ -9,13 +10,9 @@ import { PropValidator } from 'vue/types/options';
 import { applyMixins } from '../../utils/applyMixins';
 import { getThemeInjectionMixin } from '../../mixins/themeInjection/ThemeInjectionMixin';
 import { isSome, map, none, Option, some } from 'fp-ts/lib/Option';
+import { TabsTheme } from './theme';
 
-const TABS_THEME_MAP = {
-  dark: 'is-link',
-  light: ''
-};
-
-const TABS_THEME_MIXIN = getThemeInjectionMixin(TABS_THEME_MAP);
+const TABS_THEME_MIXIN = getThemeInjectionMixin(TabsTheme);
 
 interface TabInjection {
   activeLabel: Option<string>;
@@ -53,6 +50,10 @@ export default applyMixins(TABS_THEME_MIXIN, getProxyableMixin('value', 'input',
       default: undefined
     } as PropValidator<TabPosition | undefined>,
     label: String,
+    variant: {
+      type: String,
+      default: undefined
+    } as PropValidator<AllColorsVariant | undefined>,
     isAnimated: {
       type: Boolean,
       default: true
@@ -88,14 +89,15 @@ export default applyMixins(TABS_THEME_MIXIN, getProxyableMixin('value', 'input',
     },
     navClasses(): any {
       return [
-        ...this.themeClasses,
+        this.variant,
         this.type,
         this.size,
         this.position,
         {
           'is-fullwidth': this.isExpanded || this.isScrollable,
           'is-toggle-rounded is-toggle': this.type === 'is-toggle-rounded'
-        }
+        },
+        ...(this.variant === undefined ? this.themeClasses : [])
       ];
     }
   },

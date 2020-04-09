@@ -16,11 +16,7 @@ $all-colors: mergeColorMaps($colors, $shades)
   border-bottom: 1px solid rgba($border-box-border-color, .2)
   @each $name, $pair in $all-colors
     $color: nth($pair, 1)
-    $color-invert: nth($pair, 2)
     &.is-#{$name}
-      border-top: 0.25rem solid $color
-      border-left: 1px solid rgba($border-box-border-color, .2)
-      border-right: 1px solid rgba($border-box-border-color, .2)
-      border-bottom: 1px solid rgba($border-box-border-color, .2)
+      border: 1px solid $color
   +mobile
     min-width: 320px

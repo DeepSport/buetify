@@ -1,5 +1,6 @@
 import BNavigationDrawer from './BNavigationDrawer';
+import { NavigationDrawerTheme } from './theme';
 
-export { BNavigationDrawer };
+export { BNavigationDrawer, NavigationDrawerTheme };
 
 export default BNavigationDrawer;

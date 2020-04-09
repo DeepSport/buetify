@@ -11,21 +11,16 @@ import {
 import { mergeVNodeAttrs } from '../../utils/mergeVNodeAttrs';
 import { mergeVNodeClasses } from '../../utils/mergeVNodeClasses';
 import { mergeVNodeStaticClass } from '../../utils/mergeVNodeStaticClass';
-
-const BUTTON_THEME_MAP = {
-  dark: 'is-link',
-  light: ''
-};
+import { ButtonTheme } from './theme';
 
 export default Vue.extend({
   name: 'BButton',
   functional: true,
   props: {
-    ...getThemeProps(BUTTON_THEME_MAP),
+    ...getThemeProps(ButtonTheme),
     variant: {
-      type: String,
-      default: 'is-primary'
-    } as PropValidator<ColorVariant>,
+      type: String
+    } as PropValidator<ColorVariant | undefined>,
     isRounded: Boolean,
     isLoading: Boolean,
     isOutlined: Boolean,
@@ -50,8 +45,8 @@ export default Vue.extend({
   render(h, { data, props, injections, children }): VNode {
     data.staticClass = mergeVNodeStaticClass('button', data.staticClass);
     data.class = mergeVNodeClasses(
-      data.class,
-      mergeVNodeClasses(getButtonClasses(props), getThemeClassesFromContext({ data, props, injections }))
+      props.variant ? data.class : getThemeClassesFromContext({ data, props, injections }),
+      getButtonClasses(props)
     );
     data.attrs = mergeVNodeAttrs(data.attrs, {
       disabled: props.isDisabled,
@@ -62,7 +57,7 @@ export default Vue.extend({
 });
 
 interface ButtonProps {
-  variant: ColorVariant;
+  variant: ColorVariant | undefined;
   isRounded: boolean;
   isLoading: boolean;
   isOutlined: boolean;

@@ -1,10 +1,5 @@
 import './menu.sass';
-import { ThemeColorMap } from '../../mixins/themeInjection/ThemeInjectionMixin';
 import { getThemeableFunctionalComponent } from '../../utils/getThemeableFunctionalComponent';
+import { MenuTheme } from './theme';
 
-const MENU_THEME_MAP: ThemeColorMap = {
-  dark: 'is-black-bis',
-  light: 'is-grey-darker'
-};
-
-export default getThemeableFunctionalComponent('menu', 'BMenu', 'aside', MENU_THEME_MAP);
+export default getThemeableFunctionalComponent('menu', 'BMenu', 'aside', MenuTheme);

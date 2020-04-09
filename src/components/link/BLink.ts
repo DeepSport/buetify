@@ -4,11 +4,7 @@ import { getThemeClassesFromContext, THEME_INJECTION } from '../../utils/getThem
 import { mergeVNodeStaticClass } from '../../utils/mergeVNodeStaticClass';
 import { constant } from 'fp-ts/lib/function';
 import Vue, { PropType, VNode } from 'vue';
-
-const LINK_THEME_MAP: ThemeColorMap = {
-  dark: 'is-warning',
-  light: ''
-};
+import { LinkTheme } from './theme';
 
 export default Vue.extend({
   name: 'BLink',
@@ -17,7 +13,7 @@ export default Vue.extend({
     themeMap: {
       type: Object as PropType<ThemeColorMap>,
       required: false,
-      default: constant(LINK_THEME_MAP)
+      default: constant(LinkTheme)
     },
     isThemeable: {
       type: Boolean,

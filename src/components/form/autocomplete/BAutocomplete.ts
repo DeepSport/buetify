@@ -5,7 +5,6 @@ import { ExtractPropMixin } from '../../../mixins/extractProp/ExtractPropMixin';
 import { constant, constVoid } from 'fp-ts/lib/function';
 import BDropdownDivider from '../../dropdown/BDropdownDivider';
 import BDropdownItem from '../../dropdown/BDropdownItem';
-import { DROPDOWN_THEME_MIXIN } from '../../dropdown/DropdownTheme';
 import { InputMixin } from '../../../mixins/input/InputMixin';
 import { EqMixin } from '../../../mixins/eq/EqMixin';
 import { applyMixins, ExtractVue } from '../../../utils/applyMixins';
@@ -13,6 +12,7 @@ import { head, isEmpty, lookup } from 'fp-ts/lib/Array';
 import { alt, chain, fold, fromNullable, isSome, map, none, Option, some, toUndefined } from 'fp-ts/lib/Option';
 import { pipe } from 'fp-ts/lib/pipeable';
 import { PropType, VNode } from 'vue';
+import { DROPDOWN_THEME_MIXIN } from '../../dropdown/shared';
 import BInput from '../input';
 
 export interface AutocompleteItem<T> {

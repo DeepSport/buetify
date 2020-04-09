@@ -33,26 +33,37 @@ export default Vue.extend({
       default: 'is-primary'
     }
   },
-  render(h, { props, slots, listeners, data }): VNode {
+  render(h, { props, scopedSlots, listeners, data }): VNode {
     const nodes = props.columns.map(column =>
       h(BTableColumn, {
         ...data,
+        scopedSlots,
         key: column.label,
         props: { column, sortType: props.sortType }
       })
     );
     if (props.isCheckable && listeners.toggle) {
       nodes.unshift(
-        h('th', { staticClass: 'checkbox-cell' }, [
-          h(BCheckbox, {
-            props: {
-              inputValue: props.isChecked,
-              variant: props.checkboxVariant,
-              isDisabled: props.isDisabled
-            },
-            on: { change: listeners.toggle }
-          })
-        ])
+        scopedSlots && scopedSlots['header.checkbox'] !== undefined
+          ? h(
+              'th',
+              scopedSlots['header.checkbox']!({
+                isChecked: props.isChecked,
+                variant: props.checkboxVariant,
+                isDisabled: props.isDisabled,
+                onChange: listeners.toggle
+              })
+            )
+          : h('th', { staticClass: 'checkbox-cell' }, [
+              h(BCheckbox, {
+                props: {
+                  inputValue: props.isChecked,
+                  variant: props.checkboxVariant,
+                  isDisabled: props.isDisabled
+                },
+                on: { change: listeners.toggle }
+              })
+            ])
       );
     }
     return h('thead', [h('tr', nodes)]);

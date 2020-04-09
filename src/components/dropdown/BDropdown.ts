@@ -1,11 +1,11 @@
 import './dropdown.sass';
 import { WindowSizeMixin } from '../../mixins/windowSize/WindowSizeMixin';
 import { FadeTransitionMixin } from '../../mixins/fadeTransition/FadeTransitionMixin';
-import { DROPDOWN_THEME_MIXIN } from './DropdownTheme';
 import { applyMixins, ExtractVue } from '../../utils/applyMixins';
 import { ToggleMixin } from '../../mixins/toggle/ToggleMixin';
 import { PropType, VNode, VNodeDirective } from 'vue';
 import ClickOutside, { ClickOutsideBindingArgs } from '../../directives/clickOutside';
+import { DROPDOWN_THEME_MIXIN } from './shared';
 
 export type DropdownPosition = 'is-top-right' | 'is-top-left' | 'is-bottom-left';
 
@@ -162,15 +162,19 @@ export default base.extend<options>().extend({
     },
     generateMobileBackground(): VNode {
       return this.generateTransition([
-        this.$createElement('div', {
-          staticClass: 'background',
-          attrs: { 'aria-hidden': !this.isActive },
-          directives: [{ name: 'show', value: this.isActive }]
-        })
+        this.$createElement(
+          'div',
+          {
+            staticClass: 'background',
+            attrs: { 'aria-hidden': !this.isActive },
+            directives: [{ name: 'show', value: this.isActive }]
+          },
+          [this.generateDropdownMenu()]
+        )
       ]);
     },
     generateTransition(children: VNode[]): VNode {
-      return this.$createElement('transition', { attrs: this.formattedTransition }, children);
+      return this.$createElement('transition', { props: this.formattedTransition }, children);
     },
     generateChildren(): VNode[] {
       const children: VNode[] = [];
@@ -179,8 +183,9 @@ export default base.extend<options>().extend({
       }
       if (this.displayMobileBackground) {
         children.push(this.generateMobileBackground());
+      } else {
+        children.push(this.generateDropdownMenu());
       }
-      children.push(this.generateDropdownMenu());
       return children;
     }
   },

@@ -131,7 +131,7 @@ export default applyMixins(ToggleMixin, WindowSizeMixin).extend({
     },
     generatePopupContainer(popup: Popup, staticClass?: string): VNode {
       return this.$createElement('div', { staticClass, style: { zIndex: isSome(popup.node) ? 1 : -1 } }, [
-        this.$createElement('transition', { attrs: popup.transition }, this.generateRenderNode(popup.node))
+        this.$createElement('transition', { props: popup.transition }, this.generateRenderNode(popup.node))
       ]);
     },
     generateRenderNode(node: Option<VNode>): VNode[] {
