@@ -13,7 +13,7 @@ $all-colors: mergeColorMaps($colors, $shades)
   @each $name, $pair in $all-colors
     @if length($pair) >= 4
       $color: nth($pair, 1)
-      $color-dark: nth($pair, 3)
+      $color-dark: nth($pair, 4)
       &.is-#{$name}
         color: $color
         &:hover
