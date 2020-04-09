@@ -10,21 +10,20 @@ $all-colors: mergeColorMaps($colors, $shades) !default
 	position: relative
 	&.is-fullheight
 		height: 100vh
-	+mobile
-		&.is-fullheight-mobile
-			height: 100vh
-	&.has-navigation-drawer
-		.b-app-content
-			+desktop
-				margin-left: $navigation-drawer-width
-			.b-sheet
-				&.is-loading
-					width: calc(100% - #{$navigation-drawer-width})
-
 	.b-app-content
 		.b-sheet
 			&.is-loading
 				width: 100%
+	+mobile
+		&.is-fullheight-mobile
+			height: 100vh
+	&.has-navigation-drawer
+		+widescreen
+			.b-app-content
+				margin-left: $navigation-drawer-width
+			.b-sheet
+				&.is-loading
+					width: calc(100% - #{$navigation-drawer-width})
 
 	.toast
 		margin: 2rem

@@ -46,8 +46,8 @@ export default applyMixins(getToggleMixin('isExpanded')).extend({
           BMenuList,
           {
             class: this.menuListClass,
-            directives: [{ name: 'show', value: this.internalIsOn }],
-            domProps: { 'aria-hidden': !this.internalIsOn }
+            directives: [{ name: 'show', value: this.isActive }],
+            attrs: { 'aria-hidden': !this.isActive }
           },
           this.$slots.default
         )

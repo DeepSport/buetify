@@ -1,4 +1,5 @@
 import Vue from 'vue';
+import { isEnterEvent } from '../../utils/eventHelpers';
 
 export function getToggleMixin<StatusName extends string>(statusName: StatusName) {
   return Vue.extend({
@@ -7,11 +8,6 @@ export function getToggleMixin<StatusName extends string>(statusName: StatusName
         type: Boolean,
         required: false,
         default: false
-      },
-      isOn: {
-        type: Boolean,
-        required: false,
-        default: undefined
       },
       hasPopup: {
         type: Boolean,
@@ -35,7 +31,7 @@ export function getToggleMixin<StatusName extends string>(statusName: StatusName
         };
       },
       isActive(): boolean {
-        return this.isOn !== undefined ? this.isOn : this.internalIsOn;
+        return this.internalIsOn;
       },
       clickToggler(): Record<'click', (e: Event) => void> {
         return {
@@ -45,7 +41,7 @@ export function getToggleMixin<StatusName extends string>(statusName: StatusName
       keyboardToggler(): Record<'keydown', (e: KeyboardEvent) => void> {
         return {
           keydown: (event: KeyboardEvent) => {
-            if (event.key === 'Enter') {
+            if (isEnterEvent(event)) {
               event.preventDefault();
               this.toggle();
             }
@@ -60,8 +56,8 @@ export function getToggleMixin<StatusName extends string>(statusName: StatusName
       }
     },
     watch: {
-      isOn(newValue: boolean | undefined) {
-        if (typeof newValue === 'boolean') {
+      [statusName](newValue: boolean | undefined) {
+        if (typeof newValue === 'boolean' && newValue !== this.internalIsOn) {
           this.internalIsOn = newValue;
         }
       },

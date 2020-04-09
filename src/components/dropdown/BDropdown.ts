@@ -25,6 +25,10 @@ export default base.extend<options>().extend({
     isDisabled: Boolean,
     isHoverable: Boolean,
     isInline: Boolean,
+    isExpanded: {
+      type: Boolean,
+      default: false
+    },
     position: {
       type: String as PropType<DropdownPosition>,
       validator(value) {
@@ -51,6 +55,7 @@ export default base.extend<options>().extend({
       return [
         this.position,
         {
+          'is-expanded': this.isExpanded,
           'is-disabled': this.isDisabled,
           'is-hoverable': this.isHoverable,
           'is-inline': this.isInline,

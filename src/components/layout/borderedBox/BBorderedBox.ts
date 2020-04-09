@@ -1,17 +1,8 @@
 import './bordered-box.sass';
 import { ColorVariant } from '../../../types/ColorVariants';
-import {
-  getThemeClassesFromContext,
-  getThemeProps,
-  THEME_INJECTION
-} from '../../../utils/getThemeableFunctionalComponent';
+import { mergeVNodeClasses } from '../../../utils/mergeVNodeClasses';
 import { mergeVNodeStaticClass } from '../../../utils/mergeVNodeStaticClass';
 import Vue, { PropType, VNode } from 'vue';
-
-const BORDERED_BOX_THEME_MAP = {
-  dark: 'is-link',
-  light: 'is-link'
-};
 
 export default Vue.extend({
   name: 'BBorderedBox',
@@ -24,15 +15,11 @@ export default Vue.extend({
     tag: {
       type: String,
       default: 'div'
-    },
-    ...getThemeProps(BORDERED_BOX_THEME_MAP)
-  },
-  inject: {
-    ...THEME_INJECTION
+    }
   },
   render(h, { data, props, injections, children }): VNode {
     data.staticClass = mergeVNodeStaticClass('b-bordered-box', data.staticClass);
-    data.class = getThemeClassesFromContext({ data, props, injections });
+    data.class = mergeVNodeClasses(data.class, props.variant);
     return h(props.tag, data, children);
   }
 });

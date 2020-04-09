@@ -56,7 +56,8 @@ export default applyMixins(NavigationInjectionMixin).extend({
       : this.$createElement(
           'header',
           {
-            staticClass: 'b-app-header is-flex flex-direction-row justify-content-center align-items-center'
+            staticClass:
+              'b-app-header has-navigation is-flex flex-direction-row justify-content-center align-items-center'
           },
           [this.generateNavigationButton(), this.generateMainSlot(true)]
         );
