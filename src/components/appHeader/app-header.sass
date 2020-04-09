@@ -7,15 +7,18 @@ $app-header-background-color-invert: findColorInvert($app-header-background-colo
   position: relative
   border-bottom: 1px $border solid
   min-height: 4rem
-  .navigation-icon
-    position: absolute
-    left: 0
-    padding: $size-7
-    flex: none
-    cursor: pointer
-    z-index: 1
   .main-slot
-    width: 90%
+    width: 100%
+  &.has-navigation
+    .navigation-icon
+      position: absolute
+      left: 0
+      padding: $size-7
+      flex: none
+      cursor: pointer
+      z-index: 1
+    .main-slot
+      width: calc(100% - 4.5rem)
 +until-widescreen
   .b-app-header
     &.has-touch-header

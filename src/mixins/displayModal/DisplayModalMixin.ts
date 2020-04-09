@@ -53,7 +53,7 @@ export const DisplayModalMixin = base.extend<options>().extend({
       set(newVal: boolean) {
         this.lazyIsActive = newVal;
         if (newVal === false) {
-          this.$emit('close')
+          this.$emit('close');
         }
       }
     },
@@ -64,7 +64,7 @@ export const DisplayModalMixin = base.extend<options>().extend({
       return true;
     },
     listeners(): Record<string, Function | Function[]> {
-      const listeners =  { ...this.$listeners }
+      const listeners = { ...this.$listeners };
       delete listeners.close;
       return listeners;
     }

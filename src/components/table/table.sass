@@ -8,6 +8,12 @@
 		padding-bottom: 0.75rem
 	&:not(:last-child)
 		margin-bottom: 1.5rem
+.b-scroll
+	.table-wrapper
+		padding-bottom: 0.5rem
+		margin-bottom: 0
+		.table
+			padding-bottom: 0
 
 .b-table
 	transition: opacity $speed $easing
@@ -16,9 +22,6 @@
 			display: none
 	.table
 		width: 100%
-		border: 1px solid transparent
-		border-radius: $radius
-		border-collapse: separate
 		position: relative
 		th
 			font-weight: $weight-semibold
@@ -50,7 +53,7 @@
 			&.is-sticky-left
 				position: sticky
 				background: inherit
-				left: -1px
+
 				z-index: 1
 		tr
 			td
