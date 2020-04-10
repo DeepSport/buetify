@@ -25,11 +25,9 @@ export default applyMixins(DisplayModalMixin).extend({
           }
         },
         [
-          this.$createElement(BDialogContent, [
-            this.regenerateSlot('header'),
-            this.regenerateSlot('default'),
-            this.regenerateSlot('footer')
-          ])
+          this.$createElement(BDialogContent, {
+            scopedSlots: this.$scopedSlots
+          })
         ]
       );
     }
