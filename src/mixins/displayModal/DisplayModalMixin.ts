@@ -6,11 +6,12 @@ import { consoleError } from '../../utils/console';
 import { constant, constVoid } from 'fp-ts/lib/function';
 import { isSome, none, Option, some } from 'fp-ts/lib/Option';
 import { PropType, VNode } from 'vue';
+import { getToggleMixin } from '../toggle/ToggleMixin';
 
-const base = applyMixins(RegenerateSlotMixin);
+const base = applyMixins(RegenerateSlotMixin, getToggleMixin();
 
 export interface options extends ExtractVue<typeof base> {
-  modal: ModalInjection;
+  modal: ModalInjection;()
 }
 
 const DEFAULT_MODAL_INJECTION: ModalInjection = {
@@ -23,10 +24,6 @@ export const DisplayModalMixin = base.extend<options>().extend({
     transition: {
       type: String,
       default: 'fade'
-    },
-    isActive: {
-      type: Boolean,
-      required: true
     },
     onCancel: {
       type: Function as PropType<IO<void>>,

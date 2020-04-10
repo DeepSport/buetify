@@ -18,10 +18,10 @@ export default applyMixins(DIALOG_THEME_MIXIN).extend({
   },
   computed: {
     hasFooter(): boolean {
-      return !!this.$slots.footer;
+      return !!this.$scopedSlots.footer;
     },
     hasHeader(): boolean {
-      return !!this.$slots.header;
+      return !!this.$scopedSlots.header;
     }
   },
   methods: {
@@ -47,13 +47,13 @@ export default applyMixins(DIALOG_THEME_MIXIN).extend({
       );
     },
     generateFooter(): VNode {
-      return this.$createElement('footer', { staticClass: 'modal-card-foot' }, this.$slots.footer);
+      return this.$createElement('footer', { staticClass: 'modal-card-foot' }, this.$scopedSlots.footer!(undefined));
     },
     generateHeader(): VNode {
-      return this.$createElement('header', { staticClass: 'modal-card-head' }, this.$slots.header);
+      return this.$createElement('header', { staticClass: 'modal-card-head' }, this.$scopedSlots.header!(undefined));
     },
     generateBody(): VNode {
-      return this.$createElement('section', { staticClass: 'modal-card-body' }, this.$slots.default);
+      return this.$createElement('section', { staticClass: 'modal-card-body' }, this.$scopedSlots.default!(undefined));
     }
   },
   render(): VNode {
