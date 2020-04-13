@@ -2,14 +2,14 @@ import './dropdown.sass';
 import { WindowSizeMixin } from '../../mixins/windowSize/WindowSizeMixin';
 import { FadeTransitionMixin } from '../../mixins/fadeTransition/FadeTransitionMixin';
 import { applyMixins, ExtractVue } from '../../utils/applyMixins';
-import { ToggleMixin } from '../../mixins/toggle/ToggleMixin';
+import { getToggleMixin } from '../../mixins/toggle/ToggleMixin';
 import { PropType, VNode, VNodeDirective } from 'vue';
 import ClickOutside, { ClickOutsideBindingArgs } from '../../directives/clickOutside';
 import { DROPDOWN_THEME_MIXIN } from './shared';
 
 export type DropdownPosition = 'is-top-right' | 'is-top-left' | 'is-bottom-left';
 
-const base = applyMixins(DROPDOWN_THEME_MIXIN, ToggleMixin, WindowSizeMixin, FadeTransitionMixin);
+const base = applyMixins(DROPDOWN_THEME_MIXIN, getToggleMixin('isActive', true), WindowSizeMixin, FadeTransitionMixin);
 
 interface options extends ExtractVue<typeof base> {
   $refs: {
@@ -59,13 +59,13 @@ export default base.extend<options>().extend({
           'is-disabled': this.isDisabled,
           'is-hoverable': this.isHoverable,
           'is-inline': this.isInline,
-          'is-active': this.isActive || this.isInline,
+          'is-active': this.internalStatus || this.isInline,
           'is-mobile-modal': this.isMobileModal
         }
       ];
     },
     displayMenu(): boolean {
-      return (!this.isDisabled && (this.isActive || this.isHoverable)) || this.isInline;
+      return (!this.isDisabled && (this.internalStatus || this.isHoverable)) || this.isInline;
     },
     displayMobileBackground(): boolean {
       return this.internalIsMobileModal && this.windowSize.isTouch;
@@ -104,7 +104,7 @@ export default base.extend<options>().extend({
     },
     closeConditional(e: Event): boolean {
       const target = e.target as HTMLElement;
-      return this.isActive && !this.isInWhiteList(target);
+      return this.internalStatus && !this.isInWhiteList(target);
     },
     generateTrigger(): VNode {
       return this.$createElement(
@@ -116,7 +116,7 @@ export default base.extend<options>().extend({
             role: 'button',
             'aria-owns': this.computedId,
             'aria-haspopup': 'listbox',
-            'aria-expanded': `${this.isActive}`
+            'aria-expanded': `${this.internalStatus}`
           },
           on: {
             click: this.toggle
@@ -133,7 +133,7 @@ export default base.extend<options>().extend({
             ref: 'dropdownMenu',
             staticClass: 'dropdown-menu',
             directives: [
-              { name: 'show', value: this.isActive },
+              { name: 'show', value: this.internalStatus },
               {
                 name: 'click-outside',
                 args: this.clickOutsideArgs,
@@ -154,7 +154,7 @@ export default base.extend<options>().extend({
           attrs: {
             role: 'menu',
             id: this.computedId,
-            'aria-hidden': !this.isActive
+            'aria-hidden': !this.internalStatus
           }
         },
         this.$scopedSlots.default!({ toggle: this.toggle })
@@ -166,8 +166,8 @@ export default base.extend<options>().extend({
           'div',
           {
             staticClass: 'background',
-            attrs: { 'aria-hidden': !this.isActive },
-            directives: [{ name: 'show', value: this.isActive }]
+            attrs: { 'aria-hidden': !this.internalStatus },
+            directives: [{ name: 'show', value: this.internalStatus }]
           },
           [this.generateDropdownMenu()]
         )

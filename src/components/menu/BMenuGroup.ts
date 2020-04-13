@@ -37,7 +37,7 @@ export default applyMixins(getToggleMixin('isExpanded')).extend({
     },
     generateTriggerButton(): VNode {
       return this.$createElement(VerticalExpansionIcon, {
-        props: { isExpanded: this.internalIsOn }
+        props: { isExpanded: this.internalStatus }
       });
     },
     generateMenuList(): VNode {
@@ -46,8 +46,8 @@ export default applyMixins(getToggleMixin('isExpanded')).extend({
           BMenuList,
           {
             class: this.menuListClass,
-            directives: [{ name: 'show', value: this.isActive }],
-            attrs: { 'aria-hidden': !this.isActive }
+            directives: [{ name: 'show', value: this.internalStatus }],
+            attrs: { 'aria-hidden': !this.internalStatus }
           },
           this.$slots.default
         )

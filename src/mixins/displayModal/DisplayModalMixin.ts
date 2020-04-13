@@ -1,17 +1,15 @@
 import { IO } from 'fp-ts/lib/IO';
 import { applyMixins, ExtractVue } from '../../utils/applyMixins';
-import { RegenerateSlotMixin } from '../regenerateSlot/RegenerateSlotMixin';
 import { ModalInjection } from '../../types/AppInjection';
 import { consoleError } from '../../utils/console';
 import { constant, constVoid } from 'fp-ts/lib/function';
-import { isSome, none, Option, some } from 'fp-ts/lib/Option';
 import { PropType, VNode } from 'vue';
 import { getToggleMixin } from '../toggle/ToggleMixin';
 
-const base = applyMixins(RegenerateSlotMixin, getToggleMixin();
+const base = applyMixins(getToggleMixin('isActive', true));
 
 export interface options extends ExtractVue<typeof base> {
-  modal: ModalInjection;()
+  modal: ModalInjection;
 }
 
 const DEFAULT_MODAL_INJECTION: ModalInjection = {
@@ -38,55 +36,48 @@ export const DisplayModalMixin = base.extend<options>().extend({
   data() {
     return {
       hasMounted: false,
-      lazyIsActive: this.isActive,
       removeModal: constVoid
     };
   },
   computed: {
-    internalIsActive: {
+    internalStatus: {
       get(): boolean {
-        return this.lazyIsActive && this.hasMounted;
+        return this.lazyStatus && this.hasMounted;
       },
       set(newVal: boolean) {
-        this.lazyIsActive = newVal;
-        if (newVal === false) {
-          this.$emit('close');
+        if (newVal !== this.lazyStatus) {
+          this.lazyStatus = newVal;
+          if (newVal === false) {
+            this.$emit('close');
+          }
         }
       }
     },
-    node(): Option<VNode> {
-      return this.internalIsActive && this.attachToApp ? some(this.generateModal()) : none;
+    triggerScopedProps(): object {
+      return Object.freeze({
+        isOpen: this.internalStatus,
+        open: this.setOn,
+        close: this.close,
+        toggle: this.toggle,
+        attrs: this.attrs,
+        listeners: this.listeners
+      });
     },
     attachToApp(): boolean {
       return true;
-    },
-    listeners(): Record<string, Function | Function[]> {
-      const listeners = { ...this.$listeners };
-      delete listeners.close;
-      return listeners;
     }
   },
   watch: {
-    isActive(newVal: boolean) {
-      if (newVal !== this.lazyIsActive) {
-        this.lazyIsActive = newVal;
-      }
-    },
-    node: {
-      handler(newValue: Option<VNode>) {
-        if (isSome(newValue)) {
+    internalStatus: {
+      handler(newValue: boolean) {
+        if (newValue) {
           this.removeModal = this.modal.showModal({
-            node: newValue.value,
+            render: () => [this.generateModal()],
             transition: this.transition
           });
         } else {
-          setTimeout(() => {
-            this.removeModal();
-            if (this.onCancel) {
-              this.onCancel();
-            }
-            this.removeModal = constVoid;
-          }, 150);
+          this.removeModal();
+          this.removeModal = constVoid;
         }
       }
     }
@@ -96,8 +87,7 @@ export const DisplayModalMixin = base.extend<options>().extend({
   },
   methods: {
     close() {
-      // @ts-ignore
-      this.internalIsActive = false;
+      this.internalStatus = false;
     },
     generateModal(): VNode {
       consoleError('This is an abstract method, a concrete implementation must be put in place');
@@ -107,5 +97,10 @@ export const DisplayModalMixin = base.extend<options>().extend({
   beforeDestroy() {
     this.removeModal();
   },
-  render(): any {}
+  render(): any {
+    return (
+      this.$scopedSlots.trigger &&
+      this.$scopedSlots.trigger(this.triggerScopedProps)
+    );
+  }
 });

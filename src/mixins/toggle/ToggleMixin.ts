@@ -1,25 +1,54 @@
-import Vue from 'vue';
+import { IO } from 'fp-ts/lib/IO';
+import Vue, { VueConstructor } from 'vue';
+import { PropValidator } from 'vue/types/options';
 import { isEnterEvent } from '../../utils/eventHelpers';
 
-export function getToggleMixin<StatusName extends string>(statusName: StatusName) {
+export type Toggleable<T extends string> = VueConstructor<
+  Vue & {
+    hasPopup: boolean;
+    lazyStatus: boolean;
+    internalStatus: boolean;
+    attrs: object;
+    clickToggler: Record<'click', (e: Event) => void>;
+    keyboardToggler: Record<'keydown', (e: KeyboardEvent) => void>;
+    listeners: { [key: string]: Function | Function[] };
+    setOn: IO<void>;
+    setOff: IO<void>;
+    toggle: IO<void>;
+  } & Record<T, boolean>
+>;
+
+export function getToggleMixin<T extends string>(statusName: T, defaultHasPopup?: boolean): Toggleable<T>;
+export function getToggleMixin<T extends string>(statusName: T, defaultHasPopup: boolean = false) {
   return Vue.extend({
     props: {
       [statusName]: {
         type: Boolean,
         required: false,
         default: false
-      },
+      } as PropValidator<boolean>,
       hasPopup: {
         type: Boolean,
-        default: false
+        default: defaultHasPopup
       }
     },
     data() {
       return {
-        internalIsOn: this[statusName] as boolean
+        lazyStatus: this[statusName] as boolean
       };
     },
     computed: {
+      internalStatus: {
+        get(): boolean {
+          return this.lazyStatus;
+        },
+        set(val: boolean) {
+          if (val !== this.lazyStatus) {
+            this.lazyStatus = val;
+            this.$emit('toggle', val);
+          }
+        }
+      },
       attrs(): object {
         return {
           tabindex: 0,
@@ -29,9 +58,6 @@ export function getToggleMixin<StatusName extends string>(statusName: StatusName
           'aria-expanded': this.isActive,
           ...(this.hasPopup ? { 'aria-haspopup': true } : {})
         };
-      },
-      isActive(): boolean {
-        return this.internalIsOn;
       },
       clickToggler(): Record<'click', (e: Event) => void> {
         return {
@@ -57,113 +83,23 @@ export function getToggleMixin<StatusName extends string>(statusName: StatusName
     },
     watch: {
       [statusName](newValue: boolean | undefined) {
-        if (typeof newValue === 'boolean' && newValue !== this.internalIsOn) {
-          this.internalIsOn = newValue;
-        }
-      },
-      isActive: function(newValue: boolean, oldValue: boolean): void {
-        if (newValue !== oldValue) {
-          this.$emit('toggle', newValue);
+        if (typeof newValue === 'boolean' && newValue !== this.lazyStatus) {
+          this.lazyStatus = newValue;
         }
       }
     },
     methods: {
       setOn(): void {
-        this.internalIsOn = true;
-        this.$emit('set-on', this.isActive);
+        this.internalStatus = true;
       },
       setOff(): void {
-        this.internalIsOn = false;
-        this.$emit('set-off', this.isActive);
+        this.internalStatus = false;
       },
       toggle(): void {
-        this.internalIsOn = !this.internalIsOn;
+        this.internalStatus = !this.internalStatus;
       }
     }
   });
 }
 
-export const ToggleMixin = Vue.extend({
-  props: {
-    initialStatus: {
-      type: Boolean,
-      required: false,
-      default: false
-    },
-    isOn: {
-      type: Boolean,
-      required: false,
-      default: undefined
-    },
-    hasPopup: {
-      type: Boolean,
-      default: false
-    }
-  },
-  data() {
-    return {
-      internalIsOn: this.initialStatus
-    };
-  },
-  computed: {
-    attrs(): object {
-      return {
-        tabindex: 0,
-        role: 'button',
-        type: 'button',
-        'aria-pressed': this.isActive,
-        'aria-expanded': this.isActive,
-        ...(this.hasPopup ? { 'aria-haspopup': true } : {})
-      };
-    },
-    isActive(): boolean {
-      return this.isOn !== undefined ? this.isOn : this.internalIsOn;
-    },
-    clickToggler(): Record<'click', (e: Event) => void> {
-      return {
-        click: this.toggle
-      };
-    },
-    keyboardToggler(): Record<'keydown', (e: KeyboardEvent) => void> {
-      return {
-        keydown: (event: KeyboardEvent) => {
-          if (event.key === 'Enter') {
-            event.preventDefault();
-            this.toggle();
-          }
-        }
-      };
-    },
-    listeners(): { [key: string]: Function | Function[] } {
-      return {
-        ...this.clickToggler,
-        ...this.keyboardToggler
-      };
-    }
-  },
-  watch: {
-    isOn(newValue: boolean | undefined) {
-      if (typeof newValue === 'boolean') {
-        this.internalIsOn = newValue;
-      }
-    },
-    isActive: function(newValue: boolean, oldValue: boolean): void {
-      if (newValue !== oldValue) {
-        this.$emit('toggle', newValue);
-      }
-    }
-  },
-  methods: {
-    setOn(): void {
-      this.internalIsOn = true;
-      this.$emit('set-on');
-    },
-    setOff(): void {
-      this.internalIsOn = false;
-      this.$emit('set-off');
-    },
-    toggle(): void {
-      this.internalIsOn = !this.internalIsOn;
-    }
-  }
-});
+export const ToggleMixin = getToggleMixin('initialStatus');

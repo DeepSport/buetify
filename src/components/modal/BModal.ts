@@ -47,17 +47,22 @@ export default applyMixins(DisplayModalMixin).extend({
       return this.$createElement(
         BBox,
         {
-          staticClass: 'is-paddingless height-100-percent width-100-percent overflow-scroll'
+          staticClass: 'is-paddingless is-fullheight is-fullwidth overflow-scroll'
         },
         [
           this.$createElement(
             'div',
-            { staticClass: 'height-100-percent' },
-            this.showExit
-              ? [this.generateCloseButton(), this.regenerateSlot('default')]
-              : [this.regenerateSlot('default')]
+            { staticClass: 'is-fullheight' },
+            this.showExit ? [this.generateCloseButton(), this.generateDefaultSlot()] : [this.generateDefaultSlot]
           )
         ]
+      );
+    },
+    generateDefaultSlot(): VNode {
+      return this.$createElement(
+        'template',
+        { slot: 'default' },
+        this.$scopedSlots.default && this.$scopedSlots.default(this.triggerScopedProps)
       );
     },
     generateCloseButton(): VNode {

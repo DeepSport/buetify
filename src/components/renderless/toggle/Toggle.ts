@@ -7,9 +7,8 @@ export const Toggle = applyMixins(ToggleMixin).extend({
   render(): VNode {
     return this.$scopedSlots.default!({
       attrs: this.attrs,
-      isActive: this.isActive,
-      isOn: this.isActive,
-      isOff: !this.isActive,
+      isOn: this.internalStatus,
+      isOff: !this.internalStatus,
       setOn: this.setOn,
       setOff: this.setOff,
       toggle: this.toggle,

@@ -20,13 +20,16 @@ export default applyMixins(DisplayModalMixin).extend({
             isActive: true
           },
           on: {
-            ...this.listeners,
-            close: this.close.bind(this)
+            close: this.setOff
           }
         },
         [
           this.$createElement(BDialogContent, {
-            scopedSlots: this.$scopedSlots
+            scopedSlots: {
+              header: () => this.$scopedSlots.header && this.$scopedSlots.header(this.triggerScopedProps),
+              default: () => this.$scopedSlots.default && this.$scopedSlots.default(this.triggerScopedProps),
+              footer: () => this.$scopedSlots.footer && this.$scopedSlots.footer(this.triggerScopedProps)
+            }
           })
         ]
       );

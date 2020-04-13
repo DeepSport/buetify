@@ -32,7 +32,7 @@ export interface NoticeInjection {
 }
 
 export interface ShowNoticeOptions {
-  node: VNode;
+  render: IO<VNode[]>;
   placement: NoticePlacement;
   duration: number;
   shouldQueue: boolean;
@@ -44,6 +44,6 @@ export interface ModalInjection {
 }
 
 export interface ShowModalOptions {
-  node: VNode;
+  render: IO<VNode[]>;
   transition?: Transition;
 }

@@ -79,7 +79,7 @@ export const DisplayNoticeMixin = Vue.extend<options>().extend({
     open(params: OpenNoticeParams) {
       const position = (params.position || this.position) as PositionVariant;
       this.internalCloseNotice = this.notice.showNotice({
-        node: this.generateNotice(this.mergeNoticeParams(params)),
+        render: () => [this.generateNotice(this.mergeNoticeParams(params))],
         placement: position.includes('top') ? 'top' : 'bottom',
         duration: params.duration !== undefined ? params.duration : this.internalDuration,
         shouldQueue: params.shouldQueue !== undefined ? params.shouldQueue : this.shouldQueue,
