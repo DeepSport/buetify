@@ -2,14 +2,14 @@ import './accordion.sass';
 import { VNode } from 'vue';
 import { AsyncComponent, Component, PropValidator } from 'vue/types/options';
 import { ThemeInjectionMixin } from '../../mixins/themeInjection';
-import { ToggleMixin } from '../../mixins/toggle/ToggleMixin';
+import { getToggleMixin } from '../../mixins/toggle/ToggleMixin';
 import { formatTransition, FadeTransitionMixin } from '../../mixins/fadeTransition/FadeTransitionMixin';
 import { applyMixins } from '../../utils/applyMixins';
 import BAccordionContent from './BAccordionContent';
 
 const VerticalExpansionIcon = () => import('../icons/verticalExpansion/VerticalExpansionIcon');
 
-export default applyMixins(ToggleMixin, FadeTransitionMixin, ThemeInjectionMixin).extend({
+export default applyMixins(getToggleMixin('isExpanded'), FadeTransitionMixin, ThemeInjectionMixin).extend({
   name: 'BAccordion',
   props: {
     title: {
@@ -48,7 +48,7 @@ export default applyMixins(ToggleMixin, FadeTransitionMixin, ThemeInjectionMixin
         },
         [
           this.$createElement(this.icon === undefined ? VerticalExpansionIcon : this.icon, {
-            props: { isExpanded: this.isActive }
+            props: { isExpanded: this.internalStatus }
           })
         ]
       );
@@ -62,9 +62,9 @@ export default applyMixins(ToggleMixin, FadeTransitionMixin, ThemeInjectionMixin
       return this.$createElement(
         BAccordionContent,
         {
-          directives: [{ name: 'show', value: this.isActive }],
+          directives: [{ name: 'show', value: this.internalStatus }],
           attrs: {
-            'aria-hidden': !this.isActive
+            'aria-hidden': !this.internalStatus
           }
         },
         this.$scopedSlots.default!(undefined)

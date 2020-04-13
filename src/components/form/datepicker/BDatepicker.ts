@@ -382,7 +382,7 @@ export default base.extend<options>().extend({
     },
     handleOnFocus(event: MouseEvent) {
       this.onFocus(event);
-      if (this.openOnFocus && !this.$refs.dropdown.isActive) {
+      if (this.openOnFocus && !this.$refs.dropdown.internalStatus) {
         this.$refs.dropdown.setOn();
       }
     },
@@ -399,7 +399,7 @@ export default base.extend<options>().extend({
       this.$refs.dropdown.setOff();
     },
     onInputClick(event: MouseEvent) {
-      if (this.$refs.dropdown.isActive) {
+      if (this.$refs.dropdown.internalStatus) {
         event.stopPropagation();
       }
     },

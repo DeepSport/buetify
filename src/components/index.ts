@@ -22,6 +22,7 @@ export * from './notices';
 export * from './overlay';
 export * from './pageLoader';
 export * from './pagination';
+export * from './popupContainer';
 export * from './pricingTable';
 export * from './renderless';
 export * from './scroll';
