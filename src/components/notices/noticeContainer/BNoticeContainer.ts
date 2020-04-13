@@ -1,10 +1,13 @@
-import { isEmpty } from 'fp-ts/lib/Array';
-import { constVoid } from 'fp-ts/lib/function';
+
+import { constant, constVoid } from 'fp-ts/lib/function';
 import { IO } from 'fp-ts/lib/IO';
+import { getOrElse, isNone, none, Option, some } from 'fp-ts/lib/Option';
+import { pipe } from 'fp-ts/lib/pipeable';
 import { VNode } from 'vue';
-import { Transition } from '../../../types/Transition';
-import { applyMixins } from '../../../utils/applyMixins';
-import BPopupContainer, { Popup } from '../../popupContainer/BPopupContainer';
+import { formatTransition } from '../../../mixins/fadeTransition/FadeTransitionMixin';
+import { Transition, TransitionClasses } from '../../../types/Transition';
+import Vue from 'vue';
+import { alwaysEmptyArray } from '../../../utils/helpers';
 
 export interface NoticeOptions {
   render: IO<VNode[]>;
@@ -13,27 +16,39 @@ export interface NoticeOptions {
   transition: Transition;
 }
 
-export default applyMixins(BPopupContainer).extend({
+export interface Notice {
+  render: IO<VNode[]>;
+  transition: TransitionClasses;
+}
+
+export default Vue.extend({
   name: 'BNoticeContainer',
   data: () => ({
     id: 0,
-    popups: [] as Array<Popup>
+    notice: none as Option<Notice>
   }),
   computed: {
     rootZIndex(): -1 | 1 {
-      return isEmpty(this.popups) ? -1 : 1;
+      return isNone(this.notice) ? -1 : 1;
+    },
+    extractedNotice(): Notice {
+      return pipe(this.notice, getOrElse<Notice>(constant({ transition: { name: 'fade' }, render: alwaysEmptyArray })));
     }
   },
   methods: {
-    addPopup(popup: Popup) {
-      this.popups.push(popup);
+    addNotice(options: NoticeOptions): IO<void> {
+      const notice = { render: options.render, transition: formatTransition(options.transition) };
+      this.notice = some(notice);
+      return () => {
+        this.notice = none;
+      };
     },
     showNotice(params: NoticeOptions): IO<void> {
-      if (params.shouldQueue && !isEmpty(this.popups)) {
+      if (params.shouldQueue && !isNone(this.notice)) {
         setTimeout(() => this.showNotice(params), 250);
         return constVoid;
       }
-      const removeNotice = this.showPopup(params);
+      const removeNotice = this.addNotice(params);
       if (params.duration === 0) {
         return removeNotice;
       } else {
@@ -41,8 +56,11 @@ export default applyMixins(BPopupContainer).extend({
         return constVoid;
       }
     },
-    generatePopup(popup: Popup, index: number): VNode {
-      return this.$createElement('transition', { key: popup.id, props: popup.transition }, popup.render());
+    generateNotice(): VNode {
+      return this.$createElement('transition', { props: this.extractedNotice.transition }, this.extractedNotice.render());
     }
+  },
+  render(h): VNode {
+    return h('div', { style: { 'z-index': this.rootZIndex } }, [this.generateNotice()]);
   }
 });

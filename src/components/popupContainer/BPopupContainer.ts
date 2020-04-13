@@ -1,10 +1,9 @@
-import { isEmpty } from 'fp-ts/lib/Array';
 import { Eq, eq, eqNumber } from 'fp-ts/lib/Eq';
 import { IO } from 'fp-ts/lib/IO';
 import Vue, { VNode } from 'vue';
 import { formatTransition } from '../../mixins/fadeTransition/FadeTransitionMixin';
 import { Transition, TransitionClasses } from '../../types/Transition';
-import { remove } from '../../utils/helpers';
+import { alwaysEmptyArray, remove } from '../../utils/helpers';
 
 export interface PopupOptions {
   transition: Transition;
@@ -20,21 +19,21 @@ export const eqPopup: Eq<Popup> = eq.contramap(eqNumber, popup => popup.id);
 
 export const removePopup = remove(eqPopup);
 
-// const SEMAPHORE: Popup = {
-//   id: -1,
-//   transition: { name: 'fade' },
-//   render: alwaysEmptyArray
-// };
+const SEMAPHORE: Popup = {
+  id: -1,
+  transition: { name: 'fade' },
+  render: alwaysEmptyArray
+};
 
 export default Vue.extend({
   name: 'BPopupContainer',
   data: () => ({
     id: 0,
-    popups: [] as Array<Popup>
+    popups: [SEMAPHORE] as Array<Popup>
   }),
   computed: {
     rootZIndex(): -1 | 1 {
-      return isEmpty(this.popups) ? -1 : 1;
+      return this.popups.length <= 1 ? -1 : 1;
     }
   },
   methods: {
@@ -46,7 +45,7 @@ export default Vue.extend({
       };
     },
     addPopup(popup: Popup): void {
-      this.popups.push(popup);
+      this.popups.splice(this.popups.length - 1, 0, popup);
     },
     removePopup(popup: Popup): void {
       this.popups = removePopup(popup, this.popups);
