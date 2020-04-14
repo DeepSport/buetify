@@ -398,7 +398,12 @@ export default Vue.extend({
           e.preventDefault();
           e.stopPropagation();
           this.internalSelectedRows = Object.freeze(toggleBTableRow(row, this.internalSelectedRows as BTableRow[]));
-          this.$emit(row.isSelected ? 'unselect-row' : 'select-row', row);
+          this.$emit('select-row', row);
+        } else if (row.isSelected) {
+          e.preventDefault();
+          e.stopPropagation();
+          this.internalSelectedRows = Object.freeze(toggleBTableRow(row, this.internalSelectedRows as BTableRow[]));
+          this.$emit('unselect-row', row)
         }
       };
     },
