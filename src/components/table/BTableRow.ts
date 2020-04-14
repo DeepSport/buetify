@@ -1,4 +1,5 @@
 import { ColorVariant } from '../../types/ColorVariants';
+import { mergeVNodeAttrs } from '../../utils/mergeVNodeAttrs';
 import BCheckbox from '../form/checkbox/BCheckbox';
 import { getObjectValueByPath, isString } from '../../utils/helpers';
 import { mergeVNodeClasses } from '../../utils/mergeVNodeClasses';
@@ -23,13 +24,18 @@ export default Vue.extend({
     }
   },
   render(h, { props, slots, listeners, data }): VNode {
-    data.class = mergeVNodeClasses(data.class, [
-      {
-        'is-selected': props.row.isSelected,
-        'is-checked': props.row.isChecked
-      },
-      props.row.classes
-    ]);
+    data.class = mergeVNodeClasses(
+      data.class,
+      mergeVNodeClasses(
+        {
+          'is-selected': props.row.isSelected,
+          'is-checked': props.row.isChecked,
+          'has-cursor-move': props.row.isDraggable
+        },
+        props.row.classes
+      )
+    );
+    data.attrs = mergeVNodeAttrs(data.attrs, { draggable: props.row.isDraggable });
     const computedSlots = slots();
     const columns: VNode[] = props.columns.map((column: BTableColumn) => {
       const children = [];
