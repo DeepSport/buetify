@@ -24,6 +24,8 @@ $table-row-active-color: $primary-invert !default
 $table-striped-row-even-background-color: $white-bis !default
 $table-striped-row-even-hover-background-color: $white-ter !default
 
+$all-colors: mergeColorMaps($colors, $shades)
+
 .table
   @extend %block
   color: $table-color
@@ -132,11 +134,30 @@ $table-striped-row-even-hover-background-color: $white-ter !default
     &.is-#{$name}
       background-color: $color
       color: $color-invert
+      th,
+      td
+        &.is-selected
+          background-color: $table-row-active-background-color
+          color: getContrastedColor($table-row-active-color, $table-row-active-background-color)
+      a,
+      strong
+        color: currentColor
       tr,
       th
         background-color: $color
       th
-        border-color: $color-invert
+        border-color: $color-invert,
+      tr
+        &.is-selected
+          background-color: $table-row-active-background-color
+          color: $table-row-active-color
+          a,
+          strong
+            color: currentColor
+          td,
+          th
+            border-color: $table-row-active-color
+            color: currentColor
       thead
         background-color: $color
         td,

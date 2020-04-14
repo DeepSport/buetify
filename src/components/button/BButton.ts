@@ -36,7 +36,7 @@ export default Vue.extend({
     tag: {
       type: String,
       default: 'button',
-      validator: value => ['button', 'a', 'input'].includes(value)
+      validator: (value: string) => ['button', 'a', 'input'].includes(value)
     }
   },
   inject: {
