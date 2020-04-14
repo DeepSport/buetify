@@ -392,14 +392,15 @@ export default Vue.extend({
         this.internalCheckedRows = Object.freeze(toggleBTableRow(row, this.internalCheckedRows as BTableRow[]));
       }
     },
-    getToggleRowSelection(row: BTableRow) {
-      return () => this.toggleRowSelection(row);
-    },
-    toggleRowSelection(row: BTableRow): void {
-      if (row.isSelectable) {
-        this.internalSelectedRows = Object.freeze(toggleBTableRow(row, this.internalSelectedRows as BTableRow[]));
-        this.$emit(row.isSelected ? 'unselect-row' : 'select-row', row);
-      }
+    getRowOnClickHandler(row: BTableRow) {
+      return (e: MouseEvent) => {
+        if (row.isSelectable) {
+          e.preventDefault();
+          e.stopPropagation();
+          this.internalSelectedRows = Object.freeze(toggleBTableRow(row, this.internalSelectedRows as BTableRow[]));
+          this.$emit(row.isSelected ? 'unselect-row' : 'select-row', row);
+        }
+      };
     },
     selectAllRows(): void {
       this.internalSelectedRows = this.selectableRows;
@@ -480,26 +481,19 @@ export default Vue.extend({
         props: {
           row,
           columns: this.visibleColumns,
-          checkboxVariant: this.checkboxVariant
+          checkboxVariant: this.checkboxVariant,
+          isDraggable: row.isDraggable
         },
         scopedSlots: this.$scopedSlots,
-        attrs: {
-          draggable: row.isDraggable
-        },
         on: {
           input: this.getToggleRowCheck(row),
-          // click: this.getToggleRowSelection(row),
+          click: this.getRowOnClickHandler(row),
           ...(row.isDraggable ? this.getDragListeners(row, index) : {})
         }
       });
     },
     generateNonEmptyTable(): VNode {
-      if (this.$slots.row) {
-        return this.$createElement(
-          'tbody',
-          this.newRows.map(row => this.$createElement('tr', { key: row.id }, this.$slots.row))
-        );
-      } else if (this.$scopedSlots.row) {
+      if (this.$scopedSlots.row) {
         return this.$createElement(
           'tbody',
           this.newRows.map((row, index) =>
