@@ -1,6 +1,7 @@
 import './link.sass';
 import { ThemeColorMap } from '../../mixins/themeInjection/ThemeInjectionMixin';
 import { getThemeClassesFromContext, THEME_INJECTION } from '../../utils/getThemeableFunctionalComponent';
+import { mergeVNodeClasses } from '../../utils/mergeVNodeClasses';
 import { mergeVNodeStaticClass } from '../../utils/mergeVNodeStaticClass';
 import { constant } from 'fp-ts/lib/function';
 import Vue, { PropType, VNode } from 'vue';
@@ -32,6 +33,10 @@ export default Vue.extend({
     tag: {
       type: String,
       default: 'a'
+    },
+    isDisabled: {
+      type: Boolean,
+      default: false
     }
   },
   inject: {
@@ -39,7 +44,10 @@ export default Vue.extend({
   },
   render(h, { data, props, injections, children }): VNode {
     data.staticClass = mergeVNodeStaticClass('b-link', data.staticClass);
-    data.class = getThemeClassesFromContext({ props, data, injections });
+    data.class = mergeVNodeClasses(getThemeClassesFromContext({ props, data, injections }), {
+      'is-disabled': props.isDisabled
+    });
+    data.on = props.isDisabled ? undefined : data.on;
     return h(props.tag, data, props.text ? [props.text] : children);
   }
 });

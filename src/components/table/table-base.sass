@@ -54,6 +54,7 @@ $all-colors: mergeColorMaps($colors, $shades)
     &.is-selected
       background-color: $table-row-active-background-color
       color: $table-row-active-color
+      cursor: pointer
       a,
       strong
         color: currentColor
@@ -64,7 +65,6 @@ $all-colors: mergeColorMaps($colors, $shades)
     &.is-selected
       background-color: $table-row-active-background-color
       color: $table-row-active-color
-      a,
       strong
         color: currentColor
       td,
@@ -139,7 +139,6 @@ $all-colors: mergeColorMaps($colors, $shades)
         &.is-selected
           background-color: $table-row-active-background-color
           color: getContrastedColor($table-row-active-color, $table-row-active-background-color)
-      a,
       strong
         color: currentColor
       tr,
@@ -151,13 +150,9 @@ $all-colors: mergeColorMaps($colors, $shades)
         &.is-selected
           background-color: $table-row-active-background-color
           color: $table-row-active-color
-          a,
-          strong
-            color: currentColor
           td,
           th
             border-color: $table-row-active-color
-            color: currentColor
       thead
         background-color: $color
         td,
