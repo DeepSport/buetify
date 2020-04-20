@@ -10,6 +10,10 @@ $all-colors: mergeColorMaps($colors, $shades)
     font-size: $size-medium
   &.is-large
     font-size: $size-large
+  &.is-disabled
+    color: inherit
+    &:hover
+      color: inherit
   @each $name, $pair in $all-colors
     @if length($pair) >= 4
       $color: nth($pair, 1)
@@ -18,6 +22,10 @@ $all-colors: mergeColorMaps($colors, $shades)
         color: $color
         &:hover
           color: $color-dark
+        &.is-disabled
+          color: inherit
+          &:hover
+            color: inherit
     @else
       $color: nth($pair, 1)
       $color-dark: darken($color, 2.5%)
@@ -25,3 +33,7 @@ $all-colors: mergeColorMaps($colors, $shades)
         color: $color
         &:hover
           color: $color-dark
+        &.is-disabled
+          color: inherit
+          &:hover
+            color: inherit

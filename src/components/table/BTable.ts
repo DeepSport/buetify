@@ -35,6 +35,7 @@ function getBTableRow(rowProps: RowProps) {
   return (data: BTableRowData, index: number): BTableRow => ({
     ...data,
     index,
+    isDroppable: data.isDroppable !== undefined ? data.isDroppable : rowProps.isDraggable,
     isDraggable: data.isDraggable !== undefined ? data.isDraggable : rowProps.isDraggable,
     isSelectable: data.isSelectable !== undefined ? data.isSelectable : rowProps.isSelectable,
     isCheckable: data.isCheckable !== undefined ? data.isCheckable : rowProps.isCheckable,
@@ -403,7 +404,9 @@ export default Vue.extend({
           e.preventDefault();
           e.stopPropagation();
           this.internalSelectedRows = Object.freeze(toggleBTableRow(row, this.internalSelectedRows as BTableRow[]));
-          this.$emit('unselect-row', row)
+          this.$emit('unselect-row', row);
+        } else {
+          this.$emit('row-click', row, e);
         }
       };
     },
@@ -414,10 +417,11 @@ export default Vue.extend({
       this.internalSelectedRows = [];
     },
     getDragListeners(row: BTableRow, index: number) {
+
       return {
         dragstart: (e: DragEvent) => this.$emit('dragstart', row, e, index),
         drop: (e: DragEvent) => this.$emit('dragstart', row, e, index),
-        dragenter: (e: DragEvent) => this.$emit('dragenter', row, e, index),
+        dreagenter: (e: DragEvent) => this.$emit('dragenter', row, e, index),
         dragleave: (e: DragEvent) => this.$emit('leave', row, e, index)
       };
     },
@@ -428,7 +432,7 @@ export default Vue.extend({
       this.internalSortColumn = some(column);
     },
     hasCustomFooterSlot(): boolean {
-      const footer = fromNullable(this.$slots.footer);
+      const footer = fromNullable(this.$scopedSlots.footer && this.$scopedSlots.footer(undefined));
       if (fold<VNode[], number>(alwaysZero, nodes => nodes.length)(footer)) {
         return true;
       } else {
@@ -476,7 +480,11 @@ export default Vue.extend({
     generateEmptyTable(): VNode {
       return this.$createElement('tbody', [
         this.$createElement('tr', { staticClass: 'is-empty' }, [
-          this.$createElement('td', { attrs: { colspan: this.numberOfVisibleColumns } }, this.$slots.empty)
+          this.$createElement(
+            'td',
+            { attrs: { colspan: this.numberOfVisibleColumns } },
+            this.$scopedSlots.empty && this.$scopedSlots.empty(undefined)
+          )
         ])
       ]);
     },

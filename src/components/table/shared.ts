@@ -33,10 +33,12 @@ export interface BTableRow extends BTableRowData {
   isSelected: boolean;
   isChecked: boolean;
   isDraggable: boolean;
+  isDroppable: boolean;
 }
 
 export interface BTableRowData {
   id: string;
+  isDroppable?: boolean;
   isDraggable?: boolean;
   isSelectable?: boolean;
   isCheckable?: boolean;
