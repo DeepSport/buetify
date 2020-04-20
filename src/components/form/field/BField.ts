@@ -271,7 +271,7 @@ export default applyMixins(ThemeInjectionMixin).extend({
       'div',
       {
         staticClass: 'field',
-        class: [this.rootClasses, this.fieldType(), { 'is-marginless': this.newMessage && !this.isHorizontal }],
+        class: [this.rootClasses, this.fieldType()],
         domProps: { role: this.fieldRole }
       },
       [...this.generateLabel(), ...this.generateBody(), this.generateHelpMessage()]

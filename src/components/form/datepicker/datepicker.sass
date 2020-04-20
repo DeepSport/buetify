@@ -41,7 +41,7 @@ $datepicker-item-selected-background-color: $link !default
 		padding-top: 0.5rem
 		border-top: 1px solid $grey-lighter
 	.datepicker-table 
-		border-collapse: collapse
+		border-collapse: separate
 		margin: 0 0.25rem
 		width: 100%
 		.datepicker-cell 
@@ -69,6 +69,7 @@ $datepicker-item-selected-background-color: $link !default
 					height: 2.5rem
 			.datepicker-cell 
 				width: 100%
+				border: solid 2px transparent
 				&.is-unselectable
 					color: $datepicker-item-disabled-color
 				&.is-today 

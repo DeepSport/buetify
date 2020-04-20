@@ -385,7 +385,10 @@ export default Vue.extend({
       this.internalCheckedRows = [];
     },
     getToggleRowCheck(row: BTableRow) {
-      return () => this.toggleRowCheck(row);
+      return (e: Event) => {
+        e.stopPropagation();
+        this.toggleRowCheck(row);
+      };
     },
     toggleRowCheck(row: BTableRow): void {
       if (row.isCheckable) {
@@ -499,8 +502,7 @@ export default Vue.extend({
         },
         scopedSlots: this.$scopedSlots,
         on: {
-          input: this.getToggleRowCheck(row),
-          click: this.getRowOnClickHandler(row),
+          ...(this.hasCheckableRows ? { input: this.getToggleRowCheck(row) } : { click: this.getRowOnClickHandler(row) }),
           ...(row.isDraggable ? this.getDragListeners(row, index) : {})
         }
       });
