@@ -385,8 +385,7 @@ export default Vue.extend({
       this.internalCheckedRows = [];
     },
     getToggleRowCheck(row: BTableRow) {
-      return (e: Event) => {
-        e.stopPropagation();
+      return () => {
         this.toggleRowCheck(row);
       };
     },
@@ -398,13 +397,13 @@ export default Vue.extend({
     },
     getRowOnClickHandler(row: BTableRow) {
       return (e: MouseEvent) => {
-        if (row.isSelectable) {
-          e.preventDefault();
+        if (this.hasCheckableRows) {
+          return;
+        } else if (row.isSelectable) {
           e.stopPropagation();
           this.internalSelectedRows = Object.freeze(toggleBTableRow(row, this.internalSelectedRows as BTableRow[]));
           this.$emit('select-row', row);
         } else if (row.isSelected) {
-          e.preventDefault();
           e.stopPropagation();
           this.internalSelectedRows = Object.freeze(toggleBTableRow(row, this.internalSelectedRows as BTableRow[]));
           this.$emit('unselect-row', row);
@@ -502,7 +501,8 @@ export default Vue.extend({
         },
         scopedSlots: this.$scopedSlots,
         on: {
-          ...(this.hasCheckableRows ? { input: this.getToggleRowCheck(row) } : { click: this.getRowOnClickHandler(row) }),
+          input: this.getToggleRowCheck(row),
+          click: this.getRowOnClickHandler(row),
           ...(row.isDraggable ? this.getDragListeners(row, index) : {})
         }
       });
