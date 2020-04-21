@@ -1,5 +1,5 @@
 @import '../../pagination/pagination'
-@import '~bulma/sass/components/dropdown'
+@import '../../dropdown/dropdown'
 
 $datepicker-background-color: $dropdown-content-background-color !default
 $datepicker-radius: $dropdown-content-radius !default
@@ -36,13 +36,13 @@ $datepicker-item-selected-background-color: $link !default
 			display: flex
 			flex-direction: column
 			justify-content: center
+	.datepicker-content
+		padding: 0 0.25rem
 	.datepicker-footer 
 		margin-top: 0.5rem
 		padding-top: 0.5rem
 		border-top: 1px solid $grey-lighter
-	.datepicker-table 
-		border-collapse: separate
-		margin: 0 0.25rem
+	.datepicker-table
 		width: 100%
 		.datepicker-cell 
 			text-align: center
@@ -161,7 +161,7 @@ $datepicker-item-selected-background-color: $link !default
 		font-size: 1rem
 	&.is-small 
 		@include control-small
-	&.is-medium 
+	&.is-medium
 		@include control-medium
 	&.is-large 
 		@include control-large
