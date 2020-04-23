@@ -30,7 +30,8 @@ export default Vue.extend({
         {
           'is-selected': props.row.isSelected,
           'is-checked': props.row.isChecked,
-          'has-cursor-move': props.row.isDraggable
+          'is-draggable': props.row.isDraggable,
+          'is-droppable': props.row.isDroppable
         },
         props.row.classes
       )

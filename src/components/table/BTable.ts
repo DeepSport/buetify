@@ -1,4 +1,5 @@
 import './table.sass';
+import {FunctionN} from 'fp-ts/lib/function';
 import BSimpleTable from './BSimpleTable';
 import BTableRowElement from './BTableRow';
 import BTableHeader from './BTableHeader';
@@ -8,7 +9,7 @@ import { alwaysEmptyArray, alwaysZero, isBoolean, isMobile, toggle } from '../..
 import { ColorVariant } from '../../types/ColorVariants';
 import { head, isEmpty, isNonEmpty, reverse, sort } from 'fp-ts/lib/Array';
 import { Eq, eq, eqString } from 'fp-ts/lib/Eq';
-import { chain, exists, fold, fromNullable, isSome, mapNullable, Option, some } from 'fp-ts/lib/Option';
+import {chain, exists, fold, fromNullable, isSome, mapNullable, none, Option, some} from 'fp-ts/lib/Option';
 import { Ord } from 'fp-ts/lib/Ord';
 import { pipe } from 'fp-ts/lib/pipeable';
 import Vue, { PropType, VNode } from 'vue';
@@ -16,6 +17,8 @@ import { PropValidator } from 'vue/types/options';
 import { SizeVariant } from '../../types/SizeVariants';
 
 interface Data {
+  dragIsActive: boolean;
+  dropTarget: Option<BTableRow>;
   newRows: readonly BTableRow[];
   newSortColumn: Option<BTableColumnData<any>>;
   newSortType: SortType;
@@ -31,18 +34,9 @@ interface RowProps {
   checkedRows: BTableRowData[];
 }
 
-function getBTableRow(rowProps: RowProps) {
-  return (data: BTableRowData, index: number): BTableRow => ({
-    ...data,
-    index,
-    isDroppable: data.isDroppable !== undefined ? data.isDroppable : rowProps.isDraggable,
-    isDraggable: data.isDraggable !== undefined ? data.isDraggable : rowProps.isDraggable,
-    isSelectable: data.isSelectable !== undefined ? data.isSelectable : rowProps.isSelectable,
-    isCheckable: data.isCheckable !== undefined ? data.isCheckable : rowProps.isCheckable,
-    isChecked: rowProps.checkedRows.some(row => eqBTableRowData.equals(row, data)),
-    isSelected: rowProps.selectedRows.some(row => eqBTableRowData.equals(row, data))
-  });
-}
+type DropEffect = "none" | "copy" | "link" | "move";
+
+type DragHandler = FunctionN<[DragEvent], void>;
 
 const eqBTableRow: Eq<BTableRow> = eq.contramap(eqString, row => row.id);
 
@@ -51,6 +45,19 @@ const eqBTableRowData: Eq<BTableRowData> = eqBTableRow as Eq<BTableRowData>;
 const toggleBTableRow = toggle(eqBTableRow);
 
 export const eqColumnTableData: Eq<BTableColumnData<any>> = eq.contramap(eqString, column => column.label);
+
+function getBTableRow(rowProps: RowProps) {
+  return (data: BTableRowData, index: number): BTableRow => Object.freeze(({
+    ...data,
+    index,
+    isDroppable: data.isDroppable !== undefined ? data.isDroppable : rowProps.isDraggable,
+    isDraggable: data.isDraggable !== undefined ? data.isDraggable : rowProps.isDraggable,
+    isSelectable: data.isSelectable !== undefined ? data.isSelectable : rowProps.isSelectable,
+    isCheckable: data.isCheckable !== undefined ? data.isCheckable : rowProps.isCheckable,
+    isChecked: rowProps.checkedRows.some(row => eqBTableRowData.equals(row, data)),
+    isSelected: rowProps.selectedRows.some(row => eqBTableRowData.equals(row, data)),
+  }));
+}
 
 export default Vue.extend({
   name: 'BTable',
@@ -153,6 +160,10 @@ export default Vue.extend({
     canCheckAllRows: {
       type: Boolean,
       default: true
+    },
+    dropEffect: {
+      type: String as PropType<DropEffect>,
+      default: 'move'
     }
   },
   data(): Data {
@@ -164,6 +175,8 @@ export default Vue.extend({
       isDraggable: this.isDraggable
     });
     return {
+      dragIsActive: false,
+      dropTarget: none,
       newRows: Object.freeze(this.rows.map(mapRow)),
       newCheckedRows: Object.freeze(this.checkedRows.map(mapRow)),
       newSelectedRows: Object.freeze(this.selectedRows.map(mapRow)),
@@ -418,14 +431,80 @@ export default Vue.extend({
     unselectAllRows(): void {
       this.internalSelectedRows = [];
     },
-    getDragListeners(row: BTableRow, index: number) {
-
-      return {
-        dragstart: (e: DragEvent) => this.$emit('dragstart', row, e, index),
-        drop: (e: DragEvent) => this.$emit('dragstart', row, e, index),
-        dreagenter: (e: DragEvent) => this.$emit('dragenter', row, e, index),
-        dragleave: (e: DragEvent) => this.$emit('leave', row, e, index)
+    getOnDragStartListener(row: BTableRow, index: number): DragHandler {
+      return (e: DragEvent) => {
+        this.dragIsActive = true;
+        if (e.dataTransfer) {
+          e.dataTransfer.setData('text/plain', String(index))
+          e.dataTransfer.dropEffect = this.dropEffect
+        }
+        this.$emit('dragstart', row, e, index);
       };
+    },
+    getOnDropListener(row: BTableRow, index: number): DragHandler {
+        return (e: DragEvent) => {
+          if (row.isDroppable) {
+            e.preventDefault()
+            this.$emit('drop', row, e, index);
+          }
+          this.dragIsActive = false;
+        };
+    },
+    getOnDragEnterListener(row: BTableRow, index: number): DragHandler {
+      return (e: DragEvent) => {
+        if (row.isDroppable) {
+          e.preventDefault()
+          this.dropTarget = some(row);
+          this.$emit('dragenter', row, e, index);
+        }
+      }
+    },
+    getOnDragOverListener(row: BTableRow, index: number): DragHandler {
+      return (e: DragEvent) => {
+        if (row.isDroppable) {
+          e.preventDefault()
+          this.$emit('dragover', row, e, index);
+          if (isSome(this.dropTarget) && !eqBTableRow.equals(this.dropTarget.value, row)) {
+            this.dropTarget = some(row)
+          }
+        }
+      }
+    },
+    getOnDragLeaveListener(row: BTableRow, index: number): DragHandler {
+      return (e: DragEvent) => {
+        if (row.isDroppable) {
+          e.preventDefault()
+          if (isSome(this.dropTarget) && eqBTableRow.equals(this.dropTarget.value, row)) {
+            this.dropTarget = none;
+          }
+          this.$emit('dragleave', row, e, index);
+        }
+      }
+    },
+    getOnDragEndListener(row: BTableRow, index: number): DragHandler {
+      return e => {
+        this.$emit('dragend', row, e, index);
+        if (isSome(this.dropTarget)) {
+          this.dropTarget = none;
+        }
+        if (this.dragIsActive) {
+          this.dragIsActive = false;
+        }
+      };
+    },
+    getDragListeners(row: BTableRow, index: number): { [key: string]: Function | Function[] } {
+      if (row.isDraggable) {
+        return {
+          dragstart: this.getOnDragStartListener(row, index),
+          drop: this.getOnDropListener(row, index),
+          dragenter: this.getOnDragEnterListener(row, index),
+          dragleave: this.getOnDragLeaveListener(row, index),
+          dragover: this.getOnDragOverListener(row, index),
+          dragend: this.getOnDragEndListener(row, index)
+        }
+      } else {
+        return {};
+      }
     },
     onNewSortType(sortType: SortType): void {
       this.internalSortType = sortType;
@@ -493,6 +572,10 @@ export default Vue.extend({
     generateRow(row: BTableRow, index: number): VNode {
       return this.$createElement(BTableRowElement, {
         key: row.id,
+        class: {
+          'is-drop-target': isSome(this.dropTarget) ? eqBTableRow.equals(row, this.dropTarget.value) : false,
+          'is-undroppable': this.dragIsActive && !row.isDroppable
+        },
         props: {
           row,
           columns: this.visibleColumns,
@@ -503,7 +586,7 @@ export default Vue.extend({
         on: {
           input: this.getToggleRowCheck(row),
           click: this.getRowOnClickHandler(row),
-          ...(row.isDraggable ? this.getDragListeners(row, index) : {})
+          ...this.getDragListeners(row, index)
         }
       });
     },
@@ -559,8 +642,8 @@ export default Vue.extend({
       );
     }
   },
-  render(): VNode {
-    return this.$createElement(
+  render(h): VNode {
+    return h(
       'div',
       this.displayMobileSorting ? [this.generateMobileSort(), this.generateTable()] : [this.generateTable()]
     );
