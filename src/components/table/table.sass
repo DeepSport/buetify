@@ -3,6 +3,16 @@
 @import '../../sass/helpers/height-width-helpers'
 @import '../../sass/helpers/cursor-helpers'
 @import './table-base'
+
+$table-row-is-undroppable-background-color: $danger-light !default
+$table-row-is-undroppable-color: findColorInvert($table-row-is-undroppable-background-color) !default
+
+$table-row-is-droppable-background-color: $success !default
+$table-row-is-droppable-color: findColorInvert($table-row-is-droppable-background-color) !default
+
+$table-row-is-drop-target-background-color: $link-dark !default
+$table-row-is-drop-target-color: findColorInvert($table-row-is-drop-target-background-color) !default
+
 .table-wrapper
 	.table
 		margin-bottom: 0
@@ -61,12 +71,45 @@
 					z-index: 1
 					background: inherit
 					position: sticky
+			&.is-draggable
+				cursor: move
+			&.is-undroppable
+				cursor: no-drop
+				background-color: $table-row-is-undroppable-background-color
+				td,
+				th,
+				a
+					color: $table-row-is-undroppable-color
+			&.is-droppable
+				background-color: $table-row-is-droppable-background-color
+				cursor: pointer
+				td,
+				th,
+				a
+					color: $table-row-is-droppable-color
+				&:hover
+					background-color: findDarkColor($table-row-is-droppable-background-color)
+			&.is-drop-target
+				background-color: $table-row-is-drop-target-background-color
+				td,
+				th,
+				a
+					color: $table-row-is-drop-target-color
 			&.is-selected
+				background-color: $table-row-active-background-color
+				color: $table-row-active-color
+				strong
+					color: currentColor
+				td,
+				th
+					border-color: $table-row-active-color
+					color: currentColor
 				.checkbox input
 					&:checked + .check
 						background: $table-row-active-color url(checkmark($table-row-active-background-color)) no-repeat center center
 					+ .check
 						border-color: $table-row-active-color
+
 			&.is-empty:hover
 				background-color: transparent
 		.chevron-cell
