@@ -9,7 +9,7 @@ import { alwaysEmptyArray, alwaysZero, isBoolean, isMobile, toggle } from '../..
 import { ColorVariant } from '../../types/ColorVariants';
 import { head, isEmpty, isNonEmpty, reverse, sort } from 'fp-ts/lib/Array';
 import { Eq, eq, eqString } from 'fp-ts/lib/Eq';
-import {chain, exists, fold, fromNullable, isSome, mapNullable, none, Option, some} from 'fp-ts/lib/Option';
+import {chain, exists, fold, fromNullable, isNone, isSome, mapNullable, none, Option, some} from 'fp-ts/lib/Option';
 import { Ord } from 'fp-ts/lib/Ord';
 import { pipe } from 'fp-ts/lib/pipeable';
 import Vue, { PropType, VNode } from 'vue';
@@ -438,6 +438,7 @@ export default Vue.extend({
           e.dataTransfer.setData('text/plain', String(index))
           e.dataTransfer.dropEffect = this.dropEffect
         }
+        this.dropTarget = some(row);
         this.$emit('dragstart', row, e, index);
       };
     },
@@ -463,10 +464,10 @@ export default Vue.extend({
       return (e: DragEvent) => {
         if (row.isDroppable) {
           e.preventDefault()
-          this.$emit('dragover', row, e, index);
-          if (isSome(this.dropTarget) && !eqBTableRow.equals(this.dropTarget.value, row)) {
-            this.dropTarget = some(row)
+          if (isNone(this.dropTarget) || (isSome(this.dropTarget) && !eqBTableRow.equals(this.dropTarget.value, row))) {
+            this.dropTarget = some(row);
           }
+          this.$emit('dragover', row, e, index);
         }
       }
     },
