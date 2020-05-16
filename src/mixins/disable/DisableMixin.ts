@@ -1,4 +1,6 @@
-import Vue from 'vue';
+import { Ref } from 'vue';
+
+
 export const DisableMixin = Vue.extend({
   name: 'DisableMixin',
   props: {
