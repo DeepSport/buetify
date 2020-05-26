@@ -1,49 +1,30 @@
 import './dropdown.sass';
-import { getThemeClasses, getThemeProps, THEME_INJECTION } from '../../utils/getThemeableFunctionalComponent';
-import { mergeVNodeAttrs } from '../../utils/mergeVNodeAttrs';
-import { mergeVNodeClasses } from '../../utils/mergeVNodeClasses';
-import { mergeVNodeStaticClass } from '../../utils/mergeVNodeStaticClass';
-import Vue, { VNode } from 'vue';
-import { DropdownTheme } from './theme';
+import { ThemeProps, useTheme } from '../../composables/theme';
+import { Classes, mergeClasses } from '../../utils/mergeClasses';
+import { SetupContext, h } from 'vue';
+import { DropdownThemeMap } from './theme';
 
-export default Vue.extend({
-  name: 'BDropdownItem',
-  functional: true,
-  props: {
-    ...getThemeProps(DropdownTheme),
-    isActive: {
-      type: Boolean,
-      default: false
+interface BDropdownItemProps extends Partial<ThemeProps> {
+  isActive?: boolean;
+  href?: string;
+  tag?: string;
+}
+
+export default function BDropdownItem(props: BDropdownItemProps, { attrs, slots }: SetupContext) {
+  const { themeClasses } = useTheme({
+    isThemeable: props.isThemeable ?? true,
+    themeMap: props.themeMap ?? DropdownThemeMap
+  });
+  attrs.class = mergeClasses(attrs.class as Classes, [
+    'dropdown-item dropdown-link',
+    ...themeClasses.value,
+    { 'is-active': !!props.isActive }
+  ]);
+  return h(
+    props.tag ?? 'li',
+    {
+      role: 'menuitem'
     },
-    href: {
-      type: String,
-      required: false,
-      default: '#'
-    },
-    text: {
-      type: String
-    },
-    tag: {
-      type: String,
-      default: 'li'
-    }
-  },
-  inject: {
-    ...THEME_INJECTION
-  },
-  render(h, { data, props, injections, children }): VNode {
-    data.staticClass = mergeVNodeStaticClass('dropdown-item dropdown-link', data.staticClass);
-    if (props.isThemeable && injections.theme) {
-      data.class = mergeVNodeClasses(
-        data.class,
-        props.isActive ? { 'is-active': true } : getThemeClasses(props.themeMap, injections.theme)
-      );
-    } else {
-      data.class = mergeVNodeClasses(data.class, {
-        'is-active': props.isActive
-      });
-    }
-    data.attrs = mergeVNodeAttrs(data.attrs, { tabindex: '0' });
-    return h(props.tag, { attrs: { role: 'menuitem' } }, [h('a', data, props.text ? [props.text] : children)]);
-  }
-});
+    [h('a', attrs, slots.default ? slots.default() : undefined)]
+  );
+}

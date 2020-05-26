@@ -1,6 +1,7 @@
-import Vue from 'vue';
+import { shallowReactive } from 'vue';
+import { ThemeColorMap } from '../../types/ThemeColorMap';
 
-export const DialogTheme = Vue.observable({
+export const DialogTheme: ThemeColorMap = shallowReactive({
   dark: 'is-grey-dark',
   light: ''
 });

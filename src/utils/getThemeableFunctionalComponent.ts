@@ -1,118 +1,60 @@
-import { constant } from 'fp-ts/lib/function';
+import { SetupContext } from '@vue/runtime-core';
 import { isSome } from 'fp-ts/lib/Option';
-import Vue, { VNode } from 'vue';
-import { PropValidator } from 'vue/types/options';
+import { inject, h } from 'vue';
+import {
+  DEFAULT_THEME_INJECTION,
+  getThemeClasses,
+  THEME_INJECTION_SYMBOL,
+  ThemeInjection,
+  ThemeProps
+} from '../composables/theme';
 import { DEFAULT_THEME_COLOR_MAP } from '../mixins/themeInjection/ThemeInjectionMixin';
-import { ThemeInjection } from '../types/AppInjection';
 import { ThemeColorMap } from '../types/ThemeColorMap';
-import { mergeVNodeClasses } from './mergeVNodeClasses';
-import { mergeVNodeStaticClass } from './mergeVNodeStaticClass';
+import { Classes, mergeClasses } from './mergeClasses';
 
-export function getThemeProps(themeMap: ThemeColorMap, defaultIsThemeable: boolean = true) {
-  return {
-    themeMap: {
-      type: Object,
-      required: false,
-      default: constant(themeMap)
-    } as PropValidator<ThemeColorMap>,
-    isThemeable: {
-      type: Boolean,
-      required: false,
-      default: defaultIsThemeable
-    }
-  };
+interface ThemeableComponentOptions {
+  cls: string;
+  el?: string;
+  themeMap?: ThemeColorMap;
+  defaultEl?: string;
 }
 
-export const THEME_INJECTION = {
-  theme: {
-    default: undefined
-  }
-};
+interface ThemeableComponentProps extends Partial<ThemeProps> {
+  tag?: string;
+}
 
-export const getThemeableFunctionalComponent = (
-  cls: string,
-  name: string,
-  el: string = 'div',
-  themeMap: ThemeColorMap = DEFAULT_THEME_COLOR_MAP,
-  defaultEl: string = el
-) =>
-  Vue.extend({
-    name,
-    functional: true,
-    props: {
-      ...getThemeProps(themeMap),
-      ...(el === 'unknown' ? { tag: { type: String, required: false, default: defaultEl } } : {})
-    },
-    inject: {
-      ...THEME_INJECTION
-    },
-    render(h, { data, props, injections, children }): VNode {
-      data.staticClass = mergeVNodeStaticClass(cls, data.staticClass);
-      data.class = getThemeClassesFromContext({ data, props, injections });
-      // @ts-ignore
-      return h(el === 'unknown' ? props.tag : el, data, children);
-    }
-  });
+export function isThemeable(props: Partial<ThemeProps>, injection: ThemeInjection): boolean {
+  return !!props.isThemeable && !!props.themeMap && isSome(injection.currentTheme.value);
+}
 
-export function getThemeClasses(themeMap: ThemeColorMap, themeInjection?: ThemeInjection): string[] {
-  if (themeInjection && themeInjection.isThemeable && isSome(themeInjection.currentTheme)) {
-    const classes = themeMap[themeInjection.currentTheme.value];
-    return Array.isArray(classes) ? classes : [classes];
+export function getThemeClassesFromContext(
+  props: ThemeProps,
+  injection: ThemeInjection,
+  context: SetupContext
+): Classes {
+  if (isThemeable(props, injection)) {
+    return mergeClasses(context.attrs.class as Classes, getThemeClasses(props.themeMap, injection));
   } else {
-    return [];
+    return context.attrs.class as Classes;
   }
 }
 
-interface ThemeContext {
-  props: {
-    isThemeable?: boolean;
-    themeMap?: ThemeColorMap;
-  };
-  data: {
-    class?: any;
-  };
-  injections: {
-    theme?: ThemeInjection;
+export function getThemeableFunctionalComponent({
+  cls,
+  el = 'div',
+  themeMap = DEFAULT_THEME_COLOR_MAP
+}: ThemeableComponentOptions) {
+  return (props: ThemeableComponentProps, context: SetupContext) => {
+    const themeInjection = inject(THEME_INJECTION_SYMBOL, DEFAULT_THEME_INJECTION);
+    const themeProps = {
+      themeMap: props.themeMap ?? themeMap,
+      tag: props.tag ?? el,
+      isThemeable: props.isThemeable ?? true
+    };
+    return h(
+      props.tag ?? el,
+      { ...context.attrs, class: mergeClasses(getThemeClassesFromContext(themeProps, themeInjection, context), cls) },
+      context.slots.default ? context.slots.default() : []
+    );
   };
 }
-
-export function isThemeable(context: ThemeContext): boolean {
-  return !!context.props.isThemeable && !!context.props.themeMap && !!context.injections.theme;
-}
-
-export function getThemeClassesFromContext(context: ThemeContext) {
-  if (context.props.isThemeable && context.props.themeMap && context.injections.theme) {
-    return mergeVNodeClasses(context.data.class, getThemeClasses(context.props.themeMap, context.injections.theme));
-  } else {
-    return context.data.class;
-  }
-}
-
-export const getThemeableFunctionalComponentWithText = (
-  cls: string,
-  name: string,
-  el: string = 'div',
-  themeMap: ThemeColorMap = DEFAULT_THEME_COLOR_MAP,
-  defaultEl: string = el
-) =>
-  Vue.extend({
-    name,
-    functional: true,
-    props: {
-      ...getThemeProps(themeMap),
-      text: {
-        type: String,
-        required: false
-      },
-      ...(el === 'unknown' ? { tag: { type: String, required: false, default: defaultEl } } : {})
-    },
-    inject: {
-      ...THEME_INJECTION
-    },
-    render(h, { data, props, injections, children }: any): VNode {
-      data.staticClass = mergeVNodeStaticClass(cls, data.staticClass);
-      data.class = getThemeClassesFromContext({ data, props, injections });
-      // @ts-ignore
-      return h(el === 'unknown' ? props.tag : el, data, props.text ? [props.text] : children);
-    }
-  });

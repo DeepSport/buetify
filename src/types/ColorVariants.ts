@@ -11,7 +11,8 @@ export type ColorVariant =
   | 'is-link'
   | 'is-success'
   | 'is-warning'
-  | 'is-danger';
+  | 'is-danger'
+  | '';
 
 export type ShadeVariant =
   | 'is-white'

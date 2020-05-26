@@ -1,9 +1,9 @@
 import { Eq, eq, eqNumber } from 'fp-ts/lib/Eq';
 import { IO } from 'fp-ts/lib/IO';
-import Vue, { VNode } from 'vue';
+import { VNode, defineComponent, h } from 'vue';
 import { formatTransition } from '../../mixins/fadeTransition/FadeTransitionMixin';
 import { Transition, TransitionClasses } from '../../types/Transition';
-import { alwaysEmptyArray, remove } from '../../utils/helpers';
+import { alwaysEmptyArray, removeListItem } from '../../utils/helpers';
 
 export interface PopupOptions {
   transition: Transition;
@@ -17,7 +17,7 @@ export interface Popup extends PopupOptions {
 
 export const eqPopup: Eq<Popup> = eq.contramap(eqNumber, popup => popup.id);
 
-export const removePopup = remove(eqPopup);
+export const removePopup = removeListItem(eqPopup);
 
 const SEMAPHORE: Popup = {
   id: -1,
@@ -25,8 +25,8 @@ const SEMAPHORE: Popup = {
   render: alwaysEmptyArray
 };
 
-export default Vue.extend({
-  name: 'BPopupContainer',
+const BPopupContainer = defineComponent({
+  name: 'b-popup-container',
   data: () => ({
     id: 0,
     popups: [SEMAPHORE] as Array<Popup>
@@ -51,12 +51,14 @@ export default Vue.extend({
       this.popups = removePopup(popup, this.popups);
     },
     generatePopup(popup: Popup, index: number): VNode {
-      return this.$createElement('div', { key: index, style: { 'z-index': index } }, [
-        this.$createElement('transition', { props: popup.transition }, popup.render())
-      ]);
+      return h('div', { key: index, style: { 'z-index': index } }, [h('transition', popup.transition, popup.render())]);
     }
   },
-  render(h): VNode {
+  render(): VNode {
     return h('div', { style: { 'z-index': this.rootZIndex } }, this.popups.map(this.generatePopup));
   }
 });
+
+export type PopupContainer = InstanceType<typeof BPopupContainer>;
+
+export default BPopupContainer;

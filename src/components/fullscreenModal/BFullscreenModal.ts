@@ -1,92 +1,75 @@
 import './fullscreen-modal.sass';
-import { isEnterEvent } from '../../utils/eventHelpers';
-import AngleLeftIcon from '../icons/angleLeft/AngleLeftIcon';
+import { IO } from 'fp-ts/lib/IO';
+import {
+  PopupController,
+  usePopupController,
+  UsePopupControllerPropsDefinition
+} from '../../composables/popupController';
+import { alwaysEmptyArray } from '../../utils/helpers';
 import BOverlay from '../overlay/BOverlay';
 import BSheet from '../sheet/BSheet';
-import { applyMixins } from '../../utils/applyMixins';
-import { DisplayModalMixin } from '../../mixins/displayModal/DisplayModalMixin';
-import { VNode } from 'vue';
-import BTitle from '../title/BTitle';
+import { VNode, defineComponent, shallowRef, h, Slots } from 'vue';
 
-export default applyMixins(DisplayModalMixin).extend({
-  name: 'BFullscreenModal',
-  props: {
-    title: {
-      type: String,
-      required: false
-    }
-  },
-  computed: {
-    hasHeader(): boolean {
-      return !!this.$scopedSlots.header || !!this.$scopedSlots.title || !!this.title;
-    }
-  },
-  methods: {
-    onKeydown(e: KeyboardEvent) {
-      if (isEnterEvent(e)) {
-        this.close();
-      }
-    },
-    generateCloseButton(): VNode {
-      return this.$createElement(
-        'button',
-        {
-          staticClass: 'navigation-icon has-text-link-hover',
-          attrs: {
-            'aria-label': 'Close'
-          },
-          on: {
-            click: this.close,
-            keydown: this.onKeydown
-          }
-        },
-        this.$scopedSlots.close ? this.$scopedSlots.close(undefined) : [this.$createElement(AngleLeftIcon)]
-      );
-    },
+function generateTitle(slots: Slots): VNode {
+  return h(
+    'div',
+    { class: 'main-slot' },
+    slots.title!()
+  );
+}
 
-    generateHeader(): VNode {
-      return this.$createElement(
-        'header',
-        {
-          staticClass: 'b-app-header is-flex flex-direction-row justify-content-center align-items-center'
-        },
-        this.$scopedSlots.header
-          ? this.$scopedSlots.header({
-              close: this.close,
-              listeners: {
-                keydown: this.onKeydown
-              }
-            })
-          : [this.generateCloseButton(), this.generateTitle()]
-      );
+function generateCloseButton(popupController: PopupController, slots: Slots) {
+  return h(
+    'button',
+    {
+      class: 'navigation-icon has-text-link-hover',
+      'aria-label': 'Close',
+      ...popupController.listeners,
     },
-    generateTitle(): VNode {
-      return this.$createElement(
-        'div',
-        { staticClass: 'main-slot' },
-        this.$scopedSlots.title
-          ? this.$scopedSlots.title!(undefined)
-          : [this.$createElement(BTitle, { props: { text: this.title } })]
-      );
+    slots.close!()
+  );
+
+}
+
+function generateHeader(popupController: PopupController, slots: Slots) {
+  return h(
+    'header',
+    {
+      class: 'b-app-header is-flex flex-direction-row justify-content-center align-items-center'
     },
-    generateContent(): VNode {
-      const nodes = this.$scopedSlots.default!(undefined) as VNode[];
-      if (this.hasHeader) {
-        nodes.unshift(this.generateHeader());
-      }
-      return this.$createElement(BSheet, { staticClass: 'is-fullheight', props: { tag: 'article' } }, nodes);
-    },
-    generateModal(): VNode {
-      return this.$createElement(
-        BOverlay,
-        {
-          props: {
-            isFullscreen: true,
-            isActive: true
-          }
-        },
-        [this.generateContent()]
-      );
-    }
+    slots.header
+      ? slots.header(popupController)
+      : [generateCloseButton(popupController, slots), generateTitle(slots)]
+  );
+}
+
+function generateContent(popupController: PopupController, slots: Slots) {
+  const nodes = slots.default!();
+  if (slots.header || slots.title) {
+    nodes.unshift(generateHeader(popupController, slots))
+  };
+  return h(BSheet, { class: 'is-fullheight', tag: 'article'}, nodes)
+}
+
+function generateModal(popupController: PopupController, slots: Slots) {
+  return h(BOverlay, {
+      isFullscreen: true,
+      isActive: true
+    }, [generateContent(popupController, slots)]
+  )
+}
+
+export const BFullscreenModal = defineComponent({
+  name: 'b-fullscreen-modal',
+  props: UsePopupControllerPropsDefinition,
+  setup(props, { slots, attrs }) {
+    const render = shallowRef(alwaysEmptyArray as IO<VNode[]>);
+    const popupController = usePopupController(props, render);
+    render.value = () => {
+      return [
+        generateModal(popupController, slots)
+      ];
+    };
+    return () => (slots.trigger ? slots.trigger(popupController) : []);
   }
-});
+})

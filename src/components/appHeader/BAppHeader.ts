@@ -1,65 +1,54 @@
 import './app-header.sass';
-import { isEnterEvent } from '../../utils/eventHelpers';
-import { VNode } from 'vue';
-import { applyMixins } from '../../utils/applyMixins';
-import { NavigationInjectionMixin } from '../../mixins/navigationInjection/NavigationInjectionMixin';
+import { isSome } from 'fp-ts/lib/Option';
+import {
+  NavigationDrawerControllerInjection,
+  useNavigationDrawerController
+} from '../../composables/navigationDrawerController';
+import { SetupContext, h, Slots } from 'vue';
+import { Classes, mergeClasses } from '../../utils/mergeClasses';
 
-export default applyMixins(NavigationInjectionMixin).extend({
-  name: 'BAppHeader',
-  props: {
-    navigationIcon: {
-      type: Function,
-      required: false
-    }
-  },
-  methods: {
-    generateMainSlot(includeClickHandler: boolean = false): VNode {
-      return this.$createElement(
-        'div',
-        { on: includeClickHandler ? { click: this.showNavigationDrawer } : undefined, staticClass: 'main-slot' },
-        this.$scopedSlots.default!(undefined)
-      );
+function generateMainSlot(injection: NavigationDrawerControllerInjection, includeClickHandler: boolean, slots: Slots) {
+  return h(
+    'div',
+    {
+      class: 'main-slot',
+      ...(includeClickHandler && isSome(injection.listeners.value)
+        ? { onClick: injection.listeners.value.value.onClick }
+        : {})
     },
-    onKeydown(e: KeyboardEvent): void {
-      e.preventDefault();
-      if (isEnterEvent(e)) {
-        this.showNavigationDrawer();
-      }
+    slots.default!()
+  );
+}
+
+function generateNavigationButton(injection: NavigationDrawerControllerInjection, slots: Slots) {
+  const listeners = isSome(injection.listeners.value) ? injection.listeners.value.value : {};
+  const attrs = isSome(injection.listeners.value) ? injection.listeners.value.value : {};
+  return h(
+    'button',
+    {
+      class: 'navigation-icon is-hidden-desktop',
+      ...listeners,
+      ...attrs,
+      'aria-label': 'Toggle navigation pane'
     },
-    generateNavigationButton(): VNode {
-      return this.$createElement(
-        'button',
-        {
-          staticClass: 'navigation-icon is-hidden-desktop',
-          on: {
-            click: this.showNavigationDrawer,
-            keydown: this.onKeydown
-          },
-          attrs: {
-            'aria-label': 'Toggle navigation pane',
-            'aria-haspopup': true
-          }
-        },
-        [this.$createElement(this.navigationIcon)]
-      );
-    }
-  },
-  render(): VNode {
-    return this.navigationDrawerIsVisible
-      ? this.$createElement(
-          'header',
-          {
-            staticClass: 'b-app-header is-flex flex-direction-row justify-content-center align-items-center'
-          },
-          [this.generateNavigationButton(), this.generateMainSlot()]
-        )
-      : this.$createElement(
-          'header',
-          {
-            staticClass:
-              'b-app-header has-navigation is-flex flex-direction-row justify-content-center align-items-center'
-          },
-          [this.generateNavigationButton(), this.generateMainSlot(true)]
-        );
-  }
-});
+    slots.trigger ? slots.trigger({ isVisible: injection.isVisible.value }) : []
+  );
+}
+
+export default function(_: any, { attrs, slots }: SetupContext) {
+  const navigationDrawerController = useNavigationDrawerController();
+  return h(
+    'header',
+    {
+      ...attrs,
+      class: mergeClasses(
+        attrs.class as Classes,
+        'b-app-header is-flex flex-direction-row justify-content-center align-items-center'
+      )
+    },
+    [
+      generateNavigationButton(navigationDrawerController, slots),
+      generateMainSlot(navigationDrawerController, !navigationDrawerController.isVisible.value, slots)
+    ]
+  );
+}

@@ -155,14 +155,16 @@ export const alwaysNone = constant(none);
 
 export const alwaysZero = constant(0);
 
-export function remove<A>(E: Eq<A>) {
+export const alwaysEmptyString = constant('');
+
+export function removeListItem<A>(E: Eq<A>) {
   return (a: A, as: A[]) => {
     const index = as.findIndex(i => E.equals(a, i));
     return index > -1 ? unsafeDeleteAt(index, as) : as;
   };
 }
 
-export function toggle<A>(E: Eq<A>) {
+export function toggleListItem<A>(E: Eq<A>) {
   return (a: A, as: A[]) => {
     const index = as.findIndex(i => E.equals(a, i));
     return index > -1 ? unsafeDeleteAt(index, as) : snoc(as, a);

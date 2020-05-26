@@ -95,7 +95,7 @@ export default applyMixins(TABS_THEME_MIXIN, getProxyableMixin('value', 'input',
         this.position,
         {
           'is-fullwidth': this.isExpanded || this.isScrollable,
-          'is-toggle-rounded is-toggle': this.type === 'is-toggle-rounded'
+          'is-toggle-rounded is-toggle': this.type === 'is-toggleListItem-rounded'
         },
         ...(this.variant === undefined ? this.themeClasses : [])
       ];

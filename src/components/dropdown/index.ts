@@ -2,8 +2,8 @@ import BDropdown from './BDropdown';
 import BDropdownDivider from './BDropdownDivider';
 import BDropdownItem from './BDropdownItem';
 import BDropdownLink from './BDropdownLink';
-import { DropdownTheme } from './theme';
+import { DropdownThemeMap } from './theme';
 
-export { BDropdownItem, BDropdownLink, BDropdownDivider, BDropdown, DropdownTheme };
+export { BDropdownItem, BDropdownLink, BDropdownDivider, BDropdown, DropdownThemeMap };
 
 export default BDropdown;

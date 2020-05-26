@@ -1,11 +1,10 @@
-import Vue, { VNode } from 'vue';
-import { mergeVNodeStaticClass } from './mergeVNodeStaticClass';
-export const getSimpleFunctionalComponent = (cls: string, name: string, el: string = 'div') =>
-  Vue.extend({
-    name,
-    functional: true,
-    render(h, { data, children }): VNode {
-      data.staticClass = mergeVNodeStaticClass(cls, data.staticClass);
-      return h(el, data, children);
-    }
-  });
+import { h, SetupContext } from 'vue';
+import { Classes, mergeClasses } from './mergeClasses';
+
+export function getSimpleFunctionalComponent(cls: string, el: string = 'div') {
+  return function(_:any, { attrs, slots }: SetupContext) {
+    attrs.class = mergeClasses(attrs.class as Classes, cls)
+    return h(el, attrs, slots.default ? slots.default() : undefined)
+  }
+}
+

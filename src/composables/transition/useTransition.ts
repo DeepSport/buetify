@@ -1,15 +1,27 @@
-import { computed } from 'vue';
-import {Param} from '../../types/Param';
+import { constant } from 'fp-ts/lib/function';
+import { computed, PropType, ExtractPropTypes } from 'vue';
 import {Transition, TransitionClasses} from '../../types/Transition';
 import {isString} from '../../utils/helpers';
-import {toRef} from '../../utils/toRef';
 
-export function useTransition(transition: Param<Transition>) {
-	const _transition = toRef(transition);
-	return computed(() => formatTransition(_transition.value));
+export function getUseTransitionPropsDefinition(transition: Transition) {
+	return {
+		transition: {
+			type: [Object, String] as PropType<Transition>,
+			default: constant(transition),
+			required: false
+		}
+	}
 }
 
+export type UserTransitionProps = ExtractPropTypes<ReturnType<typeof getUseTransitionPropsDefinition>>;
 
-function formatTransition(transition: Transition): TransitionClasses {
+export const FadeTransitionPropsDefinition = getUseTransitionPropsDefinition('fade');
+
+export function formatTransition(transition: Transition): TransitionClasses {
 	return isString(transition) ? { name: transition, css: true } : transition;
 }
+
+export function useTransition(props: UserTransitionProps) {
+	return computed(() => formatTransition(props.transition));
+}
+

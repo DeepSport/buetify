@@ -1,10 +1,30 @@
 import './menu.sass';
+import { getUseTogglePropsDefinition, useToggle } from '../../composables/toggle';
 import { applyMixins } from '../../utils/applyMixins';
 import { getToggleMixin } from '../../mixins/toggle/ToggleMixin';
 import VerticalExpandTransition from '../../transitions/verticalExpandTransition';
 import VerticalExpansionIcon from '../icons/verticalExpansion/VerticalExpansionIcon';
 import BMenuList from './BMenuList';
-import { VNode } from 'vue';
+import { VNode, defineComponent } from 'vue';
+
+export const BMenuGroup = defineComponent({
+  name: 'b-menu-group',
+  props: {
+    ...getUseTogglePropsDefinition('isExpanded'),
+    menuLabelClass: {
+      type: String,
+      required: false
+    },
+    menuListClass: {
+      type: String,
+      required: false
+    }
+  },
+  setup(props, { slots }) {
+    const toggle = useToggle(props, 'isExpanded');
+    
+  }
+})
 
 export default applyMixins(getToggleMixin('isExpanded')).extend({
   name: 'BMenuGroup',

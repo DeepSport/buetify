@@ -5,7 +5,7 @@ import BTableRowElement from './BTableRow';
 import BTableHeader from './BTableHeader';
 import BTableMobileSort from './BTableMobileSort';
 import { BTableColumn, BTableColumnData, BTableRow, BTableRowData, SortType } from './shared';
-import { alwaysEmptyArray, alwaysZero, isBoolean, isMobile, toggle } from '../../utils/helpers';
+import { alwaysEmptyArray, alwaysZero, isBoolean, isMobile, toggleListItem } from '../../utils/helpers';
 import { ColorVariant } from '../../types/ColorVariants';
 import { head, isEmpty, isNonEmpty, reverse, sort } from 'fp-ts/lib/Array';
 import { Eq, eq, eqString } from 'fp-ts/lib/Eq';
@@ -42,7 +42,7 @@ const eqBTableRow: Eq<BTableRow> = eq.contramap(eqString, row => row.id);
 
 const eqBTableRowData: Eq<BTableRowData> = eqBTableRow as Eq<BTableRowData>;
 
-const toggleBTableRow = toggle(eqBTableRow);
+const toggleBTableRow = toggleListItem(eqBTableRow);
 
 export const eqColumnTableData: Eq<BTableColumnData<any>> = eq.contramap(eqString, column => column.label);
 
