@@ -6,12 +6,10 @@ export function getUseTogglePropsDefinition<K extends string>(statusName: K) {
   return {
     [statusName]: {
       type: Boolean as PropType<boolean>,
-      required: false,
       default: false
     },
     hasPopup: {
       type: Boolean as PropType<boolean>,
-      required: true,
       default: false
     }
   } as UseTogglePropsDefinition<K>;
@@ -19,11 +17,10 @@ export function getUseTogglePropsDefinition<K extends string>(statusName: K) {
 
 export type UseTogglePropsDefinition<K extends string> = Record<
   K,
-  { type: PropType<boolean>; required: false; default: false }
+  { type: PropType<boolean>; default: false }
 > & {
   hasPopup: {
     type: PropType<boolean>;
-    required: true;
     default: false;
   };
 };
