@@ -1,27 +1,36 @@
 import './autocomplete.sass';
 import { Eq } from 'fp-ts/lib/Eq';
 import { IO } from 'fp-ts/lib/IO';
-import { getUseInputPropsDefinition, useInput } from '../../../composables/input/useInput';
+import { getUseInputPropsDefinition } from '../../../composables/input/useInput';
+import { useModel } from '../../../composables/model';
 import { getEqPropsDefinition } from '../../../composables/shared';
-import { getUseThemePropsDefinition, useTheme } from '../../../composables/theme';
-import { UseToggleProps } from '../../../composables/toggle';
+import { getUseThemePropsDefinition } from '../../../composables/theme';
 import { alwaysEmptyArray } from '../../../utils/helpers';
 import { DropdownThemeMap } from '../../dropdown';
 import BDropdown from '../../dropdown/BDropdown';
 import { isArrowDownEvent, isArrowUpEvent, isEnterEvent, isEscEvent, isTabEvent } from '../../../utils/eventHelpers';
-import { extractProp, ExtractPropMixin } from '../../../mixins/extractProp/ExtractPropMixin';
+import { extractProp } from '../../../mixins/extractProp/ExtractPropMixin';
 import { constant, constVoid, FunctionN } from 'fp-ts/lib/function';
 import BDropdownDivider from '../../dropdown/BDropdownDivider';
 import BDropdownItem from '../../dropdown/BDropdownItem';
-import { InputMixin } from '../../../mixins/input/InputMixin';
-import { EqMixin } from '../../../mixins/eq/EqMixin';
-import { applyMixins, ExtractVue } from '../../../utils/applyMixins';
 import { head, isEmpty, lookup } from 'fp-ts/lib/Array';
 import { alt, chain, fold, fromNullable, isSome, map, none, Option, some, toUndefined } from 'fp-ts/lib/Option';
 import { pipe } from 'fp-ts/lib/pipeable';
-import { defineComponent, PropType, VNode, Ref, shallowRef, computed, shallowReactive, onBeforeUpdate, nextTick, Slots, h } from 'vue';
-import { DROPDOWN_THEME_MIXIN } from '../../dropdown/shared';
-import BInput from '../input';
+import {
+  defineComponent,
+  PropType,
+  VNode,
+  Ref,
+  shallowRef,
+  computed,
+  shallowReactive,
+  onBeforeUpdate,
+  nextTick,
+  Slots,
+  h
+} from 'vue';
+
+import { BInput } from '../input';
 
 export interface AutocompleteItem<T> {
   id: string;
@@ -38,47 +47,57 @@ function getActiveDescendentId<T>(selectedItems: T[], itemId: keyof T | ((item: 
     head,
     map(item => extractProp(itemId as any, item) as any),
     toUndefined
-  )
+  );
 }
 
-function getAutocompleteItems<T>(items: T[], selectedItems: T[], itemId: keyof T | ((item: T) => string), itemText: keyof T | ((item: T) => string), eq: Eq<T>, hoveredItem: Option<AutocompleteItem<T>>) {
-  return Object.freeze(
-    items.map((item, index) => ({
-      id: extractProp(itemId as any, item),
-      isSelected: selectedItems.some(i => eq.equals(i, item)),
-      isHovered: isSome(hoveredItem)
-        ? hoveredItem.value.id === (extractProp(itemId as any, item) as any)
-        : false,
-      text: extractProp(itemText as any, item),
-      value: item,
-      index
-    }))
-  )
+function getAutocompleteItems<T>(
+  items: T[],
+  selectedItems: T[],
+  itemId: keyof T | ((item: T) => string),
+  itemText: keyof T | ((item: T) => string),
+  eq: Eq<T>,
+  hoveredItem: Option<AutocompleteItem<T>>
+): AutocompleteItem<T>[] {
+  return items.map((item, index) => ({
+    id: extractProp(itemId as any, item) as any,
+    isSelected: selectedItems.some(i => eq.equals(i, item)),
+    isHovered: isSome(hoveredItem) ? hoveredItem.value.id === (extractProp(itemId as any, item) as any) : false,
+    text: extractProp(itemText as any, item) as any,
+    value: item,
+    index
+  }));
 }
 
 interface GetSetSelectedProps<T> {
   onSelected: FunctionN<[T], void>;
-  itemText: keyof T | ((item: T) => string);
+  itemText: any;
   clearOnSelect: boolean;
   closeOnSelect: boolean;
 }
 
-function getSetSelected<T>(props: GetSetSelectedProps<T>, closeDropdown: IO<void>, inputValue: Ref<string>): SetSelected<T> {
+function getSetSelected<T>(
+  props: GetSetSelectedProps<T>,
+  closeDropdown: IO<void>,
+  inputValue: Ref<string | undefined>
+): SetSelected<T> {
   return (item: AutocompleteItem<T>) => {
     if (!item.isSelected) {
-      inputValue.value = props.clearOnSelect ? '' : extractProp(props.itemText, item.value) as any;
+      inputValue.value = props.clearOnSelect ? '' : (extractProp(props.itemText, item.value) as any);
       if (props.closeOnSelect) {
         nextTick(closeDropdown);
       }
     }
-  }
+  };
 }
 
 interface SetSelected<T> {
-  (item: AutocompleteItem<T>): void
+  (item: AutocompleteItem<T>): void;
 }
 
-function getSetHovered<T>(hoveredItem: Ref<Option<AutocompleteItem<T>>>, templateItems: Ref<HTMLElement[]>): SetHovered<> {
+function getSetHovered<T>(
+  hoveredItem: Ref<Option<AutocompleteItem<T>>>,
+  templateItems: Ref<HTMLElement[]>
+): SetHovered<T> {
   return (item: AutocompleteItem<T> | undefined) => {
     const newItem = fromNullable(item);
     if (isSome(newItem)) {
@@ -94,25 +113,31 @@ function getSetHovered<T>(hoveredItem: Ref<Option<AutocompleteItem<T>>>, templat
 }
 
 interface SetHovered<T> {
-  (item? : AutocompleteItem<T> | undefined): void
-};
+  (item?: AutocompleteItem<T> | undefined): void;
+}
 
-function getOnKeydown<T>(autocompleteItems: Ref<AutocompleteItem<T>[]>,hoveredItem: Ref<Option<AutocompleteItem<T>>>, closeDropdown: IO<void>, setSelected: FunctionN<[AutocompleteItem<T>], void>, setHovered: FunctionN<[AutocompleteItem<T>], void>) {
- function onArrowPress(isUp: boolean)  {
-   pipe(
-     hoveredItem.value,
-     map(item => item.index),
-     alt(() => some(0)),
-     chain(index =>
-       lookup(
-         isUp ? Math.max(index - 1, 0) : Math.min(index + 1, autocompleteItems.value.length - 1),
-         autocompleteItems.value as AutocompleteItem<T>[]
-       )
-     ),
-     fold(constant(constVoid), newItem => () => setHovered(newItem))
-   )()
- }
- return function onKeydown(event: KeyboardEvent) {
+function getOnKeydown<T>(
+  autocompleteItems: Ref<AutocompleteItem<T>[]>,
+  hoveredItem: Ref<Option<AutocompleteItem<T>>>,
+  closeDropdown: IO<void>,
+  setSelected: FunctionN<[AutocompleteItem<T>], void>,
+  setHovered: FunctionN<[AutocompleteItem<T>], void>
+) {
+  function onArrowPress(isUp: boolean) {
+    pipe(
+      hoveredItem.value,
+      map(item => item.index),
+      alt(() => some(0)),
+      chain(index =>
+        lookup(
+          isUp ? Math.max(index - 1, 0) : Math.min(index + 1, autocompleteItems.value.length - 1),
+          autocompleteItems.value as AutocompleteItem<T>[]
+        )
+      ),
+      fold(constant(constVoid), newItem => () => setHovered(newItem))
+    )();
+  }
+  return function onKeydown(event: KeyboardEvent) {
     if (isEnterEvent(event)) {
       event.preventDefault();
       if (isSome(hoveredItem.value)) {
@@ -133,39 +158,60 @@ function getOnKeydown<T>(autocompleteItems: Ref<AutocompleteItem<T>[]>,hoveredIt
       onArrowPress(false);
     } else if (isEscEvent(event)) {
       event.preventDefault();
-      nextTick(closeDropdown)
+      nextTick(closeDropdown);
     }
-  }
+  };
 }
 
 type OnKeydown = ReturnType<typeof getOnKeydown>;
 
-function generateItems<T>(itemsRef: Ref<HTMLElement[]>, length: Ref<number>, onKeydown: OnKeydown, setSelected: SetSelected<T>, setHovered: SetHovered<T>, slots: Slots) {
+function getGenerateItem<T>(
+  itemsRef: Ref<HTMLElement[]>,
+  length: Ref<number>,
+  onKeydown: OnKeydown,
+  setSelected: SetSelected<T>,
+  setHovered: SetHovered<T>,
+  slots: Slots
+) {
   return function generateItem(item: AutocompleteItem<T>, index: number): VNode {
     return h(
-        BDropdownItem,
-        {
-          key: item.id,
-          ref: (el: any) => { itemsRef.value[index] = el },
-          id: item.id,
-          isActive: item.isSelected,
-          'aria-selected': item.isSelected,
-          'aria-label': `Option ${index + 1} of ${length.value}`,
-          class: { 'is-hovered': item.isHovered },
-          onClick: () => setSelected(item),
-          onMouseenter: () => setHovered(item),
-          onKeydown
+      BDropdownItem,
+      {
+        key: item.id,
+        ref: (el: any) => {
+          itemsRef.value[index] = el;
         },
-        slots.default ? slots.default({option: item, index }) : item.text
+        id: item.id,
+        isActive: item.isSelected,
+        'aria-selected': item.isSelected,
+        'aria-label': `Option ${index + 1} of ${length.value}`,
+        class: { 'is-hovered': item.isHovered },
+        onClick: () => setSelected(item),
+        onMouseenter: () => setHovered(item),
+        onKeydown
+      },
+      slots.default ? slots.default({ option: item, index }) : item.text
     );
-  }
+  };
 }
 
-function generateEmptyItem(modelValue: string, slots: Slots) {
-  return h(BDropdownItem, {
-        class: 'is-disabled'
-      },
-      slots.empty ? slots.empty() : `No results for ${modelValue}`
+function generateHeaderItem(slots: Slots): VNode {
+  return h('li', { tabindex: -1 }, [h(BDropdownItem, { tag: 'div' }, slots.header!())]);
+}
+
+function generateLoadingItem(slots: Slots): VNode {
+  return h('li', { tabindex: -1 }, [
+    h(BDropdownItem, { tag: 'div' }, slots.loading ? slots.loading() : 'Loading results...')
+  ]);
+}
+
+function generateEmptyItem(modelValue: string | undefined, slots: Slots) {
+  return h(
+    BDropdownItem,
+    {
+      class: 'is-disabled'
+    },
+    slots.empty ? slots.empty() : modelValue ? `No results` : `No results for ${modelValue}`
   );
 }
 
@@ -197,15 +243,15 @@ function defineAutocomplete<T>() {
         required: true
       },
       closeOnSelect: {
-        type: Boolean,
+        type: Boolean as PropType<boolean>,
         default: true
       },
       clearOnSelect: {
-        type: Boolean,
+        type: Boolean as PropType<boolean>,
         default: true
       },
       openOnFocus: {
-        type: Boolean,
+        type: Boolean as PropType<boolean>,
         default: true
       },
       onSelected: {
@@ -213,164 +259,77 @@ function defineAutocomplete<T>() {
         required: true
       }
     },
-    setup(props, context) {
+    setup(props, { slots }) {
+      const model = useModel(props);
       const itemsRef = shallowRef([] as HTMLElement[]);
-      onBeforeUpdate(() => itemsRef.value = []);
+      onBeforeUpdate(() => (itemsRef.value = []));
       const dropdownProps = shallowReactive({ isExpanded: false, hasPopup: true });
-      function open() { dropdownProps.isExpanded = true }
-      function close() { dropdownProps.isExpanded = false }
-      const { themeClasses } = useTheme(props);
+      function open() {
+        dropdownProps.isExpanded = true;
+      }
+      function close() {
+        dropdownProps.isExpanded = false;
+      }
       const hoveredItem = shallowRef(none as Option<AutocompleteItem<T>>);
       const activeDescendentId = computed(() => getActiveDescendentId(props.selectedItems, props.itemId as any));
-      const autocompleteItems = computed(() => getAutocompleteItems(props.items, props.selectedItems, props.itemId as any, props.itemText as any, props.eq, hoveredItem.value));
+      const autocompleteItems = computed(() =>
+        getAutocompleteItems(
+          props.items,
+          props.selectedItems,
+          props.itemId as any,
+          props.itemText as any,
+          props.eq,
+          hoveredItem.value
+        )
+      );
+      const numberOfItems = computed(() => autocompleteItems.value.length);
+      const setSelected = getSetSelected(props, close, model.value);
+      const setHovered = getSetHovered(hoveredItem, itemsRef);
+      const onKeydown = getOnKeydown(autocompleteItems, hoveredItem, close, setSelected, setHovered);
+      const generateItem = getGenerateItem(itemsRef, numberOfItems, onKeydown, setSelected, setHovered, slots);
       return () => {
-        return h(
-            BDropdown,
-            { isMobileModal: false, class: ['b-autocomplete', { 'is-expanded': props.isExpanded }] },
-            [this.generateInput(), this.generateAutocompleteItems()]
-        );
-
+        return h(BDropdown, {
+          isMobileModal: false,
+          class: ['b-autocomplete', { 'is-expanded': props.isExpanded }],
+          slots: {
+            trigger: () => {
+              return h(BInput, {
+                value: model.value.value,
+                type: 'text',
+                size: props.size,
+                isLoading: props.isLoading,
+                isRounded: props.isRounded,
+                icon: props.icon,
+                maxlength: props.maxlength,
+                autocomplete: props.autocomplete || 'list',
+                placeholder: props.placeholder,
+                role: 'searchbox',
+                'aria-activedescendant': activeDescendentId.value,
+                onInput: model.onInput,
+                onFocus: open,
+                onBlur: props.onBlur,
+                onKeydown
+              });
+            },
+            default: () => {
+              let nodes: VNode[];
+              if (props.isLoading) {
+                nodes = [generateLoadingItem(slots)];
+              } else {
+                nodes = isEmpty(autocompleteItems.value)
+                  ? [generateEmptyItem(model.value.value, slots)]
+                  : autocompleteItems.value.map(generateItem);
+                if (slots.header) {
+                  nodes.unshift(generateHeaderItem(slots), h(BDropdownDivider));
+                }
+              }
+              return nodes;
+            }
+          }
+        });
       };
     }
   });
 }
 
-export default base.extend<any>().extend({
-  name: 'BAutocomplete',
-  inheritAttrs: false,
-  data() {
-    return {
-      hoveredItem: none as Option<AutocompleteItem<unknown>>
-    };
-  },
-  computed: {
-    newAutocomplete(): string {
-      return this.autocomplete || 'list';
-    },
-    classes(): object {
-      return {
-        'is-expanded': this.isExpanded
-      };
-    }
-  },
-  methods: {
-    onFocus(event: MouseEvent) {
-      if (this.openOnFocus) {
-        this.setHovered(this.newItems[0]);
-      }
-      this.$emit('focus', event);
-    },
-    onBlur(event: MouseEvent) {
-      this.$emit('blur', event);
-    },
-    generateInput(): VNode {
-      return this.$createElement(BInput, {
-        ref: 'input',
-        slot: 'trigger',
-        props: {
-          value: this.internalValue,
-          type: 'text',
-          size: this.size,
-          isLoading: this.isLoading,
-          isRounded: this.isRounded,
-          icon: this.icon,
-          maxLength: this.maxLength,
-          autocomplete: this.newAutocomplete,
-          placeholder: this.placeholder
-        },
-        attrs: {
-          ...this.$attrs,
-          role: 'searchbox',
-          'aria-controls': this.computedId,
-          'aria-autocomplete': this.newAutocomplete,
-          'aria-activedescendant': this.activeDescendantId
-        },
-        on: {
-          input: (val: any) => {
-            this.internalValue = val;
-          },
-          focus: this.onFocus,
-          blur: this.onBlur
-        },
-        nativeOn: {
-          keydown: this.onKeydown,
-          keyup: this.onKeyup
-        }
-      });
-    },
-    generateAutocompleteItems(): VNode {
-      let nodes: VNode[];
-      if (this.isLoading) {
-        nodes = [this.generateLoadingItem()];
-      } else {
-        nodes = this.displayEmpty ? [this.generateEmptyItem()] : this.generateItems();
-        if (this.hasHeaderSlot) {
-          nodes.unshift(this.generateHeaderItem(), this.generateDivider());
-        }
-      }
-      return this.$createElement('ul', { slot: 'default', attrs: { id: this.computedId, role: 'listbox' } }, nodes);
-    },
-    generateLoadingItem(): VNode {
-      return this.$createElement('li', { attrs: { tabindex: -1 } }, [
-        this.$createElement(BDropdownItem, { props: { tag: 'div' } }, this.$slots.loading || 'Loading results...')
-      ]);
-    },
-    generateHeaderItem(): VNode {
-      return this.$createElement('li', { attrs: { tabindex: -1 } }, [
-        this.$createElement(BDropdownItem, { props: { tag: 'div' } }, this.$slots.header)
-      ]);
-    },
-    generateDivider(): VNode {
-      return this.$createElement(BDropdownDivider);
-    },
-    generateItems(): VNode[] {
-      return this.newItems.map(this.generateItem);
-    },
-    generateItem(item: AutocompleteItem<unknown>, index: number): VNode {
-      return this.$createElement(
-        BDropdownItem,
-        {
-          key: item.id,
-          ref: 'items',
-          refInFor: true,
-          domProps: {
-            id: item.id
-          },
-          props: {
-            isActive: item.isSelected
-          },
-          attrs: {
-            'aria-selected': item.isSelected,
-            'aria-label': `Option ${index + 1} of ${this.newItems.length}`
-          },
-          class: { 'is-hovered': item.isHovered },
-          on: {
-            click: this.getOnClick(item),
-            mouseenter: this.getOnMouseenter(item),
-            keydown: this.onKeydown
-          }
-        },
-        this.$scopedSlots.default ? this.$scopedSlots.default!({ option: item, index }) : item.text
-      );
-    },
-    generateEmptyItem(): VNode {
-      return this.$createElement(
-        BDropdownItem,
-        {
-          staticClass: 'is-disabled'
-        },
-        this.$slots.empty || `No results for ${this.internalValue}`
-      );
-    }
-  },
-  render(): VNode {
-    return this.$createElement(
-      BDropdown,
-      { ref: 'dropdown', props: { isMobileModal: false }, staticClass: 'b-autocomplete', class: this.classes },
-      [this.generateInput(), this.generateAutocompleteItems()]
-    );
-  }
-});
-
-
-
+export const BAutocomplete = defineAutocomplete<any>();
