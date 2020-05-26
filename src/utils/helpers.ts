@@ -137,6 +137,11 @@ export function isString(arg: any): arg is string {
   return typeof arg === 'string';
 }
 
+export function isNumber(arg: any): arg is number {
+  return typeof arg === 'number';
+}
+
+
 export function isHTMLElement(obj: any): obj is HTMLElement {
   return typeof HTMLElement === 'object'
     ? obj instanceof HTMLElement //DOM2
