@@ -5,7 +5,7 @@ import BField from './BField';
 
 export interface BFieldBodyProps {
   message?: string;
-  variant?: AllColorsVariant | { [K in AllColorsVariant]: boolean };
+  variant?: AllColorsVariant;
   tag?: string;
 }
 

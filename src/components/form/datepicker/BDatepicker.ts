@@ -1,18 +1,19 @@
 import './datepicker.sass';
+import { UseDisablePropsDefinition } from '../../../composables/disable';
 import { DateEvent, DEFAULT_DAY_NAMES, DEFAULT_MONTH_NAMES, EventIndicator } from './shared';
 import { addMonths, getEndOfMonth, isDate, isOnOrAfterDate, isOnOrBeforeDate, isSameDay, WeekdayNumber } from './utils';
 import BInput from '../input/BInput';
 import { isEnterEvent, isEscEvent, isSpaceEvent } from '../../../utils/eventHelpers';
 import { head, range, snoc, unsafeDeleteAt } from 'fp-ts/lib/Array';
-import { constant, constVoid } from 'fp-ts/lib/function';
+import { constant, constVoid, FunctionN } from 'fp-ts/lib/function';
 import { alt, chain, fromNullable, getOrElse, isSome, Option, some } from 'fp-ts/lib/Option';
 import { pipe } from 'fp-ts/lib/pipeable';
 import { applyMixins, ExtractVue } from '../../../utils/applyMixins';
-import BDropdown from '../../dropdown/BDropdown';
-import BDatepickerTable from './BDatepickerTable';
+import BDropdown, { BDropdownPropsDefinition } from '../../dropdown/BDropdown';
+import BDatepickerTable, { BDatepickerTablePropsDefinition } from './BDatepickerTable';
 import BField from '../field/BField';
 import BSelect, { SelectItem } from '../select/BSelect';
-import { PropType, VNode } from 'vue';
+import { PropType, VNode, defineAsyncComponent, defineComponent, h } from 'vue';
 import { AsyncComponent, Component, PropValidator } from 'vue/types/options';
 import { InputMixin } from '../../../mixins/input/InputMixin';
 import { alwaysEmptyArray, isMobile, isString } from '../../../utils/helpers';
@@ -41,16 +42,69 @@ const defaultDateParser = (date: string) => {
 export type DatepickerPosition = 'is-top-right' | 'is-top-left' | 'is-bottom-left';
 
 export interface BDatepickerIcons {
-  next?: Component<any, any, any, any> | AsyncComponent<any, any, any, any>;
-  previous?: Component<any, any, any, any> | AsyncComponent<any, any, any, any>;
-  calendar?: Component<any, any, any, any> | AsyncComponent<any, any, any, any>;
+  next: Component;
+  previous: Component;
+  calendar: Component;
 }
 
 const DEFAULT_DATEPICKER_ICONS: BDatepickerIcons = {
-  previous: () => import('../../icons/angleLeft'),
-  next: () => import('../../icons/angleRight'),
-  calendar: () => import('../../icons/calendar')
+  previous: defineAsyncComponent(() => import('../../icons/angleLeft')),
+  next: defineAsyncComponent(() => import('../../icons/angleRight')),
+  calendar: defineAsyncComponent(() => import('../../icons/calendar'))
 };
+
+
+const BDatepickerPropsDefinition = {
+  ...BDropdownPropsDefinition,
+  ...BDatepickerTablePropsDefinition,
+  ...UseDisablePropsDefinition,
+  placeholder: {
+    type: String as PropType<string>
+  },
+  initiallyFocusedDate: {
+    type: Date as PropType<Date>,
+    default: () => new Date()
+  },
+  dateFormatter: {
+    type: Function as PropType<FunctionN<[Date | Date[], boolean], string>>,
+    default: constant(defaultDateFormatter)
+  },
+  dateParser: {
+    type: Function as PropType<FunctionN<[string], Date | null>>,
+    default: constant(defaultDateParser)
+  },
+  useMobileNative: {
+    type: Boolean as PropType<boolean>,
+    default: false
+  },
+  position: {
+    type: String as PropType<DatepickerPosition>
+  },
+  indicators: {
+    type: String as PropType<EventIndicator>,
+    default: 'bars'
+  },
+  yearsRange: {
+    type: Array as unknown as PropType<[number, number]>,
+    default: constant([-5, 3] as const)
+  },
+  closeOnSelect: {
+    type: Boolean as PropType<boolean>,
+    default: true
+  },
+  isMultiple: {
+    type: Boolean as PropType<boolean>,
+    default: false
+  },
+  openOnFocus: {
+    type: Boolean as PropType<boolean>,
+    default: true
+  },
+  icons: {
+    type: Object as PropType<Partial<BDatepickerIcons>>,
+    default: constant(DEFAULT_DATEPICKER_ICONS)
+  }
+}
 
 interface Data {
   selected: Date | Date[] | null;
@@ -72,113 +126,6 @@ interface options extends ExtractVue<typeof base> {
 export default base.extend<options>().extend({
   name: 'BDatepicker',
   inheritAttrs: false,
-  props: {
-    value: {
-      type: [Date, Array]
-    } as PropValidator<Date | Date[]>,
-    dayNames: {
-      type: Array,
-      default: constant(DEFAULT_DAY_NAMES)
-    } as PropValidator<string[]>,
-    monthNames: {
-      type: Array,
-      default: constant(DEFAULT_MONTH_NAMES)
-    } as PropValidator<string[]>,
-    firstDayOfWeek: {
-      type: Number as PropType<WeekdayNumber>,
-      default: 0
-    },
-    isInline: {
-      type: Boolean,
-      default: false
-    },
-    minDate: {
-      type: Date as PropType<Date>
-    },
-    maxDate: {
-      type: Date as PropType<Date>
-    },
-    initiallyFocusedDate: {
-      type: Date as PropType<Date>
-    },
-    placeholder: String,
-    isReadonly: {
-      type: Boolean,
-      default: false
-    },
-    isDisabled: {
-      type: Boolean,
-      default: false
-    },
-    unselectableDates: {
-      type: Array as PropType<Date[]>,
-      default: alwaysEmptyArray
-    },
-    unselectableDaysOfWeek: {
-      type: Array as PropType<Date[]>,
-      default: alwaysEmptyArray
-    },
-    selectableDates: {
-      type: Array as PropType<Date[]>
-    },
-    dateFormatter: ({
-      type: Function,
-      default: defaultDateFormatter
-    } as any) as PropValidator<(date: Date | Date[], isMultiple: boolean) => string>,
-    dateParser: ({
-      type: Function,
-      default: defaultDateParser
-    } as any) as PropValidator<(str: string) => Date | null>,
-    dateCreator: {
-      type: Function,
-      default: () => {
-        return new Date();
-      }
-    } as PropValidator<() => Date>,
-    mobileNative: {
-      type: Boolean,
-      default: false
-    },
-    position: {
-      type: String as PropType<DatepickerPosition>
-    },
-    events: {
-      type: Array as PropType<DateEvent[]>,
-      default: alwaysEmptyArray
-    },
-    indicators: {
-      type: String as PropType<EventIndicator>,
-      default: 'bars'
-    },
-    yearsRange: ({
-      type: Array,
-      default: () => [-5, 3]
-    } as unknown) as PropValidator<[number, number]>,
-    showWeekNumber: {
-      type: Boolean,
-      default: false
-    },
-    rulesForFirstWeek: {
-      type: Number,
-      default: 4
-    },
-    closeOnSelect: {
-      type: Boolean,
-      default: true
-    },
-    isMultiple: {
-      type: Boolean,
-      default: false
-    },
-    openOnFocus: {
-      type: Boolean,
-      default: true
-    },
-    icons: {
-      type: Object as PropType<Partial<BDatepickerIcons>>,
-      default: constant(DEFAULT_DATEPICKER_ICONS)
-    }
-  },
   data(): Data {
     const startDate: Date = pipe(
       fromNullable(this.value),

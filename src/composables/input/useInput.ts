@@ -1,7 +1,7 @@
 import { AllColorsVariant } from '../../types/ColorVariants';
 import { SizeVariant } from '../../types/SizeVariants';
 import { isObject, isString } from '../../utils/helpers';
-import { PropType, ExtractPropTypes, Ref, Component, computed, toRefs, watch } from 'vue';
+import { PropType, ExtractPropTypes, Ref, computed, toRefs, watch } from 'vue';
 import { useFieldData } from '../fieldData';
 import { useFocus, UseFocusPropsDefinition } from '../focus';
 import { getUseModelPropsDefinition, useModel, UseModelProps } from '../model';

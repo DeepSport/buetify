@@ -1,4 +1,5 @@
 import './datepicker.sass';
+import { IO } from 'fp-ts/lib/IO';
 import { DateEvent, DateSelectionData, DEFAULT_DAY_NAMES, DEFAULT_MONTH_NAMES } from './shared';
 import {
   addDays,
@@ -6,17 +7,97 @@ import {
   getEndOfMonth,
   getStartOfMonth,
   isDate,
+  isOnOrAfterDate,
   isOnOrBeforeDate,
   isWithinWeek,
   WeekdayNumber
 } from './utils';
 import { alwaysEmptyArray } from '../../../utils/helpers';
-import { isNonEmpty, rotate } from 'fp-ts/lib/Array';
-import { constant } from 'fp-ts/lib/function';
-import { fromNullable, Option } from 'fp-ts/lib/Option';
-import Vue, { PropType, VNode } from 'vue';
-import { PropValidator } from 'vue/types/options';
+import { isEmpty, rotate } from 'fp-ts/lib/Array';
+import { constant, FunctionN } from 'fp-ts/lib/function';
+import { fromNullable, isNone, none, Option } from 'fp-ts/lib/Option';
+import { defineComponent, PropType, VNode, ExtractPropTypes, h } from 'vue';
 import BDatepickerTableRow from './BDatepickerTableRow';
+
+export const BDatepickerTablePropsDefinition = {
+  value: {
+    type: [Date, Array] as PropType<Date | Date[]>,
+    required: false
+  },
+  dayNames: {
+    type: Array as PropType<string[]>,
+    default: constant(DEFAULT_DAY_NAMES)
+  },
+  monthNames: {
+    type: Array as PropType<string[]>,
+    default: constant(DEFAULT_MONTH_NAMES)
+  },
+  firstDayOfWeek: {
+    type: Number as PropType<WeekdayNumber>,
+    default: 0 as const
+  },
+  events: {
+    type: Array as PropType<DateEvent[]>,
+    default: alwaysEmptyArray
+  },
+  indicators: {
+    type: String as PropType<'dots' | 'bars'>,
+    required: true as const
+  },
+  minDate: {
+    type: Date as PropType<Date>,
+    required: false
+  },
+  maxDate: {
+    type: Date as PropType<Date>,
+    required: false
+  },
+  dateSelectionData: {
+    type: Object as PropType<DateSelectionData>,
+    default: () => {
+      const date = new Date();
+      return {
+        month: date.getMonth(),
+        year: date.getFullYear()
+      };
+    }
+  },
+  isDisabled: {
+    type: Boolean,
+    default: false
+  },
+  dateCreator: {
+    type: Function as PropType<IO<Date>>,
+    default: constant(() => {
+      return new Date();
+    })
+  },
+  unselectableDates: {
+    type: Array as PropType<Date[]>,
+    default: alwaysEmptyArray
+  },
+  unselectableDaysOfWeek: {
+    type: Array as PropType<number[]>,
+    default: alwaysEmptyArray
+  },
+  selectableDates: {
+    type: Object as PropType<Date[]>
+  },
+  focusedDate: {
+    type: Object as PropType<Option<Date>>,
+    required: true as const
+  },
+  onInput: {
+    type: Function as PropType<FunctionN<[Date], void>>,
+    required: true as const
+  },
+  onFocus: {
+    type: Function as PropType<FunctionN<[Option<Date>], void>>,
+    required: true as const
+  }
+};
+
+export type BDatepickerTableProps = ExtractPropTypes<typeof BDatepickerTablePropsDefinition>;
 
 interface WeekData {
   week: Date[];
@@ -24,188 +105,103 @@ interface WeekData {
   events: DateEvent[];
 }
 
-export default Vue.extend({
-  name: 'BDatepickerTable',
-  props: {
-    value: {
-      type: [Date, Array] as PropType<Date | Date[]>,
-      required: false
-    },
-    dayNames: {
-      type: Array as PropType<string[]>,
-      default: constant(DEFAULT_DAY_NAMES)
-    },
-    monthNames: {
-      type: Array as PropType<string[]>,
-      default: constant(DEFAULT_MONTH_NAMES)
-    },
-    firstDayOfWeek: {
-      type: Number,
-      default: 0
-    } as PropValidator<WeekdayNumber>,
-    events: {
-      type: Array as PropType<DateEvent[]>,
-      default: alwaysEmptyArray
-    },
-    indicators: {
-      type: String as PropType<'dots' | 'bars'>,
-      required: true
-    },
-    minDate: {
-      type: Date as PropType<Date>,
-      required: false
-    },
-    maxDate: {
-      type: Date as PropType<Date>,
-      required: false
-    },
-    dateSelectionData: {
-      type: Object as PropType<DateSelectionData>,
-      required: false,
-      default: () => {
-        const date = new Date();
-        return {
-          month: date.getMonth(),
-          year: date.getFullYear()
-        };
-      }
-    },
-    isDisabled: {
-      type: Boolean,
-      default: false
-    },
-    dateCreator: {
-      type: Function,
-      default: () => {
-        return new Date();
-      }
-    } as PropValidator<() => Date>,
-    unselectableDates: {
-      type: Array as PropType<Date[]>,
-      default: alwaysEmptyArray
-    },
-    unselectableDaysOfWeek: {
-      type: Array as PropType<number[]>,
-      default: alwaysEmptyArray
-    },
-    selectableDates: {
-      type: Object as PropType<Date[]>
-    },
-    focusedDate: {
-      type: Object as PropType<Option<Date>>,
-      required: true
-    }
-  },
-  computed: {
-    selectedDates(): Date[] {
-      if (this.value === undefined) {
-        return [];
-      } else if (Array.isArray(this.value)) {
-        return this.value;
-      } else {
-        return [this.value];
-      }
-    },
-    newMinDate(): Option<Date> {
-      return fromNullable(this.minDate);
-    },
-    newMaxDate(): Option<Date> {
-      return fromNullable(this.maxDate);
-    },
-    newSelectableDates(): Option<Date[]> {
-      return fromNullable(this.selectableDates);
-    },
-    visibleDayNames(): string[] {
-      return rotate(-this.firstDayOfWeek)(this.dayNames);
-    },
-    hasEvents(): boolean {
-      return isNonEmpty(this.events);
-    },
-    eventsInThisMonth(): DateEvent[] {
-      return this.events.filter(event => {
-        const date = isDate(event) ? event : event.date;
-        return date.getFullYear() === this.dateSelectionData.year && date.getMonth() === this.dateSelectionData.month;
-      });
-    },
-    weeksData(): WeekData[] {
-      return this.weeksInThisMonth.map((week, weekNumber) => ({
-        week,
-        weekNumber,
-        events: this.getEventsWithinWeek(week)
-      }));
-    },
-    weeksInThisMonth(): Date[][] {
-      const startOfMonth = getStartOfMonth(new Date(this.dateSelectionData.year, this.dateSelectionData.month + 1, 0));
-      const endOfMonth = getEndOfMonth(startOfMonth);
-      const weeks: Date[][] = [];
-      let date = startOfMonth;
-      while (isOnOrBeforeDate(date, endOfMonth)) {
-        weeks.push(getDatesInWeek(date, this.firstDayOfWeek));
-        date = addDays(date, 7);
-      }
-      return weeks;
-    }
-  },
-  methods: {
-    updateFocusedDate(date: Option<Date>) {
-      this.$emit('new-focus-date', date);
-    },
-    updateSelectedDate(date: Date) {
-      this.$emit('input', date);
-    },
-    getEventsWithinWeek(dates: Date[]): DateEvent[] {
-      return this.eventsInThisMonth.filter(event => {
-        const eventDate = isDate(event) ? event : event.date;
-        return isWithinWeek(dates[0], eventDate, this.firstDayOfWeek);
-      });
-    },
-    generateTableHeader(): VNode {
-      return this.$createElement('thead', { staticClass: 'datepicker-header' }, [
-        this.$createElement(
-          'tr',
-          this.visibleDayNames.map(day => this.$createElement('th', { key: day, staticClass: 'datepicker-cell' }, day))
-        )
-      ]);
-    },
-    generateTableBody(): VNode {
-      return this.$createElement(
-        'tbody',
-        {
-          staticClass: 'datepicker-body',
-          class: { 'has-events': this.hasEvents }
-        },
-        this.weeksData.map(this.generateTableRow)
+function getOnFocus(props: BDatepickerTableProps) {
+  return function onFocus(date: Option<Date>) {
+    if (isNone(date)) {
+      props.onFocus(date);
+    } else if (props.minDate && props.maxDate) {
+      props.onFocus(
+        isOnOrAfterDate(date.value, props.minDate) && isOnOrBeforeDate(date.value, props.maxDate) ? date : none
       );
-    },
-    generateTableRow(weekData: WeekData): VNode {
-      return this.$createElement(BDatepickerTableRow, {
-        key: weekData.weekNumber,
-        props: {
-          selectedDates: this.selectedDates,
-          week: weekData.week,
-          weekNumber: weekData.weekNumber,
-          month: this.dateSelectionData.month,
-          minDate: this.newMinDate,
-          maxDate: this.newMaxDate,
-          unselectableDates: this.unselectableDates,
-          unselectableDaysOfWeek: this.unselectableDaysOfWeek,
-          selectableDates: this.newSelectableDates,
-          events: weekData.events,
-          indicators: this.indicators,
-          dateCreator: this.dateCreator,
-          focusedDate: this.focusedDate
-        },
-        on: {
-          select: this.updateSelectedDate,
-          'new-focus-date': this.updateFocusedDate
-        }
-      });
+    } else if (props.minDate) {
+      props.onFocus(isOnOrAfterDate(date.value, props.minDate) ? date : none);
+    } else if (props.maxDate) {
+      props.onFocus(isOnOrBeforeDate(date.value, props.maxDate) ? date : none);
+    } else {
+      props.onFocus(none);
     }
-  },
-  render(): VNode {
-    return this.$createElement('table', { staticClass: 'datepicker-table' }, [
-      this.generateTableHeader(),
-      this.generateTableBody()
-    ]);
+  };
+}
+
+function getWeeksWithinMonth(props: BDatepickerTableProps) {
+  const startOfMonth = getStartOfMonth(new Date(props.dateSelectionData.year, props.dateSelectionData.month + 1, 0));
+  const endOfMonth = getEndOfMonth(startOfMonth);
+  const weeks: Date[][] = [];
+  let date = startOfMonth;
+  while (isOnOrBeforeDate(date, endOfMonth)) {
+    weeks.push(getDatesInWeek(date, props.firstDayOfWeek));
+    date = addDays(date, 7);
+  }
+  return weeks;
+}
+
+function getEventsWithinWeek(props: BDatepickerTableProps, week: Date[]) {
+  return props.events.filter(event => {
+    const eventDate = isDate(event) ? event : event.date;
+    return isWithinWeek(week[0], eventDate, props.firstDayOfWeek);
+  });
+}
+
+function getWeeks(props: BDatepickerTableProps) {
+  return getWeeksWithinMonth(props).map((week, weekNumber) => ({
+    week,
+    weekNumber,
+    events: getEventsWithinWeek(props, week)
+  }));
+}
+
+function generateTableHeader(dayNames: string[]) {
+  return h('thead', { class: 'datepicker-header' }, [
+    h(
+      'tr',
+      dayNames.map(day => h('th', { key: day, class: 'datepicker-cell' }, day))
+    )
+  ]);
+}
+
+function getGenerateTableRow(props: BDatepickerTableProps, onFocus: FunctionN<[Option<Date>], void>) {
+  return function generateTableRow(weekData: WeekData): VNode {
+    return h(BDatepickerTableRow, {
+      key: weekData.weekNumber,
+      selectedDates: props.value === undefined ? [] : Array.isArray(props.value) ? props.value : [props.value],
+      week: weekData.week,
+      weekNumber: weekData.weekNumber,
+      month: props.dateSelectionData.month,
+      minDate: fromNullable(props.minDate),
+      maxDate: fromNullable(props.maxDate),
+      unselectableDates: props.unselectableDates,
+      unselectableDaysOfWeek: props.unselectableDaysOfWeek,
+      selectableDates: fromNullable(props.selectableDates),
+      events: weekData.events,
+      indicators: props.indicators,
+      dateCreator: props.dateCreator,
+      focusedDate: props.focusedDate,
+      onFocus,
+      onSelect: props.onInput
+    });
+  };
+}
+
+function generateTableBody(props: BDatepickerTableProps, onFocus: FunctionN<[Option<Date>], void>): VNode {
+  return h(
+    'tbody',
+    {
+      class: ['datepicker-body', { 'has-events': !isEmpty(props.events) }],
+    },
+    getWeeks(props).map(getGenerateTableRow(props, onFocus))
+  );
+}
+
+export default defineComponent({
+  name: 'b-datepicker-table',
+  props: BDatepickerTablePropsDefinition,
+  setup(props) {
+    const onFocus = getOnFocus(props);
+    return () => {
+      return h('table', { class: 'datepicker-table' }, [
+        generateTableHeader(rotate(-props.firstDayOfWeek)(props.dayNames)),
+        generateTableBody(props, onFocus)
+      ]);
+    };
   }
 });
