@@ -1,15 +1,15 @@
-import { AsyncComponent, Component } from 'vue/types/options';
+import { Component } from 'vue';
 
 export interface InputIcons {
-  isSuccess?: Component<any, any, any, any> | AsyncComponent<any, any, any, any>;
-  isDanger?: Component<any, any, any, any> | AsyncComponent<any, any, any, any>;
-  isWarning?: Component<any, any, any, any> | AsyncComponent<any, any, any, any>;
-  isInfo?: Component<any, any, any, any> | AsyncComponent<any, any, any, any>;
-  passwordVisible?: Component<any, any, any, any> | AsyncComponent<any, any, any, any>;
-  passwordInvisible?: Component<any, any, any, any> | AsyncComponent<any, any, any, any>;
+  isSuccess?: Component;
+  isDanger?: Component;
+  isWarning?: Component;
+  isInfo?: Component;
+  passwordVisible?: Component;
+  passwordInvisible?: Component;
 }
 
 export interface NumberInputIcons {
-  minus: Component<any, any, any, any> | AsyncComponent<any, any, any, any>;
-  plus: Component<any, any, any, any> | AsyncComponent<any, any, any, any>;
+  minus: Component;
+  plus: Component;
 }

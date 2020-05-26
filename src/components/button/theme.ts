@@ -1,6 +1,7 @@
-import Vue from 'vue';
+import { shallowReactive } from 'vue';
+import { ThemeColorMap } from '../../types/ThemeColorMap';
 
-export const ButtonTheme = Vue.observable({
+export const ButtonTheme: ThemeColorMap = shallowReactive({
   dark: 'is-primary',
   light: 'is-primary'
 });

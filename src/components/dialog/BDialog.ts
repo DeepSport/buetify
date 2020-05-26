@@ -1,38 +1,38 @@
 import './dialog.sass';
+import { IO } from 'fp-ts/lib/IO';
+import { usePopupController, UsePopupControllerPropsDefinition } from '../../composables/popupController';
+import { alwaysEmptyArray } from '../../utils/helpers';
 import BDialogContent from './BDialogContent';
 import BDialogOverlay from './BDialogOverlay';
-import { DisplayModalMixin } from '../../mixins/displayModal/DisplayModalMixin';
-import { applyMixins } from '../../utils/applyMixins';
-import { VNode } from 'vue';
+import { defineComponent, VNode, shallowRef, h } from 'vue';
 
-export default applyMixins(DisplayModalMixin).extend({
-  name: 'BDialog',
-  components: {
-    BDialogContent,
-    BDialogOverlay
-  },
-  methods: {
-    generateModal(): VNode {
-      return this.$createElement(
-        BDialogOverlay,
-        {
-          props: {
-            isActive: true
-          },
-          on: {
-            close: this.setOff
+export default defineComponent({
+  name: 'b-dialog',
+  props: UsePopupControllerPropsDefinition,
+  setup(props, { attrs, slots }) {
+    const generateDialog = shallowRef(alwaysEmptyArray as IO<VNode[]>);
+    const popup = usePopupController(props, generateDialog);
+    generateDialog.value = () => {
+      return [
+        h(BDialogOverlay, {
+          isActive: true,
+          onClose: popup.close,
+          slots: {
+            $stable: true,
+            default: () =>
+              h(BDialogContent, {
+                ...attrs,
+                slots: {
+                  $stable: true,
+                  header: () => slots.header && slots.header(popup),
+                  default: () => slots.default && slots.default(popup),
+                  footer: () => slots.footer && slots.footer(popup)
+                }
+              })
           }
-        },
-        [
-          this.$createElement(BDialogContent, {
-            scopedSlots: {
-              header: () => this.$scopedSlots.header && this.$scopedSlots.header(this.triggerScopedProps),
-              default: () => this.$scopedSlots.default && this.$scopedSlots.default(this.triggerScopedProps),
-              footer: () => this.$scopedSlots.footer && this.$scopedSlots.footer(this.triggerScopedProps)
-            }
-          })
-        ]
-      );
-    }
+        })
+      ];
+    };
+    return () => (slots.trigger ? slots.trigger(popup) : []);
   }
 });

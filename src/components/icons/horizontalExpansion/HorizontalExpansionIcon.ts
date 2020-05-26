@@ -1,25 +1,11 @@
 import './horizontal-expansion-icon.sass';
-import Vue, { VNode } from 'vue';
-import { mergeVNodeClasses } from '../../../utils/mergeVNodeClasses';
-import { mergeVNodeStaticClass } from '../../../utils/mergeVNodeStaticClass';
+import { h, SetupContext } from 'vue';
+import { Classes, mergeClasses } from '../../../utils/mergeClasses';
 import { AngleRightIcon } from '../angleRight';
 
-export default Vue.extend({
-  name: 'HorizontalExpansionIcon',
-  functional: true,
-  props: {
-    isExpanded: {
-      type: Boolean,
-      required: true
-    }
-  },
-  render(h, { data, props }): VNode {
-    return h(AngleRightIcon, {
-      ...data,
-      staticClass: mergeVNodeStaticClass('horizontal-expansion-icon', data.staticClass),
-      class: mergeVNodeClasses(data.class, {
-        'is-expanded': props.isExpanded
-      })
-    });
-  }
-});
+export default function HorizontalExpansionIcon(props: { isExpanded: boolean }, { attrs }: SetupContext) {
+  return h(AngleRightIcon, {
+    ...attrs,
+    class: mergeClasses(attrs.class as Classes, ['horizontal-expansion-icon', { 'is-expanded': props.isExpanded }])
+  });
+}

@@ -21,4 +21,4 @@ function testWindowScrollbar() {
 
 requestAnimationFrame(testWindowScrollbar);
 
-export default getSimpleFunctionalComponent('b-scroll', 'BScroll', 'div');
+export default getSimpleFunctionalComponent('b-scroll', 'div');

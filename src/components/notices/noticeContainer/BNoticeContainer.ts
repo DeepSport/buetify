@@ -1,4 +1,3 @@
-
 import { constant, constVoid } from 'fp-ts/lib/function';
 import { IO } from 'fp-ts/lib/IO';
 import { getOrElse, isNone, none, Option, some } from 'fp-ts/lib/Option';
@@ -6,7 +5,7 @@ import { pipe } from 'fp-ts/lib/pipeable';
 import { VNode } from 'vue';
 import { formatTransition } from '../../../mixins/fadeTransition/FadeTransitionMixin';
 import { Transition, TransitionClasses } from '../../../types/Transition';
-import Vue from 'vue';
+import { defineComponent, h } from 'vue';
 import { alwaysEmptyArray } from '../../../utils/helpers';
 
 export interface NoticeOptions {
@@ -21,8 +20,8 @@ export interface Notice {
   transition: TransitionClasses;
 }
 
-export default Vue.extend({
-  name: 'BNoticeContainer',
+const BNoticeContainer = defineComponent({
+  name: 'b-notice-container',
   data: () => ({
     id: 0,
     notice: none as Option<Notice>
@@ -57,10 +56,14 @@ export default Vue.extend({
       }
     },
     generateNotice(): VNode {
-      return this.$createElement('transition', { props: this.extractedNotice.transition }, this.extractedNotice.render());
+      return h('transition', this.extractedNotice.transition, this.extractedNotice.render());
     }
   },
-  render(h): VNode {
+  render(): VNode {
     return h('div', { style: { 'z-index': this.rootZIndex } }, [this.generateNotice()]);
   }
 });
+
+export type NoticeContainer = InstanceType<typeof BNoticeContainer>;
+
+export default BNoticeContainer;

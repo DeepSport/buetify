@@ -1,5 +1,5 @@
-import BRadio from './BRadio';
+import { BRadio, defineRadio} from './BRadio';
 
-export { BRadio };
+export { BRadio, defineRadio };
 
 export default BRadio;

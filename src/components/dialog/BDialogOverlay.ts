@@ -1,13 +1,9 @@
 import './dialog.sass';
+import { Classes, mergeClasses } from '../../utils/mergeClasses';
 import BOverlay from '../overlay/BOverlay';
-import { mergeVNodeStaticClass } from '../../utils/mergeVNodeStaticClass';
-import Vue, { VNode } from 'vue';
+import { h, SetupContext } from 'vue';
 
-export default Vue.extend({
-  name: 'BDialogOverlay',
-  functional: true,
-  render(h, { data, children }): VNode {
-    data.staticClass = mergeVNodeStaticClass('dialog', data.staticClass);
-    return h(BOverlay, data, children);
-  }
-});
+export default function BDialogOverlay(_: any, { attrs, slots }: SetupContext) {
+  attrs.class = mergeClasses(attrs.class as Classes, 'dialog');
+  return h(BOverlay, attrs, slots.default!());
+}

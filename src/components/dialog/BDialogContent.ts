@@ -1,62 +1,54 @@
 import './dialog.sass';
-import { applyMixins } from '../../utils/applyMixins';
+import { getUseThemePropsDefinition, useTheme } from '../../composables/theme';
 import { SizeVariant } from '../../types/SizeVariants';
-import { PropType, VNode } from 'vue';
-import { getThemeInjectionMixin } from '../../mixins/themeInjection/ThemeInjectionMixin';
+import { PropType, VNode, defineComponent, Slots, h } from 'vue';
+import { mergeClasses } from '../../utils/mergeClasses';
 import { DialogTheme } from './theme';
 
-const DIALOG_THEME_MIXIN = getThemeInjectionMixin(DialogTheme);
+function generateHeader(slots: Slots) {
+  return h('header', { staticClass: 'modal-card-head' }, slots.header!());
+}
 
-export default applyMixins(DIALOG_THEME_MIXIN).extend({
-  name: 'BDialogContent',
+function generateFooter(slots: Slots) {
+  return h('footer', { staticClass: 'modal-card-foot' }, slots.footer!(undefined));
+}
+
+function generateBody(slots: Slots) {
+  return h('section', { staticClass: 'modal-card-body' }, slots.default!(undefined));
+}
+export default defineComponent({
+  name: 'b-dialog-content',
   props: {
-    cardClass: String,
+    ...getUseThemePropsDefinition(DialogTheme, true),
     size: {
       type: String as PropType<SizeVariant>,
       required: false
-    }
-  },
-  computed: {
-    hasFooter(): boolean {
-      return !!this.$scopedSlots.footer;
     },
-    hasHeader(): boolean {
-      return !!this.$scopedSlots.header;
+    cardClass: {
+      type: String as PropType<string>,
+      required: false
     }
   },
-  methods: {
-    generateDialogContentChildren(): VNode[] {
-      const children: VNode[] = [];
-      if (this.hasHeader) {
-        children.push(this.generateHeader());
+  setup(props, { slots }) {
+    const { themeClasses } = useTheme(props);
+    return () => {
+      const nodes: VNode[] = [];
+      if (slots.header) {
+        nodes.push(generateHeader(slots));
       }
-      children.push(this.generateBody());
-      if (this.hasFooter) {
-        children.push(this.generateFooter());
+      nodes.push(generateBody(slots));
+      if (slots.footer) {
+        nodes.push(generateFooter(slots));
       }
-      return children;
-    },
-    generateDialogContent(): VNode {
-      return this.$createElement(
-        'article',
-        {
-          staticClass: 'modal-card',
-          class: [this.cardClass, ...this.themeClasses]
-        },
-        this.generateDialogContentChildren()
-      );
-    },
-    generateFooter(): VNode {
-      return this.$createElement('footer', { staticClass: 'modal-card-foot' }, this.$scopedSlots.footer!(undefined));
-    },
-    generateHeader(): VNode {
-      return this.$createElement('header', { staticClass: 'modal-card-head' }, this.$scopedSlots.header!(undefined));
-    },
-    generateBody(): VNode {
-      return this.$createElement('section', { staticClass: 'modal-card-body' }, this.$scopedSlots.default!(undefined));
-    }
-  },
-  render(): VNode {
-    return this.$createElement('div', { staticClass: 'b-dialog', class: this.size }, [this.generateDialogContent()]);
+      return h('div', { class: mergeClasses(props.size, 'b-dialog') }, [
+        h(
+          'article',
+          {
+            class: mergeClasses(props.cardClass, themeClasses.value)
+          },
+          nodes
+        )
+      ]);
+    };
   }
 });

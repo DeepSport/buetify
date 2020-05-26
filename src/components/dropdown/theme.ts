@@ -1,7 +1,7 @@
-import Vue from 'vue';
+import { shallowReactive } from 'vue';
 import { ThemeColorMap } from '../../mixins/themeInjection/ThemeInjectionMixin';
 
-export const DropdownTheme: ThemeColorMap = Vue.observable({
+export const DropdownThemeMap: ThemeColorMap = shallowReactive({
   dark: 'is-grey-dark',
   light: ''
 });

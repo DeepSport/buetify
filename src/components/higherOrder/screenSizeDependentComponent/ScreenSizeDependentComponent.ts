@@ -1,34 +1,25 @@
-import { WINDOW_SIZE_INJECTION } from '../../../mixins/windowSize/WindowSizeMixin';
-import Vue, { AsyncComponent, VNode } from 'vue';
-import { ExtendedVue } from 'vue/types/vue';
+import { useWindowSize } from '../../../composables/windowSize';
+import { SetupContext, h, Component } from 'vue';
 
 export interface ComponentsByBreakPoint {
-  mobile: AsyncComponent<any, any, any, any> | ExtendedVue<Vue, unknown, unknown, unknown, unknown>;
-  tablet: AsyncComponent<any, any, any, any> | ExtendedVue<Vue, unknown, unknown, unknown, unknown>;
-  desktop: AsyncComponent<any, any, any, any> | ExtendedVue<Vue, unknown, unknown, unknown, unknown>;
-  widescreen: AsyncComponent<any, any, any, any> | ExtendedVue<Vue, unknown, unknown, unknown, unknown>;
-  fullHD: AsyncComponent<any, any, any, any> | ExtendedVue<Vue, unknown, unknown, unknown, unknown>;
+  mobile: Component;
+  tablet: Component;
+  desktop: Component;
+  widescreen: Component;
+  fullHD: Component;
 }
 
-export const ScreenSizeDependentComponent = (components: ComponentsByBreakPoint) =>
-  Vue.extend({
-    name: 'DynamicWindowSizeComponent',
-    functional: true,
-    inject: {
-      ...WINDOW_SIZE_INJECTION
-    },
-    render(h, { data, injections, children }): VNode {
-      const windowSize = injections.windowSize;
-      if (windowSize.isMobile) {
-        return h(components.mobile, data, children);
-      } else if (windowSize.isTablet) {
-        return h(components.tablet, data, children);
-      } else if (windowSize.isDesktop) {
-        return h(components.desktop, data, children);
-      } else if (windowSize.isWidescreen) {
-        return h(components.widescreen, data, children);
-      } else {
-        return h(components.fullHD, data, children);
-      }
-    }
-  });
+export const ScreenSizeDependentComponent = (components: ComponentsByBreakPoint) => (props: any, context: SetupContext) => {
+  const windowSize = useWindowSize();
+  if (windowSize.value.isMobile) {
+    return h(components.mobile, { ...props, slots: context.slots });
+  } else if (windowSize.value.isTablet) {
+    return h(components.tablet, { ...props, slots: context.slots });
+  } else if (windowSize.value.isDesktop) {
+    return h(components.desktop, { ...props, slots: context.slots });
+  } else if (windowSize.value.isWidescreen) {
+    return h(components.widescreen, { ...props, slots: context.slots });
+  } else {
+    return h(components.fullHD, { ...props, slots: context.slots });
+  }
+}

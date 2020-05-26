@@ -1,84 +1,80 @@
 import './accordion.sass';
-import { VNode } from 'vue';
-import { AsyncComponent, Component, PropValidator } from 'vue/types/options';
-import { ThemeInjectionMixin } from '../../mixins/themeInjection';
-import { getToggleMixin } from '../../mixins/toggle/ToggleMixin';
-import { formatTransition, FadeTransitionMixin } from '../../mixins/fadeTransition/FadeTransitionMixin';
-import { applyMixins } from '../../utils/applyMixins';
-import BAccordionContent from './BAccordionContent';
+import { defineComponent, h, Slots, Ref } from 'vue';
+import { DefaultThemePropsDefinition, useTheme } from '../../composables/theme';
+import { getUseTogglePropsDefinition, Toggle, useToggle } from '../../composables/toggle';
+import { FadeTransitionPropsDefinition, useTransition } from '../../composables/transition';
+import { TransitionClasses } from '../../types/Transition';
+import { getThemeableFunctionalComponent } from '../../utils/getThemeableFunctionalComponent';
+import { mergeClasses } from '../../utils/mergeClasses';
 
-const VerticalExpansionIcon = () => import('../icons/verticalExpansion/VerticalExpansionIcon');
+function generateHeader(toggle: Toggle, slots: Slots) {
+  return h('header', {
+    onClick: toggle.toggle
+  }, [generateTitle(slots), generateTriggerButton(toggle, slots)]);
+}
 
-export default applyMixins(getToggleMixin('isExpanded'), FadeTransitionMixin, ThemeInjectionMixin).extend({
-  name: 'BAccordion',
+function generateTitle(slots: Slots) {
+  return h(
+    'h1',
+    {
+      class: 'card-header-title'
+    },
+    slots.title!()
+  );
+}
+
+function generateTriggerButton(toggle: Toggle, slots: Slots) {
+  return h(
+    'button',
+    {
+      class: 'card-header-icon',
+      ...toggle.listeners,
+      ...toggle.attrs.value,
+      onClick: (e: MouseEvent) => {
+        e.stopPropagation();
+        toggle.toggle();
+      }
+    },
+    slots.trigger!({
+      isExpanded: toggle.isOn.value
+    })
+  );
+}
+
+export const ACCORDION_CONTENT_THEME_MAP = {
+  dark: 'is-black-ter', //'is-grey-dark',
+  light: ''
+};
+
+const BAccordionContent = getThemeableFunctionalComponent({
+  cls: 'card-content',
+  el: 'section',
+  themeMap: ACCORDION_CONTENT_THEME_MAP
+})
+
+function generateBody(toggle: Toggle, transition: Ref<TransitionClasses>, slots: Slots) {
+  return h('transition', transition.value, [
+    h(BAccordionContent, {
+      directives: [{ name: 'show', value: toggle.isOn.value }],
+      'aria-hidden': !toggle.isOn.value
+    }, slots.default!())
+  ])
+}
+
+export default defineComponent({
+  name: 'b-accordion',
   props: {
-    title: {
-      type: String,
-      required: false,
-      default: ''
-    },
-    icon: {
-      type: Function
-    } as PropValidator<Component<any, any, any, any> | AsyncComponent<any, any, any, any>>
+    ...getUseTogglePropsDefinition('isExpanded'),
+    ...FadeTransitionPropsDefinition,
+    ...DefaultThemePropsDefinition
   },
-  methods: {
-    generateHeader(): VNode {
-      return this.$createElement('header', { staticClass: 'card-header', on: { click: this.toggle } }, [
-        this.generateHeaderTitle(),
-        this.generateTriggerButton()
-      ]);
-    },
-    generateHeaderTitle(): VNode {
-      return this.$createElement(
-        'h1',
-        { staticClass: 'card-header-title' },
-        this.$scopedSlots.title ? this.$scopedSlots.title!(undefined) : [this.title]
-      );
-    },
-    generateTriggerButton(): VNode {
-      return this.$createElement(
-        'button',
-        {
-          staticClass: 'card-header-icon',
-          on: {
-            ...this.keyboardToggler,
-            click: this.stopPropagationToggle
-          },
-          attrs: this.attrs
-        },
-        [
-          this.$createElement(this.icon === undefined ? VerticalExpansionIcon : this.icon, {
-            props: { isExpanded: this.internalStatus }
-          })
-        ]
-      );
-    },
-    generateBody(): VNode {
-      return this.$createElement('transition', { attrs: formatTransition(this.transition) }, [
-        this.generateBodyContent()
-      ]);
-    },
-    generateBodyContent(): VNode {
-      return this.$createElement(
-        BAccordionContent,
-        {
-          directives: [{ name: 'show', value: this.internalStatus }],
-          attrs: {
-            'aria-hidden': !this.internalStatus
-          }
-        },
-        this.$scopedSlots.default!(undefined)
-      );
-    },
-    stopPropagationToggle(e: MouseEvent) {
-      e.stopPropagation();
-      this.toggle();
-    }
-  },
-  render(): VNode {
-    return this.$createElement('article', { staticClass: 'b-card card', class: this.themeClasses }, [
-      this.generateHeader(),
-      this.generateBody()
-    ]);
+  setup(props, { slots }) {
+    const toggle = useToggle(props, 'isExpanded');
+    const theme = useTheme(props);
+    const transition = useTransition(props);
+    return () => h('article', { class: mergeClasses('b-card card', theme.themeClasses.value) }, [
+      generateHeader(toggle, slots),
+      generateBody(toggle, transition, slots)
+    ])
   }
 });

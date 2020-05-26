@@ -1,18 +1,191 @@
 import '../sass/form.sass';
+import { show } from 'fp-ts';
+import { FieldDataAttrs, provideFieldData, ProvideFieldDataPropsDefinition } from '../../../composables/fieldData';
+import { DefaultThemePropsDefinition } from '../../../composables/theme';
 import { applyMixins } from '../../../utils/applyMixins';
 import { AllColorsVariant } from '../../../types/ColorVariants';
 import { not } from 'fp-ts/lib/function';
-import { PropType, VNode } from 'vue';
+import {
+  Directive,
+  withDirectives,
+  h,
+  PropType,
+  VNode,
+  defineComponent,
+  defineAsyncComponent,
+  Ref,
+  computed,
+  ExtractPropTypes,
+  shallowRef,
+  watch,
+  Slots
+} from 'vue';
 import { ThemeInjectionMixin } from '../../../mixins/themeInjection/ThemeInjectionMixin';
 import { isEmptyString, isString } from '../../../utils/helpers';
+import { Classes, mergeClasses } from '../../../utils/mergeClasses';
+
+const BFieldBody = defineAsyncComponent(() => import('./BFieldBody'));
 
 export type FieldPosition = 'is-left' | 'is-centered' | 'is-right';
+
+function getFieldClasses(props: BFieldProps): Ref<Classes> {
+  return computed(() => {
+    const isGrouped = props.isGrouped;
+    const position = props.position;
+    return {
+      'is-expanded': props.isExpanded,
+      'is-grouped-multiline': props.isGroupedMultiline,
+      'is-horizontal': props.isHorizontal,
+      'is-grouped-centered': isGrouped && position === 'is-centered',
+      'is-grouped-right': isGrouped && position === 'is-right',
+      'has-addons-centered': !isGrouped && position === 'is-centered',
+      'has-addons-right': !isGrouped && position === 'is-right'
+    };
+  });
+}
+
+export const BFieldPropsDefinition = {
+  ...DefaultThemePropsDefinition,
+  ...ProvideFieldDataPropsDefinition,
+  isGrouped: {
+    type: Boolean as PropType<boolean>,
+    default: false
+  },
+  isGroupedMultiline: {
+    type: Boolean as PropType<boolean>,
+    default: false
+  },
+  position: {
+    type: String as PropType<FieldPosition>,
+    default: 'is-left'
+  },
+  isHorizontal: {
+    type: Boolean as PropType<boolean>,
+    default: false
+  },
+  hasAddons: {
+    type: Boolean as PropType<boolean>,
+    default: true
+  },
+  customLabelClass: String
+};
+
+export type BFieldProps = ExtractPropTypes<typeof BFieldPropsDefinition>;
+
+function generateInnerLabel(fieldData: FieldDataAttrs, customClass: string, themeClasses: Classes): VNode {
+  return h(
+    'label',
+    {
+      class: mergeClasses(['label', customClass], themeClasses),
+      id: fieldData.labelId.value,
+      for: fieldData.id.value
+    },
+    fieldData.label.value
+  );
+}
+
+function generateHorizontalLabel(
+  fieldData: FieldDataAttrs,
+  customClass: string,
+  themeClasses: Classes,
+  size: string
+): VNode {
+  return h('div', { class: ['field-label', size] }, [generateInnerLabel(fieldData, customClass, themeClasses)]);
+}
+
+function generateLabel(
+  isHorizontal: boolean,
+  fieldData: FieldDataAttrs,
+  customClass: string,
+  themeClasses: Classes,
+  size: string
+): VNode[] {
+  const label = fieldData.label.value;
+  if (isHorizontal && !!label) {
+    return [generateHorizontalLabel(fieldData, customClass, themeClasses, size)];
+  } else if (isHorizontal && !!label) {
+    return [generateInnerLabel(fieldData, customClass, themeClasses)];
+  } else {
+    return [];
+  }
+}
+
+function generateHelpMessage(isHorizontal: boolean, fieldDataAttrs: FieldDataAttrs, vShow: Directive): VNode {
+  const showHelpMessage = !isHorizontal && !!fieldDataAttrs.message.value;
+  return withDirectives(
+    h('p', {
+      class: ['help', fieldDataAttrs.messageVariant.value],
+      'aria-hidden': showHelpMessage,
+      innerHTML: fieldDataAttrs.message.value
+    }),
+    [[vShow, showHelpMessage]]
+  );
+}
+
+function generateFieldBody(fieldData: FieldDataAttrs, role: string, slots: Slots): VNode {
+  return h(BFieldBody, {
+    class: { 'is-expanded': fieldData.isExpanded.value },
+    message: fieldData.message.value,
+    variant: fieldData.messageVariant.value,
+    slots,
+    role
+  });
+}
+
+function generateBody(isHorizontal: boolean, fieldData: FieldDataAttrs, role: string, slots: Slots): VNode[] {
+  if (isHorizontal) {
+    return [generateFieldBody(fieldData, role, slots)];
+  } else {
+    return slots.default!();
+  }
+}
+
+function getFieldType(isGrouped: boolean, hasAddons: boolean, isHorizontal: boolean, slots: Slots): string {
+  return isGrouped
+    ? 'is-grouped'
+    : hasAddons && !isHorizontal && slots.default!().filter(n => !!n.el).length > 1
+    ? 'has-addons'
+    : '';
+}
+
+export const BField = defineComponent({
+  name: 'b-field',
+  props: BFieldPropsDefinition,
+  setup(props, { slots }) {
+    const field = shallowRef((null as unknown) as HTMLElement);
+    const fieldData = provideFieldData(props);
+    const classes = getFieldClasses(props);
+    const showHelpMessage = computed(() => !!fieldData.attrs.message.value && !props.isHorizontal);
+    const role = computed(() => (props.isGrouped ? 'group' : ''));
+    const size = shallowRef('');
+    watch(field, newVal => {
+      if (props.isHorizontal) {
+        // Bulma docs: .is-normal for any .input or .button
+        const elements = newVal.querySelectorAll('.input, .select, .button, .textarea');
+        if (elements.length > 0) {
+          size.value = 'is-normal';
+        }
+      }
+    });
+    return () => {
+      return h(
+        'div',
+        {
+          staticClass: 'field',
+          class: [classes.value, getFieldType(props.isGrouped, props.hasAddons, props.isHorizontal, slots)],
+          role: role.value
+        },
+        [generateLabel(props.isHorizontal, fieldData.attrs, props.customLabelClass,), ...this.generateBody(), this.generateHelpMessage()]
+      );
+    };
+  }
+});
 
 export default applyMixins(ThemeInjectionMixin).extend({
   name: 'BField',
   inheritAttrs: false,
   components: {
-    BFieldBody: () => import('./BFieldBody')
+    BFieldBody: defineAsyncComponent(() => import('./BFieldBody'))
   },
   props: {
     variant: {
@@ -66,15 +239,7 @@ export default applyMixins(ThemeInjectionMixin).extend({
     },
     fieldId(): string {
       return `label-for-${this.computedId}`;
-    },
-    rootClasses(): { [K: string]: boolean } {
-      return {
-        ...this.positionClasses,
-        'is-expanded': this.isExpanded,
-        'is-grouped-multiline': this.isGroupedMultiline,
-        'is-horizontal': this.isHorizontal
-      };
-    },
+    }
     /**
      * Correct Bulma class for the side of the addon or group.
      *
@@ -82,75 +247,10 @@ export default applyMixins(ThemeInjectionMixin).extend({
      * because since 'has-addons' is set automatically it
      * doesn't make sense to teach users what has-addons are exactly.
      */
-    positionClasses(): { [K: string]: boolean } {
-      return {
-        'is-grouped-centered': this.isGrouped && this.position === 'is-centered',
-        'is-grouped-right': this.isGrouped && this.position === 'is-right',
-        'has-addons-centered': !this.isGrouped && this.position === 'is-centered',
-        'has-addons-right': !this.isGrouped && this.position === 'is-right'
-      };
-    },
     /**
      * Formatted message in case it's an array
      * (each element is separated by <br> tag)
      */
-    formattedMessage(): string {
-      if (isString(this.newMessage)) {
-        return this.newMessage;
-      } else {
-        const messages = [];
-        if (Array.isArray(this.newMessage)) {
-          this.newMessage.forEach(message => {
-            if (isString(message)) {
-              messages.push(message);
-            } else {
-              for (const key in message) {
-                if (message[key]) {
-                  messages.push(key);
-                }
-              }
-            }
-          });
-        } else {
-          for (const key in this.newMessage) {
-            if (this.newMessage[key]) {
-              messages.push(key);
-            }
-          }
-        }
-        return messages.filter(not(isEmptyString)).join(' <br> ');
-      }
-    },
-    attrs(): object {
-      return {
-        isFullwidth: this.isExpanded,
-        isExpanded: this.isExpanded,
-        message: this.formattedMessage,
-        messageVariant: this.newVariant,
-        id: this.computedId,
-        ...(this.label ? { 'aria-labelledby': this.fieldId } : {})
-      };
-    },
-    listeners(): object {
-      return {
-        'new-message': this.setMessage,
-        'new-variant': this.setVariant
-      };
-    },
-    showHelpMessage(): boolean {
-      return !!this.newMessage && !this.isHorizontal;
-    },
-    fieldRole(): string {
-      return this.isGrouped ? 'group' : '';
-    }
-  },
-  watch: {
-    variant(value: AllColorsVariant | { [K in AllColorsVariant]: boolean }) {
-      this.newVariant = value;
-    },
-    message(value: string | { [K: string]: boolean } | Array<string | { [K: string]: boolean }>) {
-      this.newMessage = value;
-    }
   },
   methods: {
     /**
@@ -176,75 +276,6 @@ export default applyMixins(ThemeInjectionMixin).extend({
         return '';
       }
     },
-    setMessage(message: string): void {
-      this.newMessage = message;
-    },
-    setVariant(variant: AllColorsVariant): void {
-      this.newVariant = variant;
-    },
-    generateLabel(): VNode[] {
-      if (this.isHorizontal && !!this.label) {
-        return [this.generateHorizontalLabel()];
-      } else if (!this.isHorizontal && !!this.label) {
-        return [this.generateInnerLabel()];
-      } else {
-        return [];
-      }
-    },
-    generateHorizontalLabel(): VNode {
-      return this.$createElement(
-        'div',
-        {
-          staticClass: 'field-label',
-          class: this.fieldLabelSize
-        },
-        [this.generateInnerLabel()]
-      );
-    },
-    generateInnerLabel(): VNode {
-      return this.$createElement(
-        'label',
-        {
-          class: [this.customLabelClass, ...this.themeClasses],
-          staticClass: 'label',
-          domProps: {
-            id: this.fieldId,
-            for: this.computedId
-          }
-        },
-        this.label
-      );
-    },
-    generateBody(): VNode[] {
-      if (this.isHorizontal) {
-        return [this.generateFieldBody()];
-      } else {
-        const scopedSlot = this.$scopedSlots.default!({
-          attrs: this.attrs,
-          listeners: this.listeners
-        });
-        return scopedSlot ? scopedSlot : [];
-      }
-    },
-    generateFieldBody(): VNode {
-      return this.$createElement(
-        'b-field-body',
-        {
-          staticClass: this.isExpanded ? 'is-expanded' : '',
-          props: {
-            message: this.newMessage ? this.formattedMessage : '',
-            variant: this.newVariant
-          },
-          attrs: {
-            role: this.fieldRole
-          }
-        },
-        this.$scopedSlots.default!({
-          attrs: this.attrs,
-          listeners: this.listeners
-        })
-      );
-    },
     generateHelpMessage(): VNode {
       return this.$createElement('p', {
         staticClass: 'help',
@@ -255,15 +286,6 @@ export default applyMixins(ThemeInjectionMixin).extend({
         },
         directives: [{ name: 'show', value: this.showHelpMessage }]
       });
-    }
-  },
-  mounted() {
-    if (this.isHorizontal) {
-      // Bulma docs: .is-normal for any .input or .button
-      const elements = this.$el.querySelectorAll('.input, .select, .button, .textarea');
-      if (elements.length > 0) {
-        this.fieldLabelSize = 'is-normal';
-      }
     }
   },
   render(): VNode {

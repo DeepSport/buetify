@@ -1,87 +1,45 @@
 import './button.sass';
-import Vue, { VNode } from 'vue';
-import { PropValidator } from 'vue/types/options';
+import { h, SetupContext } from 'vue';
 import { ColorVariant } from '../../types/ColorVariants';
 import { SizeVariant } from '../../types/SizeVariants';
-import {
-  getThemeClassesFromContext,
-  getThemeProps,
-  THEME_INJECTION
-} from '../../utils/getThemeableFunctionalComponent';
-import { mergeVNodeAttrs } from '../../utils/mergeVNodeAttrs';
-import { mergeVNodeClasses } from '../../utils/mergeVNodeClasses';
-import { mergeVNodeStaticClass } from '../../utils/mergeVNodeStaticClass';
-import { ButtonTheme } from './theme';
+import { Classes, mergeClasses } from '../../utils/mergeClasses';
 
-export default Vue.extend({
-  name: 'BButton',
-  functional: true,
-  props: {
-    ...getThemeProps(ButtonTheme),
-    variant: {
-      type: String
-    } as PropValidator<ColorVariant | undefined>,
-    isRounded: Boolean,
-    isLoading: Boolean,
-    isOutlined: Boolean,
-    isInverted: Boolean,
-    isFocused: Boolean,
-    isActive: Boolean,
-    isDisabled: Boolean,
-    isHovered: Boolean,
-    size: {
-      type: String,
-      required: false
-    } as PropValidator<SizeVariant>,
-    tag: {
-      type: String,
-      default: 'button',
-      validator: (value: string) => ['button', 'a', 'input'].includes(value)
-    }
-  },
-  inject: {
-    ...THEME_INJECTION
-  },
-  render(h, { data, props, injections, children }): VNode {
-    data.staticClass = mergeVNodeStaticClass('button', data.staticClass);
-    data.class = mergeVNodeClasses(
-      props.variant ? data.class : getThemeClassesFromContext({ data, props, injections }),
-      getButtonClasses(props)
-    );
-    data.attrs = mergeVNodeAttrs(data.attrs, {
-      disabled: props.isDisabled,
-      'aria-disabled': props.isDisabled
-    });
-    return h(props.tag, data, children);
-  }
-});
-
-interface ButtonProps {
-  variant: ColorVariant | undefined;
-  isRounded: boolean;
-  isLoading: boolean;
-  isOutlined: boolean;
-  isInverted: boolean;
-  isFocused: boolean;
-  isActive: boolean;
-  isDisabled: boolean;
-  isHovered: boolean;
+export interface ButtonProps {
+  variant?: ColorVariant;
+  isRounded?: boolean;
+  isLoading?: boolean;
+  isOutlined?: boolean;
+  isInverted?: boolean;
+  isFocused?: boolean;
+  isActive?: boolean;
+  isDisabled?: boolean;
+  isHovered?: boolean;
   size?: SizeVariant;
+  tag?: 'button' | 'a' | 'input';
 }
 
-function getButtonClasses(props: ButtonProps) {
+function getButtonClasses(props: ButtonProps): Classes {
   return [
     props.variant,
     props.size ? props.size : '',
     {
-      'is-rounded': props.isRounded,
-      'is-loading': props.isLoading,
-      'is-outlined': props.isOutlined,
-      'is-inverted': props.isInverted,
-      'is-focused': props.isFocused,
-      'is-active': props.isActive,
-      'is-disabled': props.isDisabled,
-      'is-hovered': props.isHovered
+      'is-rounded': !!props.isRounded,
+      'is-loading': !!props.isLoading,
+      'is-outlined': !!props.isOutlined,
+      'is-inverted': !!props.isInverted,
+      'is-focused': !!props.isFocused,
+      'is-active': !!props.isActive,
+      'is-disabled': !!props.isDisabled,
+      'is-hovered': !!props.isHovered
     }
   ];
 }
+
+export default function BButton(props: ButtonProps, { slots, attrs }: SetupContext) {
+  return h(
+    props.tag ?? 'button',
+    { ...attrs, class: mergeClasses(attrs.class as Classes, getButtonClasses(props)) },
+    slots.default ? slots.default() : []
+  );
+}
+

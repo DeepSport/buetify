@@ -1,4 +1,5 @@
 import './title.sass';
-import { getThemeableFunctionalComponentWithText } from '../../utils/getThemeableFunctionalComponent';
+import { getSimpleFunctionalComponent } from '../../utils/getSimpleFunctionalComponent';
 
-export default getThemeableFunctionalComponentWithText('title', 'BTitle', 'unknown', undefined, 'h1');
+export default getSimpleFunctionalComponent('title', 'h1');
+

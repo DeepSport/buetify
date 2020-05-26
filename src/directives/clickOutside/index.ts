@@ -1,11 +1,11 @@
-import { VNodeDirective } from 'vue/types/vnode';
+import { Directive } from 'vue';
 
 export interface ClickOutsideBindingArgs {
   closeConditional?: (e: Event) => boolean;
   include?: () => HTMLElement[];
 }
 
-export interface ClickOutsideDirective extends VNodeDirective {
+export interface ClickOutsideDirective {
   value?: (e: Event) => void;
   args?: ClickOutsideBindingArgs;
 }
@@ -50,13 +50,13 @@ function directive(e: PointerEvent, el: HTMLElement, binding: ClickOutsideDirect
     }, 0);
 }
 
-export const ClickOutside = {
+export const ClickOutside: Directive = {
   // [data-app] may not be found
   // if using bind, inserted makes
   // sure that the root element is
   // available, iOS does not support
   // clicks on body
-  inserted(el: HTMLElement, binding: ClickOutsideDirective) {
+  mounted(el: HTMLElement, binding: ClickOutsideDirective) {
     const onClick = (e: Event) => directive(e as PointerEvent, el, binding);
     // iOS does not recognize click events on document
     // or body, this is the entire purpose of the v-app
@@ -66,7 +66,7 @@ export const ClickOutside = {
     el._clickOutside = onClick;
   },
 
-  unbind(el: HTMLElement) {
+  unmounted(el: HTMLElement) {
     if (!el._clickOutside) return;
 
     const app = document.querySelector('.b-app') || document.body; // This is only for unit tests
