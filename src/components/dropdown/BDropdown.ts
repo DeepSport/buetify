@@ -25,6 +25,39 @@ import { DropdownThemeMap } from './theme';
 
 export type DropdownPosition = 'is-top-right' | 'is-top-left' | 'is-bottom-left';
 
+export const BDropdownPropsDefinition = {
+  ...getUseThemePropsDefinition(DropdownThemeMap),
+  ...getUseTogglePropsDefinition('isExpanded'),
+  ...FadeTransitionPropsDefinition,
+  id: String as PropType<string>,
+  isDisabled: {
+    type: Boolean as PropType<boolean>,
+    default: false
+  },
+  isHoverable: {
+    type: Boolean as PropType<boolean>,
+    default: false
+  },
+  isInline: {
+    type: Boolean as PropType<boolean>,
+    default: false
+  },
+  position: {
+    type: String as PropType<DropdownPosition>,
+    validator: (value: unknown) => {
+      return isString(value) && ['is-top-right', 'is-top-left', 'is-bottom-left'].includes(value);
+    }
+  },
+  isMobileModal: {
+    type: Boolean as PropType<boolean>,
+    default: true
+  },
+  menuTag: {
+    type: String as PropType<string>,
+    default: 'ul'
+  }
+};
+
 let id = 0;
 
 function generateTrigger(toggle: Toggle, id: string, triggerRef: Ref<HTMLElement>, slots: Slots) {
@@ -194,38 +227,7 @@ function generateChildren(
 
 export default defineComponent({
   name: 'b-dropdown',
-  props: {
-    ...getUseThemePropsDefinition(DropdownThemeMap),
-    ...getUseTogglePropsDefinition('isExpanded'),
-    ...FadeTransitionPropsDefinition,
-    id: String as PropType<string>,
-    isDisabled: {
-      type: Boolean as PropType<boolean>,
-      default: false
-    },
-    isHoverable: {
-      type: Boolean as PropType<boolean>,
-      default: false
-    },
-    isInline: {
-      type: Boolean as PropType<boolean>,
-      default: false
-    },
-    position: {
-      type: String as PropType<DropdownPosition>,
-      validator: (value: unknown) => {
-        return isString(value) && ['is-top-right', 'is-top-left', 'is-bottom-left'].includes(value);
-      }
-    },
-    isMobileModal: {
-      type: Boolean as PropType<boolean>,
-      default: true
-    },
-    menuTag: {
-      type: String as PropType<string>,
-      default: 'ul'
-    }
-  },
+  props: BDropdownPropsDefinition,
   setup(props, { slots }) {
     const windowSize = useWindowSize();
     const toggle = useToggle(props, 'isExpanded');

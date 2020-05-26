@@ -1,8 +1,12 @@
 import { IO } from 'fp-ts/lib/IO';
-import { Ref, VNode, shallowRef, PropType, ExtractPropTypes, onMounted } from 'vue';
+import { Ref, VNode, shallowRef, PropType, ExtractPropTypes, onMounted, watchEffect } from 'vue';
 import { isHTMLElement } from '../../utils/helpers';
 
 export const UseFocusPropsDefinition = {
+  isFocused: {
+    type: Boolean as PropType<boolean>,
+    default: false
+  },
   onFocus: {
     type: Function as PropType<IO<void>>,
     required: false
@@ -13,7 +17,8 @@ export const UseFocusPropsDefinition = {
   },
   focusOnMount: {
     type: Boolean as PropType<boolean>,
-    default: false
+    default: false,
+    required: false
   }
 };
 
@@ -34,6 +39,11 @@ export function useFocus(props: UseFocusProps, ref: Ref<HTMLElement | VNode>) {
       }
     }
   }
+  watchEffect(() => {
+    if (props.isFocused && isFocused.value === false) {
+      focus()
+    }
+  })
   function onFocus() {
     isFocused.value = true;
     if (props.onFocus) onFocus();

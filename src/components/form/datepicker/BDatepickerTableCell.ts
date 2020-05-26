@@ -1,4 +1,6 @@
 import './datepicker.sass';
+import { FunctionN } from 'fp-ts/lib/function';
+import { useFocus } from '../../../composables/focus';
 import { DateCell, DetailedDateEvent, EventIndicator } from './shared';
 import { addDays, isSameDay } from './utils';
 import {
@@ -11,16 +13,23 @@ import {
 } from '../../../utils/eventHelpers';
 import { exists, none, Option, some } from 'fp-ts/lib/Option';
 import { pipe } from 'fp-ts/lib/pipeable';
-import Vue, { PropType, VNode } from 'vue';
+import { PropType, VNode, computed, defineComponent, reactive, shallowRef, h, nextTick } from 'vue';
 
-interface options extends Vue {
-  $refs: {
-    button: HTMLButtonElement;
-  };
+function generateEvents(events: DetailedDateEvent[]): VNode {
+  return h(
+    'div',
+    { class: 'events' },
+    events.map((event, index) =>
+      h('div', {
+        key: index,
+        class: ['event', event.variant]
+      })
+    )
+  );
 }
 
-export default Vue.extend<options>().extend({
-  name: 'BDatepickerTableCell',
+export default defineComponent({
+  name: 'b-datepicker-table-cell',
   props: {
     selectedDates: {
       type: Array as PropType<Date[]>,
@@ -37,101 +46,79 @@ export default Vue.extend<options>().extend({
     cell: {
       type: Object as PropType<DateCell>,
       required: true
-    }
-  },
-  computed: {
-    isFocused(): boolean {
-      return pipe(
-        this.focusedDate,
-        exists(date => isSameDay(date, this.cell.date))
-      );
-    }
-  },
-  watch: {
-    isFocused: {
-      handler(val: boolean, oldVal: boolean) {
-        if (val && !oldVal) {
-          this.$nextTick(() => {
-            this.$refs.button.focus();
-          });
-        }
-      },
-      immediate: true
-    }
-  },
-  methods: {
-    onBlur() {
-      this.$nextTick(() => {
-        if (this.isFocused) {
-          this.$emit('new-focus-date', none);
-        }
-      });
     },
-    onFocus() {
-      this.$emit('new-focus-date', some(this.cell.date));
+    onSelect: {
+      type: Function as PropType<FunctionN<[Date], void>>,
+      required: true
     },
-    onClick(e: MouseEvent) {
+    onFocus: {
+      type: Function as PropType<FunctionN<[Option<Date>], void>>,
+      required: true
+    }
+  },
+  setup(props) {
+    const buttonRef = shallowRef((null as unknown) as HTMLElement);
+    const focus = useFocus(
+      reactive({
+        isFocused: computed(() =>
+          pipe(
+            props.focusedDate,
+            exists(date => isSameDay(date, props.cell.date))
+          )
+        ),
+        focusOnMount: false
+      }),
+      buttonRef
+    );
+
+    function onClick(e: MouseEvent) {
       e.preventDefault();
-      this.$emit('select', this.cell.date);
-    },
-    onKeydown(e: KeyboardEvent) {
+      props.onSelect(props.cell.date);
+    }
+
+    function onKeydown(e: KeyboardEvent) {
       if (isEnterEvent(e) || isSpaceEvent(e)) {
         e.preventDefault();
-        this.$emit('select', this.cell.date);
+        props.onSelect(props.cell.date);
       } else if (isArrowUpEvent(e)) {
         e.preventDefault();
-        this.$emit('new-focus-date', some(addDays(this.cell.date, -7)));
+        props.onFocus(some(addDays(props.cell.date, -7)));
       } else if (isArrowRightEvent(e)) {
         e.preventDefault();
-        this.$emit('new-focus-date', some(addDays(this.cell.date, 1)));
+        props.onFocus(some(addDays(props.cell.date, 1)));
       } else if (isArrowDownEvent(e)) {
         e.preventDefault();
-        this.$emit('new-focus-date', some(addDays(this.cell.date, 7)));
+        props.onFocus(some(addDays(props.cell.date, 7)));
       } else if (isArrowLeftEvent(e)) {
         e.preventDefault();
-        this.$emit('new-focus-date', some(addDays(this.cell.date, -1)));
+        props.onFocus(some(addDays(props.cell.date, -1)));
       }
-    },
-    generateCell(): VNode {
-      return this.$createElement('td', [this.generateButton()]);
-    },
-    generateButton(): VNode {
-      return this.$createElement(
-        'button',
-        {
-          ref: 'button',
-          staticClass: 'datepicker-cell',
-          class: [this.cell.classes, this.indicators],
-          attrs: {
-            disabled: this.cell.isDisabled,
-            tabindex: this.cell.isDisabled || this.cell.isSelected ? -1 : 0,
-            'aria-label': this.cell.ariaLabel
-          },
-          on: {
-            click: this.onClick,
-            keydown: this.onKeydown,
-            focus: this.onFocus,
-            blur: this.onBlur
-          }
-        },
-        this.cell.hasEvents ? [`${this.cell.number}`, this.generateEvents(this.cell.events)] : [`${this.cell.number}`]
-      );
-    },
-    generateEvents(events: DetailedDateEvent[]): VNode {
-      return this.$createElement(
-        'div',
-        { staticClass: 'events' },
-        events.map((event, index) =>
-          this.$createElement('div', {
-            key: index,
-            staticClass: 'event',
-            class: event.variant
-          })
-        )
-      );
     }
-  },
-  render(): VNode {
-    return this.$createElement('td', [this.generateButton()]);
+    return () => {
+      return h('td', [
+        h(
+          'button',
+          {
+            ref: buttonRef,
+            staticClass: 'datepicker-cell',
+            class: [props.cell.classes, props.indicators, 'datepicker-cell'],
+            disabled: props.cell.isDisabled,
+            tabindex: props.cell.isDisabled || props.cell.isSelected ? -1 : 0,
+            'aria-label': props.cell.ariaLabel,
+            onClick,
+            onKeydown,
+            onFocus: () => props.onSelect(props.cell.date),
+            onBlur: () => {
+              nextTick(() => {
+                if (focus.isFocused.value) {
+                  props.onFocus(none);
+                }
+              });
+            }
+          },
+          props.cell.hasEvents ? generateEvents(props.cell.events) : undefined
+        )
+      ]);
+    };
   }
 });

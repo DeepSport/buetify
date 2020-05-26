@@ -9,7 +9,7 @@ export const PROVIDE_FIELD_DATA_INJECTION_SYMBOL = Symbol('use-field-data');
 export const ProvideFieldDataPropsDefinition = {
   ...UseLabelIdPropsDefinition,
   variant: {
-    type: [String, Object] as PropType<AllColorsVariant | Partial<{ [K in AllColorsVariant]: boolean }>>,
+    type: [String, Object] as PropType<AllColorsVariant>,
     required: false
   },
   message: {
@@ -61,14 +61,14 @@ export interface FieldDataAttrs {
   isFullwidth: Ref<boolean>;
   isExpanded: Ref<boolean>;
   message: Ref<string>;
-  messageVariant: Ref<undefined | AllColorsVariant | Partial<{ [K in AllColorsVariant]: boolean }>>;
+  messageVariant: Ref<undefined | AllColorsVariant>;
   id: Ref<string | undefined>;
   labelId: Ref<string | undefined>;
 }
 
 export interface FieldDataListeners {
   onNewMessage: FunctionN<[string | { [K: string]: boolean } | Array<string | { [K: string]: boolean }>], void>;
-  onNewVariant: FunctionN<[AllColorsVariant | Partial<{ [K in AllColorsVariant]: boolean }>], void>;
+  onNewVariant: FunctionN<[AllColorsVariant], void>;
 }
 
 export interface FieldDataInjection {
@@ -120,7 +120,7 @@ export function provideFieldData(props: ProvideFieldDataProps, ) {
     onNewMessage: (newMessage: string | { [K: string]: boolean } | Array<string | { [K: string]: boolean }>) => {
       message.value = newMessage;
     },
-    onNewVariant: (newVariant: AllColorsVariant | Partial<{ [K in AllColorsVariant]: boolean }>) => {
+    onNewVariant: (newVariant: AllColorsVariant) => {
       variant.value = newVariant;
     }
   };
