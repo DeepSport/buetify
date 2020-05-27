@@ -3,15 +3,11 @@ import { IO } from 'fp-ts/es6/IO';
 import { UseDisablePropsDefinition } from '../../../composables/disable';
 import { getUseInputPropsDefinition, Input, useInput } from '../../../composables/input/useInput';
 import { UseToggleProps } from '../../../composables/toggle';
-import {
-  DateSelectionData,
-  EventIndicator,
-  MonthNumber
-} from './shared';
-import { isDate, isSameDay} from './utils';
+import { DateSelectionData, EventIndicator, MonthNumber } from './shared';
+import { isDate, serialDateOrd } from './utils';
 import { BInput } from '../input/BInput';
 import { isEnterEvent, isEscEvent, isSpaceEvent } from '../../../utils/eventHelpers';
-import { head, range, snoc, unsafeDeleteAt } from 'fp-ts/lib/Array';
+import { head, range } from 'fp-ts/lib/Array';
 import { constant, FunctionN } from 'fp-ts/lib/function';
 import { alt, chain, fromNullable, getOrElse, isSome, Option, some } from 'fp-ts/lib/Option';
 import { pipe } from 'fp-ts/lib/pipeable';
@@ -33,9 +29,9 @@ import {
   SetupContext,
   Ref,
   shallowReactive,
-  watch,
+  watch
 } from 'vue';
-import {  isString } from '../../../utils/helpers';
+import { isString, toggleListItem } from '../../../utils/helpers';
 
 function defaultDateFormatter(date: Date | Date[], isMultiple: boolean): string {
   const targetDates = Array.isArray(date) ? date : [date];
@@ -135,15 +131,6 @@ const BDatepickerPropsDefinition = {
 
 export type BDatepickerProps = ExtractPropTypes<typeof BDatepickerPropsDefinition>;
 
-interface Data {
-  selected: Date | Date[] | null;
-  focusedDate: Option<Date>;
-  dateSelectionData: {
-    year: number;
-    month: number;
-  };
-}
-
 function useNative(props: BDatepickerProps) {
   return props.useMobileNative && !props.isInline;
 }
@@ -167,23 +154,58 @@ function formatYYYYMMDD(value: any) {
   return '';
 }
 
-function getOnNativeInput(input: Input) {
+function getUpdateValue(props: BDatepickerProps, input: Input, dateSelectionData: Ref<DateSelectionData>) {
+  return (value: Date | Date[] | null | undefined) => {
+    if (value === null || value === undefined) {
+      return;
+    } else if (Array.isArray(value)) {
+      input.value.value = value;
+      const currentDate = value.length ? value[0] : props.dateCreator();
+      dateSelectionData.value = {
+        month: currentDate.getMonth() as MonthNumber,
+        year: currentDate.getFullYear()
+      };
+    } else {
+      if (props.isMultiple) {
+        const currentValue = input.value.value;
+        const existingDates = Array.isArray(currentValue) ? currentValue : [currentValue].filter(isDate);
+        const newDates = toggleDate(value, existingDates);
+        input.value.value = newDates;
+        const currentDate = newDates.length ? newDates[0] : props.dateCreator();
+        dateSelectionData.value = {
+          month: currentDate.getMonth() as MonthNumber,
+          year: currentDate.getFullYear()
+        };
+      } else {
+        input.value.value = value;
+        dateSelectionData.value = {
+          month: value.getMonth() as MonthNumber,
+          year: value.getFullYear()
+        };
+      }
+    }
+  };
+}
+
+type UpdateValue = ReturnType<typeof getUpdateValue>;
+
+function getOnNativeInput(updateValue: UpdateValue) {
   return function onNativeInput(event: any) {
     const value = event.target.value;
     const date = new Date(value + 'T00:00:00');
-    input.value.value = isDate(date) ? date : null;
+    updateValue(isDate(date) ? date : null);
   };
 }
 
 type OnNativeInput = ReturnType<typeof getOnNativeInput>;
 
-function getOnInput(props: BDatepickerProps, input: Input) {
+function getOnInput(props: BDatepickerProps, updateValue: UpdateValue) {
   return function onInput(value: string) {
     const date = props.dateParser(value);
     if (isDate(date)) {
-      input.value.value = date;
+      updateValue(date);
     } else {
-      input.value.value = null;
+      updateValue(null);
     }
   };
 }
@@ -379,6 +401,8 @@ function generateDropdown(
   });
 }
 
+const toggleDate = toggleListItem(serialDateOrd);
+
 interface BDatepickerData {
   toggleProps: UseToggleProps<'isExpanded'>;
   dateSelectionData: DateSelectionData;
@@ -530,7 +554,7 @@ export default defineComponent({
   setup(props, context) {
     const inputRef = shallowRef((null as unknown) as HTMLElement);
     const input = useInput(props, inputRef);
-    const toggleProps = shallowReactive({isExpanded: false, hasPopup: true});
+    const toggleProps = shallowReactive({ isExpanded: false, hasPopup: true });
     const open = () => {
       toggleProps.isExpanded = false;
     };
@@ -538,16 +562,17 @@ export default defineComponent({
       toggleProps.isExpanded = true;
     };
     const focusedDate = shallowRef(fromNullable(props.initiallyFocusedDate));
-    const onInput = getOnInput(props, input);
-    const onNativeInput = getOnNativeInput(input);
     const dateSelectionData = shallowRef(getInitialDateSelectionData(props));
+
+    const updateValue = getUpdateValue(props, input, dateSelectionData);
+    const onInput = getOnInput(props, updateValue);
+    const onNativeInput = getOnNativeInput(updateValue);
 
     const setFocusedDate = getSetFocusedDate(focusedDate);
     const nextMonth = getSetNextMonth(input, dateSelectionData);
     const previousMonth = getSetPreviousMonth(input, dateSelectionData);
     const setMonth = getSetMonth(input, dateSelectionData);
     const setYear = getSetYear(input, dateSelectionData);
-
     function onEscape(e: KeyboardEvent) {
       if (isEscEvent(e)) {
         close();
@@ -558,13 +583,13 @@ export default defineComponent({
       if (typeof window !== 'undefined') {
         document.addEventListener('keyup', onEscape);
       }
-    })
+    });
 
     onUnmounted(() => {
       if (typeof window !== 'undefined') {
         document.removeEventListener('keyup', onEscape);
       }
-    })
+    });
 
     watch(focusedDate, newVal => {
       if (isSome(newVal.value)) {
@@ -591,21 +616,16 @@ export default defineComponent({
         years: getYears(props, dateSelectionData.value)
       };
       return h(
-          'article',
-          {
-            class: ['b-datepicker control', input.size.value, {'is-expanded': input.isExpanded.value}]
-          },
-          [
-            useNative(props)
-                ? generateInput(props, context, input, inputRef, data)
-                : generateDropdown(props, context, input, inputRef, data)
-          ]
+        'article',
+        {
+          class: ['b-datepicker control', input.size.value, { 'is-expanded': input.isExpanded.value }]
+        },
+        [
+          useNative(props)
+            ? generateInput(props, context, input, inputRef, data)
+            : generateDropdown(props, context, input, inputRef, data)
+        ]
       );
     };
   }
 });
-
-function toggleDate(date: Date, dates: Date[]): Date[] {
-  const index = dates.findIndex(d => isSameDay(date, d));
-  return index === -1 ? snoc(dates, date) : unsafeDeleteAt(index, dates);
-}
