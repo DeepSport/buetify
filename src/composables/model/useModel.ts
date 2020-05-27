@@ -13,7 +13,7 @@ export function getUseModelPropsDefinition<T>() {
 }
 
 export interface UseModelProps<T> {
-  value?: T;
+  value?: T | undefined;
   onInput: FunctionN<[T], void>
 }
 

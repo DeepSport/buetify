@@ -7,7 +7,7 @@ import { isNumber, isString } from '../../../utils/helpers';
 import { constant } from 'fp-ts/lib/function';
 import { VNode } from 'vue';
 import { DEFAULT_INPUT_ICONS, InputIcons } from '../shared/types';
-import { Component, defineComponent, PropType, shallowRef, h, Ref, computed } from 'vue';
+import { Component, defineComponent, PropType, shallowRef, h, Ref, computed, SetupContext } from 'vue';
 
 export function getBInputPropsDefinition<T>() {
   return {
@@ -125,11 +125,13 @@ function generateNonTextInput(
   inputRef: Ref<HTMLInputElement>,
   inputData: Input,
   isLoading: boolean,
-  rightIcon: Component | undefined
+  rightIcon: Component | undefined,
+  context: SetupContext
 ): VNode {
   const hasMessage = !!inputData.message.value;
   const type = inputData.type ? inputData.type.value : inputData.usePasswordReveal.value ? 'password' : undefined;
   return h('input', {
+    ...context.attrs,
     ref: inputRef,
     class: [
       'input',
@@ -161,10 +163,12 @@ function generateTextarea(
   inputRef: Ref<HTMLInputElement>,
   inputData: Input,
   isLoading: boolean,
-  rightIcon: Component | undefined
+  rightIcon: Component | undefined,
+  context: SetupContext
 ): VNode {
   const hasMessage = !!inputData.message.value;
   return h('textarea', {
+    ...context.attrs,
     ref: inputRef,
     class: [
       'textarea',
@@ -195,12 +199,13 @@ function generateInput(
   inputRef: Ref<HTMLInputElement>,
   inputData: Input,
   isLoading: boolean,
-  rightIcon: Component | undefined
+  rightIcon: Component | undefined,
+  context: SetupContext
 ): VNode {
   const type = inputData.type && inputData.type.value;
   return type === 'textarea'
-    ? generateTextarea(inputRef, inputData, isLoading, rightIcon)
-    : generateNonTextInput(inputRef, inputData, isLoading, rightIcon);
+    ? generateTextarea(inputRef, inputData, isLoading, rightIcon, context)
+    : generateNonTextInput(inputRef, inputData, isLoading, rightIcon, context);
 }
 
 function getValueLength(modelValue: unknown) {
@@ -235,7 +240,7 @@ export function defineInput<T>() {
   return defineComponent({
     name: 'b-input',
     props: getBInputPropsDefinition<T>(),
-    setup(props) {
+    setup(props, context: SetupContext) {
       const inputRef = shallowRef((null as unknown) as HTMLInputElement);
       const inputData = useInput(props, inputRef);
       const passwordToggle = useToggle({ isVisible: false, hasPopup: false }, 'isVisible');
@@ -255,7 +260,7 @@ export function defineInput<T>() {
       );
 
       return () => {
-        const nodes: VNode[] = [generateInput(inputRef, inputData, props.isLoading, inputData)];
+        const nodes: VNode[] = [generateInput(inputRef, inputData, props.isLoading, rightIcon.value, context)];
         if (inputData.icon && inputData.icon.value) {
           nodes.push(generateLeftIcon(inputData.icon.value, inputData.iconSize.value));
         }
