@@ -8,11 +8,11 @@ export type Remove = IO<void>;
 
 const eqDeep: Eq<any> = fromEquals(deepEqual)
 
-export function getEqPropsDefinition<T>() {
+export function getEqPropsDefinition<T>(eq: Eq<T> = eqDeep) {
   return {
     eq: {
       type: Object as PropType<Eq<T>>,
-      default: constant(eqDeep)
+      default: constant(eq)
     }
   };
 }
