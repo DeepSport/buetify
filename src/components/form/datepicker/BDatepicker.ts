@@ -1,5 +1,6 @@
 import './datepicker.sass';
 import { UseDisablePropsDefinition } from '../../../composables/disable';
+import { getUseInputPropsDefinition, useInput } from '../../../composables/input/useInput';
 import { DateEvent, DEFAULT_DAY_NAMES, DEFAULT_MONTH_NAMES, EventIndicator } from './shared';
 import { addMonths, getEndOfMonth, isDate, isOnOrAfterDate, isOnOrBeforeDate, isSameDay, WeekdayNumber } from './utils';
 import BInput from '../input/BInput';
@@ -13,12 +14,11 @@ import BDropdown, { BDropdownPropsDefinition } from '../../dropdown/BDropdown';
 import BDatepickerTable, { BDatepickerTablePropsDefinition } from './BDatepickerTable';
 import BField from '../field/BField';
 import BSelect, { SelectItem } from '../select/BSelect';
-import { PropType, VNode, defineAsyncComponent, defineComponent, h } from 'vue';
-import { AsyncComponent, Component, PropValidator } from 'vue/types/options';
+import { PropType, VNode, defineAsyncComponent, defineComponent, h, Component, ExtractPropTypes } from 'vue';
 import { InputMixin } from '../../../mixins/input/InputMixin';
 import { alwaysEmptyArray, isMobile, isString } from '../../../utils/helpers';
 
-const defaultDateFormatter = (date: Date | Date[], isMultiple: boolean): string => {
+function defaultDateFormatter(date: Date | Date[], isMultiple: boolean): string {
   const targetDates = Array.isArray(date) ? date : [date];
   const dates = targetDates.map(date => {
     const yyyyMMdd = date.getFullYear() + '/' + (date.getMonth() + 1) + '/' + date.getDate();
@@ -27,7 +27,8 @@ const defaultDateFormatter = (date: Date | Date[], isMultiple: boolean): string 
   });
   return !isMultiple ? dates.join(' - ') : dates.join(', ');
 };
-const defaultDateParser = (date: string) => {
+
+function defaultDateParser(date: string): Date | null {
   if (date) {
     const s = date.split('/');
     const year = s[0].length === 4 ? s[0] : s[1];
@@ -41,20 +42,27 @@ const defaultDateParser = (date: string) => {
 
 export type DatepickerPosition = 'is-top-right' | 'is-top-left' | 'is-bottom-left';
 
-export interface BDatepickerIcons {
+export interface DatepickerIcons {
   next: Component;
   previous: Component;
   calendar: Component;
 }
 
-const DEFAULT_DATEPICKER_ICONS: BDatepickerIcons = {
+const DEFAULT_DATEPICKER_ICONS: DatepickerIcons = {
   previous: defineAsyncComponent(() => import('../../icons/angleLeft')),
   next: defineAsyncComponent(() => import('../../icons/angleRight')),
   calendar: defineAsyncComponent(() => import('../../icons/calendar'))
 };
 
+export function getDatepickerIcons(icons: Partial<DatepickerIcons>): DatepickerIcons {
+  return {
+    ...DEFAULT_DATEPICKER_ICONS,
+    ...icons
+  };
+}
 
 const BDatepickerPropsDefinition = {
+  ...getUseInputPropsDefinition<Date | Date[]>(),
   ...BDropdownPropsDefinition,
   ...BDatepickerTablePropsDefinition,
   ...UseDisablePropsDefinition,
@@ -101,10 +109,12 @@ const BDatepickerPropsDefinition = {
     default: true
   },
   icons: {
-    type: Object as PropType<Partial<BDatepickerIcons>>,
+    type: Object as PropType<Partial<DatepickerIcons>>,
     default: constant(DEFAULT_DATEPICKER_ICONS)
   }
 }
+
+export type BDatepickerProps = ExtractPropTypes<typeof BDatepickerPropsDefinition>;
 
 interface Data {
   selected: Date | Date[] | null;
@@ -117,15 +127,14 @@ interface Data {
 
 const base = applyMixins(InputMixin);
 
-interface options extends ExtractVue<typeof base> {
-  $refs: {
-    dropdown: ExtractVue<typeof BDropdown>;
-    input: ExtractVue<typeof BInput>;
-  };
-}
-export default base.extend<options>().extend({
-  name: 'BDatepicker',
-  inheritAttrs: false,
+
+export default defineComponent({
+  name: 'b-datepicker',
+  props: BDatepickerPropsDefinition,
+  setup(props) {
+    const input = useInput(props);
+
+  },
   data(): Data {
     const startDate: Date = pipe(
       fromNullable(this.value),
@@ -143,9 +152,6 @@ export default base.extend<options>().extend({
     };
   },
   computed: {
-    newIcons(): BDatepickerIcons {
-      return { ...DEFAULT_DATEPICKER_ICONS, ...this.icons };
-    },
     formattedInternalValue(): string | null {
       return this.formatValue(this.internalValue);
     },
