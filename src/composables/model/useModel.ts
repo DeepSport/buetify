@@ -1,5 +1,5 @@
 import { constant, constVoid, FunctionN } from 'fp-ts/lib/function';
-import { PropType, shallowRef, watch, toRef } from 'vue';
+import { PropType, shallowRef, watch, toRef, Ref } from 'vue';
 import { exists, isObject } from '../../utils/helpers';
 
 export function getUseModelPropsDefinition<T>() {
@@ -29,8 +29,18 @@ export function useModel<T>(props: UseModelProps<T>) {
       internalValue.value = e.target.value;
     }
   }
+  function set(val: T) {
+    internalValue.value = val;
+  }
   return {
     value: internalValue,
+    set,
     onInput
   };
+}
+
+export interface Model<T> {
+  value: Ref<T | undefined>;
+  set: FunctionN<[T], void>;
+  onInput: FunctionN<[Event], void>;
 }
