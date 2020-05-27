@@ -1,7 +1,9 @@
 import './datepicker.sass';
 import { IO } from 'fp-ts/es6/IO';
-import { UseDisablePropsDefinition } from '../../../composables/disable';
-import { getUseInputPropsDefinition, Input, useInput } from '../../../composables/input/useInput';
+import { useDisable, UseDisablePropsDefinition } from '../../../composables/disable';
+import { useFieldData } from '../../../composables/fieldData';
+import { getUseInputPropsDefinition } from '../../../composables/input/useInput';
+import { Model, useModel } from '../../../composables/model';
 import { UseToggleProps } from '../../../composables/toggle';
 import { DateSelectionData, EventIndicator, MonthNumber } from './shared';
 import { isDate, serialDateOrd } from './utils';
@@ -154,12 +156,16 @@ function formatYYYYMMDD(value: any) {
   return '';
 }
 
-function getUpdateValue(props: BDatepickerProps, input: Input, dateSelectionData: Ref<DateSelectionData>) {
+function getUpdateValue(
+  props: BDatepickerProps,
+  model: Model<Date | Date[]>,
+  dateSelectionData: Ref<DateSelectionData>
+) {
   return (value: Date | Date[] | null | undefined) => {
     if (value === null || value === undefined) {
       return;
     } else if (Array.isArray(value)) {
-      input.value.value = value;
+      model.value.value = value;
       const currentDate = value.length ? value[0] : props.dateCreator();
       dateSelectionData.value = {
         month: currentDate.getMonth() as MonthNumber,
@@ -167,17 +173,17 @@ function getUpdateValue(props: BDatepickerProps, input: Input, dateSelectionData
       };
     } else {
       if (props.isMultiple) {
-        const currentValue = input.value.value;
+        const currentValue = model.value.value;
         const existingDates = Array.isArray(currentValue) ? currentValue : [currentValue].filter(isDate);
         const newDates = toggleDate(value, existingDates);
-        input.value.value = newDates;
+        model.value.value = newDates;
         const currentDate = newDates.length ? newDates[0] : props.dateCreator();
         dateSelectionData.value = {
           month: currentDate.getMonth() as MonthNumber,
           year: currentDate.getFullYear()
         };
       } else {
-        input.value.value = value;
+        model.value.value = value;
         dateSelectionData.value = {
           month: value.getMonth() as MonthNumber,
           year: value.getFullYear()
@@ -215,8 +221,7 @@ type OnInput = ReturnType<typeof getOnInput>;
 function generateInput(
   props: BDatepickerProps,
   context: SetupContext,
-  input: Input,
-  inputRef: Ref<HTMLElement>,
+  model: Model<Date | Date[]>,
   dropdownProps: BDatepickerData
 ): VNode {
   const isMobile = useNative(props);
@@ -224,21 +229,18 @@ function generateInput(
     ...(isMobile
       ? context.attrs
       : { ...context.attrs, max: formatYYYYMMDD(props.maxDate), min: formatYYYYMMDD(props.minDate) }),
-    ref: inputRef,
     autocomplete: 'off',
     type: isMobile ? 'date' : 'text',
-    value: formatDateInput(props, input.value.value as any),
+    value: formatDateInput(props, model.value.value as any),
     placeholder: props.placeholder,
-    size: input.size.value,
+    size: props.size,
     icon: props.icons.calendar,
     isRounded: props.isRounded,
     isDisabled: props.isDisabled,
-    isReadonly: input.isReadonly.value,
+    isReadonly: props.isReadonly,
     isLoading: props.isLoading,
     useNativeValidation: props.useNativeValidation,
-    onBlur: input.onBlur,
     onFocus: () => {
-      input.onFocus();
       if (!isMobile && props.openOnFocus) {
         dropdownProps.open();
       }
@@ -280,56 +282,56 @@ function generateButton(props: BDatepickerProps, data: BDatepickerData, isNext: 
   );
 }
 
-function generateYearSelect(props: BDatepickerProps, input: Input, data: BDatepickerData): VNode {
+function generateYearSelect(props: BDatepickerProps, data: BDatepickerData): VNode {
   return h(BSelect, {
     items: data.years,
     value: data.dateSelectionData.year,
     isDisabled: data.isDisabled,
-    size: input.size.value,
+    size: props.size,
     onInput: data.setYear
   });
 }
 
-function generateMonthSelect(props: BDatepickerProps, input: Input, data: BDatepickerData): VNode {
+function generateMonthSelect(props: BDatepickerProps, data: BDatepickerData): VNode {
   return h(BSelect, {
     items: data.months,
     isDisabled: data.isDisabled,
-    size: input.size.value,
+    size: props.size,
     value: data.dateSelectionData.month,
     onInput: data.setMonth
   });
 }
 
-function generateSelects(props: BDatepickerProps, input: Input, data: BDatepickerData): VNode {
+function generateSelects(props: BDatepickerProps, data: BDatepickerData): VNode {
   return h('div', { class: 'pagination-list' }, [
-    h(BField, [generateMonthSelect(props, input, data), generateYearSelect(props, input, data)])
+    h(BField, [generateMonthSelect(props, data), generateYearSelect(props, data)])
   ]);
 }
 
-function generateDefaultHeaderContents(props: BDatepickerProps, input: Input, data: BDatepickerData): VNode {
-  return h('div', { class: ['pagination field is-centered', input.size.value] }, [
+function generateDefaultHeaderContents(props: BDatepickerProps, data: BDatepickerData): VNode {
+  return h('div', { class: ['pagination field is-centered', props.size] }, [
     generateButton(props, data, false),
-    generateSelects(props, input, data),
+    generateSelects(props, data),
     generateButton(props, data, true)
   ]);
 }
 
-function generateHeader(props: BDatepickerProps, context: SetupContext, input: Input, data: BDatepickerData): VNode {
+function generateHeader(props: BDatepickerProps, context: SetupContext, data: BDatepickerData): VNode {
   return h(
     'header',
     { class: 'datepicker-header' },
-    context.slots.header ? context.slots.header(data) : [generateDefaultHeaderContents(props, input, data)]
+    context.slots.header ? context.slots.header(data) : [generateDefaultHeaderContents(props, data)]
   );
 }
 
 function generateDatepickerTable(
   props: BDatepickerProps,
   context: SetupContext,
-  input: Input,
+  model: Model<Date | Date[]>,
   data: BDatepickerData
 ): VNode {
   return h(BDatepickerTable, {
-    value: input.value.value as Date | Date[],
+    value: model.value.value as Date | Date[],
     dayNames: props.dayNames,
     monthNames: props.monthNames,
     firstDayOfWeek: props.firstDayOfWeek,
@@ -346,9 +348,7 @@ function generateDatepickerTable(
     showWeekNumber: props.showWeekNumber,
     isMultiple: props.isMultiple,
     focusedDate: data.focusedDate,
-    onInput: (value: Date[] | Date) => {
-      input.value.value = value;
-    },
+    onInput: model.set,
     onFocus: data.setFocusedDate
   });
 }
@@ -357,25 +357,29 @@ function generateFooter(context: SetupContext): VNode {
   return h('footer', { class: 'datepicker-footer' }, context.slots.footer!());
 }
 
-function generateCalendar(props: BDatepickerProps, context: SetupContext, input: Input, data: BDatepickerData): VNode {
+function generateCalendar(
+  props: BDatepickerProps,
+  context: SetupContext,
+  model: Model<Date | Date[]>,
+  data: BDatepickerData
+): VNode {
   return h(
     'section',
     {
       class: 'datepicker-content',
       'aria-label': 'Datepicker calendar'
     },
-    [generateDatepickerTable(props, context, input, data)]
+    [generateDatepickerTable(props, context, model, data)]
   );
 }
 
 function generateDatepickerBody(
   props: BDatepickerProps,
   context: SetupContext,
-  input: Input,
-  inputRef: Ref<HTMLElement>,
+  model: Model<Date | Date[]>,
   data: BDatepickerData
 ): VNode {
-  const nodes = [generateHeader(props, context, input, data), generateCalendar(props, context, input, data)];
+  const nodes = [generateHeader(props, context, data), generateCalendar(props, context, model, data)];
   if (context.slots.footer) {
     nodes.push(generateFooter(context));
   }
@@ -385,18 +389,17 @@ function generateDatepickerBody(
 function generateDropdown(
   props: BDatepickerProps,
   context: SetupContext,
-  input: Input,
-  inputRef: Ref<HTMLElement>,
+  model: Model<Date | Date[]>,
   data: BDatepickerData
 ): VNode {
   return h(BDropdown, {
     ...data.toggleProps,
     position: props.position,
-    isDisabled: input.isDisabled.value,
+    isDisabled: props.isDisabled,
     isInline: props.isInline,
     slots: {
-      trigger: () => generateInput(props, context, input, inputRef, data),
-      default: () => generateDatepickerBody(props, context, input, inputRef, data)
+      trigger: () => generateInput(props, context, model, data),
+      default: () => generateDatepickerBody(props, context, model, data)
     }
   });
 }
@@ -462,12 +465,12 @@ function getInitialDateSelectionData(props: BDatepickerProps) {
   return getDateSelectionData(getStartDate(props));
 }
 
-function getSetPreviousMonth(input: Input, dateSelectionData: Ref<DateSelectionData>) {
+function getSetPreviousMonth(props: BDatepickerProps, dateSelectionData: Ref<DateSelectionData>) {
   return (e?: Event) => {
     if (e) {
       e.preventDefault();
     }
-    if (!input.isDisabled.value) {
+    if (!props.isDisabled) {
       if (dateSelectionData.value.month > 0) {
         dateSelectionData.value = {
           month: (dateSelectionData.value.month - 1) as MonthNumber,
@@ -483,12 +486,12 @@ function getSetPreviousMonth(input: Input, dateSelectionData: Ref<DateSelectionD
   };
 }
 
-function getSetNextMonth(input: Input, dateSelectionData: Ref<DateSelectionData>) {
+function getSetNextMonth(props: BDatepickerProps, dateSelectionData: Ref<DateSelectionData>) {
   return (e?: Event) => {
     if (e) {
       e.preventDefault();
     }
-    if (!input.isDisabled.value) {
+    if (!props.isDisabled) {
       if (dateSelectionData.value.month < 11) {
         dateSelectionData.value = {
           month: (dateSelectionData.value.month + 1) as MonthNumber,
@@ -504,7 +507,7 @@ function getSetNextMonth(input: Input, dateSelectionData: Ref<DateSelectionData>
   };
 }
 
-function getSetMonth(input: Input, dateSelectionData: Ref<DateSelectionData>) {
+function getSetMonth(dateSelectionData: Ref<DateSelectionData>) {
   return (month: number | string) => {
     if (isString(month)) {
       const newVal = fromNullable(parseInt(month, 10));
@@ -523,7 +526,7 @@ function getSetMonth(input: Input, dateSelectionData: Ref<DateSelectionData>) {
   };
 }
 
-function getSetYear(input: Input, dateSelectionData: Ref<DateSelectionData>) {
+function getSetYear(dateSelectionData: Ref<DateSelectionData>) {
   return (year: number | string) => {
     if (isString(year)) {
       const newVal = fromNullable(parseInt(year, 10));
@@ -552,8 +555,9 @@ export default defineComponent({
   name: 'b-datepicker',
   props: BDatepickerPropsDefinition,
   setup(props, context) {
-    const inputRef = shallowRef((null as unknown) as HTMLElement);
-    const input = useInput(props, inputRef);
+    const fieldData = useFieldData();
+    const isDisabled = useDisable(props);
+    const model = useModel(props);
     const toggleProps = shallowReactive({ isExpanded: false, hasPopup: true });
     const open = () => {
       toggleProps.isExpanded = false;
@@ -564,15 +568,15 @@ export default defineComponent({
     const focusedDate = shallowRef(fromNullable(props.initiallyFocusedDate));
     const dateSelectionData = shallowRef(getInitialDateSelectionData(props));
 
-    const updateValue = getUpdateValue(props, input, dateSelectionData);
+    const updateValue = getUpdateValue(props, model, dateSelectionData);
     const onInput = getOnInput(props, updateValue);
     const onNativeInput = getOnNativeInput(updateValue);
 
     const setFocusedDate = getSetFocusedDate(focusedDate);
-    const nextMonth = getSetNextMonth(input, dateSelectionData);
-    const previousMonth = getSetPreviousMonth(input, dateSelectionData);
-    const setMonth = getSetMonth(input, dateSelectionData);
-    const setYear = getSetYear(input, dateSelectionData);
+    const nextMonth = getSetNextMonth(props, dateSelectionData);
+    const previousMonth = getSetPreviousMonth(props, dateSelectionData);
+    const setMonth = getSetMonth(dateSelectionData);
+    const setYear = getSetYear(dateSelectionData);
     function onEscape(e: KeyboardEvent) {
       if (isEscEvent(e)) {
         close();
@@ -600,7 +604,7 @@ export default defineComponent({
     return () => {
       const data: BDatepickerData = {
         toggleProps,
-        isDisabled: input.isDisabled.value,
+        isDisabled: isDisabled.value,
         open,
         close,
         focusedDate: focusedDate.value,
@@ -618,13 +622,13 @@ export default defineComponent({
       return h(
         'article',
         {
-          class: ['b-datepicker control', input.size.value, { 'is-expanded': input.isExpanded.value }]
+          class: [
+            'b-datepicker control',
+            props.size,
+            { 'is-expanded': props.isExpanded || fieldData.attrs.isExpanded.value }
+          ]
         },
-        [
-          useNative(props)
-            ? generateInput(props, context, input, inputRef, data)
-            : generateDropdown(props, context, input, inputRef, data)
-        ]
+        [useNative(props) ? generateInput(props, context, model, data) : generateDropdown(props, context, model, data)]
       );
     };
   }
