@@ -1,16 +1,12 @@
 import './select.sass';
 import { Eq } from 'fp-ts/lib/Eq';
-import { getUseInputPropsDefinition, useInput } from '../../../composables/input/useInput';
-import { getEqPropsDefinition } from '../../../composables/shared';
-import { Extractor, ExtractPropMixin } from '../../../mixins/extractProp/ExtractPropMixin';
-import { PropValidator } from 'vue/types/options';
-import { ScopedSlotChildren } from 'vue/types/vnode';
-import { InputMixin } from '../../../mixins/input/InputMixin';
-import { EqMixin } from '../../../mixins/eq/EqMixin';
-import { ThemeInjectionMixin } from '../../../mixins/themeInjection/ThemeInjectionMixin';
-import { applyMixins } from '../../../utils/applyMixins';
-import { exists, isBoolean } from '../../../utils/helpers';
-import { PropType, VNode, defineComponent, h } from 'vue';
+import { getUseInputPropsDefinition, Input, useInput, UseInputProps } from '../../../composables/input/useInput';
+import { EqProps, getEqPropsDefinition } from '../../../composables/shared';
+import { DefaultThemePropsDefinition, useTheme } from '../../../composables/theme';
+import { Extractor, extractProp } from '../../../mixins/extractProp/ExtractPropMixin';
+import { isBoolean } from '../../../utils/helpers';
+import { PropType, VNode, defineComponent, h, shallowRef, SetupContext, Ref } from 'vue';
+import { Classes } from '../../../utils/mergeClasses';
 
 export interface SelectItem<T> {
   value: T;
@@ -23,6 +19,7 @@ export function getBSelectPropsDefinition<T>(eq?: Eq<T>) {
   return {
     ...getEqPropsDefinition<T>(eq),
     ...getUseInputPropsDefinition<T>(),
+    ...DefaultThemePropsDefinition,
     items: {
       type: Array as PropType<T[]>,
       required: true as const
@@ -32,7 +29,7 @@ export function getBSelectPropsDefinition<T>(eq?: Eq<T>) {
       default: false
     },
     itemKey: {
-      type: [String, Function] as PropType<Extractor<T>>,
+      type: [String, Function] as PropType<Extractor<T>>
     },
     itemText: {
       type: [String, Function] as PropType<Extractor<T>>,
@@ -49,7 +46,17 @@ export function getBSelectPropsDefinition<T>(eq?: Eq<T>) {
     displayCount: {
       type: [String, Number]
     }
-  }
+  };
+}
+
+export interface BSelectProps<T> extends EqProps<T>, UseInputProps<T> {
+  items: T[];
+  isMultiple: boolean;
+  itemKey?: Extractor<T>;
+  itemText: Extractor<T>;
+  itemValue: Extractor<T>;
+  itemDisabled: Extractor<T>;
+  displayCount?: string | number;
 }
 
 function getControlClasses(isExpanded: boolean, hasIcon: boolean) {
@@ -59,139 +66,121 @@ function getControlClasses(isExpanded: boolean, hasIcon: boolean) {
   };
 }
 
-export function defineSelect<T>(eq?: Eq<T>)  {
+function getSelectClasses<T>(props: BSelectProps<T>, input: Input): Classes[] {
+  return [
+    input.size.value,
+    props.variant,
+    {
+      'is-fullwidth': input.isFullwidth.value,
+      'is-loading': props.isLoading,
+      'is-multiple': isMultiple(props, input),
+      'is-rounded': props.isRounded,
+      'is-empty': isEmpty(input.value.value)
+    }
+  ];
+}
+
+function isEmpty(val: any) {
+  return val === null || val === undefined || (Array.isArray(val) && val.length === 0);
+}
+
+function generatePlaceholder<T>(props: BSelectProps<T>, context: SetupContext): VNode {
+  return h(
+    'option',
+    {
+      domProps: {
+        value: '',
+        disabled: true,
+        selected: true
+      }
+    },
+    context.slots.placeholder ? context.slots.placeholder() : props.placeholder
+  );
+}
+
+function getIsSelected<T>(props: BSelectProps<T>, input: Input) {
+  return (val: T) => {
+    const equals = props.eq.equals;
+    const value = input.value.value;
+    if (value === null || value === undefined) {
+      return false;
+    } else if (isMultiple(props, input)) {
+      return Array.isArray(value) ? value.some(v => equals(v, val)) : false;
+    } else {
+      return equals(val, value as T);
+    }
+  };
+}
+function generateOptions<T>(props: BSelectProps<T>, context: SetupContext, input: Input): VNode[] {
+  const isSelected = getIsSelected(props, input);
+  return props.items.map((item, index) => {
+    const isDisabled = extractProp(props.itemDisabled, item);
+    return h(
+      'option',
+      {
+        key: props.itemKey ? (extractProp(props.itemKey, item) as any) : String(index),
+        value: extractProp(props.itemValue, item),
+        disabled: isBoolean(isDisabled) ? isDisabled : !!isDisabled,
+        selected: isSelected(item)
+      },
+      context.slots.default ? context.slots.default({ item, index }) : (extractProp(props.itemText, item) as any)
+    );
+  });
+}
+
+function isMultiple<T>(props: BSelectProps<T>, input: Input) {
+  return props.isMultiple || (props.isMultiple === undefined && Array.isArray(input.value.value));
+}
+
+function generateSelect<T>(
+  props: BSelectProps<T>,
+  context: SetupContext,
+  ref: Ref<HTMLElement>,
+  input: Input,
+  themeClasses: Classes
+): VNode {
+  const value = input.value.value;
+  const usePlaceholder = isEmpty(value) && (!!props.placeholder || !!context.slots.placeholder);
+  return h(
+    'select',
+    {
+      ...context.attrs,
+      ref,
+      value,
+      size: props.displayCount,
+      multiple: isMultiple(props, input),
+      class: themeClasses,
+      onBlur: input.onBlur,
+      onFocus: input.onFocus,
+      onInput: input.onInput
+    },
+    usePlaceholder
+      ? [generatePlaceholder(props, context), ...generateOptions(props, context, input)]
+      : generateOptions(props, context, input)
+  );
+}
+
+export function defineSelect<T>(eq?: Eq<T>) {
   return defineComponent({
     name: 'b-select',
     props: getBSelectPropsDefinition<T>(eq),
-    setup(props) {
-      const input = useInput(props);
+    setup(props, context) {
+      const selectRef = shallowRef((null as unknown) as HTMLElement);
+      const input = useInput(props, selectRef);
+      const { themeClasses } = useTheme(props);
       return () => {
-        return h('div', { class: ['control', getControlClasses(input.isExpanded.value, !!input.icon.value)] }, [
-          this.$createElement('span', { staticClass: 'select', class: this.selectClasses }, [this.generateSelect()])
-        ]);
-
-      }
-    },
-    computed: {
-      displayPlaceholder(): boolean {
-        return this.newValue === null && (exists(this.placeholder) || exists(this.$slots.placeholder));
-      },
-      newItems(): ReadonlyArray<{
-        value: any;
-        isDisabled: boolean;
-        isSelected: boolean;
-        text: string;
-        key: string;
-      }> {
-        return Object.freeze(
-          this.items.map((item, index) => {
-            const disabledValue = this.extractProp(this.itemDisabled, item);
-            return {
-              key: this.itemKey ? this.extractProp(this.itemKey, item) : String(index),
-              value: this.extractProp(this.itemValue, item),
-              isDisabled: isBoolean(disabledValue) ? disabledValue : !disabledValue,
-              isSelected: this.isSelected(item),
-              text: this.extractProp(this.itemText, item)
-            };
-          })
-        );
-      },
-      internalIsMultiple(): boolean {
-        return this.isMultiple === true || (this.isMultiple === undefined && Array.isArray(this.newValue));
-      },
-      controlClasses(): object {
-        return {
-          'is-expanded': this.isExpanded,
-          'has-icons-left': !!this.icon
-        };
-      },
-      selectClasses(): any {
-        return [
-          this.size,
-          this.statusType,
-          {
-            'is-fullwidth': this.isExpanded,
-            'is-loading': this.isLoading,
-            'is-multiple': this.internalIsMultiple,
-            'is-rounded': this.isRounded,
-            'is-empty': this.newValue === null
-          }
-        ];
-      }
-    },
-    methods: {
-      generateSelect(): VNode {
-        return this.$createElement(
-          'select',
-          {
-            attrs: this.$attrs,
-            class: this.themeClasses,
-            ref: 'select',
-            domProps: {
-              value: this.internalValue,
-              size: this.displayCount,
-              multiple: this.internalIsMultiple
-            },
-            on: {
-              blur: this.onBlur,
-              focus: this.onFocus,
-              input: this.onInput
-            }
-          },
-          this.displayPlaceholder ? [this.generatePlaceholder(), ...this.generateOptions()] : this.generateOptions()
-        );
-      },
-      generateOptions(): VNode[] | ScopedSlotChildren[] {
-        return this.$scopedSlots.default
-          ? this.newItems.map(this.$scopedSlots.default)
-          : this.newItems.map(item =>
-            this.$createElement(
-              'option',
-              {
-                key: item.key,
-                domProps: {
-                  value: item.value,
-                  selected: item.isSelected,
-                  disabled: item.isDisabled
-                }
-              },
-              item.text
-            )
-          );
-      },
-      generatePlaceholder(): VNode | VNode[] {
-        return (
-          this.$slots.placeholder ||
-          this.$createElement(
-            'option',
+        return h('div', { class: ['control', getControlClasses(input.isExpanded.value, !!input.icon)] }, [
+          h(
+            'span',
             {
-              domProps: {
-                value: '',
-                disabled: true,
-                selected: true
-              }
+              class: ['select', ...getSelectClasses(props, input)]
             },
-            this.placeholder
+            [generateSelect(props, context, selectRef, input, themeClasses.value)]
           )
-        );
-      },
-      isSelected(item: unknown): boolean {
-        const input = this.newValue;
-        if (this.internalIsMultiple) {
-          if (!Array.isArray(input)) return false;
-          return input.some(otherItem => this.valueComparator(item, otherItem));
-        }
-        return this.valueComparator(input, item);
-      },
-      onBlur(event: MouseEvent) {
-        this.$emit('blur', event);
-        this.validate();
-      },
-      onFocus(event: Event) {
-        this.$emit('focus', event);
-      }
-    },
-    render(): VNode {
+        ]);
+      };
     }
-  })
+  });
 }
+
+export const BSelect = defineSelect<any>();

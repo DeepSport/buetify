@@ -6,6 +6,7 @@ import { FadeTransitionPropsDefinition, useTransition } from '../../composables/
 import { useWindowSize } from '../../composables/windowSize';
 import { TransitionClasses } from '../../types/Transition';
 import {
+  ExtractPropTypes,
   PropType,
   VNode,
   defineComponent,
@@ -57,6 +58,8 @@ export const BDropdownPropsDefinition = {
     default: 'ul'
   }
 };
+
+export type BDropdownProps = ExtractPropTypes<typeof BDropdownPropsDefinition>;
 
 let id = 0;
 

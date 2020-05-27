@@ -1,4 +1,4 @@
-import { AllColorsVariant } from '../../types/ColorVariants';
+import {AllColorsVariant, ColorVariant} from '../../types/ColorVariants';
 import { SizeVariant } from '../../types/SizeVariants';
 import { isObject, isString } from '../../utils/helpers';
 import { PropType, ExtractPropTypes, Ref, computed, toRefs, watch } from 'vue';
@@ -8,6 +8,10 @@ import { getUseModelPropsDefinition, useModel, UseModelProps } from '../model';
 import { useValidation, UseValidationPropsDefinition } from '../validation';
 
 const StaticUseInputProps = {
+  variant: {
+    type: String as PropType<ColorVariant>,
+    default: 'is-primary' as const
+  },
   type: {
     type: String as PropType<string>
   },

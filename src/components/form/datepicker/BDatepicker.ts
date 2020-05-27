@@ -1,22 +1,41 @@
 import './datepicker.sass';
+import { IO } from 'fp-ts/es6/IO';
 import { UseDisablePropsDefinition } from '../../../composables/disable';
-import { getUseInputPropsDefinition, useInput } from '../../../composables/input/useInput';
-import { DateEvent, DEFAULT_DAY_NAMES, DEFAULT_MONTH_NAMES, EventIndicator } from './shared';
-import { addMonths, getEndOfMonth, isDate, isOnOrAfterDate, isOnOrBeforeDate, isSameDay, WeekdayNumber } from './utils';
-import BInput from '../input/BInput';
+import { getUseInputPropsDefinition, Input, useInput } from '../../../composables/input/useInput';
+import { UseToggleProps } from '../../../composables/toggle';
+import {
+  DateSelectionData,
+  EventIndicator,
+  MonthNumber
+} from './shared';
+import { isDate, isSameDay} from './utils';
+import { BInput } from '../input/BInput';
 import { isEnterEvent, isEscEvent, isSpaceEvent } from '../../../utils/eventHelpers';
 import { head, range, snoc, unsafeDeleteAt } from 'fp-ts/lib/Array';
-import { constant, constVoid, FunctionN } from 'fp-ts/lib/function';
+import { constant, FunctionN } from 'fp-ts/lib/function';
 import { alt, chain, fromNullable, getOrElse, isSome, Option, some } from 'fp-ts/lib/Option';
 import { pipe } from 'fp-ts/lib/pipeable';
-import { applyMixins, ExtractVue } from '../../../utils/applyMixins';
 import BDropdown, { BDropdownPropsDefinition } from '../../dropdown/BDropdown';
 import BDatepickerTable, { BDatepickerTablePropsDefinition } from './BDatepickerTable';
 import BField from '../field/BField';
-import BSelect, { SelectItem } from '../select/BSelect';
-import { PropType, VNode, defineAsyncComponent, defineComponent, h, Component, ExtractPropTypes } from 'vue';
-import { InputMixin } from '../../../mixins/input/InputMixin';
-import { alwaysEmptyArray, isMobile, isString } from '../../../utils/helpers';
+import { BSelect, SelectItem } from '../select/BSelect';
+import {
+  onUnmounted,
+  onMounted,
+  PropType,
+  VNode,
+  defineAsyncComponent,
+  defineComponent,
+  h,
+  Component,
+  ExtractPropTypes,
+  shallowRef,
+  SetupContext,
+  Ref,
+  shallowReactive,
+  watch,
+} from 'vue';
+import {  isString } from '../../../utils/helpers';
 
 function defaultDateFormatter(date: Date | Date[], isMultiple: boolean): string {
   const targetDates = Array.isArray(date) ? date : [date];
@@ -26,7 +45,7 @@ function defaultDateFormatter(date: Date | Date[], isMultiple: boolean): string 
     return d.toLocaleDateString();
   });
   return !isMultiple ? dates.join(' - ') : dates.join(', ');
-};
+}
 
 function defaultDateParser(date: string): Date | null {
   if (date) {
@@ -38,7 +57,7 @@ function defaultDateParser(date: string): Date | null {
     }
   }
   return null;
-};
+}
 
 export type DatepickerPosition = 'is-top-right' | 'is-top-left' | 'is-bottom-left';
 
@@ -62,10 +81,10 @@ export function getDatepickerIcons(icons: Partial<DatepickerIcons>): DatepickerI
 }
 
 const BDatepickerPropsDefinition = {
-  ...getUseInputPropsDefinition<Date | Date[]>(),
   ...BDropdownPropsDefinition,
   ...BDatepickerTablePropsDefinition,
   ...UseDisablePropsDefinition,
+  ...getUseInputPropsDefinition<Date | Date[]>(),
   placeholder: {
     type: String as PropType<string>
   },
@@ -90,10 +109,10 @@ const BDatepickerPropsDefinition = {
   },
   indicators: {
     type: String as PropType<EventIndicator>,
-    default: 'bars'
+    default: 'bars' as const
   },
   yearsRange: {
-    type: Array as unknown as PropType<[number, number]>,
+    type: (Array as unknown) as PropType<[number, number]>,
     default: constant([-5, 3] as const)
   },
   closeOnSelect: {
@@ -109,10 +128,10 @@ const BDatepickerPropsDefinition = {
     default: true
   },
   icons: {
-    type: Object as PropType<Partial<DatepickerIcons>>,
+    type: Object as PropType<DatepickerIcons>,
     default: constant(DEFAULT_DATEPICKER_ICONS)
   }
-}
+};
 
 export type BDatepickerProps = ExtractPropTypes<typeof BDatepickerPropsDefinition>;
 
@@ -125,462 +144,464 @@ interface Data {
   };
 }
 
-const base = applyMixins(InputMixin);
+function useNative(props: BDatepickerProps) {
+  return props.useMobileNative && !props.isInline;
+}
 
+function formatDateInput(props: BDatepickerProps, value: Date | Date[] | null): string | null {
+  if (Array.isArray(value)) {
+    return value.every(isDate) ? props.dateFormatter(value, props.isMultiple) : null;
+  } else {
+    return isDate(value) ? props.dateFormatter(value, props.isMultiple) : null;
+  }
+}
+
+function formatYYYYMMDD(value: any) {
+  const date = new Date(value);
+  if (value && isDate(date)) {
+    const year = date.getFullYear();
+    const month = date.getMonth() + 1;
+    const day = date.getDate();
+    return year + '-' + ((month < 10 ? '0' : '') + month) + '-' + ((day < 10 ? '0' : '') + day);
+  }
+  return '';
+}
+
+function getOnNativeInput(input: Input) {
+  return function onNativeInput(event: any) {
+    const value = event.target.value;
+    const date = new Date(value + 'T00:00:00');
+    input.value.value = isDate(date) ? date : null;
+  };
+}
+
+type OnNativeInput = ReturnType<typeof getOnNativeInput>;
+
+function getOnInput(props: BDatepickerProps, input: Input) {
+  return function onInput(value: string) {
+    const date = props.dateParser(value);
+    if (isDate(date)) {
+      input.value.value = date;
+    } else {
+      input.value.value = null;
+    }
+  };
+}
+
+type OnInput = ReturnType<typeof getOnInput>;
+
+function generateInput(
+  props: BDatepickerProps,
+  context: SetupContext,
+  input: Input,
+  inputRef: Ref<HTMLElement>,
+  dropdownProps: BDatepickerData
+): VNode {
+  const isMobile = useNative(props);
+  return h(BInput, {
+    ...(isMobile
+      ? context.attrs
+      : { ...context.attrs, max: formatYYYYMMDD(props.maxDate), min: formatYYYYMMDD(props.minDate) }),
+    ref: inputRef,
+    autocomplete: 'off',
+    type: isMobile ? 'date' : 'text',
+    value: formatDateInput(props, input.value.value as any),
+    placeholder: props.placeholder,
+    size: input.size.value,
+    icon: props.icons.calendar,
+    isRounded: props.isRounded,
+    isDisabled: props.isDisabled,
+    isReadonly: input.isReadonly.value,
+    isLoading: props.isLoading,
+    useNativeValidation: props.useNativeValidation,
+    onBlur: input.onBlur,
+    onFocus: () => {
+      input.onFocus();
+      if (!isMobile && props.openOnFocus) {
+        dropdownProps.open();
+      }
+    },
+    ...(isMobile
+      ? {
+          onChange: dropdownProps.onNativeInput
+        }
+      : {
+          onKeyup: (e: KeyboardEvent) => {
+            if (isEscEvent(e)) {
+              dropdownProps.close();
+            }
+          },
+          onInput: dropdownProps.onInput
+        })
+  });
+}
+
+function generateButton(props: BDatepickerProps, data: BDatepickerData, isNext: boolean): VNode {
+  return h(
+    'button',
+    {
+      class: isNext ? 'pagination-next datepicker-next' : 'pagination-previous datepicker-previous',
+      disabled: data.isDisabled,
+      onClick: isNext ? data.nextMonth : data.previousMonth,
+      onKeydown: (e: KeyboardEvent) => {
+        if (isEnterEvent(e) || isSpaceEvent(e)) {
+          e.preventDefault();
+          isNext ? data.nextMonth() : data.previousMonth();
+        }
+      }
+    },
+    [
+      h(isNext ? props.icons.next : props.icons.previous, {
+        props: { variant: 'is-link', isThemeable: false }
+      })
+    ]
+  );
+}
+
+function generateYearSelect(props: BDatepickerProps, input: Input, data: BDatepickerData): VNode {
+  return h(BSelect, {
+    items: data.years,
+    value: data.dateSelectionData.year,
+    isDisabled: data.isDisabled,
+    size: input.size.value,
+    onInput: data.setYear
+  });
+}
+
+function generateMonthSelect(props: BDatepickerProps, input: Input, data: BDatepickerData): VNode {
+  return h(BSelect, {
+    items: data.months,
+    isDisabled: data.isDisabled,
+    size: input.size.value,
+    value: data.dateSelectionData.month,
+    onInput: data.setMonth
+  });
+}
+
+function generateSelects(props: BDatepickerProps, input: Input, data: BDatepickerData): VNode {
+  return h('div', { class: 'pagination-list' }, [
+    h(BField, [generateMonthSelect(props, input, data), generateYearSelect(props, input, data)])
+  ]);
+}
+
+function generateDefaultHeaderContents(props: BDatepickerProps, input: Input, data: BDatepickerData): VNode {
+  return h('div', { class: ['pagination field is-centered', input.size.value] }, [
+    generateButton(props, data, false),
+    generateSelects(props, input, data),
+    generateButton(props, data, true)
+  ]);
+}
+
+function generateHeader(props: BDatepickerProps, context: SetupContext, input: Input, data: BDatepickerData): VNode {
+  return h(
+    'header',
+    { class: 'datepicker-header' },
+    context.slots.header ? context.slots.header(data) : [generateDefaultHeaderContents(props, input, data)]
+  );
+}
+
+function generateDatepickerTable(
+  props: BDatepickerProps,
+  context: SetupContext,
+  input: Input,
+  data: BDatepickerData
+): VNode {
+  return h(BDatepickerTable, {
+    value: input.value.value as Date | Date[],
+    dayNames: props.dayNames,
+    monthNames: props.monthNames,
+    firstDayOfWeek: props.firstDayOfWeek,
+    minDate: props.minDate,
+    maxDate: props.maxDate,
+    dateSelectionData: data.dateSelectionData,
+    isDisabled: data.isDisabled,
+    unselectableDates: props.unselectableDates,
+    unselectableDaysOfWeek: props.unselectableDaysOfWeek,
+    selectableDates: props.selectableDates,
+    events: props.events,
+    indicators: props.indicators,
+    dateCreator: props.dateCreator,
+    showWeekNumber: props.showWeekNumber,
+    isMultiple: props.isMultiple,
+    focusedDate: data.focusedDate,
+    onInput: (value: Date[] | Date) => {
+      input.value.value = value;
+    },
+    onFocus: data.setFocusedDate
+  });
+}
+
+function generateFooter(context: SetupContext): VNode {
+  return h('footer', { class: 'datepicker-footer' }, context.slots.footer!());
+}
+
+function generateCalendar(props: BDatepickerProps, context: SetupContext, input: Input, data: BDatepickerData): VNode {
+  return h(
+    'section',
+    {
+      class: 'datepicker-content',
+      'aria-label': 'Datepicker calendar'
+    },
+    [generateDatepickerTable(props, context, input, data)]
+  );
+}
+
+function generateDatepickerBody(
+  props: BDatepickerProps,
+  context: SetupContext,
+  input: Input,
+  inputRef: Ref<HTMLElement>,
+  data: BDatepickerData
+): VNode {
+  const nodes = [generateHeader(props, context, input, data), generateCalendar(props, context, input, data)];
+  if (context.slots.footer) {
+    nodes.push(generateFooter(context));
+  }
+  return h('div', nodes);
+}
+
+function generateDropdown(
+  props: BDatepickerProps,
+  context: SetupContext,
+  input: Input,
+  inputRef: Ref<HTMLElement>,
+  data: BDatepickerData
+): VNode {
+  return h(BDropdown, {
+    ...data.toggleProps,
+    position: props.position,
+    isDisabled: input.isDisabled.value,
+    isInline: props.isInline,
+    slots: {
+      trigger: () => generateInput(props, context, input, inputRef, data),
+      default: () => generateDatepickerBody(props, context, input, inputRef, data)
+    }
+  });
+}
+
+interface BDatepickerData {
+  toggleProps: UseToggleProps<'isExpanded'>;
+  dateSelectionData: DateSelectionData;
+  nextMonth: IO<void>;
+  previousMonth: IO<void>;
+  setYear: FunctionN<[string | number], void>;
+  setMonth: FunctionN<[string | number], void>;
+  onInput: OnInput;
+  onNativeInput: OnNativeInput;
+  open: IO<void>;
+  close: IO<void>;
+  months: SelectItem<number>[];
+  years: SelectItem<number>[];
+  isDisabled: boolean;
+  focusedDate: Option<Date>;
+  setFocusedDate: FunctionN<[Option<Date>], void>;
+}
+
+function getMonths(props: BDatepickerProps, dateSelectionData: DateSelectionData): SelectItem<number>[] {
+  return props.monthNames.map((month: string, index: number) => ({
+    value: index,
+    text: month,
+    isDisabled: false,
+    isSelected: dateSelectionData.month === index
+  }));
+}
+
+function getYears(props: BDatepickerProps, dateSelectionData: DateSelectionData): SelectItem<number>[] {
+  const currentYear = props.dateCreator().getFullYear();
+  return range(props.yearsRange[0], props.yearsRange[1])
+    .map(inc => currentYear + inc)
+    .map(year => ({
+      value: year,
+      text: year.toString(),
+      isDisabled: false,
+      isSelected: dateSelectionData.year === year
+    }));
+}
+
+function getStartDate(props: BDatepickerProps) {
+  return pipe(
+    fromNullable(props.value),
+    chain(val => (Array.isArray(val) ? head(val) : some(val))),
+    alt(constant(fromNullable(props.initiallyFocusedDate))),
+    getOrElse(props.dateCreator)
+  );
+}
+
+function getDateSelectionData(date: Date): DateSelectionData {
+  return {
+    month: date.getMonth() as MonthNumber,
+    year: date.getFullYear()
+  };
+}
+
+function getInitialDateSelectionData(props: BDatepickerProps) {
+  return getDateSelectionData(getStartDate(props));
+}
+
+function getSetPreviousMonth(input: Input, dateSelectionData: Ref<DateSelectionData>) {
+  return (e?: Event) => {
+    if (e) {
+      e.preventDefault();
+    }
+    if (!input.isDisabled.value) {
+      if (dateSelectionData.value.month > 0) {
+        dateSelectionData.value = {
+          month: (dateSelectionData.value.month - 1) as MonthNumber,
+          year: dateSelectionData.value.year
+        };
+      } else {
+        dateSelectionData.value = {
+          month: 11,
+          year: dateSelectionData.value.year - 1
+        };
+      }
+    }
+  };
+}
+
+function getSetNextMonth(input: Input, dateSelectionData: Ref<DateSelectionData>) {
+  return (e?: Event) => {
+    if (e) {
+      e.preventDefault();
+    }
+    if (!input.isDisabled.value) {
+      if (dateSelectionData.value.month < 11) {
+        dateSelectionData.value = {
+          month: (dateSelectionData.value.month + 1) as MonthNumber,
+          year: dateSelectionData.value.year
+        };
+      } else {
+        dateSelectionData.value = {
+          month: 0,
+          year: dateSelectionData.value.year + 1
+        };
+      }
+    }
+  };
+}
+
+function getSetMonth(input: Input, dateSelectionData: Ref<DateSelectionData>) {
+  return (month: number | string) => {
+    if (isString(month)) {
+      const newVal = fromNullable(parseInt(month, 10));
+      if (isSome(newVal)) {
+        dateSelectionData.value = {
+          month: newVal.value as MonthNumber,
+          year: dateSelectionData.value.year
+        };
+      }
+    } else {
+      dateSelectionData.value = {
+        month: month as MonthNumber,
+        year: dateSelectionData.value.year
+      };
+    }
+  };
+}
+
+function getSetYear(input: Input, dateSelectionData: Ref<DateSelectionData>) {
+  return (year: number | string) => {
+    if (isString(year)) {
+      const newVal = fromNullable(parseInt(year, 10));
+      if (isSome(newVal)) {
+        dateSelectionData.value = {
+          month: dateSelectionData.value.month,
+          year: newVal.value
+        };
+      }
+    } else {
+      dateSelectionData.value = {
+        month: dateSelectionData.value.month,
+        year
+      };
+    }
+  };
+}
+
+function getSetFocusedDate(focusedDate: Ref<Option<Date>>) {
+  return (date: Option<Date>) => {
+    focusedDate.value = date;
+  };
+}
 
 export default defineComponent({
   name: 'b-datepicker',
   props: BDatepickerPropsDefinition,
-  setup(props) {
-    const input = useInput(props);
-
-  },
-  data(): Data {
-    const startDate: Date = pipe(
-      fromNullable(this.value),
-      chain(val => (Array.isArray(val) ? head(val) : some(val))),
-      alt(constant(fromNullable(this.initiallyFocusedDate))),
-      getOrElse(this.dateCreator)
-    );
-    return {
-      selected: this.value,
-      focusedDate: fromNullable(this.initiallyFocusedDate),
-      dateSelectionData: {
-        month: startDate.getMonth(),
-        year: startDate.getFullYear()
-      }
+  setup(props, context) {
+    const inputRef = shallowRef((null as unknown) as HTMLElement);
+    const input = useInput(props, inputRef);
+    const toggleProps = shallowReactive({isExpanded: false, hasPopup: true});
+    const open = () => {
+      toggleProps.isExpanded = false;
     };
-  },
-  computed: {
-    formattedInternalValue(): string | null {
-      return this.formatValue(this.internalValue);
-    },
-    internalValue: {
-      get(): Date | Date[] | null {
-        return this.selected;
-      },
-      set(value: Date | Date[] | null) {
-        this.updateInternalState(value);
-        if (!this.isMultiple || this.closeOnSelect) {
-          this.closeDatepicker();
-        }
-        if (value) {
-          this.$emit('input', this.selected);
-        }
+    const close = () => {
+      toggleProps.isExpanded = true;
+    };
+    const focusedDate = shallowRef(fromNullable(props.initiallyFocusedDate));
+    const onInput = getOnInput(props, input);
+    const onNativeInput = getOnNativeInput(input);
+    const dateSelectionData = shallowRef(getInitialDateSelectionData(props));
+
+    const setFocusedDate = getSetFocusedDate(focusedDate);
+    const nextMonth = getSetNextMonth(input, dateSelectionData);
+    const previousMonth = getSetPreviousMonth(input, dateSelectionData);
+    const setMonth = getSetMonth(input, dateSelectionData);
+    const setYear = getSetYear(input, dateSelectionData);
+
+    function onEscape(e: KeyboardEvent) {
+      if (isEscEvent(e)) {
+        close();
       }
-    },
-    monthItems(): SelectItem<number>[] {
-      return this.monthNames.map((month: string, index: number) => ({
-        value: index,
-        text: month,
-        isDisabled: false,
-        isSelected: this.dateSelectionData.month === index
-      }));
-    },
-    yearItems(): SelectItem<number>[] {
-      return this.listOfYears.map(year => ({
-        value: year,
-        text: year.toString(),
-        isDisabled: false,
-        isSelected: this.dateSelectionData.year === year
-      }));
-    },
-    listOfYears(): number[] {
-      const currentYear = this.dateCreator().getFullYear();
-      return range(this.yearsRange[0], this.yearsRange[1]).map(inc => currentYear + inc);
-    },
-    endOfPreviousMonth(): Date {
-      return getEndOfMonth(addMonths(new Date(this.dateSelectionData.year, this.dateSelectionData.month, 0), -1));
-    },
-    showPrevious(): boolean {
-      return isDate(this.minDate) ? isOnOrAfterDate(this.endOfPreviousMonth, this.minDate) : !this.isDisabled;
-    },
-    startOfNextMonth(): Date {
-      return addMonths(new Date(this.dateSelectionData.year, this.dateSelectionData.month, 0), 1);
-    },
-    showNext(): boolean {
-      return isDate(this.maxDate) ? isOnOrBeforeDate(this.startOfNextMonth, this.maxDate) : !this.isDisabled;
-    },
-    isMobile(): boolean {
-      return this.mobileNative && !!isMobile.any();
-    },
-    input(): VNode {
-      return this.generateInput(!this.isMobile);
-    },
-    internalIsReadonly(): boolean {
-      return this.isReadonly || !!isMobile.any();
-    },
-    displayNative(): boolean {
-      return this.isMobile && !this.isInline;
     }
-  },
-  watch: {
-    value(value) {
-      this.updateInternalState(value);
-      if (!this.isMultiple) this.closeDatepicker();
-      !this.isValid && this.$refs.input.validate();
-    },
-    focusedDate(date: Option<Date>) {
-      if (isSome(date)) {
-        this.dateSelectionData = {
-          month: date.value.getMonth(),
-          year: date.value.getFullYear()
-        };
+
+    onMounted(() => {
+      if (typeof window !== 'undefined') {
+        document.addEventListener('keyup', onEscape);
       }
-    },
-    'dateSelectionData.month'(value) {
-      this.$emit('change-month', value);
-    },
-    'dateSelectionData.year'(value) {
-      this.$emit('change-year', value);
-    }
-  },
-  methods: {
-    onNewFocusDate(date: Option<Date>) {
-      this.focusedDate = date;
-      if (isSome(date)) {
-        this.dateSelectionData = {
-          month: date.value.getMonth(),
-          year: date.value.getFullYear()
-        };
+    })
+
+    onUnmounted(() => {
+      if (typeof window !== 'undefined') {
+        document.removeEventListener('keyup', onEscape);
       }
-    },
-    onChange(value: string) {
-      const date = this.dateParser(value);
-      if (isDate(date)) {
-        this.internalValue = date;
-      } else {
-        this.internalValue = null;
-        this.$refs.input.newValue = this.internalValue;
+    })
+
+    watch(focusedDate, newVal => {
+      if (isSome(newVal.value)) {
+        dateSelectionData.value = getDateSelectionData(newVal.value.value);
       }
-    },
-    formatValue(value: Date | Date[] | null): string | null {
-      if (Array.isArray(value)) {
-        return value.every(isDate) ? this.dateFormatter(value, this.isMultiple) : null;
-      } else {
-        return isDate(value) ? this.dateFormatter(value, this.isMultiple) : null;
-      }
-    },
-    previousMonth(e?: Event) {
-      if (e) {
-        e.preventDefault();
-      }
-      if (!this.isDisabled) {
-        if (this.dateSelectionData.month > 0) {
-          this.dateSelectionData.month -= 1;
-        } else {
-          this.dateSelectionData.month = 11;
-          this.dateSelectionData.year -= 1;
-        }
-      }
-    },
-    nextMonth(e?: Event) {
-      if (e) {
-        e.preventDefault();
-      }
-      if (!this.isDisabled) {
-        if (this.dateSelectionData.month < 11) {
-          this.dateSelectionData.month += 1;
-        } else {
-          this.dateSelectionData.month = 0;
-          this.dateSelectionData.year += 1;
-        }
-      }
-    },
-    formatNative(value: Date) {
-      return this.formatYYYYMMDD(value);
-    },
-    formatYYYYMMDD(value: Date) {
-      const date = new Date(value);
-      if (value && isDate(date)) {
-        const year = date.getFullYear();
-        const month = date.getMonth() + 1;
-        const day = date.getDate();
-        return year + '-' + ((month < 10 ? '0' : '') + month) + '-' + ((day < 10 ? '0' : '') + day);
-      }
-      return '';
-    },
-    onChangeNativePicker(event: any) {
-      const date = event.target.value;
-      this.internalValue = date ? new Date(date + 'T00:00:00') : null;
-    },
-    updateInternalState(value: Date | Date[] | null) {
-      if (value === null) {
-        return;
-      } else if (Array.isArray(value)) {
-        this.selected = value;
-        const currentDate = value.length ? value[0] : this.dateCreator();
-        this.dateSelectionData = {
-          month: currentDate.getMonth(),
-          year: currentDate.getFullYear()
-        };
-      } else {
-        if (this.isMultiple) {
-          const existingDates = Array.isArray(this.selected) ? this.selected : [this.selected].filter(isDate);
-          const newDates = toggleDate(value, existingDates);
-          this.selected = newDates;
-          const currentDate = newDates.length ? newDates[0] : this.dateCreator();
-          this.dateSelectionData = {
-            month: currentDate.getMonth(),
-            year: currentDate.getFullYear()
-          };
-        } else {
-          this.selected = value;
-          this.dateSelectionData = {
-            month: value.getMonth(),
-            year: value.getFullYear()
-          };
-        }
-      }
-    },
-    handleOnFocus(event: MouseEvent) {
-      this.onFocus(event);
-      if (this.openOnFocus && !this.$refs.dropdown.internalStatus) {
-        this.$refs.dropdown.setOn();
-      }
-    },
-    toggle() {
-      if (this.mobileNative && this.isMobile) {
-        const input = this.$refs.input.$refs.input;
-        input.focus();
-        input.click();
-      } else {
-        this.$refs.dropdown.toggle();
-      }
-    },
-    closeDatepicker() {
-      this.$refs.dropdown.setOff();
-    },
-    onInputClick(event: MouseEvent) {
-      if (this.$refs.dropdown.internalStatus) {
-        event.stopPropagation();
-      }
-    },
-    keyPress(event: KeyboardEvent) {
-      if (isEscEvent(event)) {
-        this.closeDatepicker();
-      }
-    },
-    setYear(val: string | number): void {
-      if (isString(val)) {
-        const newVal = fromNullable(parseInt(val, 10));
-        if (isSome(newVal)) {
-          this.dateSelectionData.year = newVal.value;
-        }
-      } else {
-        this.dateSelectionData.year = val;
-      }
-    },
-    setMonth(val: string | number): void {
-      if (isString(val)) {
-        const newVal = fromNullable(parseInt(val, 10));
-        if (isSome(newVal)) {
-          this.dateSelectionData.month = newVal.value;
-        }
-      } else {
-        this.dateSelectionData.month = val;
-      }
-    },
-    generateDropdown(): VNode {
-      return this.$createElement(
-        BDropdown,
-        {
-          ref: 'dropdown',
-          props: {
-            position: this.position,
-            isDisabled: this.isDisabled,
-            isInline: this.isInline
-          }
-        },
-        [this.input, this.generateDatepickerBody()]
-      );
-    },
-    generateInput(isNonMobile: boolean): VNode {
-      return this.$createElement(BInput, {
-        ref: 'input',
-        props: {
-          autocomplete: 'off',
-          type: isNonMobile ? 'text' : 'date',
-          value: this.formattedInternalValue,
-          placeholder: this.placeholder,
-          size: this.size,
-          icon: this.icons.calendar,
-          isRounded: this.isRounded,
-          isDisabled: this.isDisabled,
-          isReadonly: this.internalIsReadonly,
-          isLoading: this.isLoading,
-          useNativeValidation: this.useNativeValidation
-        },
-        attrs: isNonMobile
-          ? this.$attrs
-          : {
-              ...this.$attrs,
-              max: this.formatNative(this.maxDate),
-              min: this.formatNative(this.minDate)
-            },
-        on: {
-          blur: this.onBlur,
-          focus: isNonMobile ? this.handleOnFocus : this.onFocus
-        },
-        nativeOn: {
-          click: isNonMobile ? this.onInputClick : constVoid,
-          keyup: isNonMobile ? this.keyPress : constVoid,
-          change: isNonMobile ? (e: any) => this.onChange(e.target.value) : this.onChangeNativePicker
-        },
-        ...(isNonMobile ? { slot: 'trigger' } : {})
-      });
-    },
-    generateDatepickerBody(): VNode {
-      const nodes = [this.generateHeader(), this.generateCalendar()];
-      if (this.$slots.footer) {
-        nodes.push(this.generateFooter());
-      }
-      return this.$createElement('div', nodes);
-    },
-    generateHeader(): VNode {
-      return this.$createElement(
-        'header',
-        { staticClass: 'datepicker-header' },
-        this.$scopedSlots.header !== undefined
-          ? this.$scopedSlots.header({
-              dateSelectionData: this.dateSelectionData,
-              months: this.monthItems,
-              years: this.yearItems,
-              nextMonth: this.nextMonth,
-              setMonth: this.setMonth,
-              previousMonth: this.previousMonth,
-              setYear: this.setYear,
-              isDisabled: this.isDisabled
-            })
-          : [this.generateDefaultHeaderContents()]
-      );
-    },
-    generateDefaultHeaderContents(): VNode {
-      return this.$createElement('div', { staticClass: 'pagination field is-centered', class: this.size }, [
-        this.generateButton(false),
-        this.generateSelects(),
-        this.generateButton(true)
-      ]);
-    },
-    generateButton(isNext: boolean): VNode {
-      return this.$createElement(
-        'button',
-        {
-          staticClass: isNext ? 'pagination-next datepicker-next' : 'pagination-previous datepicker-previous',
-          attrs: {
-            disabled: this.isDisabled
+    });
+
+    return () => {
+      const data: BDatepickerData = {
+        toggleProps,
+        isDisabled: input.isDisabled.value,
+        open,
+        close,
+        focusedDate: focusedDate.value,
+        onInput,
+        onNativeInput,
+        dateSelectionData: dateSelectionData.value,
+        setFocusedDate,
+        nextMonth,
+        previousMonth,
+        setMonth,
+        setYear,
+        months: getMonths(props, dateSelectionData.value),
+        years: getYears(props, dateSelectionData.value)
+      };
+      return h(
+          'article',
+          {
+            class: ['b-datepicker control', input.size.value, {'is-expanded': input.isExpanded.value}]
           },
-          on: {
-            click: isNext ? this.nextMonth : this.previousMonth,
-            keydown: (e: KeyboardEvent) => {
-              if (isEnterEvent(e) || isSpaceEvent(e)) {
-                e.preventDefault();
-                isNext ? this.nextMonth() : this.previousMonth();
-              }
-            }
-          }
-        },
-        [
-          this.$createElement(isNext ? this.newIcons.next : this.newIcons.previous, {
-            props: { variant: 'is-link', isThemeable: false }
-          })
-        ]
+          [
+            useNative(props)
+                ? generateInput(props, context, input, inputRef, data)
+                : generateDropdown(props, context, input, inputRef, data)
+          ]
       );
-    },
-    generateSelects(): VNode {
-      return this.$createElement('div', { staticClass: 'pagination-list' }, [
-        this.$createElement(BField, [this.generateMonthSelect(), this.generateYearSelect()])
-      ]);
-    },
-    generateMonthSelect(): VNode {
-      return this.$createElement(BSelect, {
-        props: {
-          items: this.monthItems,
-          isDisabled: this.isDisabled,
-          size: this.size,
-          value: this.dateSelectionData.month
-        },
-        on: {
-          input: this.setMonth
-        }
-      });
-    },
-    generateYearSelect(): VNode {
-      return this.$createElement(BSelect, {
-        props: {
-          items: this.yearItems,
-          value: this.dateSelectionData.year,
-          isDisabled: this.isDisabled,
-          size: this.size
-        },
-        on: {
-          input: this.setYear
-        }
-      });
-    },
-    generateCalendar(): VNode {
-      return this.$createElement(
-        'section',
-        {
-          slot: 'default',
-          staticClass: 'datepicker-content',
-          attrs: {
-            'aria-label': 'Datepicker calendar'
-          }
-        },
-        [this.generateDatepickerTable()]
-      );
-    },
-    generateDatepickerTable(): VNode {
-      return this.$createElement(BDatepickerTable, {
-        props: {
-          value: this.internalValue,
-          dayNames: this.dayNames,
-          monthNames: this.monthNames,
-          firstDayOfWeek: this.firstDayOfWeek,
-          rulesForFirstWeek: this.rulesForFirstWeek,
-          minDate: this.minDate,
-          maxDate: this.maxDate,
-          dateSelectionData: this.dateSelectionData,
-          isDisabled: this.isDisabled,
-          unselectableDates: this.unselectableDates,
-          unselectableDaysOfWeek: this.unselectableDaysOfWeek,
-          selectableDates: this.selectableDates,
-          events: this.events,
-          indicators: this.indicators,
-          dateCreator: this.dateCreator,
-          showWeekNumber: this.showWeekNumber,
-          isMultiple: this.isMultiple,
-          focusedDate: this.focusedDate
-        },
-        on: {
-          close: this.closeDatepicker,
-          'new-focus-date': this.onNewFocusDate,
-          input: (val: Date | Date[]) => {
-            this.internalValue = val;
-          }
-        }
-      });
-    },
-    generateFooter(): VNode {
-      return this.$createElement('footer', { staticClass: 'datepicker-footer' }, this.$slots.footer);
-    }
-  },
-  created() {
-    if (typeof window !== 'undefined') {
-      document.addEventListener('keyup', this.keyPress);
-      this.$once('hook:beforeDestroy', () => document.removeEventListener('keyup', this.keyPress));
-    }
-  },
-  render(): VNode {
-    return this.$createElement(
-      'article',
-      {
-        staticClass: 'b-datepicker control',
-        class: [this.size, { 'is-expanded': this.isExpanded }]
-      },
-      [this.displayNative ? this.input : this.generateDropdown()]
-    );
+    };
   }
 });
 

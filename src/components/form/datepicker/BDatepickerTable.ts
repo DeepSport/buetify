@@ -94,6 +94,10 @@ export const BDatepickerTablePropsDefinition = {
   onFocus: {
     type: Function as PropType<FunctionN<[Option<Date>], void>>,
     required: true as const
+  },
+  showWeekNumber: {
+    type: Boolean as PropType<boolean>,
+    default: false as const
   }
 };
 
