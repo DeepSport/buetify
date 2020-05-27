@@ -41,13 +41,13 @@ export function isSameMonth(x: Date, y: Date): boolean {
   return x.getFullYear() === y.getFullYear() && x.getMonth() === y.getMonth();
 }
 
-export const SerialDateOrd: Ord<Date> = fromCompare(compareSerialDate);
+export const serialDateOrd: Ord<Date> = fromCompare(compareSerialDate);
 
-export const isOnOrAfterDate = geq(SerialDateOrd);
+export const isOnOrAfterDate = geq(serialDateOrd);
 
-export const isOnOrBeforeDate = leq(SerialDateOrd);
+export const isOnOrBeforeDate = leq(serialDateOrd);
 
-export const elemSerialDate = elem(SerialDateOrd);
+export const elemSerialDate = elem(serialDateOrd);
 
 export type WeekdayNumber = 0 | 1 | 2 | 3 | 4 | 5 | 6;
 

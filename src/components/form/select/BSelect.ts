@@ -88,11 +88,9 @@ function generatePlaceholder<T>(props: BSelectProps<T>, context: SetupContext): 
   return h(
     'option',
     {
-      domProps: {
-        value: '',
-        disabled: true,
-        selected: true
-      }
+      value: '',
+      disabled: true,
+      selected: true
     },
     context.slots.placeholder ? context.slots.placeholder() : props.placeholder
   );

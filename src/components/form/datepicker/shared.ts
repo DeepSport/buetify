@@ -40,7 +40,6 @@ export interface DateCell {
   isDisabled: boolean;
   isSelected: boolean;
   events: DetailedDateEvent[];
-
   hasEvents: boolean;
   classes: object;
 }
