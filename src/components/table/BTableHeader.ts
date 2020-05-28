@@ -1,71 +1,55 @@
+import { FunctionN } from 'fp-ts/lib/function';
 import { ColorVariant } from '../../types/ColorVariants';
-import BCheckbox from '../form/checkbox/BCheckbox';
+import { BCheckbox } from '../form/checkbox/BCheckbox';
 import BTableColumn from './BTableColumn';
 import { BTableColumn as BTableColumnInterface, SortType } from './shared';
-import Vue, { PropType, VNode } from 'vue';
+import { SetupContext, h } from 'vue';
 
-export default Vue.extend({
-  name: 'BTableHeader',
-  functional: true,
-  props: {
-    columns: {
-      type: Array as PropType<BTableColumnInterface[]>,
-      required: true
-    },
-    isCheckable: {
-      type: Boolean,
-      required: true
-    },
-    isDisabled: {
-      type: Boolean,
-      default: false
-    },
-    isChecked: {
-      type: Boolean,
-      required: true
-    },
-    sortType: {
-      type: String as PropType<SortType>,
-      required: true
-    },
-    checkboxVariant: {
-      type: String as PropType<ColorVariant>,
-      default: 'is-primary'
-    }
-  },
-  render(h, { props, scopedSlots, listeners, data }): VNode {
-    const nodes = props.columns.map(column =>
-      h(BTableColumn, {
-        ...data,
-        scopedSlots,
-        key: column.label,
-        props: { column, sortType: props.sortType }
-      })
+export interface BTableHeaderProps {
+  columns: BTableColumnInterface[];
+  isCheckable: boolean;
+  isDisabled?: boolean;
+  isChecked: boolean;
+  sortType: SortType;
+  checkboxVariant?: ColorVariant;
+  onNewSortType: FunctionN<[SortType], void>;
+  onNewSortColumn: FunctionN<[BTableColumnInterface], void>;
+  onInput?: FunctionN<[boolean], void>;
+}
+
+export default function BTableHeader(props: BTableHeaderProps, { attrs, slots }: SetupContext) {
+  const nodes = props.columns.map(column =>
+    h(BTableColumn, {
+      ...attrs,
+      slots,
+      key: column.label,
+      column,
+      sortType: props.sortType,
+      onNewSortType: props.onNewSortType,
+      onNewSortColumn: props.onNewSortColumn
+    })
+  );
+  if (props.isCheckable && props.onInput) {
+    nodes.unshift(
+      slots['header.checkbox']
+        ? h(
+            'th',
+            slots['header.checkbox']!({
+              isChecked: props.isChecked,
+              variant: props.checkboxVariant,
+              isDisabled: props.isDisabled,
+              onInput: props.onInput
+            })
+          )
+        : h('th', { class: 'checkbox-cell' }, [
+            h(BCheckbox, {
+              value: props.isChecked,
+              variant: props.checkboxVariant ?? 'is-primary',
+              isDisabled: props.isDisabled,
+              onInput: props.onInput
+            })
+          ])
     );
-    if (props.isCheckable && listeners.toggle) {
-      nodes.unshift(
-        scopedSlots && scopedSlots['header.checkbox'] !== undefined
-          ? h(
-              'th',
-              scopedSlots['header.checkbox']!({
-                isChecked: props.isChecked,
-                variant: props.checkboxVariant,
-                isDisabled: props.isDisabled,
-                onChange: listeners.toggle
-              })
-            )
-          : h('th', { staticClass: 'checkbox-cell' }, [
-              h(BCheckbox, {
-                props: {
-                  inputValue: props.isChecked,
-                  variant: props.checkboxVariant,
-                  isDisabled: props.isDisabled
-                },
-                on: { change: listeners.toggle }
-              })
-            ])
-      );
-    }
-    return h('thead', [h('tr', nodes)]);
   }
-});
+  return h('thead', [h('tr', nodes)]);
+}

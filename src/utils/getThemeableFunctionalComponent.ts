@@ -16,7 +16,6 @@ interface ThemeableComponentOptions {
   cls: string;
   el?: string;
   themeMap?: ThemeColorMap;
-  defaultEl?: string;
 }
 
 interface ThemeableComponentProps extends Partial<ThemeProps> {

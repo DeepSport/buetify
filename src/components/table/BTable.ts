@@ -1,5 +1,6 @@
 import './table.sass';
-import {FunctionN} from 'fp-ts/lib/function';
+import { constant, constVoid, FunctionN } from 'fp-ts/lib/function';
+import { Classes } from '../../utils/mergeClasses';
 import BSimpleTable from './BSimpleTable';
 import BTableRowElement from './BTableRow';
 import BTableHeader from './BTableHeader';
@@ -7,14 +8,170 @@ import BTableMobileSort from './BTableMobileSort';
 import { BTableColumn, BTableColumnData, BTableRow, BTableRowData, SortType } from './shared';
 import { alwaysEmptyArray, alwaysZero, isBoolean, isMobile, toggleListItem } from '../../utils/helpers';
 import { ColorVariant } from '../../types/ColorVariants';
-import { head, isEmpty, isNonEmpty, reverse, sort } from 'fp-ts/lib/Array';
+import { isEmpty, isNonEmpty, sort } from 'fp-ts/lib/Array';
 import { Eq, eq, eqString } from 'fp-ts/lib/Eq';
-import {chain, exists, fold, fromNullable, isNone, isSome, mapNullable, none, Option, some} from 'fp-ts/lib/Option';
+import { exists, fold, fromNullable, isNone, isSome, none, Option, some } from 'fp-ts/lib/Option';
 import { Ord } from 'fp-ts/lib/Ord';
 import { pipe } from 'fp-ts/lib/pipeable';
-import Vue, { PropType, VNode } from 'vue';
-import { PropValidator } from 'vue/types/options';
+import { defineComponent, h, PropType, VNode } from 'vue';
 import { SizeVariant } from '../../types/SizeVariants';
+
+export const BTablePropsDefinition = {
+  isBordered: {
+    type: Boolean as PropType<boolean>,
+    default: false
+  },
+  isStriped: {
+    type: Boolean as PropType<boolean>,
+    default: false
+  },
+  isNarrow: {
+    type: Boolean as PropType<boolean>,
+    default: false
+  },
+  isFullwidth: {
+    type: Boolean as PropType<boolean>,
+    default: true
+  },
+  size: {
+    type: String as PropType<SizeVariant>,
+    default: '' as const
+  },
+  isHoverable: {
+    type: Boolean as PropType<boolean>,
+    default: false
+  },
+  isLoading: {
+    type: Boolean as PropType<boolean>,
+    default: false
+  },
+  isCheckable: {
+    type: Boolean as PropType<boolean>,
+    default: false
+  },
+  isScrollable: {
+    type: Boolean as PropType<boolean>,
+    default: true
+  },
+  checkedRows: {
+    type: Array as PropType<BTableRowData[]>,
+    default: alwaysEmptyArray
+  },
+  isSelectable: {
+    type: Boolean as PropType<boolean>,
+    default: false
+  },
+  selectedRows: {
+    type: Array as PropType<BTableRowData[]>,
+    default: alwaysEmptyArray
+  },
+  columns: {
+    type: Array as PropType<BTableColumnData<any>[]>,
+    required: true as const
+  },
+  rows: {
+    type: Array as PropType<BTableRowData[]>,
+    required: true as const
+  },
+  isDraggable: {
+    type: Boolean as PropType<boolean>,
+    default: false
+  },
+  sortColumn: {
+    type: Object as PropType<BTableColumnData>
+  },
+  sortType: {
+    type: String as PropType<SortType>,
+    default: 'Descending' as const
+  },
+  isFocusable: {
+    type: Boolean as PropType<boolean>,
+    default: false
+  },
+  useMobileCards: {
+    type: Boolean as PropType<boolean>,
+    default: true
+  },
+  mobileSortPlaceholder: {
+    type: String as PropType<string>
+  },
+  checkboxVariant: {
+    type: String as PropType<ColorVariant>,
+    default: 'is-primary' as const
+  },
+  headerClasses: {
+    type: [String, Object, Array] as PropType<Classes>,
+    default: undefined
+  },
+  canCheckAllRows: {
+    type: Boolean as PropType<boolean>,
+    default: true
+  },
+  dropEffect: {
+    type: String as PropType<DropEffect>,
+    default: 'move' as const
+  },
+  onCheckRow: {
+    type: Function as PropType<FunctionN<[BTableRowData], void>>,
+    default: constant(constVoid)
+  },
+  onUncheckRow: {
+    type: Function as PropType<FunctionN<[BTableRowData], void>>,
+    default: constant(constVoid)
+  },
+  onSelectRow: {
+    type: Function as PropType<FunctionN<[BTableRowData], void>>,
+    default: constant(constVoid)
+  },
+  onUnselectRow: {
+    type: Function as PropType<FunctionN<[BTableRowData], void>>,
+    default: constant(constVoid)
+  },
+  onRowClick: {
+    type: Function as PropType<FunctionN<[BTableRowData], void>>,
+    default: constant(constVoid)
+  },
+  onNewSortColumn: {
+    type: Function as PropType<FunctionN<[BTableColumnData], void>>,
+    default: constant(constVoid)
+  },
+  onNewSortType: {
+    type: Function as PropType<FunctionN<[SortType], void>>,
+    default: constant(constVoid)
+  },
+  onNewCheckedRows: {
+    type: Function as PropType<FunctionN<[BTableRowData[]], void>>,
+    default: constant(constVoid)
+  },
+  onNewSelectedRows: {
+    type: Function as PropType<FunctionN<[BTableRowData[]], void>>,
+    default: constant(constVoid)
+  },
+  onDragStart: {
+    type: Function as PropType<OnDragEffect>,
+    default: constant(constVoid)
+  },
+  onDragEnter: {
+    type: Function as PropType<OnDragEffect>,
+    default: constant(constVoid)
+  },
+  onDragOver: {
+    type: Function as PropType<OnDragEffect>,
+    default: constant(constVoid)
+  },
+  onDragLeave: {
+    type: Function as PropType<OnDragEffect>,
+    default: constant(constVoid)
+  },
+  onDragEnd: {
+    type: Function as PropType<OnDragEffect>,
+    default: constant(constVoid)
+  },
+  onDrop: {
+    type: Function as PropType<OnDragEffect>,
+    default: constant(constVoid)
+  }
+};
 
 interface Data {
   dragIsActive: boolean;
@@ -34,9 +191,11 @@ interface RowProps {
   checkedRows: BTableRowData[];
 }
 
-type DropEffect = "none" | "copy" | "link" | "move";
+type DropEffect = 'none' | 'copy' | 'link' | 'move';
 
 type DragHandler = FunctionN<[DragEvent], void>;
+
+type OnDragEffect = FunctionN<[BTableRowData, DragEvent, number], void>;
 
 const eqBTableRow: Eq<BTableRow> = eq.contramap(eqString, row => row.id);
 
@@ -47,125 +206,22 @@ const toggleBTableRow = toggleListItem(eqBTableRow);
 export const eqColumnTableData: Eq<BTableColumnData<any>> = eq.contramap(eqString, column => column.label);
 
 function getBTableRow(rowProps: RowProps) {
-  return (data: BTableRowData, index: number): BTableRow => Object.freeze(({
-    ...data,
-    index,
-    isDroppable: data.isDroppable !== undefined ? data.isDroppable : rowProps.isDraggable,
-    isDraggable: data.isDraggable !== undefined ? data.isDraggable : rowProps.isDraggable,
-    isSelectable: data.isSelectable !== undefined ? data.isSelectable : rowProps.isSelectable,
-    isCheckable: data.isCheckable !== undefined ? data.isCheckable : rowProps.isCheckable,
-    isChecked: rowProps.checkedRows.some(row => eqBTableRowData.equals(row, data)),
-    isSelected: rowProps.selectedRows.some(row => eqBTableRowData.equals(row, data)),
-  }));
+  return (data: BTableRowData, index: number): BTableRow =>
+    Object.freeze({
+      ...data,
+      index,
+      isDroppable: data.isDroppable !== undefined ? data.isDroppable : rowProps.isDraggable,
+      isDraggable: data.isDraggable !== undefined ? data.isDraggable : rowProps.isDraggable,
+      isSelectable: data.isSelectable !== undefined ? data.isSelectable : rowProps.isSelectable,
+      isCheckable: data.isCheckable !== undefined ? data.isCheckable : rowProps.isCheckable,
+      isChecked: rowProps.checkedRows.some(row => eqBTableRowData.equals(row, data)),
+      isSelected: rowProps.selectedRows.some(row => eqBTableRowData.equals(row, data))
+    });
 }
 
-export default Vue.extend({
-  name: 'BTable',
-  props: {
-    isBordered: {
-      type: Boolean,
-      required: false,
-      default: false
-    },
-    isStriped: {
-      type: Boolean,
-      required: false,
-      default: false
-    },
-    isNarrow: {
-      type: Boolean,
-      required: false,
-      default: false
-    },
-    isFullwidth: {
-      type: Boolean,
-      required: false,
-      default: true
-    },
-    size: {
-      type: String
-    } as PropValidator<SizeVariant>,
-    isHoverable: {
-      type: Boolean,
-      required: false,
-      default: false
-    },
-    isLoading: {
-      type: Boolean,
-      required: false,
-      default: false
-    },
-    isCheckable: {
-      type: Boolean,
-      required: false,
-      default: false
-    },
-    isScrollable: {
-      type: Boolean,
-      default: true
-    },
-    checkedRows: {
-      type: Array as PropType<BTableRowData[]>,
-      default: alwaysEmptyArray
-    },
-    isSelectable: {
-      type: Boolean,
-      default: false
-    },
-    selectedRows: {
-      type: Array as PropType<BTableRowData[]>,
-      default: alwaysEmptyArray
-    },
-    columns: {
-      type: Array as PropType<BTableColumnData<any>[]>,
-      required: true
-    },
-    rows: {
-      type: Array as PropType<BTableRowData[]>,
-      required: true
-    },
-    isDraggable: {
-      type: Boolean,
-      required: false,
-      default: false
-    },
-    sortColumn: {
-      type: Object,
-      default: undefined
-    } as PropValidator<BTableColumnData<any> | undefined>,
-    sortType: {
-      type: String,
-      default: 'Descending'
-    } as PropValidator<SortType>,
-    isFocusable: {
-      type: Boolean,
-      default: false
-    },
-    useMobileCards: {
-      type: Boolean,
-      default: true
-    },
-    mobileSortPlaceholder: {
-      type: String
-    },
-    checkboxVariant: {
-      type: String as PropType<ColorVariant>,
-      required: false,
-      default: 'is-primary'
-    },
-    headerClasses: {
-      type: [String, Object, Array],
-      default: undefined
-    },
-    canCheckAllRows: {
-      type: Boolean,
-      default: true
-    },
-    dropEffect: {
-      type: String as PropType<DropEffect>,
-      default: 'move'
-    }
-  },
+export default defineComponent({
+  name: 'b-table',
+  props: BTablePropsDefinition,
   data(): Data {
     const mapRow = getBTableRow({
       isCheckable: this.isCheckable,
@@ -202,8 +258,7 @@ export default Vue.extend({
             })
           )
         );
-        this.$emit('new-checked-rows', val);
-        this.$emit('update:checkedRows', val);
+        this.onNewCheckedRows(val as BTableRow[]);
       }
     },
     internalSelectedRows: {
@@ -223,8 +278,7 @@ export default Vue.extend({
             })
           )
         );
-        this.$emit('new-selected-rows', val);
-        this.$emit('update:selectedRows', val);
+        this.onNewSelectedRows(val as BTableRow[]);
       }
     },
     internalSortType: {
@@ -233,8 +287,7 @@ export default Vue.extend({
       },
       set(val: SortType): void {
         this.newSortType = val;
-        this.$emit('new-sort-type', val);
-        this.$emit('update:sortType', val);
+        this.onNewSortType(val);
       }
     },
     internalSortColumn: {
@@ -244,12 +297,11 @@ export default Vue.extend({
       set(val: Option<BTableColumnData<any>>): void {
         this.newSortColumn = val;
         if (isSome(val)) {
-          this.$emit('new-sort-column', val.value);
-          this.$emit('update:sortColumn', val.value);
+          this.onNewSortColumn(val.value);
         }
       }
     },
-    tableClasses(): any {
+    tableClasses(): Classes[] {
       return [
         {
           'is-bordered': this.isBordered,
@@ -360,23 +412,6 @@ export default Vue.extend({
         this.sortRows(this.newSortColumn.value.ord);
       }
     },
-    sortByColumn(column: BTableColumnData<any>): void {
-      if (column.ord === undefined && !!column.isSortable) {
-        if (this.isCurrentSortColumn(column)) {
-          this.internalSortType = this.newSortType === 'Ascending' ? 'Descending' : 'Ascending';
-        } else {
-          this.internalSortColumn = some(column);
-        }
-      } else if (column.ord && !!column.isSortable) {
-        if (this.isCurrentSortColumn(column)) {
-          this.internalSortType = this.newSortType === 'Ascending' ? 'Descending' : 'Ascending';
-          this.newRows = Object.freeze(reverse(this.newRows as BTableRow[]));
-        } else {
-          this.sortRows(column.ord);
-          this.internalSortColumn = some(column);
-        }
-      }
-    },
     sortRows(ord: Ord<BTableRow>) {
       this.newRows = Object.freeze(pipe(this.newRows as BTableRow[], sort(ord)));
     },
@@ -390,11 +425,9 @@ export default Vue.extend({
       this.allRowsChecked ? this.uncheckAllRows() : this.checkAllRows();
     },
     checkAllRows(): void {
-      this.$emit('check-all-rows');
       this.internalCheckedRows = this.checkableRows;
     },
     uncheckAllRows(): void {
-      this.$emit('uncheck-all-rows');
       this.internalCheckedRows = [];
     },
     getToggleRowCheck(row: BTableRow) {
@@ -404,7 +437,7 @@ export default Vue.extend({
     },
     toggleRowCheck(row: BTableRow): void {
       if (row.isCheckable) {
-        this.$emit(row.isChecked ? 'uncheck-row' : 'check-row', row);
+        row.isChecked ? this.onUncheckRow(row) : this.onCheckRow(row);
         this.internalCheckedRows = Object.freeze(toggleBTableRow(row, this.internalCheckedRows as BTableRow[]));
       }
     },
@@ -415,76 +448,70 @@ export default Vue.extend({
         } else if (row.isSelectable) {
           e.stopPropagation();
           this.internalSelectedRows = Object.freeze(toggleBTableRow(row, this.internalSelectedRows as BTableRow[]));
-          this.$emit('select-row', row);
+          this.onSelectRow(row);
         } else if (row.isSelected) {
           e.stopPropagation();
           this.internalSelectedRows = Object.freeze(toggleBTableRow(row, this.internalSelectedRows as BTableRow[]));
-          this.$emit('unselect-row', row);
+          this.onUnselectRow(row);
         } else {
-          this.$emit('row-click', row, e);
+          this.onRowClick(row);
         }
       };
-    },
-    selectAllRows(): void {
-      this.internalSelectedRows = this.selectableRows;
-    },
-    unselectAllRows(): void {
-      this.internalSelectedRows = [];
     },
     getOnDragStartListener(row: BTableRow, index: number): DragHandler {
       return (e: DragEvent) => {
         this.dragIsActive = true;
         if (e.dataTransfer) {
-          e.dataTransfer.setData('text/plain', String(index))
-          e.dataTransfer.dropEffect = this.dropEffect
+          e.dataTransfer.setData('text/plain', String(index));
+          e.dataTransfer.dropEffect = this.dropEffect;
         }
         this.dropTarget = some(row);
-        this.$emit('dragstart', row, e, index);
+        this.onDragStart(row, e, index);
       };
     },
     getOnDropListener(row: BTableRow, index: number): DragHandler {
-        return (e: DragEvent) => {
-          if (row.isDroppable) {
-            e.preventDefault()
-            this.$emit('drop', row, e, index);
-          }
-          this.dragIsActive = false;
-        };
+      return (e: DragEvent) => {
+        if (row.isDroppable) {
+          e.preventDefault();
+          this.onDrop(row, e, index);
+        }
+        this.dragIsActive = false;
+      };
     },
     getOnDragEnterListener(row: BTableRow, index: number): DragHandler {
       return (e: DragEvent) => {
         if (row.isDroppable) {
-          e.preventDefault()
+          e.preventDefault();
           this.dropTarget = some(row);
-          this.$emit('dragenter', row, e, index);
+          this.onDragEnter(row, e, index);
         }
-      }
+      };
     },
     getOnDragOverListener(row: BTableRow, index: number): DragHandler {
       return (e: DragEvent) => {
         if (row.isDroppable) {
-          e.preventDefault()
+          e.preventDefault();
           if (isNone(this.dropTarget) || (isSome(this.dropTarget) && !eqBTableRow.equals(this.dropTarget.value, row))) {
             this.dropTarget = some(row);
           }
-          this.$emit('dragover', row, e, index);
+          this.onDragOver(row, e, index);
         }
-      }
+      };
     },
     getOnDragLeaveListener(row: BTableRow, index: number): DragHandler {
       return (e: DragEvent) => {
         if (row.isDroppable) {
-          e.preventDefault()
+          e.preventDefault();
           if (isSome(this.dropTarget) && eqBTableRow.equals(this.dropTarget.value, row)) {
             this.dropTarget = none;
           }
-          this.$emit('dragleave', row, e, index);
+          this.onDragLeave(row, e, index);
         }
-      }
+      };
     },
     getOnDragEndListener(row: BTableRow, index: number): DragHandler {
       return e => {
-        this.$emit('dragend', row, e, index);
+        this.onDragEnd(row, e, index);
         if (isSome(this.dropTarget)) {
           this.dropTarget = none;
         }
@@ -496,110 +523,89 @@ export default Vue.extend({
     getDragListeners(row: BTableRow, index: number): { [key: string]: Function | Function[] } {
       if (row.isDraggable) {
         return {
-          dragstart: this.getOnDragStartListener(row, index),
-          drop: this.getOnDropListener(row, index),
-          dragenter: this.getOnDragEnterListener(row, index),
-          dragleave: this.getOnDragLeaveListener(row, index),
-          dragover: this.getOnDragOverListener(row, index),
-          dragend: this.getOnDragEndListener(row, index)
-        }
+          onDragstart: this.getOnDragStartListener(row, index),
+          onDrop: this.getOnDropListener(row, index),
+          onDragenter: this.getOnDragEnterListener(row, index),
+          onDragleave: this.getOnDragLeaveListener(row, index),
+          onDragover: this.getOnDragOverListener(row, index),
+          onDragend: this.getOnDragEndListener(row, index)
+        };
       } else {
         return {};
       }
     },
-    onNewSortType(sortType: SortType): void {
+    internalOnNewSortType(sortType: SortType): void {
       this.internalSortType = sortType;
     },
-    onNewSortColumn(column: BTableColumnData<any>): void {
+    internalOnNewSortColumn(column: BTableColumnData<any>): void {
       this.internalSortColumn = some(column);
     },
     hasCustomFooterSlot(): boolean {
-      const footer = fromNullable(this.$scopedSlots.footer && this.$scopedSlots.footer(undefined));
+      const footer = fromNullable(this.$slots.footer && this.$slots.footer());
       if (fold<VNode[], number>(alwaysZero, nodes => nodes.length)(footer)) {
         return true;
       } else {
-        return pipe(
-          footer,
-          chain(head),
-          mapNullable<VNode, string>(node => node.tag),
-          exists(tag => tag === 'th' || tag === 'td')
-        );
+        return false;
       }
     },
     generateMobileSort(): VNode {
-      return this.$createElement(BTableMobileSort, {
-        props: {
-          sortColumn: this.internalSortColumn,
-          sortType: this.internalSortType,
-          columns: this.newColumns,
-          placeholder: this.mobileSortPlaceholder
-        },
-        on: {
-          'new-sort-type': this.onNewSortType,
-          'new-sort-column': this.onNewSortColumn
-        }
+      return h(BTableMobileSort, {
+        sortColumn: this.internalSortColumn as any,
+        sortType: this.internalSortType,
+        columns: this.newColumns as BTableColumn[],
+        placeholder: this.mobileSortPlaceholder,
+        onNewSortType: this.internalOnNewSortType,
+        onNewSortColumn: this.internalOnNewSortColumn
       });
     },
     generateTableHeader(): VNode {
-      return this.$createElement(BTableHeader, {
+      return h(BTableHeader, {
         class: this.headerClasses,
-        props: {
-          columns: this.visibleColumns,
-          sortType: this.internalSortType,
-          checkboxVariant: this.checkboxVariant,
-          isCheckable: this.hasCheckableRows,
-          isChecked: this.allRowsChecked,
-          isDisabled: !this.canCheckAllRows
-        },
-        scopedSlots: this.$scopedSlots,
-        on: {
-          toggle: this.toggleAllRows,
-          'new-sort-type': this.onNewSortType,
-          'new-sort-column': this.onNewSortColumn
-        }
+        columns: this.visibleColumns as BTableColumn[],
+        sortType: this.internalSortType,
+        checkboxVariant: this.checkboxVariant,
+        isCheckable: this.hasCheckableRows,
+        isChecked: this.allRowsChecked,
+        isDisabled: !this.canCheckAllRows,
+        slots: this.$slots,
+        onInput: this.toggleAllRows,
+        onNewSortType: this.internalOnNewSortType,
+        onNewSortColumn: this.internalOnNewSortColumn
       });
     },
     generateEmptyTable(): VNode {
-      return this.$createElement('tbody', [
-        this.$createElement('tr', { staticClass: 'is-empty' }, [
-          this.$createElement(
-            'td',
-            { attrs: { colspan: this.numberOfVisibleColumns } },
-            this.$scopedSlots.empty && this.$scopedSlots.empty(undefined)
-          )
+      return h('tbody', [
+        h('tr', { class: 'is-empty' }, [
+          h('td', { colspan: this.numberOfVisibleColumns }, this.$slots.empty && this.$slots.empty())
         ])
       ]);
     },
     generateRow(row: BTableRow, index: number): VNode {
-      return this.$createElement(BTableRowElement, {
+      return h(BTableRowElement, {
         key: row.id,
         class: {
           'is-drop-target': isSome(this.dropTarget) ? eqBTableRow.equals(row, this.dropTarget.value) : false,
           'is-undroppable': this.dragIsActive && !row.isDroppable
         },
-        props: {
-          row,
-          columns: this.visibleColumns,
-          checkboxVariant: this.checkboxVariant,
-          isDraggable: row.isDraggable
-        },
-        scopedSlots: this.$scopedSlots,
-        on: {
-          input: this.getToggleRowCheck(row),
-          click: this.getRowOnClickHandler(row),
-          ...this.getDragListeners(row, index)
-        }
+        row,
+        columns: this.visibleColumns as BTableColumn[],
+        checkboxVariant: this.checkboxVariant,
+        isDraggable: row.isDraggable,
+        slots: this.$slots,
+        onInput: this.getToggleRowCheck(row),
+        onClick: this.getRowOnClickHandler(row),
+        ...this.getDragListeners(row, index)
       });
     },
     generateNonEmptyTable(): VNode {
-      if (this.$scopedSlots.row) {
-        return this.$createElement(
+      if (this.$slots.row) {
+        return h(
           'tbody',
           this.newRows.map((row, index) =>
-            this.$createElement(
+            h(
               'tr',
               { key: row.id },
-              this.$scopedSlots.row!({
+              this.$slots.row!({
                 row,
                 index,
                 columns: this.visibleColumns
@@ -608,20 +614,20 @@ export default Vue.extend({
           )
         );
       } else {
-        return this.$createElement('tbody', this.newRows.map(this.generateRow));
+        return h('tbody', this.newRows.map(this.generateRow));
       }
     },
     generateTableBody(): VNode {
       return this.isEmpty ? this.generateEmptyTable() : this.generateNonEmptyTable();
     },
     generateTableFooter(): VNode {
-      return this.$createElement('tfoot', [
-        this.$createElement(
+      return h('tfoot', [
+        h(
           'tr',
-          { staticClass: 'table-footer' },
+          { class: 'table-footer' },
           this.hasCustomFooterSlot()
             ? this.$slots.footer
-            : [this.$createElement('th', { attrs: { colspan: this.numberOfVisibleColumns } }, this.$slots.footer)]
+            : [h('th', { colspan: this.numberOfVisibleColumns }, this.$slots.footer!())]
         )
       ]);
     },
@@ -630,20 +636,18 @@ export default Vue.extend({
       if (this.$slots.footer) {
         nodes.push(this.generateTableFooter());
       }
-      return this.$createElement(
+      return h(
         BSimpleTable,
         {
-          props: {
-            tableClasses: this.tableClasses,
-            isLoading: this.isLoading,
-            isScrollable: this.isScrollable
-          }
+          tableClasses: this.tableClasses,
+          isLoading: this.isLoading,
+          isScrollable: this.isScrollable
         },
         nodes
       );
     }
   },
-  render(h): VNode {
+  render(): VNode {
     return h(
       'div',
       this.displayMobileSorting ? [this.generateMobileSort(), this.generateTable()] : [this.generateTable()]
