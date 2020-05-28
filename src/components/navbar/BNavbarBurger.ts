@@ -1,32 +1,24 @@
 import 'bulma/sass/components/navbar.sass';
 import { replicate } from 'fp-ts/lib/Array';
-import Vue, { VNode } from 'vue';
-import { mergeVNodeClasses } from '../../utils/mergeVNodeClasses';
-import { mergeVNodeStaticClass } from '../../utils/mergeVNodeStaticClass';
+import { h, SetupContext } from 'vue';
+import { Classes, mergeClasses } from '../../utils/mergeClasses';
 
-export default Vue.extend({
-  name: 'BNavbarBurger',
-  functional: true,
-  props: {
-    tag: {
-      type: String,
-      required: false,
-      default: 'a'
+export interface BNavbarBurgerProps {
+  tag?: string;
+  isActive?: boolean;
+}
+
+const hamburgerLines = replicate(3, h('span', { 'aria-hidden': true }));
+
+export default function BNavbarBurger(props: BNavbarBurgerProps, { attrs }: SetupContext) {
+  attrs.class = mergeClasses(attrs.class as Classes, ['navbar-burger', { 'is-active': !!props.isActive }]);
+
+  return h(
+    props.tag || 'button',
+    {
+      ...attrs,
+      'aria-expanded': !!props.isActive
     },
-    isActive: {
-      type: Boolean,
-      required: false,
-      default: false
-    }
-  },
-  render(h, { data, props }): VNode {
-    data.staticClass = mergeVNodeStaticClass('navbar-burger', data.staticClass);
-    data.class = mergeVNodeClasses(data.class, { 'is-active': props.isActive });
-    data.attrs = {
-      role: 'button',
-      'aria-expanded': props.isActive
-    };
-    const hamburgerLine = h('span', { attrs: { 'aria-hidden': true } });
-    return h(props.tag, data, replicate(3, hamburgerLine));
-  }
-});
+    hamburgerLines
+  );
+}

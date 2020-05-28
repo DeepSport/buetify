@@ -1,7 +1,7 @@
-import Vue from 'vue';
+import { shallowReactive} from 'vue';
 import { ThemeColorMap } from '../../mixins/themeInjection/ThemeInjectionMixin';
 
-export const LinkTheme: ThemeColorMap = Vue.observable({
+export const LinkThemeMap: ThemeColorMap = shallowReactive({
   dark: 'is-warning',
   light: 'is-link'
 });

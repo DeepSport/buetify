@@ -1,56 +1,41 @@
-import { FunctionalComponentOptions, VNode } from 'vue';
+import { FunctionalComponent, SetupContext, h, Transition, TransitionGroup } from 'vue';
+
+export interface JavascriptTransitionProps {
+  mode?: string;
+}
 
 export function createJavascriptTransition(
   name: string,
   functions: Record<string, any>,
   mode = 'in-out'
-): FunctionalComponentOptions {
-  return {
-    name,
-    functional: true,
-    props: {
-      mode: {
-        type: String,
-        default: mode
-      }
-    },
-
-    render(h, context): VNode {
-      const data = {
-        props: {
-          ...context.props,
-          name
-        },
-        on: functions
-      };
-      return h('transition', data, context.children);
-    }
+): FunctionalComponent {
+  return (props: JavascriptTransitionProps, { attrs, slots }: SetupContext) => {
+    return h(
+      Transition,
+      {
+        mode: props.mode ?? mode,
+        ...functions,
+        ...attrs
+      },
+      slots.default && slots.default()
+    );
   };
 }
 
-export function createJavaScriptTransitionGroup(
+export function createJavascriptTransitionGroup(
   name: string,
   functions: Record<string, any>,
   mode = 'in-out'
-): FunctionalComponentOptions {
-  return {
-    name,
-    functional: true,
-    props: {
-      mode: {
-        type: String,
-        default: mode
-      }
-    },
-    render(h, context): VNode {
-      const data = {
-        props: {
-          ...context.props,
-          name
-        },
-        on: functions
-      };
-      return h('transition-group', data, context.children);
-    }
+): FunctionalComponent {
+  return (props: JavascriptTransitionProps, { attrs, slots }: SetupContext) => {
+    return h(
+      TransitionGroup,
+      {
+        mode: props.mode ?? mode,
+        ...functions,
+        ...attrs
+      },
+      slots.default && slots.default()
+    );
   };
 }
