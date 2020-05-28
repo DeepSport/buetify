@@ -5,7 +5,7 @@ import { IO } from 'fp-ts/lib/IO';
 import { ToggleAttrs, ToggleListeners, useToggle } from '../toggle';
 import { DEFAULT_BREAK_POINTS } from '../windowSize/provideWindowSize';
 
-export interface NavigationDrawerControllerInjection {
+export interface NavigationDrawerController {
   isVisible: Ref<Option<boolean>>;
   attrs: Ref<Option<ToggleAttrs>>;
   listeners: Ref<Option<ToggleListeners>>;
@@ -31,7 +31,7 @@ export const ProvideNavigationDrawerControllerPropsDefinition = {
 
 export type ProvideNavigationDrawerControllerProps = ExtractPropTypes<typeof ProvideNavigationDrawerControllerPropsDefinition>
 
-export const DEFAULT_NAVIGATION_DRAWER_CONTROLLER_INJECTION: NavigationDrawerControllerInjection = {
+export const DEFAULT_NAVIGATION_DRAWER_CONTROLLER_INJECTION: NavigationDrawerController = {
   isVisible: shallowRef(none),
   attrs: shallowRef(none),
   listeners: shallowRef(none),
@@ -42,7 +42,7 @@ export const DEFAULT_NAVIGATION_DRAWER_CONTROLLER_INJECTION: NavigationDrawerCon
 
 export function provideNavigationDrawerController(props: ProvideNavigationDrawerControllerProps) {
   const toggle = useToggle(props, 'isVisible');
-  const injection: NavigationDrawerControllerInjection = {
+  const injection: NavigationDrawerController = {
     isVisible: computed(() => some(toggle.isOn.value)),
     listeners: computed(() => some(toggle.listeners)),
     attrs: computed(() => some(toggle.attrs.value)),
