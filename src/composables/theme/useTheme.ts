@@ -33,9 +33,9 @@ export function getThemeClasses(themeMap: ThemeColorMap, themeInjection: ThemeIn
 	}
 }
 
-export function useTheme(props: ThemeProps) {
+export function useTheme(props?: ThemeProps) {
 	const themeInjection = inject(THEME_INJECTION_SYMBOL, DEFAULT_THEME_INJECTION)
-	const themeClasses = computed(() => getThemeClasses(props.themeMap, themeInjection));
+	const themeClasses = computed(() => props ? getThemeClasses(props.themeMap, themeInjection) : []);
 
 	return {
 		currentTheme: themeInjection.currentTheme,

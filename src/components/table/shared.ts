@@ -9,7 +9,7 @@ export interface BTableColumn<T = any> extends BTableColumnData<T> {
 
 export type SortType = 'Ascending' | 'Descending';
 
-export interface BTableColumnData<T> {
+export interface BTableColumnData<T = any> {
   label: string;
   detail?: string;
   slotName?: string;

@@ -6,6 +6,7 @@ export * from './model';
 export * from './navigationDrawerController';
 export * from './noticeController';
 export * from './popupController';
+export * from './proxy';
 export * from './selectionControl';
 export * from './theme';
 export * from './toggle';
