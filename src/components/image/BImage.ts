@@ -1,49 +1,32 @@
 import 'bulma/sass/elements/image.sass';
-import { mergeVNodeStaticClass } from '../../utils/mergeVNodeStaticClass';
-import Vue, { VNode } from 'vue';
-export default Vue.extend({
-  name: 'BImage',
-  functional: true,
-  props: {
-    src: {
-      type: String,
-      required: true
+import { Classes, mergeClasses } from '../../utils/mergeClasses';
+import { SetupContext, h } from 'vue';
+
+export interface BImageProps {
+  src: string;
+  alt: string;
+  isRounded?: boolean;
+  imgClass?: Classes;
+}
+
+export default function BImage(props: BImageProps, { attrs, slots }: SetupContext) {
+  return h(
+    'figure',
+    {
+      ...attrs,
+      class: mergeClasses(attrs.class as Classes, 'image')
     },
-    alt: {
-      type: String,
-      required: true
-    },
-    isRounded: {
-      type: Boolean,
-      required: false,
-      default: false
-    },
-    imgClass: {
-      required: false,
-      default: ''
-    }
-  },
-  render(h, { data, props }): VNode {
-    return h(
-      'figure',
-      {
-        ...data,
-        staticClass: mergeVNodeStaticClass('image', data.staticClass)
-      },
-      [
-        h('img', {
-          class: [
-            props.imgClass,
-            {
-              'is-rounded': props.isRounded
-            }
-          ],
-          attrs: {
-            src: props.src,
-            alt: props.alt
+    [
+      h('img', {
+        class: [
+          props.imgClass,
+          {
+            'is-rounded': props.isRounded
           }
-        })
-      ]
-    );
-  }
-});
+        ],
+        src: props.src,
+        alt: props.alt
+      })
+    ]
+  );
+}

@@ -1,4 +1,4 @@
 import 'bulma/sass/components/level.sass';
 import { getSimpleFunctionalComponent } from '../../../utils/getSimpleFunctionalComponent';
 
-export default getSimpleFunctionalComponent('level', 'BLevel');
+export default getSimpleFunctionalComponent('level', 'div');
