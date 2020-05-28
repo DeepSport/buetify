@@ -16,7 +16,7 @@ export function createExpandTransition(transitionClass = '', x = false) {
   const offsetProperty = `offset${capitalizeFirstLetter(sizeProperty)}` as 'offsetHeight' | 'offsetWidth';
 
   return {
-    beforeEnter(el: HTMLExpandElement) {
+    onBeforeEnter(el: HTMLExpandElement) {
       el._parent = el.parentNode as (Node & ParentNode & HTMLElement) | null;
       el._initialStyle = {
         transition: el.style.transition,
@@ -26,7 +26,7 @@ export function createExpandTransition(transitionClass = '', x = false) {
       };
     },
 
-    enter(el: HTMLExpandElement) {
+    onEnter(el: HTMLExpandElement) {
       const initialStyle = el._initialStyle;
       const offset = `${el[offsetProperty]}px`;
 
@@ -50,10 +50,10 @@ export function createExpandTransition(transitionClass = '', x = false) {
       });
     },
 
-    afterEnter: resetStyles,
-    enterCancelled: resetStyles,
+    onAfterEnter: resetStyles,
+    onEnterCancelled: resetStyles,
 
-    leave(el: HTMLExpandElement) {
+    onLeave(el: HTMLExpandElement) {
       el._initialStyle = {
         transition: '',
         visibility: '',
@@ -68,11 +68,11 @@ export function createExpandTransition(transitionClass = '', x = false) {
       requestAnimationFrame(() => (el.style[sizeProperty] = '0'));
     },
 
-    afterLeave,
-    leaveCancelled: afterLeave
+    onAfterLeave,
+    onLeaveCancelled: onAfterLeave
   };
 
-  function afterLeave(el: HTMLExpandElement) {
+  function onAfterLeave(el: HTMLExpandElement) {
     if (transitionClass) {
       el.classList.remove(transitionClass);
     }

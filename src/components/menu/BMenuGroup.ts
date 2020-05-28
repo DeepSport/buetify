@@ -1,80 +1,59 @@
 import './menu.sass';
 import { getUseTogglePropsDefinition, useToggle } from '../../composables/toggle';
-import { applyMixins } from '../../utils/applyMixins';
-import { getToggleMixin } from '../../mixins/toggle/ToggleMixin';
 import VerticalExpandTransition from '../../transitions/verticalExpandTransition';
+import { Classes, mergeClasses } from '../../utils/mergeClasses';
 import VerticalExpansionIcon from '../icons/verticalExpansion/VerticalExpansionIcon';
 import BMenuList from './BMenuList';
-import { VNode, defineComponent } from 'vue';
+import { withDirectives, resolveDirective, defineComponent, h, PropType, Directive } from 'vue';
 
 export const BMenuGroup = defineComponent({
   name: 'b-menu-group',
   props: {
     ...getUseTogglePropsDefinition('isExpanded'),
     menuLabelClass: {
-      type: String,
-      required: false
+      type: String as PropType<Classes>,
+      default: ''
     },
     menuListClass: {
-      type: String,
-      required: false
+      type: String as PropType<Classes>,
+      default: ''
     }
   },
   setup(props, { slots }) {
     const toggle = useToggle(props, 'isExpanded');
-    
-  }
-})
-
-export default applyMixins(getToggleMixin('isExpanded')).extend({
-  name: 'BMenuGroup',
-  components: {
-    VerticalExpansionIcon,
-    BMenuList
-  },
-  props: {
-    menuLabelClass: {
-      type: String,
-      required: false
-    },
-    menuListClass: {
-      type: String,
-      required: false
-    }
-  },
-  methods: {
-    generateTrigger(): VNode {
-      return this.$createElement(
-        'button',
-        {
-          staticClass: 'is-flex flex-direction-row justify-content-space-between align-items-center is-fullwidth',
-          on: this.listeners,
-          attrs: this.attrs,
-          class: this.menuLabelClass
-        },
-        [this.$slots['menu-label'], this.generateTriggerButton()]
-      );
-    },
-    generateTriggerButton(): VNode {
-      return this.$createElement(VerticalExpansionIcon, {
-        props: { isExpanded: this.internalStatus }
-      });
-    },
-    generateMenuList(): VNode {
-      return this.$createElement(VerticalExpandTransition, [
-        this.$createElement(
-          BMenuList,
+    const vShow = resolveDirective('show') as Directive;
+    return () =>
+      h('section', [
+        h(
+          'button',
           {
-            class: this.menuListClass,
-            directives: [{ name: 'show', value: this.internalStatus }],
-            attrs: { 'aria-hidden': !this.internalStatus }
+            class: mergeClasses(
+              'is-flex flex-direction-row justify-content-space-between align-items-center is-fullwidth',
+              props.menuLabelClass
+            ),
+            ...toggle.listeners,
+            ...toggle.attrs.value
           },
-          this.$slots.default
-        )
+          [
+            slots['menu-label'] && slots['menu-label'](),
+            h(VerticalExpansionIcon, {
+              isExpanded: toggle.isOn.value
+            })
+          ]
+        ),
+        h(VerticalExpandTransition, [
+          withDirectives(
+            h(
+              BMenuList,
+              {
+                class: props.menuListClass,
+                'aria-hidden': toggle.isOff.value
+              },
+              slots.default && slots.default()
+            ),
+            [[vShow, toggle.isOn.value]]
+          )
+        ])
       ]);
-    }
-  },
-  render(): VNode {
-    return this.$createElement('section', [this.generateTrigger(), this.generateMenuList()]);
   }
 });

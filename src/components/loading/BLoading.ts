@@ -1,74 +1,75 @@
 import './loading.sass';
-import { applyMixins } from '../../utils/applyMixins';
+import { IO } from 'fp-ts/lib/IO';
+import { usePopupController, UsePopupControllerPropsDefinition } from '../../composables/popupController';
+import { useToggle } from '../../composables/toggle';
 import { isEscEvent } from '../../utils/eventHelpers';
-import { DisplayModalMixin } from '../../mixins/displayModal/DisplayModalMixin';
-import { VNode } from 'vue';
+import { VNode, h, defineComponent, ExtractPropTypes, shallowRef, Transition, onMounted, onUnmounted } from 'vue';
+import { alwaysEmptyArray } from '../../utils/helpers';
 
-export default applyMixins(DisplayModalMixin).extend({
-  name: 'BLoading',
-  props: {
-    isFullscreen: {
-      type: Boolean,
-      default: false
-    },
-    canCancel: {
-      type: Boolean,
-      default: false
-    }
+export const BLoadingPropsDefinition = {
+  ...UsePopupControllerPropsDefinition,
+  isFullscreen: {
+    type: Boolean,
+    default: false
   },
-  computed: {
-    attachToApp(): boolean {
-      return this.isFullscreen;
-    },
-    classes(): object {
-      return {
-        'is-fullscreen': this.isFullscreen
-      };
-    }
-  },
-  methods: {
-    cancel() {
-      if (this.canCancel && this.isActive) {
-        this.close();
+  canCancel: {
+    type: Boolean,
+    default: false
+  }
+};
+
+export type BLoadingProps = ExtractPropTypes<typeof BLoadingPropsDefinition>;
+
+function getGenerateModal(onClick: IO<void>) {
+  return () => [
+    h('div', { class: 'b-loading-overlay is-active is-fullscreen' }, [
+      h('div', {
+        class: 'loading-background',
+        onClick
+      }),
+      h('div', { class: 'loading-icon' })
+    ])
+  ];
+}
+
+export default defineComponent({
+  name: 'b-loading',
+  props: BLoadingPropsDefinition,
+  setup(props, { slots }) {
+    if (props.isFullscreen) {
+      const generateLoadingPopup = shallowRef(alwaysEmptyArray as IO<VNode[]>);
+      const popup = usePopupController(props, generateLoadingPopup);
+      function onClick() {
+        if (props.canCancel && popup.isOpen.value) {
+          popup.close();
+        }
       }
-    },
-    close() {
-      if (this.onCancel) {
-        this.onCancel();
+      function onKeyup(e: KeyboardEvent) {
+        if (isEscEvent(e)) {
+          onClick();
+        }
       }
-      this.$emit('close');
-      this.$emit('update:is-active', false);
-    },
-    onKeyup(event: KeyboardEvent) {
-      if (isEscEvent(event)) {
-        this.cancel();
-      }
-    },
-    generateModal(): VNode {
-      return this.$createElement('div', { staticClass: 'b-loading-overlay is-active', class: this.classes }, [
-        this.$createElement('div', {
-          staticClass: 'loading-background',
-          on: { click: this.cancel }
-        }),
-        this.$createElement('div', { staticClass: 'loading-icon' })
-      ]);
-    }
-  },
-  created() {
-    if (typeof window !== 'undefined') {
-      document.addEventListener('keyup', this.onKeyup);
-      this.$once('hook:beforeDestroy', () => document.removeEventListener('keyup', this.onKeyup));
-    }
-  },
-  render(): VNode {
-    if (!this.isFullscreen) {
-      return this.$createElement(
-        'transition',
-        { props: { name: this.transition } },
-        this.isActive ? [this.generateModal()] : []
-      );
+      onMounted(() => {
+        if (typeof window !== 'undefined') {
+          document.addEventListener('keyup', onKeyup);
+        }
+      });
+      onUnmounted(() => {
+        if (typeof window !== 'undefined') {
+          document.removeEventListener('keyup', onKeyup);
+        }
+      });
+      generateLoadingPopup.value = getGenerateModal(onClick);
+      return () => (slots.trigger ? slots.trigger(popup) : []);
     } else {
-      return undefined as any;
+      const toggle = useToggle(props, 'isActive');
+      function onClick() {
+        if (props.canCancel && toggle.isOn.value) {
+          toggle.setOff();
+        }
+      }
+      const render = getGenerateModal(onClick);
+      return () => h(Transition, { name: props.transition }, toggle.isOn.value && render());
     }
   }
 });

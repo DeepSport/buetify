@@ -22,6 +22,8 @@ export function getUseThemePropsDefinition(themeMap: ThemeColorMap, defaultIsThe
 
 export type ThemeProps = ExtractPropTypes<ReturnType< typeof getUseThemePropsDefinition>>
 
+export type FunctionalThemeProps = Partial<ThemeProps>;
+
 export const DefaultThemePropsDefinition = getUseThemePropsDefinition(DEFAULT_THEME_COLOR_MAP, true);
 
 export function getThemeClasses(themeMap: ThemeColorMap, themeInjection: ThemeInjection): string[] {
