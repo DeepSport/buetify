@@ -13,6 +13,7 @@ export function createJavascriptTransition(
     return h(
       Transition,
       {
+        css: false,
         mode: props.mode ?? mode,
         ...functions,
         ...attrs
@@ -31,6 +32,7 @@ export function createJavascriptTransitionGroup(
     return h(
       TransitionGroup,
       {
+        css: false,
         mode: props.mode ?? mode,
         ...functions,
         ...attrs

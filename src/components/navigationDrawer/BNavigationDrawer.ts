@@ -1,87 +1,103 @@
 import './navigation-drawer.sass';
-import { WindowSize, WindowSizeMixin } from '../../mixins/windowSize/WindowSizeMixin';
+import {
+  NavigationDrawerController,
+  useNavigationDrawerController
+} from '../../composables/navigationDrawerController';
+import { getUseThemePropsDefinition, useTheme } from '../../composables/theme';
+import { useWindowSize } from '../../composables/windowSize';
 import { SlideRightTransition } from '../../transitions/slideRightTransition';
-import { VNode } from 'vue';
+import {
+  defineComponent,
+  SetupContext,
+  VNode,
+  h,
+  PropType,
+  computed,
+  watchEffect,
+  watch,
+  toRef,
+  ExtractPropTypes
+} from 'vue';
 import BOverlay from '../overlay/BOverlay';
-import { NavigationInjectionMixin } from '../../mixins/navigationInjection/NavigationInjectionMixin';
-import { getThemeInjectionMixin } from '../../mixins/themeInjection/ThemeInjectionMixin';
-import { applyMixins } from '../../utils/applyMixins';
-import { NavigationDrawerTheme } from './theme';
+import { NavigationDrawerThemeMap } from './theme';
 
-export default applyMixins(
-  NavigationInjectionMixin,
-  WindowSizeMixin,
-  getThemeInjectionMixin(NavigationDrawerTheme)
-).extend({
-  name: 'BNavigationDrawer',
-  props: {
-    tag: {
-      type: String,
-      required: false,
-      default: 'nav'
-    },
-    isFullheight: {
-      type: Boolean,
-      default: true
-    }
+export const BNavigationDrawerPropsDefinition = {
+  ...getUseThemePropsDefinition(NavigationDrawerThemeMap),
+  tag: {
+    type: String as PropType<string>,
+    default: 'nav'
   },
-  computed: {
-    displayMobileDrawer(): boolean {
-      return this.windowSize.isTouch || this.windowSize.isDesktop;
-    },
-    classes(): any {
-      return [{ 'is-fullheight': this.isFullheight }, ...this.themeClasses];
-    }
+  isFullheight: {
+    type: Boolean as PropType<boolean>,
+    default: true
   },
-  watch: {
-    windowSize(newValue: WindowSize) {
-      if (newValue.isTouch || newValue.isDesktop) {
-        this.hideNavigationDrawer();
+  currentRoute: {
+    type: Object as PropType<object>,
+    required: false
+  }
+};
+
+export type BNavigationDrawerProps = ExtractPropTypes<typeof BNavigationDrawerPropsDefinition>;
+
+function generateDrawer(
+  props: BNavigationDrawerProps,
+  controller: NavigationDrawerController,
+  themeClasses: string[],
+  context: SetupContext
+): VNode {
+  return h(
+    props.tag,
+    {
+      class: ['b-navigation-drawer', { 'is-fullheight': props.isFullheight }, ...themeClasses]
+    },
+    context.slots.default!({
+      showNavigationDrawer: controller.show,
+      hideNavigationDrawer: controller.hide,
+      navigationDrawerIsVisible: controller.isVisible.value,
+      toggleNavigationDrawer: controller.toggle
+    })
+  );
+}
+
+function generateMobileDrawer(
+  props: BNavigationDrawerProps,
+  controller: NavigationDrawerController,
+  themeClasses: string[],
+  context: SetupContext
+): VNode {
+  return h(SlideRightTransition, [
+    h(
+      BOverlay,
+      {
+        class: 'is-left',
+        isActive: controller.isVisible.value,
+        onClick: controller.hide
+      },
+      [generateDrawer(props, controller, themeClasses, context)]
+    )
+  ]);
+}
+
+export default defineComponent({
+  name: 'b-navigation-drawer',
+  props: BNavigationDrawerPropsDefinition,
+  setup(props, context) {
+    const controller = useNavigationDrawerController();
+    const windowSize = useWindowSize();
+    const { themeClasses } = useTheme(props);
+    const useSideDrawer = computed(() => windowSize.value.isTouch || windowSize.value.isDesktop);
+    watchEffect(() => (useSideDrawer.value ? controller.hide() : controller.show()));
+    watch(toRef(props, 'currentRoute'), newVal => {
+      if (useSideDrawer.value) {
+        controller.hide();
+      }
+    });
+    return () => {
+      if (useSideDrawer.value) {
+        return generateMobileDrawer(props, controller, themeClasses.value, context);
       } else {
-        this.showNavigationDrawer();
+        return generateDrawer(props, controller, themeClasses.value, context);
       }
-    },
-    $route() {
-      if (this.windowSize.isTouch || this.windowSize.isDesktop) {
-        this.hideNavigationDrawer();
-      }
-    }
-  },
-  methods: {
-    generateMobileDrawer(): VNode {
-      return this.$createElement(SlideRightTransition, [
-        this.$createElement(
-          BOverlay,
-          {
-            staticClass: 'is-left',
-            props: { isActive: this.navigationDrawerIsVisible },
-            on: { close: this.hideNavigationDrawer.bind(this) }
-          },
-          [this.generateDrawer()]
-        )
-      ]);
-    },
-    generateDrawer(): VNode {
-      return this.$createElement(
-        this.tag,
-        {
-          staticClass: 'b-navigation-drawer',
-          class: this.classes
-        },
-        this.$scopedSlots.default!({
-          showNavigationDrawer: this.showNavigationDrawer,
-          hideNavigationDrawer: this.hideNavigationDrawer,
-          navigationDrawerIsVisible: this.navigationDrawerIsVisible,
-          toggleNavigationDrawer: this.toggleNavigationDrawer
-        })
-      );
-    }
-  },
-  render(): VNode {
-    if (this.displayMobileDrawer) {
-      return this.generateMobileDrawer();
-    } else {
-      return this.generateDrawer();
-    }
+    };
   }
 });

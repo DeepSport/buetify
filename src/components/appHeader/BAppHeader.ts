@@ -1,13 +1,13 @@
 import './app-header.sass';
 import { isSome } from 'fp-ts/lib/Option';
 import {
-  NavigationDrawerControllerInjection,
+  NavigationDrawerController,
   useNavigationDrawerController
 } from '../../composables/navigationDrawerController';
 import { SetupContext, h, Slots } from 'vue';
 import { Classes, mergeClasses } from '../../utils/mergeClasses';
 
-function generateMainSlot(injection: NavigationDrawerControllerInjection, includeClickHandler: boolean, slots: Slots) {
+function generateMainSlot(injection: NavigationDrawerController, includeClickHandler: boolean, slots: Slots) {
   return h(
     'div',
     {
@@ -20,7 +20,7 @@ function generateMainSlot(injection: NavigationDrawerControllerInjection, includ
   );
 }
 
-function generateNavigationButton(injection: NavigationDrawerControllerInjection, slots: Slots) {
+function generateNavigationButton(injection: NavigationDrawerController, slots: Slots) {
   const listeners = isSome(injection.listeners.value) ? injection.listeners.value.value : {};
   const attrs = isSome(injection.listeners.value) ? injection.listeners.value.value : {};
   return h(
