@@ -1,15 +1,30 @@
 import '../sass/notices.scss';
-import {IO} from 'fp-ts/lib/IO';
-import {UseMessagePropsDefinition} from '../../../composables/message';
-import {useNoticeController, UseNoticePropsDefinition} from '../../../composables/noticeController';
-import {FadeTransitionPropsDefinition} from '../../../composables/transition';
-import { applyMixins } from '../../../utils/applyMixins';
-import { DisplayNoticeMixin, OpenNoticeParams } from '../../../mixins/displayNotice/DisplayNoticeMixin';
-import { MessageMixin } from '../../../mixins/message/MessageMixin';
-import {VNode, h, PropType, defineComponent, ExtractPropTypes, shallowRef, withDirectives, resolveDirective, Directive, SetupContext } from 'vue';
-import { FadeTransitionMixin } from '../../../mixins/fadeTransition/FadeTransitionMixin';
-import {alwaysEmptyArray} from '../../../utils/helpers';
-import {NoticeContainer} from '../noticeContainer/BNoticeContainer';
+import { constant, FunctionN } from 'fp-ts/lib/function';
+import { IO } from 'fp-ts/lib/IO';
+import { Message, useMessage, UseMessagePropsDefinition } from '../../../composables/message';
+import {
+  NoticeController,
+  OpenNoticeOptions,
+  RenderNoticeOptions,
+  useNoticeController,
+  UseNoticePropsDefinition
+} from '../../../composables/noticeController';
+import { formatTransition } from '../../../composables/transition';
+import {
+  Component,
+  Transition,
+  VNode,
+  h,
+  PropType,
+  defineComponent,
+  ExtractPropTypes,
+  shallowRef,
+  withDirectives,
+  resolveDirective,
+  Directive,
+  SetupContext
+} from 'vue';
+import { alwaysEmptyArray } from '../../../utils/helpers';
 
 export const BNotificationPropsDefinition = {
   ...UseMessagePropsDefinition,
@@ -18,88 +33,83 @@ export const BNotificationPropsDefinition = {
     type: Boolean as PropType<boolean>,
     default: true
   }
+};
+
+export type BNotificationProps = ExtractPropTypes<typeof BNotificationPropsDefinition>;
+
+function generateCloseButton(
+  props: BNotificationProps,
+  messageController: Message,
+  noticeController: NoticeController
+): VNode {
+  return h('button', {
+    class: 'delete',
+    onClick: props.isNotice ? noticeController.close : messageController.setOff
+  });
 }
 
-export type BNotificationProps = ExtractPropTypes<typeof BNotificationPropsDefinition>
+function generateIcon(messageController: Message): VNode {
+  return h('div', { class: 'media-left' }, [
+    h(messageController.icon.value as Component, { size: messageController.iconSize.value })
+  ]);
+}
 
-function generateNotice(props: BNotificationProps, context: SetupContext, controller: NoticeContainer): VNode {
+function generateNoticeContent(context: SetupContext, message?: string): VNode {
+  return h('div', { class: 'media-content' }, (context.slots.message && context.slots.message()) || h('p', message));
+}
+
+function generateNoticeBody(
+  props: BNotificationProps,
+  context: SetupContext,
+  messageController: Message,
+  noticeController: NoticeController,
+  message?: string
+): VNode {
   return h(
-      'article',
-      {
-        staticClass: 'notification',
-        class: [props.variant, params.position || this.position],
-        directives: this.isNotice ? [] : [{ name: 'show', value: this.internalIsActive }]
-      },
-      this.isClosable
-          ? [this.generateCloseButton(), this.generateNoticeBody(params.message)]
-          : [this.generateNoticeBody(params.message)]
+    'div',
+    { class: 'media' },
+    props.useIcon && messageController.icon.value
+      ? [generateIcon(messageController), generateNoticeContent(context, message)]
+      : [generateNoticeContent(context, message)]
   );
 }
 
-export const BNotification = defineComponent({
+function getGenerateNotice(
+  props: BNotificationProps,
+  context: SetupContext,
+  messageController: Message,
+  noticeController: NoticeController,
+  vShow: Directive
+) {
+  return (options: OpenNoticeOptions) => () => {
+    const notice = h(
+      'article',
+      {
+        class: ['notification', options.variant ?? props.variant, options.position ?? props.position]
+      },
+      props.isClosable
+        ? [
+            generateCloseButton(props, messageController, noticeController),
+            generateNoticeBody(props, context, messageController, noticeController, options.message ?? props.message)
+          ]
+        : [generateNoticeBody(props, context, messageController, noticeController, options.message ?? props.message)]
+    );
+    return props.isNotice ? [notice] : [withDirectives(notice, [[vShow, messageController.isOn.value]])];
+  };
+}
+
+export default defineComponent({
   name: 'b-notification',
   props: BNotificationPropsDefinition,
   setup(props, context) {
     const vShow = resolveDirective('show') as Directive;
-    const renderNotification = shallowRef(alwaysEmptyArray as IO<VNode[]>);
+    const renderNotification = shallowRef(constant(alwaysEmptyArray) as FunctionN<[RenderNoticeOptions], IO<VNode[]>>);
     const noticeController = useNoticeController(props, renderNotification);
-
-  }
-})
-
-export default applyMixins(MessageMixin, FadeTransitionMixin, DisplayNoticeMixin).extend({
-  name: 'BNotification',
-  props: {
-    // Display notice through BApp injection rather than where component is located
-  },
-  methods: {
-    generateNotice(params: OpenNoticeParams): VNode {
-      return this.$createElement(
-        'article',
-        {
-          staticClass: 'notification',
-          class: [params.variant || this.variant, params.position || this.position],
-          directives: this.isNotice ? [] : [{ name: 'show', value: this.internalIsActive }]
-        },
-        this.isClosable
-          ? [this.generateCloseButton(), this.generateNoticeBody(params.message)]
-          : [this.generateNoticeBody(params.message)]
-      );
-    },
-    generateCloseButton(): VNode {
-      return this.$createElement('button', {
-        staticClass: 'delete',
-        on: { click: this.isNotice ? this.closeNotice : this.closeMessage }
-      });
-    },
-    generateNoticeBody(message?: string): VNode {
-      return this.$createElement(
-        'div',
-        { staticClass: 'media' },
-        this.displayIcon && this.icon
-          ? [this.generateIcon(), this.generateNoticeContent(message)]
-          : [this.generateNoticeContent(message)]
-      );
-    },
-    generateIcon(): VNode {
-      return this.$createElement('div', { staticClass: 'media-left' }, [
-        this.$createElement(this.icon, { props: { size: this.iconSize } })
-      ]);
-    },
-    generateNoticeContent(message?: string): VNode {
-      const newMessage = message || this.message;
-      return this.$createElement(
-        'div',
-        { staticClass: 'media-content' },
-        newMessage ? [this.$createElement('p', { staticClass: 'text' }, newMessage)] : this.$slots.message
-      );
-    }
-  },
-  render(): VNode {
-    return this.isNotice
-      ? this.renderNoticeScopedSlot()
-      : this.$createElement('transition', { props: this.formattedTransition }, [
-          this.generateNotice(this.mergeNoticeParams())
-        ]);
+    const messageController = useMessage(props);
+    renderNotification.value = getGenerateNotice(props, context, messageController, noticeController, vShow);
+    return () =>
+      props.isNotice
+        ? context.slots.default && context.slots.default({ open: noticeController.open, close: noticeController.close })
+        : h(Transition, props.transition ? formatTransition(props.transition) : {}, renderNotification.value({})());
   }
 });
