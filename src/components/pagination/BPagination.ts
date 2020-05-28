@@ -1,213 +1,206 @@
 import './pagination.sass';
+import { Pagination, usePagination, UsePaginationPropsDefinition } from '../../composables/pagination';
+import { DefaultThemePropsDefinition, useTheme } from '../../composables/theme';
 import AngleLeftIcon from '../icons/angleLeft/AngleLeftIcon';
 import AngleRightIcon from '../icons/angleRight/AngleRightIcon';
-import { applyMixins } from '../../utils/applyMixins';
-import { PaginationMixin } from '../../mixins/pagination/PaginationMixin';
-import { ThemeInjectionMixin } from '../../mixins/themeInjection/ThemeInjectionMixin';
 import { range } from 'fp-ts/lib/Array';
-import { VNode } from 'vue';
-import { PropValidator } from 'vue/types/options';
+import { VNode, PropType, defineComponent, ExtractPropTypes, h, SetupContext, computed } from 'vue';
 
-export type PaginationSize = 'is-small' | 'is-medium' | 'is-large';
+export type PaginationSize = 'is-small' | 'is-medium' | 'is-large' | '';
 
-export type PaginationPosition = 'is-centered' | 'is-right';
+export type PaginationPosition = 'is-centered' | 'is-right' | '';
 
-export default applyMixins(PaginationMixin, ThemeInjectionMixin).extend({
-  name: 'BPagination',
-  props: {
-    size: {
-      type: String,
-      default: undefined
-    } as PropValidator<PaginationSize | undefined>,
-    isSimple: {
-      type: Boolean,
-      default: false
-    },
-    isRounded: {
-      type: Boolean,
-      default: false
-    },
-    position: {
-      type: String,
-      default: undefined
-    } as PropValidator<PaginationPosition | undefined>
+export const BPaginationPropsDefinition = {
+  ...UsePaginationPropsDefinition,
+  ...DefaultThemePropsDefinition,
+  size: {
+    type: String as PropType<PaginationSize>,
+    default: '' as const
   },
-  computed: {
-    classes(): any {
-      return [
-        this.position,
-        this.size,
-        {
-          'is-simple': this.isSimple,
-          'is-rounded': this.isRounded
-        }
-      ];
-    },
-    firstItem(): number {
-      const firstItem = (this.internalValue as number) * this.itemsPerPage - this.itemsPerPage + 1;
-      return firstItem >= 0 ? firstItem : 0;
-    },
-    hasFirst(): boolean {
-      return (this.internalValue as number) >= 3;
-    },
-    hasFirstEllipsis(): boolean {
-      return (this.internalValue as number) >= 5;
-    },
-    hasLast(): boolean {
-      return (this.internalValue as number) <= this.numberOfPages - 2;
-    },
-    hasLastEllipsis(): boolean {
-      return (this.internalValue as number) < this.numberOfPages - 3;
-    },
-    pages(): Page[] {
-      return range(1, this.numberOfPages).map(number => ({
-        number,
-        isCurrent: number === this.internalValue
-      }));
-    },
-    pagesInRange(): Page[] {
-      const left =
-        this.internalValue === this.numberOfPages
-          ? this.numberOfPages - 3
-          : Math.max(0, (this.internalValue as number) - 2); // internal value is 1 indexed
-      const right = Math.min(left + 3, this.numberOfPages);
-      return this.isSimple ? [] : this.pages.slice(left, right);
-    },
-    hasDefaultScopedSlot(): boolean {
-      return !!this.$scopedSlots.default;
-    }
+  isSimple: {
+    type: Boolean as PropType<boolean>,
+    default: false
   },
-  methods: {
-    generatePreviousButton(): VNode {
-      return this.$createElement(
-        'button',
-        {
-          staticClass: 'pagination-previous',
-          class: this.themeClasses,
-          attrs: {
-            disabled: !this.hasPrevious,
-            'aria-label': this.getAriaLabel(this.previousPage)
-          },
-          on: { click: this.previous }
-        },
-        this.$slots.previous ? this.$slots.previous : [this.$createElement(AngleLeftIcon)]
-      );
-    },
-    generateNextButton(): VNode {
-      return this.$createElement(
-        'button',
-        {
-          staticClass: 'pagination-next',
-          class: this.themeClasses,
-          attrs: {
-            disabled: !this.hasNext,
-            'aria-label': this.getAriaLabel(this.nextPage)
-          },
-          on: { click: this.next }
-        },
-        this.$slots.next ? this.$slots.next : [this.$createElement(AngleRightIcon)]
-      );
-    },
-    generatePaginationList(): VNode {
-      const nodes: VNode[] = this.pagesInRange.map(this.generatePaginationListItem);
-      if (this.hasFirstEllipsis) {
-        nodes.unshift(this.generateEllipsis());
-      }
-      if (this.hasFirst) {
-        nodes.unshift(this.generateFirstListItem());
-      }
-      if (this.hasLastEllipsis) {
-        nodes.push(this.generateEllipsis());
-      }
-      if (this.hasLast) {
-        nodes.push(this.generateLastListItem());
-      }
-      return this.$createElement('ul', { staticClass: 'pagination-list' }, nodes);
-    },
-    generateFirstListItem(): VNode {
-      return this.generatePaginationListItem({
-        number: 1,
-        isCurrent: this.internalValue === 1
-      });
-    },
-    generateEllipsis(): VNode {
-      return this.$createElement('li', [
-        this.$createElement('span', {
-          staticClass: 'pagination-ellipsis',
-          domProps: { innerHTML: `&hellip;` }
-        })
-      ]);
-    },
-    generatePaginationListItem(page: Page): VNode {
-      return this.$createElement(
-        'li',
-        {
-          key: page.number
-        },
-        [
-          this.$createElement(
-            'button',
-            {
-              staticClass: 'pagination-link',
-              class: [...this.themeClasses, { 'is-current': page.isCurrent }],
-              attrs: {
-                'aria-label': this.getAriaLabel(page.number),
-                'aria-current': page.isCurrent
-              },
-              on: {
-                click: (e: MouseEvent) => {
-                  e.preventDefault();
-                  this.updateCurrent(page.number);
-                }
-              }
-            },
-            `${page.number}`
-          )
-        ]
-      );
-    },
-    generateLastListItem(): VNode {
-      return this.generatePaginationListItem({
-        number: this.numberOfPages,
-        isCurrent: this.internalValue === this.numberOfPages
-      });
-    },
-    getAriaLabel(num: number): string {
-      return `Go to page ${num} of ${this.numberOfPages}`;
-    },
-    generateSimpleSummary(): VNode {
-      return this.$createElement(
-        'small',
-        { staticClass: 'info' },
-        this.itemsPerPage === 1
-          ? `${this.after + 1} / ${this.numberOfItems}`
-          : `${this.after + 1} - ${Math.min(this.after + this.itemsPerPage, this.numberOfItems)} / ${
-              this.numberOfItems
-            }`
-      );
-    },
-    generatePaginationControls(): VNode {
-      return this.$createElement(
-        'section',
-        {
-          attrs: { 'aria-label': 'Pagination Controls' },
-          staticClass: 'pagination',
-          class: this.classes
-        },
-        this.isSimple
-          ? [this.generatePreviousButton(), this.generateNextButton(), this.generateSimpleSummary()]
-          : [this.generatePreviousButton(), this.generateNextButton(), this.generatePaginationList()]
-      );
-    }
+  isRounded: {
+    type: Boolean as PropType<boolean>,
+    default: false
   },
-  render(): VNode {
-    return this.hasDefaultScopedSlot
-      ? this.$createElement('article', [this.renderDefaultScopedSlot(), this.generatePaginationControls()])
-      : this.generatePaginationControls();
+  position: {
+    type: String as PropType<PaginationPosition>,
+    default: '' as const
   }
-});
+};
+
+export type BPaginationProps = ExtractPropTypes<typeof BPaginationPropsDefinition>;
+
+function getAriaLabel(num: number, total: number): string {
+  return `Go to page ${num} of ${total}`;
+}
+
+const ellipsis = h('li', [
+  h('span', {
+    class: 'pagination-ellipsis',
+    innerHTML: `&hellip;`
+  })
+]);
+
+function generatePreviousButton(context: SetupContext, pagination: Pagination, themeClasses: string[]): VNode {
+  return h(
+    'button',
+    {
+      class: ['pagination-previous', ...themeClasses],
+      disabled: pagination.hasPrevious.value,
+      'aria-label': getAriaLabel(pagination.previousPage.value, pagination.numberOfPages.value),
+      onClick: pagination.previous
+    },
+    context.slots.previous ? context.slots.previous() : h(AngleLeftIcon)
+  );
+}
+
+function generateNextButton(context: SetupContext, pagination: Pagination, themeClasses: string[]): VNode {
+  return h(
+    'button',
+    {
+      class: ['pagination-next', ...themeClasses],
+      disabled: pagination.hasNext.value,
+      'aria-label': getAriaLabel(pagination.nextPage.value, pagination.numberOfPages.value),
+      onClick: pagination.next
+    },
+    context.slots.next ? context.slots.next() : h(AngleRightIcon)
+  );
+}
+
+function getGeneratePaginationListItem(pagination: Pagination, themeClasses: string[]) {
+  return (page: Page) =>
+    h(
+      'li',
+      {
+        key: page.number
+      },
+      [
+        h(
+          'button',
+          {
+            class: ['pagination-link', ...themeClasses, { 'is-current': page.isCurrent }],
+            'aria-label': getAriaLabel(page.number, pagination.numberOfPages.value),
+            'aria-current': page.isCurrent,
+            onClick: (e: MouseEvent) => {
+              e.preventDefault();
+              pagination.set(page.number);
+            }
+          },
+          `${page.number}`
+        )
+      ]
+    );
+}
+
+function getPageRange(props: BPaginationProps, pagination: Pagination): Page[] {
+  if (props.isSimple) {
+    return [];
+  } else {
+    const currentValue = pagination.current.value;
+    const numberOfPages = pagination.numberOfPages.value;
+    const left = currentValue === numberOfPages ? numberOfPages - 3 : Math.max(0, (currentValue as number) - 2); // internal value is 1 indexed
+    const right = Math.min(left + 3, numberOfPages);
+    return range(1, numberOfPages)
+      .map(number => ({
+        number,
+        isCurrent: number === currentValue
+      }))
+      .slice(left, right);
+  }
+}
+
+function generatePaginationList(props: BPaginationProps, pagination: Pagination, themeClasses: string[]): VNode {
+  const generatePaginationListItem = getGeneratePaginationListItem(pagination, themeClasses);
+  const currentValue = pagination.current.value;
+  const numberOfPages = pagination.numberOfPages.value;
+  const nodes: VNode[] = getPageRange(props, pagination).map(generatePaginationListItem);
+  if (currentValue >= 5) {
+    nodes.unshift(ellipsis);
+  }
+  if (currentValue >= 3) {
+    nodes.unshift(generatePaginationListItem({ number: 1, isCurrent: currentValue === 1 }));
+  }
+  if (currentValue < numberOfPages - 3) {
+    nodes.push(ellipsis);
+  }
+  if (currentValue <= numberOfPages - 2) {
+    nodes.push(generatePaginationListItem({ number: numberOfPages, isCurrent: currentValue === numberOfPages }));
+  }
+  return h('ul', { class: 'pagination-list' }, nodes);
+}
+
+function generateSimpleSummary(props: BPaginationProps, pagination: Pagination): VNode {
+  return h(
+    'small',
+    { class: 'info' },
+    props.perPage === 1
+      ? `${pagination.after.value + 1} / ${props.total}`
+      : `${pagination.after.value + 1} - ${Math.min(pagination.after.value + props.perPage, props.total)} / ${
+          props.total
+        }`
+  );
+}
+
+function generatePaginationControls(
+  props: BPaginationProps,
+  context: SetupContext,
+  pagination: Pagination,
+  themeClasses: string[]
+): VNode {
+  return h(
+    'section',
+    {
+      'aria-label': 'Pagination Controls',
+      class: ['pagination', props.position, props.size, { 'is-simple': props.isSimple, 'is-rounded': props.isRounded }]
+    },
+    props.isSimple
+      ? [
+          generatePreviousButton(context, pagination, themeClasses),
+          generateNextButton(context, pagination, themeClasses),
+          generateSimpleSummary(props, pagination)
+        ]
+      : [
+          generatePreviousButton(context, pagination, themeClasses),
+          generateNextButton(context, pagination, themeClasses),
+          generatePaginationList(props, pagination, themeClasses)
+        ]
+  );
+}
 
 interface Page {
   number: number;
   isCurrent: boolean;
 }
+
+export default defineComponent({
+  name: 'b-pagination',
+  props: BPaginationPropsDefinition,
+  setup(props, context) {
+    const pagination = usePagination(props);
+    const { themeClasses } = useTheme(props);
+    return () => {
+      return context.slots.default
+        ? h('article', [
+            context.slots.default({
+              current: pagination.current.value,
+              numberOfPages: pagination.numberOfPages.value,
+              after: pagination.after.value,
+              nextPage: pagination.nextPage.value,
+              hasNext: pagination.hasNext.value,
+              previousPage: pagination.previousPage.value,
+              hasPrevious: pagination.hasPrevious.value,
+              next: pagination.next,
+              previous: pagination.previous,
+              first: pagination.first,
+              last: pagination.last,
+              set: pagination.set
+            }),
+            generatePaginationControls(props, context, pagination, themeClasses.value)
+          ])
+        : [generatePaginationControls(props, context, pagination, themeClasses.value)];
+    };
+  }
+});

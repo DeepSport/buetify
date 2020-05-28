@@ -6,6 +6,7 @@ export * from './message';
 export * from './model';
 export * from './navigationDrawerController';
 export * from './noticeController';
+export * from './pagination';
 export * from './popupController';
 export * from './proxy';
 export * from './selectionControl';

@@ -1,75 +1,59 @@
 import './overlay.sass';
-import { mergeVNodeStaticClass } from '../../utils/mergeVNodeStaticClass';
-import Vue, { VNode } from 'vue';
-import { PropValidator } from 'vue/types/options';
+import { Classes, mergeClasses } from '../../utils/mergeClasses';
+import { h, SetupContext, withDirectives, resolveDirective, Directive } from 'vue';
 
 type OverlayPosition = 'is-left' | 'is-right' | 'is-centered';
 
-export default Vue.extend({
-  name: 'BOverlay',
-  functional: true,
-  props: {
-    position: {
-      type: String,
-      default: 'is-centered'
-    } as PropValidator<OverlayPosition>,
-    isActive: {
-      type: Boolean,
-      required: true
-    },
-    isFullscreen: {
-      type: Boolean,
-      default: false
-    }
-  },
-  render(h, { data, props, children }): VNode {
-    function onClick(e: MouseEvent) {
-      if (data.on && data.on.close) {
-        Array.isArray(data.on.close) ? data.on.close.forEach(fn => fn(e)) : data.on.close(e);
-      }
-    }
-    if (props.isFullscreen) {
-      return h(
+export interface BOverlayProps {
+  position?: OverlayPosition;
+  isActive: boolean;
+  isFullscreen?: boolean;
+}
+
+export default function BOverlay(props: BOverlayProps, { attrs, slots }: SetupContext) {
+  const vShow = resolveDirective('show') as Directive;
+  if (!!props.isFullscreen) {
+    return withDirectives(
+      h(
         'div',
         {
-          staticClass: mergeVNodeStaticClass('b-overlay', data.staticClass),
-          class: props.position,
-          directives: [{ name: 'show', value: props.isActive }]
+          ...attrs,
+          class: mergeClasses(attrs.class as Classes, ['b-overlay', props.position])
         },
         [
           h(
             'div',
             {
-              staticClass: 'b-overlay-content is-fullscreen'
+              class: 'b-overlay-content is-fullscreen'
             },
-            children
+            slots.default && slots.default()
           )
         ]
-      );
-    } else {
-      return h(
+      ),
+      [[vShow, props.isActive]]
+    );
+  } else {
+    return withDirectives(
+      h(
         'div',
         {
-          staticClass: mergeVNodeStaticClass('b-overlay', data.staticClass),
-          class: props.position,
-          directives: [{ name: 'show', value: props.isActive }]
+          class: mergeClasses(attrs.class as Classes, ['b-overlay', props.position])
         },
         [
           h('div', {
-            staticClass: 'b-overlay-background',
-            on: {
-              click: onClick
-            }
+            ...attrs,
+            class: 'b-overlay-background'
           }),
           h(
             'div',
             {
-              staticClass: 'b-overlay-content'
+              class: 'b-overlay-content'
             },
-            children
+            slots.default && slots.default()
           )
         ]
-      );
-    }
+      ),
+      [[vShow, props.isActive]]
+    );
   }
-});
+}
