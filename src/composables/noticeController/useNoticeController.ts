@@ -1,15 +1,13 @@
-import { constVoid } from 'fp-ts/lib/function';
+import { constVoid, FunctionN } from 'fp-ts/lib/function';
 import { IO } from 'fp-ts/lib/IO';
-import { inject, PropType, ExtractPropTypes, VNode, shallowRef, watch, onUnmounted, computed, Ref, toRef } from 'vue';
-import { ColorVariant } from '../../types/ColorVariants';
+import { inject, PropType, ExtractPropTypes, VNode, shallowRef, onUnmounted, computed, Ref } from 'vue';
+import { AllColorsVariant, ColorVariant } from '../../types/ColorVariants';
 import { PositionVariant } from '../../types/PositionVariant';
 import { Transition, TransitionClasses } from '../../types/Transition';
-import { getToggleAttrs, getUseTogglePropsDefinition, useToggle } from '../toggle';
 import { formatTransition } from '../transition';
 import { DEFAULT_NOTICE_CONTROLLER_INJECTION, NOTICE_CONTROLLER_SYMBOL } from './provideNoticeController';
 
 export const UseNoticePropsDefinition = {
-  ...getUseTogglePropsDefinition('isActive'),
   transition: {
     type: [Object, String] as PropType<Transition>,
     required: false
@@ -66,39 +64,43 @@ function useNoticeTransition(props: UseNoticeProps): Ref<TransitionClasses> {
   });
 }
 
-export function useNoticeController(props: UseNoticeProps, render: Ref<IO<VNode[]>>) {
-  const hasMounted = shallowRef(false);
+export interface RenderNoticeOptions {
+  variant?: AllColorsVariant;
+  message?: string;
+  position?: PositionVariant;
+}
+
+export interface OpenNoticeOptions extends RenderNoticeOptions {
+  duration?: number;
+  shouldQueue?: boolean;
+  transition?: Transition;
+}
+
+export function useNoticeController(props: UseNoticeProps, render: Ref<FunctionN<[RenderNoticeOptions], IO<VNode[]>>>) {
   const remove = shallowRef(constVoid);
-  const { isOn, setOn, setOff, toggle, listeners } = useToggle(props, 'isActive');
   const { showNotice } = inject(NOTICE_CONTROLLER_SYMBOL, DEFAULT_NOTICE_CONTROLLER_INJECTION);
-  const isOpen = computed(() => hasMounted.value && isOn.value);
-  const attrs = getToggleAttrs(isOpen, toRef(props, 'hasPopup'));
   const transition = useNoticeTransition(props);
-  watch(isOpen, newValue => {
-    if (newValue) {
-      remove.value();
-      remove.value = showNotice({
-        placement: props.position.includes('top') ? 'top' : 'bottom',
-        render: render.value,
-        transition: transition.value,
-        shouldQueue: props.shouldQueue,
-        duration: props.duration
-      });
-    } else {
-      remove.value();
-      remove.value = constVoid;
-    }
-  });
   onUnmounted(() => {
     remove.value();
   });
+  function open(options: OpenNoticeOptions) {
+    const position = options.position ?? props.position;
+    remove.value();
+    remove.value = showNotice({
+      placement: position.includes('top') ? 'top' : 'bottom',
+      render: render.value(options),
+      transition: options.transition ?? transition.value,
+      shouldQueue: options.shouldQueue ?? props.shouldQueue,
+      duration: options.duration ?? props.duration
+    });
+  }
+
   return {
-    isOpen,
-    attrs,
-    listeners,
-    open: setOn,
-    close: setOff,
-    toggle: toggle
+    open: open,
+    close: () => {
+      remove.value();
+      remove.value = constVoid;
+    }
   };
 }
 

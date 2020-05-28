@@ -1,26 +1,36 @@
-import { DisplayNoticeMixin, OpenNoticeParams } from '../../../mixins/displayNotice/DisplayNoticeMixin';
-import { PositionVariant } from '../../../types/PositionVariant';
-import { applyMixins } from '../../../utils/applyMixins';
-import { VNode } from 'vue';
+import { constant, FunctionN } from 'fp-ts/lib/function';
+import { IO } from 'fp-ts/lib/IO';
+import {
+  RenderNoticeOptions,
+  useNoticeController,
+  UseNoticePropsDefinition
+} from '../../../composables/noticeController';
+import { VNode, defineComponent, shallowRef, h } from 'vue';
+import { alwaysEmptyArray } from '../../../utils/helpers';
 
-export default applyMixins(DisplayNoticeMixin).extend({
-  name: 'BToast',
-  methods: {
-    generateNotice(params: OpenNoticeParams): VNode {
-      const childrenVNodes =
-        params.message || this.message ? [params.message || this.message] : this.$scopedSlots.message!(undefined);
-      const position = params.position || (this.position as PositionVariant);
-      return this.$createElement(
-        'div',
-        {
-          staticClass: 'toast',
-          class: [position, params.variant || this.variant],
-          attrs: {
+export default defineComponent({
+  name: 'b-toast',
+  props: UseNoticePropsDefinition,
+  setup(props, { slots }) {
+    const renderNotification = shallowRef(constant(alwaysEmptyArray) as FunctionN<[RenderNoticeOptions], IO<VNode[]>>);
+    const noticeController = useNoticeController(props, renderNotification);
+    renderNotification.value = options => () => {
+      return [
+        h(
+          'div',
+          {
+            class: ['toast', options.variant ?? props.variant, options.position ?? props.position],
             role: 'alert'
-          }
-        },
-        childrenVNodes
-      );
-    }
+          },
+          options.message ?? (slots.message && slots.message()) ?? props.message
+        )
+      ];
+    };
+    return () =>
+      slots.default &&
+      slots.default({
+        open: noticeController.open,
+        clsoe: noticeController.close
+      });
   }
 });
