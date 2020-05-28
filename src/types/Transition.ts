@@ -5,12 +5,12 @@ export type TransitionName = string;
 export interface TransitionClasses {
   css?: boolean;
   name?: TransitionName;
-  enterFromClass?: string;
-  enterActiveClass?: string;
-  enterToClass?: string;
-  leaveFromClass?: string;
-  leaveActiveClass?: string;
-  leaveToClass?: string;
+  'enter-from-class'?: string;
+  'enter-active-class'?: string;
+  'enter-to-class'?: string;
+  'leave-from-class'?: string;
+  'leave-active-class'?: string;
+  'leave-to-class'?: string;
 }
 
 export type TransitionMode = 'in-out' | 'out-in';

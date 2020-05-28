@@ -1,18 +1,56 @@
 import '../sass/notices.scss';
+import {IO} from 'fp-ts/lib/IO';
+import {UseMessagePropsDefinition} from '../../../composables/message';
+import {useNoticeController, UseNoticePropsDefinition} from '../../../composables/noticeController';
+import {FadeTransitionPropsDefinition} from '../../../composables/transition';
 import { applyMixins } from '../../../utils/applyMixins';
 import { DisplayNoticeMixin, OpenNoticeParams } from '../../../mixins/displayNotice/DisplayNoticeMixin';
 import { MessageMixin } from '../../../mixins/message/MessageMixin';
-import { VNode } from 'vue';
+import {VNode, h, PropType, defineComponent, ExtractPropTypes, shallowRef, withDirectives, resolveDirective, Directive, SetupContext } from 'vue';
 import { FadeTransitionMixin } from '../../../mixins/fadeTransition/FadeTransitionMixin';
+import {alwaysEmptyArray} from '../../../utils/helpers';
+import {NoticeContainer} from '../noticeContainer/BNoticeContainer';
+
+export const BNotificationPropsDefinition = {
+  ...UseMessagePropsDefinition,
+  ...UseNoticePropsDefinition,
+  isNotice: {
+    type: Boolean as PropType<boolean>,
+    default: true
+  }
+}
+
+export type BNotificationProps = ExtractPropTypes<typeof BNotificationPropsDefinition>
+
+function generateNotice(props: BNotificationProps, context: SetupContext, controller: NoticeContainer): VNode {
+  return h(
+      'article',
+      {
+        staticClass: 'notification',
+        class: [props.variant, params.position || this.position],
+        directives: this.isNotice ? [] : [{ name: 'show', value: this.internalIsActive }]
+      },
+      this.isClosable
+          ? [this.generateCloseButton(), this.generateNoticeBody(params.message)]
+          : [this.generateNoticeBody(params.message)]
+  );
+}
+
+export const BNotification = defineComponent({
+  name: 'b-notification',
+  props: BNotificationPropsDefinition,
+  setup(props, context) {
+    const vShow = resolveDirective('show') as Directive;
+    const renderNotification = shallowRef(alwaysEmptyArray as IO<VNode[]>);
+    const noticeController = useNoticeController(props, renderNotification);
+
+  }
+})
 
 export default applyMixins(MessageMixin, FadeTransitionMixin, DisplayNoticeMixin).extend({
   name: 'BNotification',
   props: {
     // Display notice through BApp injection rather than where component is located
-    isNotice: {
-      type: Boolean,
-      default: true
-    }
   },
   methods: {
     generateNotice(params: OpenNoticeParams): VNode {
