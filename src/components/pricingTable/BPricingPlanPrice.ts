@@ -1,26 +1,15 @@
 import './pricing-table.sass';
-import Vue, { VNode } from 'vue';
+import { SetupContext, h } from 'vue';
+import {BPricingPlanProps} from './BPricingPlan';
 
-export default Vue.extend({
-  name: 'BPricingTable',
-  functional: true,
-  props: {
-    amount: {
-      type: Number,
-      required: true
-    },
-    interval: {
-      type: String,
-      required: true
-    }
-  },
-  render(h, { props, slots }): VNode {
-    return h('div', { staticClass: 'plan-price' }, [
-      h('span', { staticClass: 'plan-price-amount' }, [
-        h('span', { staticClass: 'plan-price-currency' }, slots().currency || '$'),
-        `${props.amount}`
-      ]),
-      `/${props.interval}`
-    ]);
-  }
-});
+export type BPricingPlanPriceProps = Omit<BPricingPlanProps, 'isActive'>
+
+export default function BPricingPlanPrice(props: BPricingPlanPriceProps, { attrs, slots }: SetupContext) {
+  return h('div', { ...attrs, class: 'plan-price' }, [
+    h('span', { class: 'plan-price-amount' }, [
+      h('span', { class: 'plan-price-currency' }, slots.currency ? slots.currency() : '$'),
+      `${props.amount}`
+    ]),
+    `/${props.interval}`
+  ]);
+}

@@ -1,5 +1,1 @@
-import { Toggle } from './Toggle';
-
-export { Toggle };
-
-export default Toggle;
+export * from './Toggle';

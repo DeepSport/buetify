@@ -1,10 +1,15 @@
 import './pagination.sass';
-import { Pagination, usePagination, UsePaginationPropsDefinition } from '../../composables/pagination';
+import {
+    extractPaginationState,
+    Pagination,
+    usePagination,
+    UsePaginationPropsDefinition
+} from '../../composables/pagination';
 import { DefaultThemePropsDefinition, useTheme } from '../../composables/theme';
 import AngleLeftIcon from '../icons/angleLeft/AngleLeftIcon';
 import AngleRightIcon from '../icons/angleRight/AngleRightIcon';
 import { range } from 'fp-ts/lib/Array';
-import { VNode, PropType, defineComponent, ExtractPropTypes, h, SetupContext, computed } from 'vue';
+import { VNode, PropType, defineComponent, ExtractPropTypes, h, SetupContext } from 'vue';
 
 export type PaginationSize = 'is-small' | 'is-medium' | 'is-large' | '';
 
@@ -184,20 +189,7 @@ export default defineComponent({
     return () => {
       return context.slots.default
         ? h('article', [
-            context.slots.default({
-              current: pagination.current.value,
-              numberOfPages: pagination.numberOfPages.value,
-              after: pagination.after.value,
-              nextPage: pagination.nextPage.value,
-              hasNext: pagination.hasNext.value,
-              previousPage: pagination.previousPage.value,
-              hasPrevious: pagination.hasPrevious.value,
-              next: pagination.next,
-              previous: pagination.previous,
-              first: pagination.first,
-              last: pagination.last,
-              set: pagination.set
-            }),
+            context.slots.default(extractPaginationState(pagination)),
             generatePaginationControls(props, context, pagination, themeClasses.value)
           ])
         : [generatePaginationControls(props, context, pagination, themeClasses.value)];
