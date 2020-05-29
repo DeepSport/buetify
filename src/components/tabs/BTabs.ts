@@ -1,235 +1,247 @@
 import './tabs.sass';
-import { head, lookup } from 'fp-ts/lib/Array';
+import { lookup } from 'fp-ts/lib/Array';
 import { pipe } from 'fp-ts/lib/pipeable';
+import { getUseModelPropsDefinition, Model, useModel } from '../../composables/model';
+import { getUseThemePropsDefinition, useTheme } from '../../composables/theme';
 import { AllColorsVariant } from '../../types/ColorVariants';
+import BHorizontalDivider from '../layout/divider/BHorizontalDivider';
 import BScroll from '../scroll/BScroll';
-import BTabItem, { BTabItemName, BTabItemPropsData } from './BTabItem';
-import { getProxyableMixin } from '../../mixins/proxyable/ProxyableMixin';
-import { VNode, VNodeComponentOptions } from 'vue';
-import { PropValidator } from 'vue/types/options';
-import { applyMixins } from '../../utils/applyMixins';
-import { getThemeInjectionMixin } from '../../mixins/themeInjection/ThemeInjectionMixin';
-import { isSome, map, none, Option, some } from 'fp-ts/lib/Option';
-import { TabsTheme } from './theme';
+import {
+  VNode,
+  PropType,
+  h,
+  shallowRef,
+  provide,
+  ExtractPropTypes,
+  Ref,
+  nextTick,
+  Directive,
+  withDirectives,
+  Transition,
+  defineComponent,
+  resolveDirective,
+  computed,
+  onBeforeMount
+} from 'vue';
+import { isSome, map } from 'fp-ts/lib/Option';
+import { BTabItemData, TabInjection, TABS_SYMBOL } from './shared';
+import { TabsThemeMap } from './theme';
 
-const TABS_THEME_MIXIN = getThemeInjectionMixin(TabsTheme);
+export type TabPosition = 'is-centered' | 'is-right' | '';
 
-interface TabInjection {
-  activeLabel: Option<string>;
-  destroyOnHide: boolean;
-}
+export type TabType = 'is-boxed' | 'is-toggle' | 'is-toggle-rounded' | '';
 
-export type TabPosition = 'is-centered' | 'is-right';
+export type TabSize = 'is-small' | 'is-medium' | 'is-large' | '';
 
-export type TabType = 'is-boxed' | 'is-toggle' | 'is-toggle-rounded';
+type TabTransition = 'slide-next' | 'slide-prev';
 
-export type TabSize = 'is-small' | 'is-medium' | 'is-large';
-
-interface Data {
-  injection: TabInjection;
-  transition: 'slide-next' | 'slide-prev';
-}
-
-export default applyMixins(TABS_THEME_MIXIN, getProxyableMixin('value', 'input', 0)).extend({
-  name: 'BTabs',
-  props: {
-    isExpanded: {
-      type: Boolean,
-      default: false
-    },
-    type: {
-      type: String,
-      default: undefined
-    } as PropValidator<TabType | undefined>,
-    size: {
-      type: String,
-      default: undefined
-    } as PropValidator<TabSize | undefined>,
-    position: {
-      type: String,
-      default: undefined
-    } as PropValidator<TabPosition | undefined>,
-    label: String,
-    variant: {
-      type: String,
-      default: undefined
-    } as PropValidator<AllColorsVariant | undefined>,
-    isAnimated: {
-      type: Boolean,
-      default: true
-    },
-    destroyOnHide: {
-      type: Boolean,
-      default: false
-    },
-    isScrollable: {
-      type: Boolean,
-      default: false
-    }
+export const BTabsPropsDefinition = {
+  ...getUseModelPropsDefinition<number>(),
+  ...getUseThemePropsDefinition(TabsThemeMap),
+  isExpanded: {
+    type: Boolean as PropType<boolean>,
+    default: false
   },
-  data(): Data {
-    return {
-      transition: 'slide-next',
-      injection: {
-        activeLabel: none,
-        destroyOnHide: this.destroyOnHide
-      }
-    };
+  type: {
+    type: String as PropType<TabType>,
+    default: '' as const
   },
-  provide(): Record<'tab', TabInjection> {
-    return {
-      tab: this.injection
-    };
+  size: {
+    type: String as PropType<TabSize>,
+    default: '' as const
   },
-  computed: {
-    rootClasses(): object {
-      return {
-        'is-fullwidth': this.isExpanded
-      };
-    },
-    navClasses(): any {
-      return [
-        this.variant,
-        this.type,
-        this.size,
-        this.position,
-        {
-          'is-fullwidth': this.isExpanded || this.isScrollable,
-          'is-toggle-rounded is-toggle': this.type === 'is-toggleListItem-rounded'
-        },
-        ...(this.variant === undefined ? this.themeClasses : [])
-      ];
-    }
+  position: {
+    type: String as PropType<TabPosition>,
+    default: '' as const
   },
-  watch: {
-    destroyOnHide(newVal: boolean) {
-      if (newVal !== this.injection.destroyOnHide) {
-        this.injection.destroyOnHide = newVal;
-      }
-    },
-    internalValue(newVal: number, oldVal: number) {
-      if (newVal !== oldVal) {
-        const nodes = this.parseNodes();
-        this.injection.activeLabel = pipe(
-          lookup(newVal, nodes),
-          map(node => node.componentOptions.propsData.label)
-        );
-      }
-    }
+  label: {
+    type: String as PropType<string>
   },
-  beforeMount(): void {
-    const nodes = this.parseNodes();
-    const node = lookup(this.internalValue as number, nodes);
-    if (isSome(node)) {
-      this.injection.activeLabel = pipe(
-        node,
-        map(n => n.componentOptions.propsData.label)
-      );
-    } else {
-      this.injection.activeLabel = pipe(
-        head(nodes),
-        map(n => n.componentOptions.propsData.label)
-      );
-      this.internalValue = 0;
-    }
+  variant: {
+    type: String as PropType<AllColorsVariant>,
+    default: '' as const
   },
-  methods: {
-    getOnTabClick(index: number, label: string) {
-      return () => {
-        if (this.internalValue !== index) {
-          this.transition = index < (this.internalValue as number) ? 'slide-next' : 'slide-prev';
-          this.$nextTick(() => {
-            this.injection.activeLabel = some(label);
-            this.internalValue = index;
-          });
-        }
-      };
-    },
-    generateNavHeader(tabs: BTabItemNode[]): VNode {
-      return this.isScrollable
-        ? this.$createElement(BScroll, { staticClass: 'is-fullwidth' }, [this.generateNavHeaderContent(tabs)])
-        : this.generateNavHeaderContent(tabs);
-    },
-    generateNavHeaderContent(tabs: BTabItemNode[]): VNode {
-      return this.$createElement(
-        'nav',
-        { staticClass: 'tabs', class: this.navClasses },
-        this.label ? [this.generateNavLabel(this.label), this.generateNavItems(tabs)] : [this.generateNavItems(tabs)]
-      );
-    },
-    generateNavLabel(label: string): VNode {
-      return this.$createElement(
-        'label',
-        {
-          staticClass: 'label is-marginless align-self-center',
-          class: this.size
-        },
-        label
-      );
-    },
-    generateNavItems(tabs: BTabItemNode[]): VNode {
-      return this.$createElement('ul', tabs.map(this.generateNavItem));
-    },
-    generateNavItem(tab: BTabItemNode, index: number): VNode {
-      const propsData = tab.componentOptions.propsData;
-      const label = propsData.label;
-      return this.$createElement(
-        'li',
-        {
-          key: label,
-          directives: [
-            {
-              name: 'show',
-              value: propsData.isVisible === undefined ? true : propsData.isVisible
-            }
-          ],
-          class: {
-            'is-active': this.internalValue === index,
-            'is-disabled': propsData.isDisabled
-          }
-        },
-        [
-          this.$createElement(
-            'a',
-            { on: { click: this.getOnTabClick(index, label) } },
-            propsData.icon
-              ? [
-                  this.$createElement(propsData.icon, {
-                    props: { size: this.size }
-                  }),
-                  label
-                ]
-              : label
-          )
-        ]
-      );
-    },
-    generateTabContent(tabs: BTabItemNode[]): VNode {
-      return this.$createElement('div', { staticClass: 'tab-content' }, [
-        this.$createElement('transition', { props: { name: this.transition } }, [tabs[this.internalValue as number]])
-      ]);
-    },
-    parseNodes(): BTabItemNode[] {
-      return (this.$slots.default || []).filter(isTab);
-    }
+  isAnimated: {
+    type: Boolean as PropType<boolean>,
+    default: true
   },
-  render(): VNode {
-    const tabs = this.parseNodes();
-    return this.$createElement(
-      'article',
-      { staticClass: this.isScrollable ? 'b-tabs is-scrollable' : 'b-tabs', class: this.rootClasses },
-      [this.generateNavHeader(tabs), this.generateTabContent(tabs)]
-    );
+  isScrollable: {
+    type: Boolean as PropType<boolean>,
+    default: false
   }
-});
-
-type BTabItemNode = VNode & {
-  componentOptions: VNodeComponentOptions & {
-    CTor: typeof BTabItem;
-    propsData: BTabItemPropsData;
-  };
 };
 
-function isTab(node: VNode): node is BTabItemNode {
-  return !!node.componentOptions && node.componentOptions.Ctor.options.name === BTabItemName;
+export type BTabsProps = ExtractPropTypes<typeof BTabsPropsDefinition>;
+
+function getOnTabItemClick(index: number, model: Model<number>, transition: Ref<TabTransition>) {
+  return () => {
+    const val = model.value.value || 0;
+    if (val !== index) {
+      transition.value = index < val ? 'slide-next' : 'slide-prev';
+      nextTick(() => {
+        model.set(index);
+      });
+    }
+  };
 }
+
+function getGenerateNavItem(props: BTabsProps, model: Model<number>, transition: Ref<TabTransition>, vShow: Directive) {
+  return function generateNavItem(step: BTabItemData, index: number): VNode {
+    return withDirectives(
+      h(
+        'li',
+        {
+          key: step.props.label,
+          class: [
+            {
+              'is-active': index === model.value.value,
+              'is-disabled': step.props.isDisabled
+            }
+          ]
+        },
+        [
+          h(
+            'a',
+            { onClick: getOnTabItemClick(index, model, transition) },
+            step.props.icon
+              ? [
+                  h(step.props.icon, {
+                    size: props.size
+                  }),
+                  step.props.label
+                ]
+              : step.props.label
+          )
+        ]
+      ),
+      [[vShow, step.props.isVisible]]
+    );
+  };
+}
+
+function generateNavLabel(props: BTabsProps): VNode {
+  return h(
+    'label',
+    {
+      class: ['label is-marginless align-self-center', props.size]
+    },
+    props.label
+  );
+}
+
+function generateNavItems(
+  props: BTabsProps,
+  tabs: BTabItemData[],
+  model: Model<number>,
+  transition: Ref<TabTransition>,
+  vShow: Directive
+) {
+  return h('ul', tabs.map(getGenerateNavItem(props, model, transition, vShow)));
+}
+
+function generateNavHeaderContent(
+  props: BTabsProps,
+  tabs: BTabItemData[],
+  model: Model<number>,
+  transition: Ref<TabTransition>,
+  vShow: Directive,
+  themeClasses: string[]
+): VNode {
+  return h(
+    'nav',
+    {
+      class: [
+        'tabs',
+        props.type,
+        props.size,
+        props.position,
+        {
+          'is-fullwidth': !!props.isExpanded || !!props.isScrollable,
+          'is-toggle-rounded is-toggle': props.type === 'is-toggle-rounded'
+        },
+        ...(props.variant === '' ? themeClasses : [props.variant])
+      ]
+    },
+    props.label
+      ? [generateNavLabel(props), generateNavItems(props, tabs, model, transition, vShow)]
+      : [generateNavItems(props, tabs, model, transition, vShow)]
+  );
+}
+
+function generateNavHeader(
+  props: BTabsProps,
+  tabs: BTabItemData[],
+  model: Model<number>,
+  transition: Ref<TabTransition>,
+  vShow: Directive,
+  themeClasses: string[]
+): VNode {
+  return props.isScrollable
+    ? h(BScroll, { class: 'is-fullwidth' }, [
+        generateNavHeaderContent(props, tabs, model, transition, vShow, themeClasses)
+      ])
+    : generateNavHeaderContent(props, tabs, model, transition, vShow, themeClasses);
+}
+
+function generateTabContent(
+  props: BTabsProps,
+  tabs: BTabItemData[],
+  model: Model<number>,
+  transition: Ref<TabTransition>
+): VNode {
+  return h(
+    'section',
+    {
+      class: 'step-content',
+      'aria-label': 'Step Content'
+    },
+    props.isAnimated
+      ? [h(Transition, { name: transition.value }, tabs[model.value.value || 0].render())]
+      : tabs[model.value.value || 0].render()
+  );
+}
+
+const HorizontalDivider = h(BHorizontalDivider);
+
+export default defineComponent({
+  name: 'b-tabs',
+  props: BTabsPropsDefinition,
+  setup(props, context) {
+    const { themeClasses } = useTheme(props);
+    const vShow = resolveDirective('show') as Directive;
+    const model = useModel(props);
+    const transition = shallowRef('slide-next' as 'slide-next' | 'slide-prev');
+    const currentStep = computed(() => lookup(model.value.value || 0, injection.tabs.value));
+    const injection: TabInjection = {
+      tabs: shallowRef([] as BTabItemData[]),
+      activeLabel: computed(() =>
+        pipe(
+          currentStep.value,
+          map(n => n.props.label)
+        )
+      )
+    };
+
+    provide(TABS_SYMBOL, injection);
+
+    onBeforeMount(() => {
+      if (model.value.value === undefined || (isSome(currentStep.value) && !currentStep.value.value.props.isVisible)) {
+        model.set(
+          Math.max(
+            injection.tabs.value.findIndex(step => step.props.isVisible),
+            0
+          )
+        );
+      }
+    });
+
+    return () => {
+      const tabs = injection.tabs.value;
+      return h('article', { class: 'b-steps' }, [
+        generateNavHeader(props, tabs, model, transition, vShow, themeClasses.value),
+        HorizontalDivider,
+        generateTabContent(props, tabs, model, transition)
+      ]);
+    };
+  }
+});
