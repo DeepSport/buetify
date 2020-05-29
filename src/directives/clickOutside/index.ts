@@ -1,5 +1,9 @@
 import { Directive } from 'vue';
 
+interface HTMLElement {
+  _clickOutside?: EventListenerOrEventListenerObject;
+}
+
 export interface ClickOutsideBindingArgs {
   closeConditional?: (e: Event) => boolean;
   include?: () => HTMLElement[];
@@ -44,7 +48,7 @@ function directive(e: PointerEvent, el: HTMLElement, binding: ClickOutsideDirect
   // Toggleable can return true if it wants to deactivate.
   // Note that, because we're in the capture phase, this callback will occur before
   // the bubbling click event on any outside elements.
-  !elements.some(el => el.contains(e.target as Node)) &&
+  !elements.some(el => (el as any).contains(e.target as Node)) &&
     setTimeout(() => {
       isActive(e) && binding.value && binding.value(e);
     }, 0);

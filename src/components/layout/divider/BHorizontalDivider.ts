@@ -1,8 +1,7 @@
 import './divider.sass';
-import { useTheme } from '../../../composables/theme';
+import {DEFAULT_THEME_COLOR_MAP, useTheme} from '../../../composables/theme';
 import { ThemeColorMap } from '../../../types/ThemeColorMap';
 import { Classes, mergeClasses } from '../../../utils/mergeClasses';
-import { DEFAULT_THEME_COLOR_MAP } from '../../../mixins/themeInjection/ThemeInjectionMixin';
 import { SetupContext, h } from 'vue';
 
 export interface BDividerProps {

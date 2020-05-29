@@ -1,5 +1,5 @@
 import './menu.sass';
 import { getThemeableFunctionalComponent } from '../../utils/getThemeableFunctionalComponent';
-import { MenuTheme } from './theme';
+import { MenuThemeMap } from './theme';
 
-export default getThemeableFunctionalComponent({ cls: 'menu', el: 'aside', themeMap: MenuTheme});
+export default getThemeableFunctionalComponent({ cls: 'menu', el: 'aside', themeMap: MenuThemeMap});

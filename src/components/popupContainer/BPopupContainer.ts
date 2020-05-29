@@ -1,7 +1,7 @@
 import { Eq, eq, eqNumber } from 'fp-ts/lib/Eq';
 import { IO } from 'fp-ts/lib/IO';
 import { VNode, defineComponent, h } from 'vue';
-import { formatTransition } from '../../mixins/fadeTransition/FadeTransitionMixin';
+import {formatTransition} from '../../composables/transition';
 import { Transition, TransitionClasses } from '../../types/Transition';
 import { alwaysEmptyArray, removeListItem } from '../../utils/helpers';
 

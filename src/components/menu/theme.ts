@@ -1,12 +1,12 @@
-import Vue from 'vue';
-import { ThemeColorMap } from '../../mixins/themeInjection/ThemeInjectionMixin';
+import { shallowReactive } from 'vue';
+import {ThemeColorMap} from '../../types/ThemeColorMap';
 
-export const MenuTheme: ThemeColorMap = Vue.observable({
+export const MenuThemeMap: ThemeColorMap = shallowReactive({
   dark: 'is-black-bis',
   light: 'is-grey-darker'
 });
 
-export const MenuListItemTheme: ThemeColorMap = Vue.observable({
+export const MenuListItemThemeMap: ThemeColorMap = shallowReactive({
   dark: 'is-link',
   light: 'is-link'
 });

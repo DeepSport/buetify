@@ -260,7 +260,7 @@ export function defineInput<T>() {
       );
 
       return () => {
-        const nodes: VNode[] = [generateInput(inputRef, inputData, props.isLoading, rightIcon.value, context)];
+        const nodes: VNode[] = [generateInput(inputRef, inputData as Input, props.isLoading, rightIcon.value, context)];
         if (inputData.icon && inputData.icon.value) {
           nodes.push(generateLeftIcon(inputData.icon.value, inputData.iconSize.value));
         }

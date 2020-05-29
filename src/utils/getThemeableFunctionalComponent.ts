@@ -2,13 +2,13 @@ import { SetupContext } from '@vue/runtime-core';
 import { isSome } from 'fp-ts/lib/Option';
 import { inject, h } from 'vue';
 import {
+  DEFAULT_THEME_COLOR_MAP,
   DEFAULT_THEME_INJECTION,
   getThemeClasses,
   THEME_INJECTION_SYMBOL,
   ThemeInjection,
   ThemeProps
 } from '../composables/theme';
-import { DEFAULT_THEME_COLOR_MAP } from '../mixins/themeInjection/ThemeInjectionMixin';
 import { ThemeColorMap } from '../types/ThemeColorMap';
 import { Classes, mergeClasses } from './mergeClasses';
 

@@ -3,8 +3,7 @@ import { Eq } from 'fp-ts/lib/Eq';
 import { getUseInputPropsDefinition, Input, useInput, UseInputProps } from '../../../composables/input/useInput';
 import { EqProps, getEqPropsDefinition } from '../../../composables/shared';
 import { DefaultThemePropsDefinition, useTheme } from '../../../composables/theme';
-import { Extractor, extractProp } from '../../../mixins/extractProp/ExtractPropMixin';
-import { isBoolean } from '../../../utils/helpers';
+import {Extractor, extractProp, isBoolean} from '../../../utils/helpers';
 import { PropType, VNode, defineComponent, h, shallowRef, SetupContext, Ref } from 'vue';
 import { Classes } from '../../../utils/mergeClasses';
 
@@ -171,9 +170,9 @@ export function defineSelect<T>(eq?: Eq<T>) {
           h(
             'span',
             {
-              class: ['select', ...getSelectClasses(props, input)]
+              class: ['select', ...getSelectClasses(props, input as Input)]
             },
-            [generateSelect(props, context, selectRef, input, themeClasses.value)]
+            [generateSelect(props, context, selectRef, input as Input, themeClasses.value)]
           )
         ]);
       };
