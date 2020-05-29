@@ -1,10 +1,10 @@
-import { WindowSizeMixin } from '../../../mixins/windowSize/WindowSizeMixin';
-import { applyMixins } from '../../../utils/applyMixins';
-import { VNode } from 'vue';
+import { defineComponent } from 'vue';
+import { useWindowSize } from '../../../composables/windowSize';
 
-export const WindowSize = applyMixins(WindowSizeMixin).extend({
-  name: 'WindowSize',
-  render(): VNode {
-    return this.$scopedSlots.default!(this.windowSize) as any;
+export const WindowSize = defineComponent({
+  name: 'window-size',
+  setup(_, { slots }) {
+    const windowSize = useWindowSize();
+    return () => slots.default && slots.default(windowSize.value);
   }
 });

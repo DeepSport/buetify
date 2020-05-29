@@ -1,38 +1,24 @@
 import './pricing-table.sass';
 import BPricingPlanPrice from './BPricingPlanPrice';
-import Vue, { VNode } from 'vue';
+import { VNode, h, SetupContext } from 'vue';
 
-export default Vue.extend({
-  name: 'BPricingTable',
-  functional: true,
-  props: {
-    isActive: {
-      type: Boolean,
-      required: false,
-      default: false
-    },
-    amount: {
-      type: Number,
-      required: false
-    },
-    interval: {
-      type: String,
-      required: false
-    }
-  },
-  render(h, { props, slots }): VNode {
-    const nodes: VNode[] = [];
-    const extractedSlots = slots();
-    if (extractedSlots.header) {
-      nodes.push(h('div', { staticClass: 'plan-header' }, extractedSlots.header));
-    }
-    nodes.push(
-      h('div', { staticClass: 'plan-pricing-container' }, extractedSlots.price || h(BPricingPlanPrice, { props }))
-    );
-    nodes.push(h('div', { staticClass: 'plan-items' }, extractedSlots.items));
-    if (extractedSlots.footer) {
-      nodes.push(h('div', { staticClass: 'plan-footer' }, extractedSlots.footer));
-    }
-    return h('section', { staticClass: 'pricing-plan', class: { 'is-active': props.isActive } }, nodes);
+export interface BPricingPlanProps {
+  isActive?: boolean;
+  amount: number;
+  interval: number;
+}
+
+export default function BPricingPlan(props: BPricingPlanProps, { attrs, slots }: SetupContext) {
+  const nodes: VNode[] = [];
+  if (slots.header) {
+    nodes.push(h('div', { class: 'plan-header' }, slots.header()));
   }
-});
+  nodes.push(
+    h('div', { class: 'plan-pricing-container' }, slots.price ? slots.price(props) : h(BPricingPlanPrice, props))
+  );
+  nodes.push(h('div', { class: 'plan-items' }, slots.items && slots.items()));
+  if (slots.footer) {
+    nodes.push(h('div', { class: 'plan-footer' }, slots.footer()));
+  }
+  return h('section', { ...attrs, class: ['pricing-plan', { 'is-active': !!props.isActive }] }, nodes);
+}

@@ -68,3 +68,20 @@ export function usePagination(props: UsePaginationProps) {
 }
 
 export type Pagination = ReturnType<typeof usePagination>;
+
+export function extractPaginationState(pagination: Pagination) {
+  return {
+    current: pagination.current.value,
+    numberOfPages: pagination.numberOfPages.value,
+    after: pagination.after.value,
+    nextPage: pagination.nextPage.value,
+    hasNext: pagination.hasNext.value,
+    previousPage: pagination.previousPage.value,
+    hasPrevious: pagination.hasPrevious.value,
+    next: pagination.next,
+    previous: pagination.previous,
+    first: pagination.first,
+    last: pagination.last,
+    set: pagination.set
+  }
+}

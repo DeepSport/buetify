@@ -1,15 +1,15 @@
 import { IO } from 'fp-ts/lib/IO';
-import { watch, computed, Ref, PropType, ref, ExtractPropTypes, toRef } from 'vue';
+import { watch, computed, Ref, PropType, ref, toRef } from 'vue';
 import { isEnterEvent } from '../../utils/eventHelpers';
 
-export function getUseTogglePropsDefinition<K extends string>(statusName: K) {
+export function getUseTogglePropsDefinition<K extends string>(statusName: K): UseTogglePropsDefinition<K> {
   return {
     [statusName]: {
-      type: Boolean as PropType<boolean>,
+      type: Boolean,
       default: false
     },
     hasPopup: {
-      type: Boolean as PropType<boolean>,
+      type: Boolean,
       default: false
     }
   } as UseTogglePropsDefinition<K>;
@@ -17,15 +17,20 @@ export function getUseTogglePropsDefinition<K extends string>(statusName: K) {
 
 export type UseTogglePropsDefinition<K extends string> = Record<
   K,
-  { type: PropType<boolean>; default: false }
-> & {
-  hasPopup: {
+  {
     type: PropType<boolean>;
-    default: false;
-  };
-};
+    default: boolean;
+  }
+> &
+  Record<
+    'hasPopup',
+    {
+      type: PropType<boolean>;
+      default: boolean;
+    }
+  >;
 
-export type UseToggleProps<K extends string> = ExtractPropTypes<UseTogglePropsDefinition<K>>
+export type UseToggleProps<K extends string> = Record<K, boolean> & Record<'hasPopup', boolean>;
 
 export function getToggleAttrs(status: Ref<boolean>, hasPopup: Ref<boolean>) {
   return computed(() => ({
