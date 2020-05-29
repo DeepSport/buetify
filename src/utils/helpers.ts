@@ -1,13 +1,12 @@
-/**
- * Mobile detection
- * https://www.abeautifulsite.net/detecting-mobile-devices-with-javascript
- */
 import { snoc, unsafeDeleteAt } from 'fp-ts/lib/Array';
 import { Eq } from 'fp-ts/lib/Eq';
 import { constant, not } from 'fp-ts/lib/function';
 import { none } from 'fp-ts/lib/Option';
-import { NoticePlacement } from '../types/NoticePlacement';
-import { PositionVariant } from '../types/PositionVariant';
+
+/**
+ * Mobile detection
+ * https://www.abeautifulsite.net/detecting-mobile-devices-with-javascript
+ */
 
 export const isMobile = {
   Android: function() {
@@ -29,14 +28,6 @@ export const isMobile = {
     return isMobile.Android() || isMobile.BlackBerry() || isMobile.iOS() || isMobile.Opera() || isMobile.Windows();
   }
 };
-
-export function removeElement(el: HTMLElement) {
-  if (typeof el.remove !== 'undefined') {
-    el.remove();
-  } else if (el.parentNode !== null) {
-    el.parentNode.removeChild(el);
-  }
-}
 
 export function capitalizeFirstLetter(str: string): string {
   return str.charAt(0).toUpperCase() + str.slice(1);
@@ -111,22 +102,6 @@ export function isPrimitive(val: any): val is number | string | boolean {
   return typeof val === 'number' || typeof val === 'string' || typeof val === 'boolean';
 }
 
-export function getNoticePlacement(position: PositionVariant): NoticePlacement {
-  return position.includes('top') ? 'top' : 'bottom';
-}
-
-export function getNoticeTransition(position: PositionVariant): object {
-  return position.includes('top')
-    ? {
-        enterActiveClass: 'fadeInDown',
-        leaveActiveClass: 'fadeOut'
-      }
-    : {
-        enterActiveClass: 'fadeInUp',
-        leaveActiveClass: 'fadeOut'
-      };
-}
-
 export function isNil(arg: any): boolean {
   return arg === null || arg === undefined;
 }
@@ -147,12 +122,6 @@ export function isHTMLElement(obj: any): obj is HTMLElement {
     ? obj instanceof HTMLElement //DOM2
     : obj && typeof isObject(obj) && obj.nodeType === 1 && typeof obj.nodeName === 'string';
 }
-
-const camelizeRE = /-(\w)/g;
-
-export const camelize = (str: string): string => {
-  return str.replace(camelizeRE, (_, c) => (c ? c.toUpperCase() : ''));
-};
 
 export const alwaysEmptyArray = constant([]);
 
@@ -178,4 +147,21 @@ export function toggleListItem<A>(E: Eq<A>) {
 
 export function isEmptyString(str: string): boolean {
   return str.length === 0;
+}
+
+export type Result<T, P> = P extends keyof T ? T[P] : P extends (item: T) => any ? ReturnType<P> : T;
+export type Extractor<T> = (string) | ((item: T) => any);
+
+function prop<T extends object, K extends keyof T>(key: K, obj: T): T[K] {
+  return obj[key];
+}
+
+export function extractProp<T, P extends (item: T) => any | keyof T>(extractor: Extractor<T>, item: T): Result<T, P> {
+  if (isFunction(extractor)) {
+    return extractor(item);
+  } else if (isObject(item) && isString(extractor) && item.hasOwnProperty(extractor)) {
+    return prop(extractor as any, item);
+  } else {
+    return item as Result<T, P>;
+  }
 }

@@ -1,6 +1,6 @@
 import BLink from './BLink';
-import { LinkTheme } from './theme';
+import { LinkThemeMap } from './theme';
 
-export { BLink, LinkTheme };
+export { BLink, LinkThemeMap };
 
 export default BLink;

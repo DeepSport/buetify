@@ -1,7 +1,6 @@
 import './sheet.sass';
 import { h, SetupContext} from 'vue';
-import { ThemeProps, useTheme } from '../../composables/theme';
-import { DEFAULT_THEME_COLOR_MAP } from '../../mixins/themeInjection/ThemeInjectionMixin';
+import {DEFAULT_THEME_COLOR_MAP, ThemeProps, useTheme} from '../../composables/theme';
 import { Classes, mergeClasses } from '../../utils/mergeClasses';
 import BButton from '../button/BButton';
 

@@ -1,4 +1,3 @@
-export * from './borderedBox';
 export * from './box';
 export * from './columns';
 export * from './container';

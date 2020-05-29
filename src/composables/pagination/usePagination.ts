@@ -27,7 +27,7 @@ export function usePagination(props: UsePaginationProps) {
   const nextPage = computed(() => Math.min(numberOfPages.value, (model.value.value as number) + 1))
   const hasNext = computed(() => (props.perPage + after.value) < props.total);
   const previousPage = computed(() => Math.max(0, (model.value.value as number) - 1))
-  const hasPrevious = computed(() => after.value > 0 && this.numberOfItems > 0)
+  const hasPrevious = computed(() => after.value > 0 && props.total > 0)
   function next(e: Event) {
     e.preventDefault();
     if (hasNext.value) {

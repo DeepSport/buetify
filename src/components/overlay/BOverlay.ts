@@ -6,7 +6,7 @@ type OverlayPosition = 'is-left' | 'is-right' | 'is-centered';
 
 export interface BOverlayProps {
   position?: OverlayPosition;
-  isActive: boolean;
+  isActive?: boolean;
   isFullscreen?: boolean;
 }
 
@@ -30,7 +30,7 @@ export default function BOverlay(props: BOverlayProps, { attrs, slots }: SetupCo
           )
         ]
       ),
-      [[vShow, props.isActive]]
+      [[vShow, !!props.isActive]]
     );
   } else {
     return withDirectives(
@@ -53,7 +53,7 @@ export default function BOverlay(props: BOverlayProps, { attrs, slots }: SetupCo
           )
         ]
       ),
-      [[vShow, props.isActive]]
+      [[vShow, !!props.isActive]]
     );
   }
 }

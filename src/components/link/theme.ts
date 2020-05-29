@@ -1,5 +1,5 @@
 import { shallowReactive} from 'vue';
-import { ThemeColorMap } from '../../mixins/themeInjection/ThemeInjectionMixin';
+import {ThemeColorMap} from '../../types/ThemeColorMap';
 
 export const LinkThemeMap: ThemeColorMap = shallowReactive({
   dark: 'is-warning',

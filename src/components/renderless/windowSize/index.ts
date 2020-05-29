@@ -1,5 +1,5 @@
-import { WindowSize } from './WindowSize';
+import { WindowSizeSlot } from './WindowSizeSlot';
 
-export { WindowSize };
+export { WindowSizeSlot };
 
-export default WindowSize;
+export default WindowSizeSlot;

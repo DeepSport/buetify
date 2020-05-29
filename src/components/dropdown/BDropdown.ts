@@ -304,7 +304,7 @@ export default defineComponent({
           displayMobileBackground.value,
           slots,
           vShow,
-          clickOutsideArgs,
+          clickOutsideArgs as any,
           trigger,
           dropdownMenu
         )

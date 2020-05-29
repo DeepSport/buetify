@@ -59,7 +59,7 @@ function generateModal(popupController: PopupController, slots: Slots) {
   )
 }
 
-export const BFullscreenModal = defineComponent({
+export default defineComponent({
   name: 'b-fullscreen-modal',
   props: UsePopupControllerPropsDefinition,
   setup(props, { slots, attrs }) {

@@ -6,7 +6,7 @@ import VerticalExpansionIcon from '../icons/verticalExpansion/VerticalExpansionI
 import BMenuList from './BMenuList';
 import { withDirectives, resolveDirective, defineComponent, h, PropType, Directive } from 'vue';
 
-export const BMenuGroup = defineComponent({
+export default defineComponent({
   name: 'b-menu-group',
   props: {
     ...getUseTogglePropsDefinition('isExpanded'),

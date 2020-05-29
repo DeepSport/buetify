@@ -1,5 +1,5 @@
 import './menu.sass';
 import { getThemeableFunctionalComponent } from '../../utils/getThemeableFunctionalComponent';
-import { MenuListItemTheme } from './theme';
+import { MenuListItemThemeMap } from './theme';
 
-export default getThemeableFunctionalComponent({ cls: 'menu-list-item', el: 'li', themeMap: MenuListItemTheme});
+export default getThemeableFunctionalComponent({ cls: 'menu-list-item', el: 'li', themeMap: MenuListItemThemeMap});
