@@ -7,7 +7,7 @@ import {ColorVariant} from '../../types/ColorVariants';
 export const STEPS_SYMBOL = Symbol('steps')
 
 export interface BStepItemData {
-	props: BStepItemProps;
+	props: BTabItemProps;
 	render: IO<VNode[]>;
 }
 
@@ -47,4 +47,4 @@ export const BStepItemPropsDefinition = {
 	}
 }
 
-export type BStepItemProps = ExtractPropTypes<typeof BStepItemPropsDefinition>;
+export type BTabItemProps = ExtractPropTypes<typeof BStepItemPropsDefinition>;

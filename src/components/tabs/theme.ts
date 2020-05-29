@@ -1,4 +1,4 @@
-export const TabsTheme = {
+export const TabsThemeMap = {
   dark: 'is-link',
   light: ''
 };
