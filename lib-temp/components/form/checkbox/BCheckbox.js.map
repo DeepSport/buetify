@@ -1,1 +1,0 @@
-{"version":3,"file":"BCheckbox.js","sourceRoot":"","sources":["../../../../src/components/form/checkbox/BCheckbox.ts"],"names":[],"mappings":"AAAA,OAAO,iBAAiB,CAAC;AACzB,OAAO,EAAE,mBAAmB,EAAE,MAAM,+BAA+B,CAAC;AAEpE,MAAM,CAAC,MAAM,cAAc,GAAG,mBAAmB,CAAC,UAAU,EAAE,UAAU,EAAE,YAAY,EAAE,qBAAqB,CAAC,CAAC;AAE/G,MAAM,CAAC,MAAM,SAAS,GAAG,cAAc,EAAO,CAAC"}

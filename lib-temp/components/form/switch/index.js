@@ -1,4 +1,0 @@
-import { BSwitch, defineSwitch } from './BSwitch';
-export default BSwitch;
-export { BSwitch, defineSwitch };
-//# sourceMappingURL=index.js.map
