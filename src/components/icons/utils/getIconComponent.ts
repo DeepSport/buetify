@@ -20,7 +20,7 @@ export function getFontAwesomeIconComponent(icon: IconDefinition) {
 
 // Until Vue Font Awesome support v3
 
-export function FontAwesomeIcon(props: any, { attrs }: any) {
+export function FontAwesomeIcon(props: any, { attrs }: SetupContext) {
   const { icon: iconArgs, mask: maskArgs, symbol, title } = props;
   const icon = normalizeIconArgs(iconArgs);
   const classes = objectWithKey('classes', classList(props));

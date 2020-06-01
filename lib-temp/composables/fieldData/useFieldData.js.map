@@ -1,1 +1,0 @@
-{"version":3,"file":"useFieldData.js","sourceRoot":"","sources":["../../../src/composables/fieldData/useFieldData.ts"],"names":[],"mappings":"AAAA,OAAO,EAAE,MAAM,EAAE,MAAM,KAAK,CAAC;AAC7B,OAAO,EAAE,4BAA4B,EAAE,mCAAmC,EAAE,MAAM,oBAAoB,CAAC;AAEvG,MAAM,UAAU,YAAY;IAC1B,OAAO,MAAM,CAAC,mCAAmC,EAAE,4BAA4B,CAAC,CAAC;AACnF,CAAC"}
