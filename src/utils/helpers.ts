@@ -165,3 +165,8 @@ export function extractProp<T, P extends (item: T) => any | keyof T>(extractor: 
     return item as Result<T, P>;
   }
 }
+
+const camelizeRE = /-(\w)/g
+export function camelize(str: string): string {
+  return str.replace(camelizeRE, (_, c) => c ? c.toUpperCase() : '')
+}
