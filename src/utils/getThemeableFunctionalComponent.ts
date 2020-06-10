@@ -12,13 +12,13 @@ import {
 import { ThemeColorMap } from '../types/ThemeColorMap';
 import { Classes, mergeClasses } from './mergeClasses';
 
-interface ThemeableComponentOptions {
+export interface ThemeableComponentOptions {
   cls: string;
   el?: string;
   themeMap?: ThemeColorMap;
 }
 
-interface ThemeableComponentProps extends Partial<ThemeProps> {
+export interface ThemeableComponentProps extends Partial<ThemeProps> {
   tag?: string;
 }
 

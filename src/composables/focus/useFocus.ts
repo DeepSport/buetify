@@ -9,16 +9,15 @@ export const UseFocusPropsDefinition = {
   },
   onFocus: {
     type: Function as PropType<IO<void>>,
-    required: false
+    required: false as const
   },
   onBlur: {
     type: Function as PropType<IO<void>>,
-    required: false
+    required: false as const
   },
   focusOnMount: {
     type: Boolean as PropType<boolean>,
-    default: false,
-    required: false
+    default: false
   }
 };
 

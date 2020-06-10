@@ -1,4 +1,4 @@
-const bue = require('./package.json')
+const buetify = require('./package.json')
 
 const env = process.env.NODE_ENV
 
@@ -10,8 +10,8 @@ module.exports = {
     ],
     plugins: [
         ['transform-define', {
-            __BUE_VERSION__: bue.version,
-            __REQUIRED_VUE__: bue.dependencies.vue,
+            __BUETIFY_VERSION__: buetify.version,
+            __REQUIRED_VUE__: buetify.peerDependencies.vue,
         }],
     ],
     env: {

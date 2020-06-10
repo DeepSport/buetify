@@ -1,6 +1,6 @@
 import {
   getUseSelectablePropsDefinition,
-  SelectionControl,
+  SelectionControl, UseSelectableProps,
   useSelectionControl
 } from '../../../composables/selectionControl/useSelectionControl';
 import { ColorVariant } from '../../../types/ColorVariants';
@@ -36,7 +36,7 @@ export function getSelectionControl(role: string, type: string, name: string, st
       props: getUseSelectablePropsDefinition<T>(),
       setup(props, { slots }) {
         const label = shallowRef((null as unknown) as HTMLElement);
-        const selection = useSelectionControl(props, label, role, type);
+        const selection = useSelectionControl(props as UseSelectableProps<T>, label, role, type);
         return () => {
           return h(
             'label',
