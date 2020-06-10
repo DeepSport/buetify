@@ -1,5 +1,5 @@
 import { Eq } from 'fp-ts/lib/Eq';
-import { PropType, Ref, computed, toRef, Prop } from 'vue';
+import { PropType, Ref, computed, toRef } from 'vue';
 import { ColorVariant } from '../../types/ColorVariants';
 import { SizeVariant } from '../../types/SizeVariants';
 import { isEnterEvent, isSpaceEvent } from '../../utils/eventHelpers';
@@ -14,12 +14,12 @@ export function getUseSelectablePropsDefinition<T>() {
   return {
     trueValue: {
       type: null as unknown as PropType<T>,
-      default: true as any
-    } as Prop<T>,
+      default: true as unknown as T
+    },
     falseValue: {
       type: null as unknown as PropType<T>,
-      default: false as any
-    } as Prop<T>,
+      default: false as unknown as T
+    },
     indeterminateValue: {
       type: null as unknown as PropType<T>,
     },
@@ -48,8 +48,9 @@ export function getUseSelectablePropsDefinition<T>() {
 }
 
 export type UseSelectableProps<T> = {
-  trueValue?: T;
-  falseValue?: T;
+  trueValue: T;
+  falseValue: T;
+  indeterminateValue?: T;
   isMultiple: boolean;
   variant: ColorVariant;
   size: SizeVariant;
