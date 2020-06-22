@@ -4,6 +4,24 @@
     "target": "es6",
     "module": "esnext",
     "outDir": "./lib-temp",
-    "sourceMap": true
+    "sourceMap": true,
+    "include": [
+      "src"
+    ],
+    "baseUrl": ".",
+    "lib": [
+      "esnext",
+      "dom",
+      "dom.iterable"
+    ],
+    "allowJs": true,
+    "sourceMap": true,
+    "outDir": "./dist",
+    "downlevelIteration": true,
+    "strict": true,
+    "noUnusedLocals": true,
+    "noImplicitReturns": true,
+    "moduleResolution": "node",
+    "esModuleInterop": true
   }
 }
