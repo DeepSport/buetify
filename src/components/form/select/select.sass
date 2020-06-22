@@ -1,0 +1,19 @@
+@import '../sass/form'
+.select
+	&.is-expanded
+		width: 100%
+	select
+		padding-right: 2.5em
+		option
+			color: inherit
+			padding: 0.25em 0.5em
+		option:disabled
+			cursor: not-allowed
+			opacity: 0.5
+		optgroup
+			color: $grey-light
+			font-weight: $weight-normal
+			font-style: normal
+			padding: 0.25em 0
+	&.is-empty select
+		color: rgba($grey, 0.7)
