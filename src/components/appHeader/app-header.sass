@@ -1,0 +1,29 @@
+@import '../../sass/helpers/flex-helpers'
+
+$app-header-background-color: $primary !default
+$app-header-background-color-invert: findColorInvert($app-header-background-color)
+
+.b-app-header
+  position: relative
+  border-bottom: 1px $border solid
+  min-height: 4rem
+  .main-slot
+    width: 100%
+  &.has-navigation
+    .navigation-icon
+      position: absolute
+      left: 0
+      padding: $size-7
+      flex: none
+      cursor: pointer
+      z-index: 1
+    .main-slot
+      width: calc(100% - 4.5rem)
++until-widescreen
+  .b-app-header
+    &.has-touch-header
+      background-color: $app-header-background-color
+      border-bottom: none
+      color: $app-header-background-color-invert
+      .title
+        color: $app-header-background-color-invert

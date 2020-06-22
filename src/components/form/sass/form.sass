@@ -1,0 +1,47 @@
+@import './shared'
+@import '~bulma/sass/form/input-textarea'
+@import './checkbox-radio'
+@import '~bulma/sass/form/select'
+@import '~bulma/sass/form/file'
+@import './tools'
+
+.label 
+	font-weight: $weight-semibold
+	color: inherit
+
+.field 
+	&.is-grouped 
+		.field 
+			flex-shrink: 0
+			&:not(:last-child) 
+				margin-right: 0.75rem
+			&.is-expanded 
+				flex-grow: 1
+				flex-shrink: 1
+	// Nested control hasAddons (for Autocomplete and Datepicker)
+	&.has-addons .control 
+		&:first-child .control 
+			.button,
+			.input,
+			.select select 
+				border-bottom-left-radius: $input-radius
+				border-top-left-radius: $input-radius
+		&:last-child .control 
+			.button,
+			.input,
+			.select select 
+				border-bottom-right-radius: $input-radius
+				border-top-right-radius: $input-radius
+		.control 
+			.button,
+			.input,
+			.select select 
+				border-radius: 0
+.control 
+	.help.counter 
+		float: right
+		margin-left: 0.5em
+	.icon 
+		&.is-clickable 
+			pointer-events: auto
+			cursor: pointer

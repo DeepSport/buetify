@@ -1,0 +1,4 @@
+@each $name, $pair in $colors
+  $color: nth($pair, 1)
+  .has-background-#{$name}
+    background-color: $color

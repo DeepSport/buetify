@@ -69,15 +69,15 @@ export function getObjectValueByPath(obj: any, path: string, fallback?: any): an
   return getNestedValue(obj, path.split('.'), fallback);
 }
 
-export function isBoolean(val: unknown): val is boolean {
+export function isBoolean(val: any): val is boolean {
   return typeof val === 'boolean';
 }
 
-export function isObject(obj: unknown): obj is object {
+export function isObject(obj: any): obj is object {
   return obj !== null && typeof obj === 'object';
 }
 
-export function isFunction(obj: unknown): obj is Function {
+export function isFunction(obj: any): obj is Function {
   return typeof obj === 'function';
 }
 

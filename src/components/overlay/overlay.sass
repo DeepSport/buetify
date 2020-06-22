@@ -1,0 +1,36 @@
+$overlay-background-background-color: rgba($black, 0.86) !default
+$overlay-z: 40 !default
+.b-overlay
+  top: 0
+  left: 0
+  width: 100%
+  min-height: 100vh
+  display: flex
+  flex-direction: row
+  justify-content: center
+  align-items: center
+  position: fixed
+  z-index: $overlay-z
+  .b-overlay-background
+    @extend %overlay
+    background-color: $overlay-background-background-color
+  .b-overlay-content
+    z-index: 1
+    display: flex
+    flex-direction: column
+    justify-content: center
+    &.is-fullscreen
+      width: 100%
+      min-height: 100vh
+  &.is-left
+    justify-content: flex-start
+  &.is-right
+    justify-content: flex-end
+  &.is-top
+    align-items: flex-start
+  &.is-bottom
+    align-items: flex-end
+
+
+
+
