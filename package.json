@@ -42,7 +42,7 @@
     "component framework"
   ],
   "peerDependencies": {
-    "vue": "3.0.0-beta.14"
+    "vue": "3.0.0-beta.15"
   },
   "dependencies": {
     "@fortawesome/fontawesome-svg-core": "^1.2.25",
@@ -67,8 +67,7 @@
     "prettier": "^1.19.1",
     "rimraf": "^3.0.1",
     "shelljs": "^0.8.3",
-    "typescript": "^3.7.5",
-    "vue": "3.0.0-beta.14",
-    "vue-meta": "^2.3.1"
+    "typescript": "^3.9.5",
+    "vue": "3.0.0-beta.15"
   }
 }
