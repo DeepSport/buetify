@@ -1,5 +1,6 @@
+import { SetupContext } from '@vue/runtime-core';
 import { isSome } from 'fp-ts/lib/Option';
-import { inject, h, FunctionalComponent, SetupContext } from 'vue';
+import { inject, h } from 'vue';
 import {
   DEFAULT_THEME_COLOR_MAP,
   DEFAULT_THEME_INJECTION,
@@ -41,8 +42,8 @@ export function getThemeableFunctionalComponent({
   cls,
   el = 'div',
   themeMap = DEFAULT_THEME_COLOR_MAP
-}: ThemeableComponentOptions): FunctionalComponent<ThemeableComponentProps> {
-  return (props, context) => {
+}: ThemeableComponentOptions) {
+  return (props: ThemeableComponentProps, context: SetupContext) => {
     const themeInjection = inject(THEME_INJECTION_SYMBOL, DEFAULT_THEME_INJECTION);
     const themeProps = {
       themeMap: props.themeMap ?? themeMap,
