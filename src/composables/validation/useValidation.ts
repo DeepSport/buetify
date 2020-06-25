@@ -37,10 +37,10 @@ export function useValidation(props: UseValidationProps, ref: Ref<HTMLElement>) 
         }
       }
     }
-  };
+  }
   return {
     isDisabled,
     isValid,
     validate
-  }
+  };
 }

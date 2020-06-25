@@ -3,7 +3,7 @@ import { IO } from 'fp-ts/lib/IO';
 import { getOrElse, isNone, none, Option, some } from 'fp-ts/lib/Option';
 import { pipe } from 'fp-ts/lib/pipeable';
 import { VNode } from 'vue';
-import {formatTransition} from '../../../composables/transition';
+import { formatTransition } from '../../../composables/transition';
 import { Transition, TransitionClasses } from '../../../types/Transition';
 import { defineComponent, h } from 'vue';
 import { alwaysEmptyArray } from '../../../utils/helpers';

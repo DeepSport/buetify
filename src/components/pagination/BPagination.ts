@@ -1,9 +1,9 @@
 import './pagination.sass';
 import {
-    extractPaginationState,
-    Pagination,
-    usePagination,
-    UsePaginationPropsDefinition
+  extractPaginationState,
+  Pagination,
+  usePagination,
+  UsePaginationPropsDefinition
 } from '../../composables/pagination';
 import { DefaultThemePropsDefinition, useTheme } from '../../composables/theme';
 import AngleLeftIcon from '../icons/angleLeft/AngleLeftIcon';

@@ -116,7 +116,6 @@ export function isNumber(arg: any): arg is number {
   return typeof arg === 'number';
 }
 
-
 export function isHTMLElement(obj: any): obj is HTMLElement {
   return typeof HTMLElement === 'object'
     ? obj instanceof HTMLElement //DOM2
@@ -150,7 +149,7 @@ export function isEmptyString(str: string): boolean {
 }
 
 export type Result<T, P> = P extends keyof T ? T[P] : P extends (item: T) => any ? ReturnType<P> : T;
-export type Extractor<T> = (string) | ((item: T) => any);
+export type Extractor<T> = string | ((item: T) => any);
 
 function prop<T extends object, K extends keyof T>(key: K, obj: T): T[K] {
   return obj[key];
@@ -166,7 +165,7 @@ export function extractProp<T, P extends (item: T) => any | keyof T>(extractor: 
   }
 }
 
-const camelizeRE = /-(\w)/g
+const camelizeRE = /-(\w)/g;
 export function camelize(str: string): string {
-  return str.replace(camelizeRE, (_, c) => c ? c.toUpperCase() : '')
+  return str.replace(camelizeRE, (_, c) => (c ? c.toUpperCase() : ''));
 }

@@ -5,7 +5,7 @@ import { getUseInputPropsDefinition } from '../../../composables/input/useInput'
 import { useModel } from '../../../composables/model';
 import { getEqPropsDefinition } from '../../../composables/shared';
 import { getUseThemePropsDefinition } from '../../../composables/theme';
-import {alwaysEmptyArray, extractProp} from '../../../utils/helpers';
+import { alwaysEmptyArray, extractProp } from '../../../utils/helpers';
 import { DropdownThemeMap } from '../../dropdown';
 import BDropdown from '../../dropdown/BDropdown';
 import { isArrowDownEvent, isArrowUpEvent, isEnterEvent, isEscEvent, isTabEvent } from '../../../utils/eventHelpers';

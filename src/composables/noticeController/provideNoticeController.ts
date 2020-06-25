@@ -1,6 +1,6 @@
 import { constant, constVoid } from 'fp-ts/lib/function';
 import { IO } from 'fp-ts/lib/IO';
-import { provide,  VNode } from 'vue';
+import { provide, VNode } from 'vue';
 import { NoticePlacement } from '../../types/NoticePlacement';
 import { Transition } from '../../types/Transition';
 import { Remove } from '../shared';

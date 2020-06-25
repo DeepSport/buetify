@@ -14,13 +14,15 @@ export function getUseModelPropsDefinition<T>() {
 
 export interface UseModelProps<T> {
   value?: T | undefined;
-  onInput: FunctionN<[T], void>
+  onInput: FunctionN<[T], void>;
 }
 
 export function useModel<T>(props: UseModelProps<T>) {
   const internalValue = shallowRef(props.value);
-  watch(toRef(props, 'value'), newVal => { internalValue.value = newVal })
-  watch(internalValue, newVal => props.onInput(newVal))
+  watch(toRef(props, 'value'), newVal => {
+    internalValue.value = newVal;
+  });
+  watch(internalValue, newVal => props.onInput(newVal));
 
   function onInput(e: Event) {
     // @ts-ignore-next-line

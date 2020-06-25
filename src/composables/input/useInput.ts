@@ -1,4 +1,4 @@
-import {AllColorsVariant, ColorVariant} from '../../types/ColorVariants';
+import { AllColorsVariant, ColorVariant } from '../../types/ColorVariants';
 import { SizeVariant } from '../../types/SizeVariants';
 import { isObject, isString } from '../../utils/helpers';
 import { PropType, ExtractPropTypes, Ref, computed, toRefs, watch } from 'vue';
@@ -110,4 +110,3 @@ export function useInput<T>(props: UseInputProps<T>, ref: Ref<HTMLElement>) {
 }
 
 export type Input = ReturnType<typeof useInput>;
-

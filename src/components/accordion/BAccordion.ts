@@ -8,9 +8,13 @@ import { getThemeableFunctionalComponent } from '../../utils/getThemeableFunctio
 import { mergeClasses } from '../../utils/mergeClasses';
 
 function generateHeader(toggle: Toggle, slots: Slots) {
-  return h('header', {
-    onClick: toggle.toggle
-  }, [generateTitle(slots), generateTriggerButton(toggle, slots)]);
+  return h(
+    'header',
+    {
+      onClick: toggle.toggle
+    },
+    [generateTitle(slots), generateTriggerButton(toggle, slots)]
+  );
 }
 
 function generateTitle(slots: Slots) {
@@ -50,15 +54,19 @@ const BAccordionContent = getThemeableFunctionalComponent({
   cls: 'card-content',
   el: 'section',
   themeMap: ACCORDION_CONTENT_THEME_MAP
-})
+});
 
 function generateBody(toggle: Toggle, transition: Ref<TransitionClasses>, slots: Slots) {
   return h('transition', transition.value, [
-    h(BAccordionContent, {
-      directives: [{ name: 'show', value: toggle.isOn.value }],
-      'aria-hidden': !toggle.isOn.value
-    }, slots.default!())
-  ])
+    h(
+      BAccordionContent,
+      {
+        directives: [{ name: 'show', value: toggle.isOn.value }],
+        'aria-hidden': !toggle.isOn.value
+      },
+      slots.default!()
+    )
+  ]);
 }
 
 export default defineComponent({
@@ -72,9 +80,10 @@ export default defineComponent({
     const toggle = useToggle(props, 'isExpanded');
     const theme = useTheme(props);
     const transition = useTransition(props);
-    return () => h('article', { class: mergeClasses('b-card card', theme.themeClasses.value) }, [
-      generateHeader(toggle, slots),
-      generateBody(toggle, transition, slots)
-    ])
+    return () =>
+      h('article', { class: mergeClasses('b-card card', theme.themeClasses.value) }, [
+        generateHeader(toggle, slots),
+        generateBody(toggle, transition, slots)
+      ]);
   }
 });

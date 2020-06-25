@@ -27,9 +27,11 @@ export const ProvideNavigationDrawerControllerPropsDefinition = {
     required: false,
     default: true
   }
-}
+};
 
-export type ProvideNavigationDrawerControllerProps = ExtractPropTypes<typeof ProvideNavigationDrawerControllerPropsDefinition>
+export type ProvideNavigationDrawerControllerProps = ExtractPropTypes<
+  typeof ProvideNavigationDrawerControllerPropsDefinition
+>;
 
 export const DEFAULT_NAVIGATION_DRAWER_CONTROLLER_INJECTION: NavigationDrawerController = {
   isVisible: shallowRef(none),
@@ -37,8 +39,8 @@ export const DEFAULT_NAVIGATION_DRAWER_CONTROLLER_INJECTION: NavigationDrawerCon
   listeners: shallowRef(none),
   show: constVoid,
   hide: constVoid,
-  toggle: constVoid,
-}
+  toggle: constVoid
+};
 
 export function provideNavigationDrawerController(props: ProvideNavigationDrawerControllerProps) {
   const toggle = useToggle(props, 'isVisible');
@@ -49,7 +51,7 @@ export function provideNavigationDrawerController(props: ProvideNavigationDrawer
     show: toggle.setOn,
     hide: toggle.setOff,
     toggle: toggle.toggle
-  }
+  };
   provide(NAVIGATION_DRAWER_CONTROLLER_INJECTION_SYMBOL, injection);
   return injection;
 }

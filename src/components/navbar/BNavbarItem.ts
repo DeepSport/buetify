@@ -1,4 +1,4 @@
 import 'bulma/sass/components/navbar.sass';
-import {getSimpleFunctionalComponent} from '../../utils/getSimpleFunctionalComponent';
+import { getSimpleFunctionalComponent } from '../../utils/getSimpleFunctionalComponent';
 
 export default getSimpleFunctionalComponent('navbar-item', 'a');

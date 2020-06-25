@@ -30,7 +30,7 @@ function generateNavigationSlot(slots: Slots) {
     slots: {
       default: () => slots['navigation-drawer']!()
     }
-  })
+  });
 }
 
 function generateMainContent(slots: Slots) {
@@ -79,11 +79,7 @@ export default defineComponent({
       if (isVisible.value) {
         nodes.push(generateNavigationSlot(slots));
       }
-      return h(
-        'div',
-        { class: ['b-app', { 'has-navigation-drawer': isVisible.value  }] },
-        nodes
-      );
+      return h('div', { class: ['b-app', { 'has-navigation-drawer': isVisible.value }] }, nodes);
     };
   }
 });

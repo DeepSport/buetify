@@ -40,9 +40,9 @@ export function useFocus(props: UseFocusProps, ref: Ref<HTMLElement | VNode>) {
   }
   watchEffect(() => {
     if (props.isFocused && isFocused.value === false) {
-      focus()
+      focus();
     }
-  })
+  });
   function onFocus() {
     isFocused.value = true;
     if (props.onFocus) onFocus();

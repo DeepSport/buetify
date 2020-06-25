@@ -92,7 +92,7 @@ export const DEFAULT_FIELD_DATA_INJECTION: FieldDataInjection = {
   }
 };
 
-export function provideFieldData(props: ProvideFieldDataProps, ) {
+export function provideFieldData(props: ProvideFieldDataProps) {
   const label = useLabelId(props, 'field');
   const variant = shallowRef(props.variant);
   watch(toRef(props, 'variant'), newVariant => {

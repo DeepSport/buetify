@@ -42,4 +42,3 @@ export default function BButton(props: ButtonProps, { slots, attrs }: SetupConte
     slots.default ? slots.default() : []
   );
 }
-

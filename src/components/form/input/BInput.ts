@@ -302,4 +302,4 @@ export function defineInput<T>() {
   });
 }
 
-export const BInput = defineInput<any>()
+export const BInput = defineInput<any>();
