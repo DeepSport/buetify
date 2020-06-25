@@ -1,4 +1,4 @@
-import { BRadio, defineRadio} from './BRadio';
+import { BRadio, defineRadio } from './BRadio';
 
 export { BRadio, defineRadio };
 

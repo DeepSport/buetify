@@ -1,8 +1,8 @@
 import './pricing-table.sass';
 import { SetupContext, h } from 'vue';
-import {BPricingPlanProps} from './BPricingPlan';
+import { BPricingPlanProps } from './BPricingPlan';
 
-export type BPricingPlanPriceProps = Omit<BPricingPlanProps, 'isActive'>
+export type BPricingPlanPriceProps = Omit<BPricingPlanProps, 'isActive'>;
 
 export default function BPricingPlanPrice(props: BPricingPlanPriceProps, { attrs, slots }: SetupContext) {
   return h('div', { ...attrs, class: 'plan-price' }, [

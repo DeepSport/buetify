@@ -21,21 +21,25 @@ export interface BTooltipProps {
 }
 
 export default function BTooltip(props: BTooltipProps, { attrs, slots }: SetupContext) {
-  return h(props.tag || 'span', {
-    ...attrs,
-    class: mergeClasses(attrs.class as Classes, [
-      props.variant || 'is-primary',
-      props.size,
-      props.position || 'is-top',
-      {
-        'b-tooltip': !!props.isActive,
-        'is-always': !!props.isAlways,
-        'is-animated': !!props.isAnimated,
-        'is-square': !!props.isSquare,
-        'is-dashed': !!props.isDashed,
-        'is-multilined': !!props.isMultilined
-      },
-    ]),
-    'data-label': props.label
-  }, slots.default ? slots.default() : undefined)
+  return h(
+    props.tag || 'span',
+    {
+      ...attrs,
+      class: mergeClasses(attrs.class as Classes, [
+        props.variant || 'is-primary',
+        props.size,
+        props.position || 'is-top',
+        {
+          'b-tooltip': !!props.isActive,
+          'is-always': !!props.isAlways,
+          'is-animated': !!props.isAnimated,
+          'is-square': !!props.isSquare,
+          'is-dashed': !!props.isDashed,
+          'is-multilined': !!props.isMultilined
+        }
+      ]),
+      'data-label': props.label
+    },
+    slots.default ? slots.default() : undefined
+  );
 }

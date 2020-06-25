@@ -190,7 +190,7 @@ function generateTableBody(props: BDatepickerTableProps, onFocus: FunctionN<[Opt
   return h(
     'tbody',
     {
-      class: ['datepicker-body', { 'has-events': !isEmpty(props.events) }],
+      class: ['datepicker-body', { 'has-events': !isEmpty(props.events) }]
     },
     getWeeks(props).map(getGenerateTableRow(props, onFocus))
   );

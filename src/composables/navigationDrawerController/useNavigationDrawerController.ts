@@ -5,6 +5,9 @@ import {
 } from './provideNavigationDrawerController';
 
 export function useNavigationDrawerController() {
-  const injection = inject(NAVIGATION_DRAWER_CONTROLLER_INJECTION_SYMBOL, DEFAULT_NAVIGATION_DRAWER_CONTROLLER_INJECTION);
+  const injection = inject(
+    NAVIGATION_DRAWER_CONTROLLER_INJECTION_SYMBOL,
+    DEFAULT_NAVIGATION_DRAWER_CONTROLLER_INJECTION
+  );
   return injection;
 }

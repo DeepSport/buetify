@@ -58,5 +58,3 @@ export function useTheme(props?: ThemeProps) {
     themeClasses
   };
 }
-
-

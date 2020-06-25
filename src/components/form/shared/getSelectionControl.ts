@@ -1,6 +1,7 @@
 import {
   getUseSelectablePropsDefinition,
-  SelectionControl, UseSelectableProps,
+  SelectionControl,
+  UseSelectableProps,
   useSelectionControl
 } from '../../../composables/selectionControl/useSelectionControl';
 import { ColorVariant } from '../../../types/ColorVariants';

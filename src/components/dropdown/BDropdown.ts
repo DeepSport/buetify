@@ -148,7 +148,6 @@ function generateMobileBackground(
   vShow: Directive,
   clickOutsideBindingArgs: ClickOutsideBindingArgs,
   dropdownMenuRef: Ref<HTMLElement>
-
 ): VNode {
   return generateTransition(transition, [
     withDirectives(

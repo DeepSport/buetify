@@ -9,7 +9,10 @@ export interface ComponentsByBreakPoint {
   fullHD: Component;
 }
 
-export const ScreenSizeDependentComponent = (components: ComponentsByBreakPoint) => (props: any, context: SetupContext) => {
+export const ScreenSizeDependentComponent = (components: ComponentsByBreakPoint) => (
+  props: any,
+  context: SetupContext
+) => {
   const windowSize = useWindowSize();
   if (windowSize.value.isMobile) {
     return h(components.mobile, { ...props, slots: context.slots });
@@ -22,4 +25,4 @@ export const ScreenSizeDependentComponent = (components: ComponentsByBreakPoint)
   } else {
     return h(components.fullHD, { ...props, slots: context.slots });
   }
-}
+};

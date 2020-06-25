@@ -1,6 +1,6 @@
 import { AllColorsVariant } from '../../../types/ColorVariants';
 import { Classes, mergeClasses } from '../../../utils/mergeClasses';
-import { VNode, h, SetupContext} from 'vue';
+import { VNode, h, SetupContext } from 'vue';
 import BField from './BField';
 
 export interface BFieldBodyProps {
@@ -10,8 +10,11 @@ export interface BFieldBodyProps {
 }
 
 export default function BFieldBody(props: BFieldBodyProps, { attrs, slots }: SetupContext) {
-  h(props.tag ?? 'div', {
-    class: mergeClasses(attrs.class as Classes, 'field-body')
-  }, slots.default!().map((element: VNode) => !element.el ? undefined : h(BField, props, [element]))
-  )
+  h(
+    props.tag ?? 'div',
+    {
+      class: mergeClasses(attrs.class as Classes, 'field-body')
+    },
+    slots.default!().map((element: VNode) => (!element.el ? undefined : h(BField, props, [element])))
+  );
 }

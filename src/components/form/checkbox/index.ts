@@ -1,4 +1,4 @@
-import { BCheckbox, defineCheckbox} from './BCheckbox';
+import { BCheckbox, defineCheckbox } from './BCheckbox';
 
 export { BCheckbox, defineCheckbox };
 

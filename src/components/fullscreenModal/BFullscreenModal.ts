@@ -11,11 +11,7 @@ import BSheet from '../sheet/BSheet';
 import { VNode, defineComponent, shallowRef, h, Slots } from 'vue';
 
 function generateTitle(slots: Slots): VNode {
-  return h(
-    'div',
-    { class: 'main-slot' },
-    slots.title!()
-  );
+  return h('div', { class: 'main-slot' }, slots.title!());
 }
 
 function generateCloseButton(popupController: PopupController, slots: Slots) {
@@ -24,11 +20,10 @@ function generateCloseButton(popupController: PopupController, slots: Slots) {
     {
       class: 'navigation-icon has-text-link-hover',
       'aria-label': 'Close',
-      ...popupController.listeners,
+      ...popupController.listeners
     },
     slots.close!()
   );
-
 }
 
 function generateHeader(popupController: PopupController, slots: Slots) {
@@ -37,26 +32,27 @@ function generateHeader(popupController: PopupController, slots: Slots) {
     {
       class: 'b-app-header is-flex flex-direction-row justify-content-center align-items-center'
     },
-    slots.header
-      ? slots.header(popupController)
-      : [generateCloseButton(popupController, slots), generateTitle(slots)]
+    slots.header ? slots.header(popupController) : [generateCloseButton(popupController, slots), generateTitle(slots)]
   );
 }
 
 function generateContent(popupController: PopupController, slots: Slots) {
   const nodes = slots.default!();
   if (slots.header || slots.title) {
-    nodes.unshift(generateHeader(popupController, slots))
-  };
-  return h(BSheet, { class: 'is-fullheight', tag: 'article'}, nodes)
+    nodes.unshift(generateHeader(popupController, slots));
+  }
+  return h(BSheet, { class: 'is-fullheight', tag: 'article' }, nodes);
 }
 
 function generateModal(popupController: PopupController, slots: Slots) {
-  return h(BOverlay, {
+  return h(
+    BOverlay,
+    {
       isFullscreen: true,
       isActive: true
-    }, [generateContent(popupController, slots)]
-  )
+    },
+    [generateContent(popupController, slots)]
+  );
 }
 
 export default defineComponent({
@@ -66,10 +62,8 @@ export default defineComponent({
     const render = shallowRef(alwaysEmptyArray as IO<VNode[]>);
     const popupController = usePopupController(props, render);
     render.value = () => {
-      return [
-        generateModal(popupController, slots)
-      ];
+      return [generateModal(popupController, slots)];
     };
     return () => (slots.trigger ? slots.trigger(popupController) : []);
   }
-})
+});

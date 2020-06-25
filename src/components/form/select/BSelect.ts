@@ -3,7 +3,7 @@ import { Eq } from 'fp-ts/lib/Eq';
 import { getUseInputPropsDefinition, Input, useInput, UseInputProps } from '../../../composables/input/useInput';
 import { EqProps, getEqPropsDefinition } from '../../../composables/shared';
 import { DefaultThemePropsDefinition, useTheme } from '../../../composables/theme';
-import {Extractor, extractProp, isBoolean} from '../../../utils/helpers';
+import { Extractor, extractProp, isBoolean } from '../../../utils/helpers';
 import { PropType, VNode, defineComponent, h, shallowRef, SetupContext, Ref } from 'vue';
 import { Classes } from '../../../utils/mergeClasses';
 

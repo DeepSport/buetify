@@ -1,5 +1,5 @@
 import './table.sass';
-import {DEFAULT_THEME_COLOR_MAP, ThemeProps, useTheme} from '../../composables/theme';
+import { DEFAULT_THEME_COLOR_MAP, ThemeProps, useTheme } from '../../composables/theme';
 import { Classes, mergeClasses } from '../../utils/mergeClasses';
 import BScroll from '../scroll/BScroll';
 import { h, SetupContext } from 'vue';

@@ -1,7 +1,17 @@
-import {constant} from 'fp-ts/lib/function';
-import {none, Option, some} from 'fp-ts/lib/Option';
+import { constant } from 'fp-ts/lib/function';
+import { none, Option, some } from 'fp-ts/lib/Option';
 import debounce from 'lodash.debounce';
-import { watchEffect, provide, shallowRef, Ref, PropType, ExtractPropTypes, computed, onMounted, onUnmounted } from 'vue';
+import {
+  watchEffect,
+  provide,
+  shallowRef,
+  Ref,
+  PropType,
+  ExtractPropTypes,
+  computed,
+  onMounted,
+  onUnmounted
+} from 'vue';
 
 export interface WindowSize {
   windowWidth: number;
@@ -39,27 +49,25 @@ export const ProvideWindowSizePropsDefinition = {
     required: false,
     default: constant(DEFAULT_BREAK_POINTS.value)
   }
-}
+};
 
 export type ProvideWindowSizeProps = ExtractPropTypes<typeof ProvideWindowSizePropsDefinition>;
 
 export function getWindowSize(): Ref<WindowSize> {
-
   const windowWidth = shallowRef(window.innerWidth);
 
   const resizeHandler = debounce(() => {
     windowWidth.value = window.innerWidth;
   }, 250);
 
-  onMounted(() => window.addEventListener('resize', resizeHandler, { passive: true }))
-  onUnmounted(() => window.removeEventListener('resize', resizeHandler))
-
+  onMounted(() => window.addEventListener('resize', resizeHandler, { passive: true }));
+  onUnmounted(() => window.removeEventListener('resize', resizeHandler));
 
   return computed(() => {
     const breakPoints = DEFAULT_BREAK_POINTS.value;
     const innerWidth = windowWidth.value;
     const isMobile = innerWidth <= breakPoints.mobile;
-    const isTablet = innerWidth <= breakPoints.tablet && innerWidth > breakPoints.mobile
+    const isTablet = innerWidth <= breakPoints.tablet && innerWidth > breakPoints.mobile;
     return {
       windowWidth: innerWidth,
       isMobile,
@@ -73,16 +81,18 @@ export function getWindowSize(): Ref<WindowSize> {
 }
 
 export function provideWindowSize(props: ProvideWindowSizeProps) {
-  watchEffect(() => { DEFAULT_BREAK_POINTS.value = props.breakPoints; })
-  const windowSize = getWindowSize()
+  watchEffect(() => {
+    DEFAULT_BREAK_POINTS.value = props.breakPoints;
+  });
+  const windowSize = getWindowSize();
 
   const injection: WindowSizeInjection = {
     windowSize: computed(() => some(windowSize.value))
-  }
+  };
 
-  provide(WINDOW_SIZE_SYMBOL, injection)
+  provide(WINDOW_SIZE_SYMBOL, injection);
 
   return {
     windowSize
-  }
+  };
 }

@@ -5,7 +5,7 @@ import { SizeVariant } from '../../types/SizeVariants';
 import { isEnterEvent, isSpaceEvent } from '../../utils/eventHelpers';
 import { toggleListItem } from '../../utils/helpers';
 import { useDisable, UseDisableProps, UseDisablePropsDefinition } from '../disable';
-import {useFocus, UseFocusProps, UseFocusPropsDefinition} from '../focus';
+import { useFocus, UseFocusProps, UseFocusPropsDefinition } from '../focus';
 import { useLabelId, UseLabelIdProps, UseLabelIdPropsDefinition } from '../labelId';
 import { getUseModelPropsDefinition, useModel, UseModelProps } from '../model';
 import { EqProps, getEqPropsDefinition } from '../shared';
@@ -13,15 +13,15 @@ import { EqProps, getEqPropsDefinition } from '../shared';
 export function getUseSelectablePropsDefinition<T>() {
   return {
     trueValue: {
-      type: null as unknown as PropType<T>,
-      default: true as unknown as T
+      type: (null as unknown) as PropType<T>,
+      default: (true as unknown) as T
     },
     falseValue: {
-      type: null as unknown as PropType<T>,
-      default: false as unknown as T
+      type: (null as unknown) as PropType<T>,
+      default: (false as unknown) as T
     },
     indeterminateValue: {
-      type: null as unknown as PropType<T>,
+      type: (null as unknown) as PropType<T>
     },
     isMultiple: {
       type: Boolean as PropType<boolean>,
@@ -139,7 +139,7 @@ export function useSelectionControl<T>(
   type: string
 ) {
   const { value } = useModel<T>(props);
-  const focus = useFocus(props as unknown as UseFocusProps, ref);
+  const focus = useFocus((props as unknown) as UseFocusProps, ref);
   const label = useLabelId(props, role);
   const isActive = computed(() => getIsActive(value.value, props.trueValue, isMultiple.value, props.eq));
   const isDisabled = computed(() => useDisable(props).value || (type === 'radio' && isActive.value));

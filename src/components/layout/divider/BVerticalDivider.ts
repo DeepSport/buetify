@@ -1,5 +1,5 @@
 import './divider.sass';
-import {DEFAULT_THEME_COLOR_MAP, useTheme} from '../../../composables/theme';
+import { DEFAULT_THEME_COLOR_MAP, useTheme } from '../../../composables/theme';
 import { Classes, mergeClasses } from '../../../utils/mergeClasses';
 import { h, SetupContext } from 'vue';
 import { BDividerProps } from './BHorizontalDivider';
