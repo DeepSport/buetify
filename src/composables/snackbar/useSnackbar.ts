@@ -3,6 +3,7 @@ import { IO } from 'fp-ts/lib/IO';
 import { ExtractPropTypes, h, PropType, shallowRef, VNode, Slots } from 'vue';
 import { alwaysEmptyArray } from '../../utils/helpers';
 import {
+  DEFAULT_USE_NOTICE_PROPS,
   NoticeController,
   RenderNoticeOptions,
   useNoticeController,
@@ -21,7 +22,13 @@ export const SnackbarPropsDefinition = {
   }
 };
 
-export type SnackbarProps = ExtractPropTypes<typeof SnackbarPropsDefinition>;
+export interface SnackbarProps extends ExtractPropTypes<typeof SnackbarPropsDefinition> {};
+
+const DEFAULT_SNACKBAR_PROPS: SnackbarProps = {
+  ...DEFAULT_USE_NOTICE_PROPS,
+  actionText: SnackbarPropsDefinition.actionText.default,
+  onAction: SnackbarPropsDefinition.onAction.default()
+}
 
 function generateMessage(slots: Slots, message?: string): VNode {
   return h('p', { class: 'text' }, slots.message ? slots.message() : message);
@@ -72,7 +79,7 @@ function getGenerateSnackbar(props: SnackbarProps, slots: Slots, noticeControlle
   };
 }
 
-export function useSnackbar(props: SnackbarProps, slots: Slots) {
+export function useSnackbar(props: SnackbarProps = DEFAULT_SNACKBAR_PROPS, slots: Slots = {}) {
   const renderNotification = shallowRef(constant(alwaysEmptyArray) as FunctionN<[RenderNoticeOptions], IO<VNode[]>>);
   const controller = useNoticeController(props, renderNotification);
   renderNotification.value = getGenerateSnackbar(props, slots, controller);
