@@ -10,14 +10,17 @@ function generateHeader(slots: Slots) {
 }
 
 function generateFooter(slots: Slots) {
-  return h('footer', { staticClass: 'modal-card-foot' }, slots.footer!(undefined));
+  return h('footer', { staticClass: 'modal-card-foot' }, slots.footer!());
 }
 
 function generateBody(slots: Slots) {
-  return h('section', { staticClass: 'modal-card-body' }, slots.default!(undefined));
+  return h('section', { staticClass: 'modal-card-body' }, slots.default!());
 }
+
+export const B_DIALOG_CONTENT_NAME = 'b-dialog-content';
+
 export default defineComponent({
-  name: 'b-dialog-content',
+  name: B_DIALOG_CONTENT_NAME,
   props: {
     ...getUseThemePropsDefinition(DialogTheme, true),
     size: {
