@@ -1,5 +1,5 @@
 import '../sass/form.sass';
-import { getUseInputPropsDefinition, Input, useInput } from '../../../composables/input/useInput';
+import {getUseInputPropsDefinition, Input, useInput, UseInputProps} from '../../../composables/input/useInput';
 import { Toggle, useToggle } from '../../../composables/toggle';
 import { ColorVariant } from '../../../types/ColorVariants';
 import { SizeVariant } from '../../../types/SizeVariants';
@@ -144,13 +144,14 @@ function generateNonTextInput(
         rightIcon
       )
     ],
+    modelValue: inputData.modelValue,
+    'onUpdate:modelValue': inputData['onUpdate:modelValue'],
     type: inputData.type ? inputData.type.value : undefined,
     autocomplete: getAutocomplete(inputData.autocomplete, type),
     maxlength: inputData.maxlength && inputData.maxlength.value,
     placeholder: inputData.placeholder && inputData.placeholder.value,
     onBlur: inputData.onBlur,
     onFocus: inputData.onFocus,
-    onInput: inputData.onInput,
     required: inputData.isRequired.value,
     readonly: inputData.isReadonly.value,
     disabled: inputData.isDisabled.value,
@@ -181,12 +182,12 @@ function generateTextarea(
         rightIcon
       )
     ],
-    value: inputData.value.value,
+    modelValue: inputData.modelValue.value,
+    'onUpdate:modelValue': inputData['onUpdate:modelValue'],
     maxlength: inputData.maxlength && inputData.maxlength.value,
     placeholder: inputData.placeholder && inputData.placeholder.value,
     onBlur: inputData.onBlur,
     onFocus: inputData.onFocus,
-    onInput: inputData.onInput,
     required: inputData.isRequired.value,
     readonly: inputData.isReadonly.value,
     disabled: inputData.isDisabled.value,
@@ -242,7 +243,7 @@ export function defineInput<T>() {
     props: getBInputPropsDefinition<T>(),
     setup(props, context: SetupContext) {
       const inputRef = shallowRef((null as unknown) as HTMLInputElement);
-      const inputData = useInput(props, inputRef);
+      const inputData = useInput(props as UseInputProps<T>, inputRef);
       const passwordToggle = useToggle({ isVisible: false, hasPopup: false }, 'isVisible');
       const rightIcon = computed(() =>
         getRightIcon(
@@ -254,7 +255,7 @@ export function defineInput<T>() {
       );
       const useCounter = computed(
         () =>
-          (inputData.type === undefined || (inputData.value && inputData.value.value !== 'number')) &&
+          (inputData.type === undefined || (inputData.modelValue && typeof inputData.modelValue.value !== 'number')) &&
           !!inputData.maxlength &&
           props.hasCounter
       );
@@ -277,7 +278,7 @@ export function defineInput<T>() {
         }
         if (useCounter.value && inputData.maxlength && inputData.maxlength.value !== undefined) {
           nodes.push(
-            generateCounter(inputData.isFocused.value, getValueLength(inputData.value.value), inputData.maxlength.value)
+            generateCounter(inputData.isFocused.value, getValueLength(inputData.modelValue.value), inputData.maxlength.value)
           );
         }
         return h(

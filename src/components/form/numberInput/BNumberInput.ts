@@ -17,11 +17,11 @@ const DEFAULT_NUMBER_INPUT_ICONS: NumberInputIcons = {
 
 const BNumberInputPropsDefinition = {
   ...getUseInputPropsDefinition<number>(),
-  value: {
+  modelValue: {
     type: Number as PropType<number>,
     default: 0
   },
-  onInput: {
+  'onUpdate:modelValue': {
     type: Function as PropType<FunctionN<[number], void>>,
     default: constant(constVoid)
   },
@@ -102,7 +102,7 @@ function generateControl(props: BNumberInputProps, data: BNumberInputData, isDec
 function generateInput(props: BNumberInputProps, model: Model<number>, data: BNumberInputData): VNode {
   return h(BInput, {
     props: {
-      value: model.value.value,
+      value: model.modelValue.value,
       onInput: model.set,
       type: 'number',
       size: props.size,
@@ -131,16 +131,16 @@ export default defineComponent({
   props: BNumberInputPropsDefinition,
   setup(props) {
     const model = useModel(props);
-    const canDecrement = computed(() => (model.value.value || 0) - props.step > props.min);
+    const canDecrement = computed(() => (model.modelValue.value || 0) - props.step > props.min);
     function onDecrement() {
       if (canDecrement.value) {
-        model.value.value = (model.value.value || 0) - props.step;
+        model.modelValue.value = (model.modelValue.value || 0) - props.step;
       }
     }
-    const canIncrement = computed(() => (model.value.value || 0) + props.step < props.max);
+    const canIncrement = computed(() => (model.modelValue.value || 0) + props.step < props.max);
     function onIncrement() {
       if (canIncrement.value) {
-        model.value.value = (model.value.value || 0) + props.step;
+        model.modelValue.value = (model.modelValue.value || 0) + props.step;
       }
     }
 

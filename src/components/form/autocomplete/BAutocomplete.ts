@@ -3,6 +3,7 @@ import { Eq } from 'fp-ts/lib/Eq';
 import { IO } from 'fp-ts/lib/IO';
 import { getUseInputPropsDefinition } from '../../../composables/input/useInput';
 import { useModel } from '../../../composables/model';
+import {getUseModelPropsDefinition} from '../../../composables/model/useModel';
 import { getEqPropsDefinition } from '../../../composables/shared';
 import { getUseThemePropsDefinition } from '../../../composables/theme';
 import { alwaysEmptyArray, extractProp } from '../../../utils/helpers';
@@ -221,11 +222,12 @@ function defineAutocomplete<T>() {
       ...getUseInputPropsDefinition<string>(),
       ...getEqPropsDefinition<T>(),
       ...getUseThemePropsDefinition(DropdownThemeMap),
-      items: {
-        type: Array as PropType<T[]>,
-        default: alwaysEmptyArray
-      },
+      ...getUseModelPropsDefinition<T[], 'selectedItems', 'onUpdate:selectedItems'>('selectedItems', 'onUpdate:selectedItems'),
       selectedItems: {
+        type: Array as PropType<T[]>,
+        required: true as const
+      },
+      items: {
         type: Array as PropType<T[]>,
         default: alwaysEmptyArray
       },
@@ -236,10 +238,6 @@ function defineAutocomplete<T>() {
       itemText: {
         type: [String, Function] as PropType<keyof T | ((item: T) => string)>,
         default: 'text'
-      },
-      onSelect: {
-        type: Function as PropType<FunctionN<[T], void>>,
-        required: true
       },
       closeOnSelect: {
         type: Boolean as PropType<boolean>,
@@ -260,6 +258,7 @@ function defineAutocomplete<T>() {
     },
     setup(props, { slots }) {
       const model = useModel(props);
+      const selectedItemsModel = useModel(props, 'selectedItems', 'onUpdate:selectedItems');
       const itemsRef = shallowRef([] as HTMLElement[]);
       onBeforeUpdate(() => (itemsRef.value = []));
       const dropdownProps = shallowReactive({ isExpanded: false, hasPopup: true });
@@ -282,7 +281,7 @@ function defineAutocomplete<T>() {
         )
       );
       const numberOfItems = computed(() => autocompleteItems.value.length);
-      const setSelected = getSetSelected(props, close, model.value);
+      const setSelected = getSetSelected(props, close, model.modelValue);
       const setHovered = getSetHovered(hoveredItem, itemsRef);
       const onKeydown = getOnKeydown(autocompleteItems, hoveredItem, close, setSelected, setHovered);
       const generateItem = getGenerateItem(itemsRef, numberOfItems, onKeydown, setSelected, setHovered, slots);
@@ -293,7 +292,7 @@ function defineAutocomplete<T>() {
           slots: {
             trigger: () => {
               return h(BInput, {
-                value: model.value.value,
+                modelValue: model.modelValue.value,
                 type: 'text',
                 size: props.size,
                 isLoading: props.isLoading,
@@ -304,7 +303,7 @@ function defineAutocomplete<T>() {
                 placeholder: props.placeholder,
                 role: 'searchbox',
                 'aria-activedescendant': activeDescendentId.value,
-                onInput: model.onInput,
+                'onUpdate:modelValue': model.set,
                 onFocus: open,
                 onBlur: props.onBlur,
                 onKeydown
@@ -316,7 +315,7 @@ function defineAutocomplete<T>() {
                 nodes = [generateLoadingItem(slots)];
               } else {
                 nodes = isEmpty(autocompleteItems.value)
-                  ? [generateEmptyItem(model.value.value, slots)]
+                  ? [generateEmptyItem(model.modelValue.value, slots)]
                   : autocompleteItems.value.map(generateItem);
                 if (slots.header) {
                   nodes.unshift(generateHeaderItem(slots), h(BDropdownDivider));

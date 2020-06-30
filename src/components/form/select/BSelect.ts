@@ -48,7 +48,7 @@ export function getBSelectPropsDefinition<T>(eq?: Eq<T>) {
   };
 }
 
-export interface BSelectProps<T> extends EqProps<T>, UseInputProps<T> {
+export type BSelectProps<T> = EqProps<T> & UseInputProps<T>  &{
   items: T[];
   isMultiple: boolean;
   itemKey?: Extractor<T>;
@@ -74,7 +74,7 @@ function getSelectClasses<T>(props: BSelectProps<T>, input: Input): Classes[] {
       'is-loading': props.isLoading,
       'is-multiple': isMultiple(props, input),
       'is-rounded': props.isRounded,
-      'is-empty': isEmpty(input.value.value)
+      'is-empty': isEmpty(input.modelValue.value)
     }
   ];
 }
@@ -98,7 +98,7 @@ function generatePlaceholder<T>(props: BSelectProps<T>, context: SetupContext): 
 function getIsSelected<T>(props: BSelectProps<T>, input: Input) {
   return (val: T) => {
     const equals = props.eq.equals;
-    const value = input.value.value;
+    const value = input.modelValue.value;
     if (value === null || value === undefined) {
       return false;
     } else if (isMultiple(props, input)) {
@@ -126,7 +126,7 @@ function generateOptions<T>(props: BSelectProps<T>, context: SetupContext, input
 }
 
 function isMultiple<T>(props: BSelectProps<T>, input: Input) {
-  return props.isMultiple || (props.isMultiple === undefined && Array.isArray(input.value.value));
+  return props.isMultiple || (props.isMultiple === undefined && Array.isArray(input.modelValue.value));
 }
 
 function generateSelect<T>(
@@ -136,7 +136,7 @@ function generateSelect<T>(
   input: Input,
   themeClasses: Classes
 ): VNode {
-  const value = input.value.value;
+  const value = input.modelValue.value;
   const usePlaceholder = isEmpty(value) && (!!props.placeholder || !!context.slots.placeholder);
   return h(
     'select',
@@ -149,7 +149,7 @@ function generateSelect<T>(
       class: themeClasses,
       onBlur: input.onBlur,
       onFocus: input.onFocus,
-      onInput: input.onInput
+      'onUpdate:modelValue': input['onUpdate:modelValue']
     },
     usePlaceholder
       ? [generatePlaceholder(props, context), ...generateOptions(props, context, input)]
@@ -163,16 +163,16 @@ export function defineSelect<T>(eq?: Eq<T>) {
     props: getBSelectPropsDefinition<T>(eq),
     setup(props, context) {
       const selectRef = shallowRef((null as unknown) as HTMLElement);
-      const input = useInput(props, selectRef);
+      const input = useInput(props as UseInputProps<T>, selectRef);
       const { themeClasses } = useTheme(props);
       return () => {
         return h('div', { class: ['control', getControlClasses(input.isExpanded.value, !!input.icon)] }, [
           h(
             'span',
             {
-              class: ['select', ...getSelectClasses(props, input as Input)]
+              class: ['select', ...getSelectClasses(props as BSelectProps<T>, input as Input)]
             },
-            [generateSelect(props, context, selectRef, input as Input, themeClasses.value)]
+            [generateSelect(props as BSelectProps<T>, context, selectRef, input as Input, themeClasses.value)]
           )
         ]);
       };

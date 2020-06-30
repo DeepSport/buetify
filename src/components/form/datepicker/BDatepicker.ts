@@ -165,7 +165,7 @@ function getUpdateValue(
     if (value === null || value === undefined) {
       return;
     } else if (Array.isArray(value)) {
-      model.value.value = value;
+      model.modelValue.value = value;
       const currentDate = value.length ? value[0] : props.dateCreator();
       dateSelectionData.value = {
         month: currentDate.getMonth() as MonthNumber,
@@ -173,17 +173,17 @@ function getUpdateValue(
       };
     } else {
       if (props.isMultiple) {
-        const currentValue = model.value.value;
+        const currentValue = model.modelValue.value;
         const existingDates = Array.isArray(currentValue) ? currentValue : [currentValue].filter(isDate);
         const newDates = toggleDate(value, existingDates);
-        model.value.value = newDates;
+        model.modelValue.value = newDates;
         const currentDate = newDates.length ? newDates[0] : props.dateCreator();
         dateSelectionData.value = {
           month: currentDate.getMonth() as MonthNumber,
           year: currentDate.getFullYear()
         };
       } else {
-        model.value.value = value;
+        model.modelValue.value = value;
         dateSelectionData.value = {
           month: value.getMonth() as MonthNumber,
           year: value.getFullYear()
@@ -231,7 +231,7 @@ function generateInput(
       : { ...context.attrs, max: formatYYYYMMDD(props.maxDate), min: formatYYYYMMDD(props.minDate) }),
     autocomplete: 'off',
     type: isMobile ? 'date' : 'text',
-    value: formatDateInput(props, model.value.value as any),
+    value: formatDateInput(props, model.modelValue.value as any),
     placeholder: props.placeholder,
     size: props.size,
     icon: props.icons.calendar,
@@ -331,7 +331,7 @@ function generateDatepickerTable(
   data: BDatepickerData
 ): VNode {
   return h(BDatepickerTable, {
-    value: model.value.value as Date | Date[],
+    value: model.modelValue.value as Date | Date[],
     dayNames: props.dayNames,
     monthNames: props.monthNames,
     firstDayOfWeek: props.firstDayOfWeek,
