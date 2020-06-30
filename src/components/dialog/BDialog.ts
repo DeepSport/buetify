@@ -31,7 +31,6 @@ export default defineComponent({
           isActive: true,
           onClose: popup.close,
           slots: {
-            $stable: true,
             default: () =>
               isDialogContent
                 ? nodes
