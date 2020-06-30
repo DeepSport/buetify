@@ -91,7 +91,7 @@ export function useInput<T>(props: UseInputProps<T>, ref: Ref<HTMLElement>) {
   const model = useModel(props);
   const focus = useFocus(props, ref);
   const validate = useValidation(props, ref);
-  watch(model.value, validate.validate);
+  watch(model.modelValue, validate.validate);
   const iconSize = computed(() => getIconSize(props.size));
   const messageVariant = computed(() => getMessageVariant(fieldData.attrs.messageVariant.value));
   return {

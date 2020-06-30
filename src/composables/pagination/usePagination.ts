@@ -3,7 +3,7 @@ import { getUseModelPropsDefinition, useModel } from '../model';
 
 export const UsePaginationPropsDefinition = {
   ...getUseModelPropsDefinition<number>(),
-  value: {
+  modelValue: {
     type: Number as PropType<number>,
     default: 0
   },
@@ -21,12 +21,12 @@ export type UsePaginationProps = ExtractPropTypes<typeof UsePaginationPropsDefin
 
 export function usePagination(props: UsePaginationProps) {
   const model = useModel(props);
-  const current = computed(() => Math.max(model.value.value as number, 1));
+  const current = computed(() => Math.max(model.modelValue.value as number, 1));
   const numberOfPages = computed(() => Math.ceil(props.total / props.perPage));
-  const after = computed(() => Math.max(((model.value.value as number) - 1) * props.perPage, 0));
-  const nextPage = computed(() => Math.min(numberOfPages.value, (model.value.value as number) + 1));
+  const after = computed(() => Math.max(((model.modelValue.value as number) - 1) * props.perPage, 0));
+  const nextPage = computed(() => Math.min(numberOfPages.value, (model.modelValue.value as number) + 1));
   const hasNext = computed(() => props.perPage + after.value < props.total);
-  const previousPage = computed(() => Math.max(0, (model.value.value as number) - 1));
+  const previousPage = computed(() => Math.max(0, (model.modelValue.value as number) - 1));
   const hasPrevious = computed(() => after.value > 0 && props.total > 0);
   function next(e: Event) {
     e.preventDefault();

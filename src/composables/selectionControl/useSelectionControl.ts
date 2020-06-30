@@ -138,15 +138,15 @@ export function useSelectionControl<T>(
   role: string,
   type: string
 ) {
-  const { value } = useModel<T>(props);
+  const { modelValue } = useModel<T>(props);
   const focus = useFocus((props as unknown) as UseFocusProps, ref);
   const label = useLabelId(props, role);
-  const isActive = computed(() => getIsActive(value.value, props.trueValue, isMultiple.value, props.eq));
+  const isActive = computed(() => getIsActive(modelValue.value, props.trueValue, isMultiple.value, props.eq));
   const isDisabled = computed(() => useDisable(props).value || (type === 'radio' && isActive.value));
-  const isMultiple = computed(() => props.isMultiple || Array.isArray(value.value));
+  const isMultiple = computed(() => props.isMultiple || Array.isArray(modelValue.value));
 
   const onChange = getOnChange(
-    value,
+    modelValue,
     toRef(props, 'trueValue'),
     toRef(props, 'falseValue'),
     isDisabled,
@@ -164,7 +164,7 @@ export function useSelectionControl<T>(
       isDisabled.value,
       props.isReadonly,
       props.isRequired,
-      value.value,
+      modelValue.value,
       props.trueValue,
       props.falseValue
     )
@@ -182,7 +182,7 @@ export function useSelectionControl<T>(
   }
 
   return {
-    value,
+    modelValue,
     ...focus,
     isDisabled,
     isMultiple,

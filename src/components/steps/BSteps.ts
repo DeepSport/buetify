@@ -50,7 +50,7 @@ export type BStepsProps = ExtractPropTypes<typeof BStepsPropsDefinition>;
 
 function getOnStepClick(index: number, model: Model<number>, transition: Ref<StepTransition>) {
   return () => {
-    const val = model.value.value || 0;
+    const val = model.modelValue.value || 0;
     if (val !== index) {
       transition.value = index < val ? 'slide-next' : 'slide-prev';
       nextTick(() => {
@@ -101,8 +101,8 @@ function getGenerateNavItem(
             'step-item',
             step.props.variant || props.variant,
             {
-              'is-active': index === model.value.value,
-              'is-completed': step.props.isCompleted || (model.value.value as number) > index
+              'is-active': index === model.modelValue.value,
+              'is-completed': step.props.isCompleted || (model.modelValue.value as number) > index
             }
           ]
         },
@@ -138,8 +138,8 @@ function generateStepContent(
       'aria-label': 'Step Content'
     },
     props.isAnimated
-      ? [h(Transition, { name: transition.value }, steps[model.value.value || 0].render())]
-      : steps[model.value.value || 0].render()
+      ? [h(Transition, { name: transition.value }, steps[model.modelValue.value || 0].render())]
+      : steps[model.modelValue.value || 0].render()
   );
 }
 
@@ -152,7 +152,7 @@ export default defineComponent({
     const vShow = resolveDirective('show') as Directive;
     const model = useModel(props);
     const transition = shallowRef('slide-next' as 'slide-next' | 'slide-prev');
-    const currentStep = computed(() => lookup(model.value.value || 0, injection.steps.value));
+    const currentStep = computed(() => lookup(model.modelValue.value || 0, injection.steps.value));
     const injection: StepInjection = {
       steps: shallowRef([] as BStepItemData[]),
       activeLabel: computed(() =>
@@ -166,7 +166,7 @@ export default defineComponent({
     provide(STEPS_SYMBOL, injection);
 
     onBeforeMount(() => {
-      if (model.value.value === undefined || (isSome(currentStep.value) && !currentStep.value.value.props.isVisible)) {
+      if (model.modelValue.value === undefined || (isSome(currentStep.value) && !currentStep.value.value.props.isVisible)) {
         model.set(
           Math.max(
             injection.steps.value.findIndex(step => step.props.isVisible),

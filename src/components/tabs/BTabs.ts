@@ -75,7 +75,7 @@ export type BTabsProps = ExtractPropTypes<typeof BTabsPropsDefinition>;
 
 function getOnTabItemClick(index: number, model: Model<number>, transition: Ref<TabTransition>) {
   return () => {
-    const val = model.value.value || 0;
+    const val = model.modelValue.value || 0;
     if (val !== index) {
       transition.value = index < val ? 'slide-next' : 'slide-prev';
       nextTick(() => {
@@ -94,7 +94,7 @@ function getGenerateNavItem(props: BTabsProps, model: Model<number>, transition:
           key: step.props.label,
           class: [
             {
-              'is-active': index === model.value.value,
+              'is-active': index === model.modelValue.value,
               'is-disabled': step.props.isDisabled
             }
           ]
@@ -196,8 +196,8 @@ function generateTabContent(
       'aria-label': 'Step Content'
     },
     props.isAnimated
-      ? [h(Transition, { name: transition.value }, tabs[model.value.value || 0].render())]
-      : tabs[model.value.value || 0].render()
+      ? [h(Transition, { name: transition.value }, tabs[model.modelValue.value || 0].render())]
+      : tabs[model.modelValue.value || 0].render()
   );
 }
 
@@ -211,7 +211,7 @@ export default defineComponent({
     const vShow = resolveDirective('show') as Directive;
     const model = useModel(props);
     const transition = shallowRef('slide-next' as 'slide-next' | 'slide-prev');
-    const currentStep = computed(() => lookup(model.value.value || 0, injection.tabs.value));
+    const currentStep = computed(() => lookup(model.modelValue.value || 0, injection.tabs.value));
     const injection: TabInjection = {
       tabs: shallowRef([] as BTabItemData[]),
       activeLabel: computed(() =>
@@ -225,7 +225,7 @@ export default defineComponent({
     provide(TABS_SYMBOL, injection);
 
     onBeforeMount(() => {
-      if (model.value.value === undefined || (isSome(currentStep.value) && !currentStep.value.value.props.isVisible)) {
+      if (model.modelValue.value === undefined || (isSome(currentStep.value) && !currentStep.value.value.props.isVisible)) {
         model.set(
           Math.max(
             injection.tabs.value.findIndex(step => step.props.isVisible),
