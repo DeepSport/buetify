@@ -7,7 +7,7 @@ import { useFocus, UseFocusPropsDefinition } from '../focus';
 import { getUseModelPropsDefinition, useModel, UseModelProps } from '../model';
 import { useValidation, UseValidationPropsDefinition } from '../validation';
 
-const StaticUseInputProps = {
+export const StaticUseInputProps = {
   variant: {
     type: String as PropType<ColorVariant>,
     default: 'is-primary' as const
