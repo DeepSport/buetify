@@ -22,13 +22,13 @@ export const SnackbarPropsDefinition = {
   }
 };
 
-export interface SnackbarProps extends ExtractPropTypes<typeof SnackbarPropsDefinition> {};
+export interface SnackbarProps extends ExtractPropTypes<typeof SnackbarPropsDefinition> {}
 
 const DEFAULT_SNACKBAR_PROPS: SnackbarProps = {
   ...DEFAULT_USE_NOTICE_PROPS,
   actionText: SnackbarPropsDefinition.actionText.default,
   onAction: SnackbarPropsDefinition.onAction.default()
-}
+};
 
 function generateMessage(slots: Slots, message?: string): VNode {
   return h('p', { class: 'text' }, slots.message ? slots.message() : message);

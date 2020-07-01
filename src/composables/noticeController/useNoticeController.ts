@@ -37,7 +37,7 @@ export const UseNoticePropsDefinition = {
   }
 };
 
-export interface UseNoticeProps extends ExtractPropTypes<typeof UseNoticePropsDefinition> {};
+export interface UseNoticeProps extends ExtractPropTypes<typeof UseNoticePropsDefinition> {}
 
 export const DEFAULT_USE_NOTICE_PROPS: UseNoticeProps = {
   position: UseNoticePropsDefinition.position.default,
@@ -45,7 +45,7 @@ export const DEFAULT_USE_NOTICE_PROPS: UseNoticeProps = {
   shouldQueue: UseNoticePropsDefinition.shouldQueue.default,
   variant: UseNoticePropsDefinition.variant.default,
   isIndefinite: UseNoticePropsDefinition.isIndefinite.default
-}
+};
 
 function useNoticeTransition(props: UseNoticeProps = DEFAULT_USE_NOTICE_PROPS): Ref<TransitionClasses> {
   return computed(() => {

@@ -225,7 +225,10 @@ export default defineComponent({
     provide(TABS_SYMBOL, injection);
 
     onBeforeMount(() => {
-      if (model.modelValue.value === undefined || (isSome(currentStep.value) && !currentStep.value.value.props.isVisible)) {
+      if (
+        model.modelValue.value === undefined ||
+        (isSome(currentStep.value) && !currentStep.value.value.props.isVisible)
+      ) {
         model.set(
           Math.max(
             injection.tabs.value.findIndex(step => step.props.isVisible),

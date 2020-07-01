@@ -48,15 +48,16 @@ export function getBSelectPropsDefinition<T>(eq?: Eq<T>) {
   };
 }
 
-export type BSelectProps<T> = EqProps<T> & UseInputProps<T>  &{
-  items: T[];
-  isMultiple: boolean;
-  itemKey?: Extractor<T>;
-  itemText: Extractor<T>;
-  itemValue: Extractor<T>;
-  itemDisabled: Extractor<T>;
-  displayCount?: string | number;
-}
+export type BSelectProps<T> = EqProps<T> &
+  UseInputProps<T> & {
+    items: T[];
+    isMultiple: boolean;
+    itemKey?: Extractor<T>;
+    itemText: Extractor<T>;
+    itemValue: Extractor<T>;
+    itemDisabled: Extractor<T>;
+    displayCount?: string | number;
+  };
 
 function getControlClasses(isExpanded: boolean, hasIcon: boolean) {
   return {

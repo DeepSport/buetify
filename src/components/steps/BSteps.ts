@@ -166,7 +166,10 @@ export default defineComponent({
     provide(STEPS_SYMBOL, injection);
 
     onBeforeMount(() => {
-      if (model.modelValue.value === undefined || (isSome(currentStep.value) && !currentStep.value.value.props.isVisible)) {
+      if (
+        model.modelValue.value === undefined ||
+        (isSome(currentStep.value) && !currentStep.value.value.props.isVisible)
+      ) {
         model.set(
           Math.max(
             injection.steps.value.findIndex(step => step.props.isVisible),
