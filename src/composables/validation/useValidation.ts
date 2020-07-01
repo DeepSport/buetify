@@ -1,4 +1,4 @@
-import {constant, constVoid, FunctionN} from 'fp-ts/lib/function';
+import { constant, constVoid, FunctionN } from 'fp-ts/lib/function';
 import { Ref, ExtractPropTypes, shallowRef, PropType, watch } from 'vue';
 import { isString } from '../../utils/helpers';
 import { useDisable, UseDisablePropsDefinition } from '../disable';
@@ -32,8 +32,8 @@ export function useValidation(props: UseValidationProps, ref: Ref<HTMLElement>) 
   const isDisabled = useDisable(props);
   const isValid = shallowRef(props.isValid);
   watch(isValid, newValue => {
-    props['onUpdate:isValid'](newValue)
-  })
+    props['onUpdate:isValid'](newValue);
+  });
   function validate() {
     if (!isDisabled.value && props.useNativeValidation) {
       if (isHtmlInputElement(ref.value)) {

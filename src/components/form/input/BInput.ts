@@ -1,5 +1,5 @@
 import '../sass/form.sass';
-import {getUseInputPropsDefinition, Input, useInput, UseInputProps} from '../../../composables/input/useInput';
+import { getUseInputPropsDefinition, Input, useInput, UseInputProps } from '../../../composables/input/useInput';
 import { Toggle, useToggle } from '../../../composables/toggle';
 import { ColorVariant } from '../../../types/ColorVariants';
 import { SizeVariant } from '../../../types/SizeVariants';
@@ -278,7 +278,11 @@ export function defineInput<T>() {
         }
         if (useCounter.value && inputData.maxlength && inputData.maxlength.value !== undefined) {
           nodes.push(
-            generateCounter(inputData.isFocused.value, getValueLength(inputData.modelValue.value), inputData.maxlength.value)
+            generateCounter(
+              inputData.isFocused.value,
+              getValueLength(inputData.modelValue.value),
+              inputData.maxlength.value
+            )
           );
         }
         return h(
