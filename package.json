@@ -48,7 +48,7 @@
     "bulma": "^0.8.0",
     "fp-ts": "^2.6.5",
     "fp-ts-local-storage": "^0.2.0",
-    "vue": "3.0.0-beta.16"
+    "vue": "3.0.0-beta.20"
   },
   "dependencies": {
     "lodash.debounce": "^4.0.8"
@@ -74,6 +74,6 @@
     "rimraf": "^3.0.1",
     "shelljs": "^0.8.3",
     "typescript": "^3.9.5",
-    "vue": "3.0.0-beta.16"
+    "vue": "3.0.0-beta.20"
   }
 }
