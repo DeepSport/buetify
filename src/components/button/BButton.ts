@@ -19,21 +19,21 @@ export interface ButtonProps {
 }
 
 function getButtonClasses(props: ButtonProps): Classes {
-	return [
-		'button',
-		props.variant,
-		props.size ? props.size : '',
-		{
-			'is-rounded': props.isRounded,
-			'is-loading': props.isLoading,
-			'is-outlined': props.isOutlined,
-			'is-inverted': props.isInverted,
-			'is-focused': props.isFocused,
-			'is-active': props.isActive,
-			'is-disabled': props.isDisabled,
-			'is-hovered': props.isHovered
-		}
-	];
+  return [
+    'button',
+    props.variant,
+    props.size ? props.size : '',
+    {
+      'is-rounded': !!props.isRounded,
+      'is-loading': !!props.isLoading,
+      'is-outlined': !!props.isOutlined,
+      'is-inverted': !!props.isInverted,
+      'is-focused': !!props.isFocused,
+      'is-active': !!props.isActive,
+      'is-disabled': !!props.isDisabled,
+      'is-hovered': !!props.isHovered
+    }
+  ];
 }
 
 export default defineComponent({

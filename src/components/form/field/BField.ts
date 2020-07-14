@@ -3,35 +3,19 @@ import { constant } from 'fp-ts/lib/function';
 import { FieldDataAttrs, provideFieldData, ProvideFieldDataPropsDefinition } from '../../../composables/fieldData';
 import { DefaultThemePropsDefinition } from '../../../composables/theme';
 import {
-<<<<<<< HEAD
-	withDirectives,
-	h,
-	PropType,
-	VNode,
-	defineComponent,
-	Ref,
-	computed,
-	ExtractPropTypes,
-	shallowRef,
-	watch,
-	Slots,
-	vShow,
-	SetupContext
-=======
   withDirectives,
   h,
   PropType,
   VNode,
   defineComponent,
-  defineAsyncComponent,
   Ref,
   computed,
   ExtractPropTypes,
   shallowRef,
   watch,
   Slots,
-  vShow
->>>>>>> 6898b0f... Small fixes
+  vShow,
+  SetupContext
 } from 'vue';
 import { AllColorsVariant } from '../../../types/ColorVariants';
 import { Classes, mergeClasses } from '../../../utils/mergeClasses';
@@ -102,47 +86,6 @@ function generateHorizontalLabel(fieldData: FieldDataAttrs, customClass: string,
 }
 
 function generateLabel(isHorizontal: boolean, fieldData: FieldDataAttrs, customClass: string, size: string): VNode[] {
-<<<<<<< HEAD
-	const label = fieldData.label.value;
-	if (isHorizontal && !!label) {
-		return [generateHorizontalLabel(fieldData, customClass, size)];
-	} else if (!isHorizontal && !!label) {
-		return [generateInnerLabel(fieldData, customClass)];
-	} else {
-		return [];
-	}
-}
-
-function generateHelpMessage(isHorizontal: boolean, fieldDataAttrs: FieldDataAttrs): VNode {
-	const showHelpMessage = !isHorizontal && !!fieldDataAttrs.message.value;
-	return withDirectives(
-		h('p', {
-			class: ['help', fieldDataAttrs.messageVariant.value],
-			'aria-hidden': showHelpMessage,
-			innerHTML: fieldDataAttrs.message.value
-		}),
-		[[vShow, showHelpMessage]]
-	);
-}
-
-function generateBody(isHorizontal: boolean, fieldData: FieldDataAttrs, role: string, slots: Slots): VNode[] {
-	if (isHorizontal) {
-		return [
-			h(
-				BFieldBody, // eslint-disable-line
-				{
-					class: { 'is-expanded': fieldData.isExpanded.value },
-					message: fieldData.message.value,
-					variant: fieldData.messageVariant.value,
-					role
-				},
-				slots.default
-			)
-		];
-	} else {
-		return slots.default ? slots.default() : [];
-	}
-=======
   const label = fieldData.label.value;
   if (isHorizontal && !!label) {
     return [generateHorizontalLabel(fieldData, customClass, size)];
@@ -182,7 +125,6 @@ function generateBody(isHorizontal: boolean, fieldData: FieldDataAttrs, role: st
   } else {
     return slots.default!();
   }
->>>>>>> 6898b0f... Small fixes
 }
 
 function getFieldType(isGrouped: boolean, hasAddons: boolean, isHorizontal: boolean, slots: Slots): string {
@@ -193,47 +135,7 @@ function getFieldType(isGrouped: boolean, hasAddons: boolean, isHorizontal: bool
 		: '';
 }
 
-<<<<<<< HEAD
 const BField = defineComponent({
-	name: 'b-field',
-	props: BFieldPropsDefinition,
-	setup(props, { slots }) {
-		const field = shallowRef((null as unknown) as HTMLElement);
-		const fieldData = provideFieldData(props);
-		const classes = getFieldClasses(props);
-		const role = computed(() => (props.isGrouped ? 'group' : ''));
-		const size = shallowRef('');
-		watch(field, newVal => {
-			if (props.isHorizontal && newVal) {
-				// Bulma docs: .is-normal for any .input or .button
-				const elements = newVal.querySelectorAll('.input, .select, .button, .textarea');
-				if (elements.length > 0) {
-					size.value = 'is-normal';
-				}
-			}
-		});
-		return () => {
-			return h(
-				'div',
-				{
-					ref: field,
-					class: [
-						'field',
-						classes.value,
-						getFieldType(props.isGrouped, props.hasAddons, props.isHorizontal, slots)
-					],
-					role: role.value
-				},
-				[
-					generateLabel(props.isHorizontal, fieldData.attrs, props.customLabelClass, size.value),
-					...generateBody(props.isHorizontal, fieldData.attrs, role.value, slots),
-					generateHelpMessage(props.isHorizontal, fieldData.attrs)
-				]
-			);
-		};
-	}
-=======
-export default defineComponent({
   name: 'b-field',
   props: BFieldPropsDefinition,
   setup(props, { slots }) {
@@ -267,25 +169,23 @@ export default defineComponent({
       );
     };
   }
->>>>>>> 6898b0f... Small fixes
 });
 
 export interface BFieldBodyProps {
-	message?: string;
-	variant?: AllColorsVariant;
-	tag?: string;
+  message?: string;
+  variant?: AllColorsVariant;
+  tag?: string;
 }
 
-// eslint-disable-next-line
 function BFieldBody(props: BFieldBodyProps, { attrs, slots }: SetupContext) {
-	const nodes = slots.default ? slots.default() : [];
-	return h(
-		props.tag ?? 'div',
-		{
-			class: mergeClasses(attrs.class as Classes, 'field-body')
-		},
-		nodes.map((element: VNode) => (element.el ? element : h(BField, props, constant(element))))
-	);
+  const nodes = slots.default!();
+  return h(
+    props.tag ?? 'div',
+    {
+      class: mergeClasses(attrs.class as Classes, 'field-body')
+    },
+    nodes.map((element: VNode) => (!!element.el ? element : h(BField, props, [element])))
+  );
 }
 
 export default BField;

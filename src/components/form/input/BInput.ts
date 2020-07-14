@@ -8,30 +8,29 @@ import { isNumber, isString } from '../../../utils/helpers';
 import { constant } from 'fp-ts/lib/function';
 import { VNode } from 'vue';
 import { DEFAULT_INPUT_ICONS, InputIcons } from '../shared/types';
-import { Component, defineComponent, PropType, shallowRef, h, Ref, computed, SetupContext, shallowReactive } from 'vue';
+import { Component, defineComponent, PropType, shallowRef, h, Ref, computed, SetupContext, shallowReactive, watchEffect } from 'vue';
 
 export function getBInputPropsDefinition<T>() {
-	return {
-		...getUseInputPropsDefinition<T>(),
-		...DefaultThemePropsDefinition,
-		isLoading: {
-			type: Boolean as PropType<boolean>,
-			default: false
-		},
-		hasCounter: {
-			type: Boolean,
-			default: true
-		},
-		customInputClass: {
-			type: String,
-			default: ''
-		},
-		inputIcons: {
-			type: Object as PropType<InputIcons>,
-			required: false,
-			default: constant(DEFAULT_INPUT_ICONS)
-		}
-	};
+  return {
+    ...getUseInputPropsDefinition<T>(),
+    isLoading: {
+      type: Boolean as PropType<boolean>,
+      default: false
+    },
+    hasCounter: {
+      type: Boolean,
+      default: true
+    },
+    customInputClass: {
+      type: String,
+      default: ''
+    },
+    inputIcons: {
+      type: Object as PropType<InputIcons>,
+      required: false,
+      default: constant(DEFAULT_INPUT_ICONS)
+    }
+  };
 }
 
 function getIconPosition(leftIcon: ConcreteComponent | undefined, rightIcon: ConcreteComponent | undefined): string {
@@ -84,13 +83,13 @@ function generateRightIcon(
 	usePasswordReveal: boolean,
 	passwordToggle: Toggle
 ): VNode {
-	return h(icon, {
-		class: ['is-right', { 'is-clickable': usePasswordReveal }],
-		variant,
-		size,
-		...passwordToggle.attrs.value,
-		...passwordToggle.listeners
-	});
+  return h(icon, {
+    class: ['is-right', { 'is-clickable': usePasswordReveal }],
+    variant,
+    size,
+    ...passwordToggle.attrs.value,
+    ...passwordToggle.listeners
+  });
 }
 
 function generateCounter(isFocused: boolean, valueLength: number, maxLength: number | string): VNode {
@@ -147,37 +146,36 @@ function generateNonTextInput(
 	context: SetupContext,
 	themeClasses: string[]
 ): VNode {
-	const hasMessage = !!inputData.message.value;
-	const type = inputData.type ? inputData.type.value : inputData.usePasswordReveal.value ? 'password' : undefined;
-	return h('input', {
-		...context.attrs,
-		ref: inputRef,
-		class: [
-			'input',
-			...getInputClasses(
-				inputData.iconSize.value,
-				inputData.isExpanded.value,
-				isLoading,
-				hasMessage,
-				inputData.icon && inputData.icon.value,
-				rightIcon,
-				themeClasses
-			)
-		],
-		value: inputData.modelValue.value,
-		onInput: inputData.onNativeInput,
-		type: inputData.type ? inputData.type.value : undefined,
-		autocomplete: getAutocomplete(inputData.autocomplete, type),
-		maxlength: inputData.maxlength && inputData.maxlength.value,
-		placeholder: inputData.placeholder && inputData.placeholder.value,
-		onBlur: inputData.onBlur,
-		onFocus: inputData.onFocus,
-		required: inputData.isRequired.value,
-		readonly: inputData.isReadonly.value,
-		disabled: inputData.isDisabled.value,
-		tabindex: inputData.isDisabled.value ? -1 : 0,
-		id: inputData.id.value
-	});
+  const hasMessage = !!inputData.message.value;
+  const type = inputData.type ? inputData.type.value : inputData.usePasswordReveal.value ? 'password' : undefined;
+  return h('input', {
+    ...context.attrs,
+    ref: inputRef,
+    class: [
+      'input',
+      ...getInputClasses(
+        inputData.iconSize.value,
+        inputData.isExpanded.value,
+        isLoading,
+        hasMessage,
+        inputData.icon && inputData.icon.value,
+        rightIcon
+      )
+    ],
+    modelValue: inputData.modelValue.value,
+    'onUpdate:modelValue': inputData['onUpdate:modelValue'],
+    type: inputData.type ? inputData.type.value : undefined,
+    autocomplete: getAutocomplete(inputData.autocomplete, type),
+    maxlength: inputData.maxlength && inputData.maxlength.value,
+    placeholder: inputData.placeholder && inputData.placeholder.value,
+    onBlur: inputData.onBlur,
+    onFocus: inputData.onFocus,
+    required: inputData.isRequired.value,
+    readonly: inputData.isReadonly.value,
+    disabled: inputData.isDisabled.value,
+    tabindex: inputData.isDisabled.value ? 0 : -1,
+    id: inputData.id.value
+  });
 }
 
 function generateTextarea(
@@ -245,6 +243,9 @@ export function defineInput<T>() {
     name: 'b-input',
     props: getBInputPropsDefinition<T>(),
     setup(props, context: SetupContext) {
+      watchEffect(() => {
+        console.log(props, context.attrs);
+      })
       const inputRef = shallowRef((null as unknown) as HTMLInputElement);
       const inputData = useInput(props as UseInputProps<T>, inputRef);
       const passwordToggle = useToggle(shallowReactive({ isVisible: false, hasPopup: false }), 'isVisible');

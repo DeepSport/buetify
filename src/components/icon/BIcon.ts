@@ -5,10 +5,10 @@ import { ColorVariant, ColorVariantFlags } from '../../types/ColorVariants';
 import { SizeVariant } from '../../types/SizeVariants';
 
 export interface BIconProps {
-	variant?: ColorVariant | ColorVariantFlags;
-	isHoverable?: boolean;
-	size?: SizeVariant;
-	tag?: string | Component;
+  variant?: ColorVariant | ColorVariantFlags;
+  isHoverable?: boolean;
+  size?: SizeVariant;
+  tag?: string | Component;
 }
 
 function convertVariant(variant: ColorVariant | ColorVariantFlags): string | ColorVariantFlags {
@@ -26,14 +26,12 @@ function convertVariant(variant: ColorVariant | ColorVariantFlags): string | Col
 }
 
 export default function BIcon(props: BIconProps, { attrs, slots }: SetupContext) {
-	return h(
-		// eslint-disable-next-line
-		props.tag ?? ('span' as any),
-		{
-			...attrs,
-			class: ['icon', props.size, { 'is-hoverable': props.isHoverable }, convertVariant(props.variant || '')]
-		},
-		// eslint-disable-next-line
-		slots.default!()
-	);
+  return h(
+    props.tag ?? ('span' as any),
+    {
+      ...attrs,
+      class: ['icon', props.size, { 'is-hoverable': props.isHoverable }, convertVariant(props.variant || '')]
+    },
+    slots.default!()
+  );
 }
