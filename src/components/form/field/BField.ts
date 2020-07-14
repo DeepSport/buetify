@@ -7,18 +7,17 @@ import {
   PropType,
   VNode,
   defineComponent,
-  defineAsyncComponent,
   Ref,
   computed,
   ExtractPropTypes,
   shallowRef,
   watch,
   Slots,
-  vShow
+  vShow,
+  SetupContext
 } from 'vue';
-import { Classes } from '../../../utils/mergeClasses';
-
-const BFieldBody = defineAsyncComponent(() => import('./BFieldBody'));
+import { AllColorsVariant } from '../../../types/ColorVariants';
+import { Classes, mergeClasses } from '../../../utils/mergeClasses';
 
 export type FieldPosition = 'is-left' | 'is-centered' | 'is-right';
 
@@ -135,7 +134,7 @@ function getFieldType(isGrouped: boolean, hasAddons: boolean, isHorizontal: bool
     : '';
 }
 
-export default defineComponent({
+const BField = defineComponent({
   name: 'b-field',
   props: BFieldPropsDefinition,
   setup(props, { slots }) {
@@ -170,3 +169,22 @@ export default defineComponent({
     };
   }
 });
+
+export interface BFieldBodyProps {
+  message?: string;
+  variant?: AllColorsVariant;
+  tag?: string;
+}
+
+function BFieldBody(props: BFieldBodyProps, { attrs, slots }: SetupContext) {
+  const nodes = slots.default!();
+  return h(
+    props.tag ?? 'div',
+    {
+      class: mergeClasses(attrs.class as Classes, 'field-body')
+    },
+    nodes.map((element: VNode) => (!!element.el ? element : h(BField, props, [element])))
+  );
+}
+
+export default BField;

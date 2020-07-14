@@ -4,8 +4,7 @@ import { Component, SetupContext, h } from 'vue';
 import { ColorVariant, ColorVariantFlags } from '../../types/ColorVariants';
 import { SizeVariant } from '../../types/SizeVariants';
 
-interface BIconProps {
-  icon: Component;
+export interface BIconProps {
   variant?: ColorVariant | ColorVariantFlags;
   isHoverable?: boolean;
   size?: SizeVariant;
@@ -25,13 +24,13 @@ function convertVariant(variant: ColorVariant | ColorVariantFlags): string | Col
   }
 }
 
-export default function BIcon(props: BIconProps, { attrs }: SetupContext) {
+export default function BIcon(props: BIconProps, { attrs, slots }: SetupContext) {
   return h(
     props.tag ?? ('span' as any),
     {
       ...attrs,
       class: ['icon', props.size, { 'is-hoverable': props.isHoverable }, convertVariant(props.variant || '')]
     },
-    [h(props.icon, { class: props.size })]
+    slots.default!()
   );
 }

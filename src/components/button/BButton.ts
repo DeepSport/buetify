@@ -20,6 +20,7 @@ export interface ButtonProps {
 
 function getButtonClasses(props: ButtonProps): Classes {
   return [
+    'button',
     props.variant,
     props.size ? props.size : '',
     {

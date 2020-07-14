@@ -7,7 +7,7 @@ import { isNumber, isString } from '../../../utils/helpers';
 import { constant } from 'fp-ts/lib/function';
 import { VNode } from 'vue';
 import { DEFAULT_INPUT_ICONS, InputIcons } from '../shared/types';
-import { Component, defineComponent, PropType, shallowRef, h, Ref, computed, SetupContext, shallowReactive } from 'vue';
+import { Component, defineComponent, PropType, shallowRef, h, Ref, computed, SetupContext, shallowReactive, watchEffect } from 'vue';
 
 export function getBInputPropsDefinition<T>() {
   return {
@@ -28,10 +28,6 @@ export function getBInputPropsDefinition<T>() {
       type: Object as PropType<InputIcons>,
       required: false,
       default: constant(DEFAULT_INPUT_ICONS)
-    },
-    icon: {
-      type: Function as PropType<Component>,
-      required: true
     }
   };
 }
@@ -87,7 +83,6 @@ function generateRightIcon(
   passwordToggle: Toggle
 ): VNode {
   return h(icon, {
-    staticClass: 'is-right',
     class: ['is-right', { 'is-clickable': usePasswordReveal }],
     variant,
     size,
@@ -144,7 +139,7 @@ function generateNonTextInput(
         rightIcon
       )
     ],
-    modelValue: inputData.modelValue,
+    modelValue: inputData.modelValue.value,
     'onUpdate:modelValue': inputData['onUpdate:modelValue'],
     type: inputData.type ? inputData.type.value : undefined,
     autocomplete: getAutocomplete(inputData.autocomplete, type),
@@ -242,6 +237,9 @@ export function defineInput<T>() {
     name: 'b-input',
     props: getBInputPropsDefinition<T>(),
     setup(props, context: SetupContext) {
+      watchEffect(() => {
+        console.log(props, context.attrs);
+      })
       const inputRef = shallowRef((null as unknown) as HTMLInputElement);
       const inputData = useInput(props as UseInputProps<T>, inputRef);
       const passwordToggle = useToggle(shallowReactive({ isVisible: false, hasPopup: false }), 'isVisible');
