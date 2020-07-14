@@ -11,17 +11,17 @@ import {
 } from '../../../composables/noticeController';
 import { formatTransition } from '../../../composables/transition';
 import {
-	ConcreteComponent,
-	Transition,
-	VNode,
-	h,
-	PropType,
-	defineComponent,
-	ExtractPropTypes,
-	shallowRef,
-	withDirectives,
-	SetupContext,
-	vShow
+  Component,
+  Transition,
+  VNode,
+  h,
+  PropType,
+  defineComponent,
+  ExtractPropTypes,
+  shallowRef,
+  withDirectives,
+  SetupContext,
+  vShow
 } from 'vue';
 import { constEmptyArray } from '../../../utils/helpers';
 
@@ -74,10 +74,10 @@ function generateNoticeBody(
 }
 
 function getGenerateNotice(
-	props: BNotificationProps,
-	context: SetupContext,
-	messageController: Message,
-	noticeController: NoticeController
+  props: BNotificationProps,
+  context: SetupContext,
+  messageController: Message,
+  noticeController: NoticeController
 ) {
 	return (options: OpenNoticeOptions) => () => {
 		const notice = h(
@@ -111,23 +111,16 @@ function getGenerateNotice(
 }
 
 export default defineComponent({
-	name: 'b-notification',
-	props: BNotificationPropsDefinition,
-	setup(props, context) {
-		const renderNotification = shallowRef(
-			constant(constEmptyArray) as FunctionN<[RenderNoticeOptions], IO<VNode[]>>
-		);
-		const noticeController = useNoticeController(props, renderNotification);
-		const messageController = useMessage(props);
-		renderNotification.value = getGenerateNotice(props, context, messageController, noticeController);
-		return () =>
-			props.isNotice
-				? context.slots.default &&
-				  context.slots.default({ open: noticeController.open, close: noticeController.close })
-				: h(
-						Transition,
-						props.transition ? formatTransition(props.transition) : {},
-						renderNotification.value({})
-				  );
-	}
+  name: 'b-notification',
+  props: BNotificationPropsDefinition,
+  setup(props, context) {
+    const renderNotification = shallowRef(constant(alwaysEmptyArray) as FunctionN<[RenderNoticeOptions], IO<VNode[]>>);
+    const noticeController = useNoticeController(props, renderNotification);
+    const messageController = useMessage(props);
+    renderNotification.value = getGenerateNotice(props, context, messageController, noticeController);
+    return () =>
+      props.isNotice
+        ? context.slots.default && context.slots.default({ open: noticeController.open, close: noticeController.close })
+        : h(Transition, props.transition ? formatTransition(props.transition) : {}, renderNotification.value({})());
+  }
 });

@@ -1,6 +1,6 @@
 import './app.sass';
 import { isSome } from 'fp-ts/lib/Option';
-import { defineComponent, shallowRef, h, Slots, Ref, vShow, withDirectives } from 'vue';
+import { defineComponent, shallowRef, h, Slots, Ref } from 'vue';
 import {
 	provideNavigationDrawerController,
 	ProvideNavigationDrawerControllerPropsDefinition
@@ -71,25 +71,18 @@ export default defineComponent({
 		provideWindowSize(props);
 		const { isVisible } = provideNavigationDrawerController(props);
 
-		return () => {
-			const hasNavigationDrawer = !!slots['navigation-drawer'];
-			const displayNavigationDrawer = isSome(isVisible.value) && isVisible.value.value;
-			const nodes = [
-				generateNoticeContainer('top', top),
-				generateNoticeContainer('bottom', bottom),
-				generatePopupContainer(popup),
-				generateMainContent(slots)
-			];
-
-			if (hasNavigationDrawer) {
-				nodes.push(withDirectives(generateNavigationSlot(slots), [[vShow, displayNavigationDrawer]]));
-			}
-
-			return h(
-				'div',
-				{ class: ['b-app', { 'has-navigation-drawer': hasNavigationDrawer && displayNavigationDrawer }] },
-				nodes
-			);
-		};
-	}
+    return () => {
+      const useNavigationDrawer = isSome(isVisible.value) && isVisible.value.value;
+      const nodes = [
+        generateNoticeContainer(top),
+        generateNoticeContainer(bottom),
+        generatePopupContainer(popup),
+        generateMainContent(slots)
+      ];
+      if (useNavigationDrawer) {
+        nodes.push(generateNavigationSlot(slots));
+      }
+      return h('div', { class: ['b-app', { 'has-navigation-drawer': useNavigationDrawer }] }, nodes);
+    };
+  }
 });

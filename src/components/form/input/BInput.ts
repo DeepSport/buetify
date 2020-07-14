@@ -8,7 +8,7 @@ import { isNumber, isString } from '../../../utils/helpers';
 import { constant } from 'fp-ts/lib/function';
 import { VNode } from 'vue';
 import { DEFAULT_INPUT_ICONS, InputIcons } from '../shared/types';
-import { ConcreteComponent, defineComponent, PropType, shallowRef, h, Ref, computed, SetupContext } from 'vue';
+import { Component, defineComponent, PropType, shallowRef, h, Ref, computed, SetupContext, shallowReactive } from 'vue';
 
 export function getBInputPropsDefinition<T>() {
 	return {
@@ -241,31 +241,27 @@ function getValueLength(modelValue: unknown) {
 }
 
 export function defineInput<T>() {
-	return defineComponent({
-		name: 'b-input',
-		props: getBInputPropsDefinition<T>(),
-		setup(props, context: SetupContext) {
-			const inputRef = shallowRef((null as unknown) as HTMLInputElement);
-			const inputData = useInput(props as UseInputProps<T>, inputRef);
-
-			const rightIcon = computed(() =>
-				getRightIcon(
-					props.inputIcons,
-					inputData.messageVariant.value,
-					props.usePasswordReveal,
-					inputData.passwordToggle.isOn.value
-				)
-			);
-			const useCounter = computed(
-				() =>
-					(inputData.type === undefined ||
-						(inputData.modelValue && typeof inputData.modelValue.value !== 'number')) &&
-					!!inputData.maxlength &&
-					props.hasCounter
-			);
-
-			const { themeClasses } = useTheme(props);
-
+  return defineComponent({
+    name: 'b-input',
+    props: getBInputPropsDefinition<T>(),
+    setup(props, context: SetupContext) {
+      const inputRef = shallowRef((null as unknown) as HTMLInputElement);
+      const inputData = useInput(props as UseInputProps<T>, inputRef);
+      const passwordToggle = useToggle(shallowReactive({ isVisible: false, hasPopup: false }), 'isVisible');
+      const rightIcon = computed(() =>
+        getRightIcon(
+          props.inputIcons,
+          inputData.messageVariant.value,
+          props.usePasswordReveal,
+          passwordToggle.isOn.value
+        )
+      );
+      const useCounter = computed(
+        () =>
+          (inputData.type === undefined || (inputData.modelValue && typeof inputData.modelValue.value !== 'number')) &&
+          !!inputData.maxlength &&
+          props.hasCounter
+      );
 			return () => {
 				const nodes: VNode[] = [
 					generateInput(

@@ -7,18 +7,17 @@ import { FadeTransitionPropsDefinition, useTransition } from '../../composables/
 import { useWindowSize } from '../../composables/windowSize';
 import { TransitionClasses } from '../../types/Transition';
 import {
-	ExtractPropTypes,
-	PropType,
-	VNode,
-	defineComponent,
-	shallowRef,
-	computed,
-	Ref,
-	h,
-	withDirectives,
-	vShow,
-	Slots,
-	Transition
+  ExtractPropTypes,
+  PropType,
+  VNode,
+  defineComponent,
+  shallowRef,
+  computed,
+  Ref,
+  h,
+  withDirectives,
+  vShow,
+  Slots
 } from 'vue';
 import ClickOutside from '../../directives/clickOutside';
 import { isString } from '../../utils/helpers';
@@ -111,13 +110,15 @@ function generateDropdownContent(
 }
 
 function generateDropdownMenu(
-	menuTag: string,
-	toggle: Toggle,
-	computedId: string,
-	themeClasses: string[],
-	transition: TransitionClasses,
-	slots: Slots,
-	useTransition = true
+  menuTag: string,
+  toggle: Toggle,
+  computedId: string,
+  themeClasses: string[],
+  transition: TransitionClasses,
+  slots: Slots,
+  clickOutsideBindingArgs: ClickOutsideBindingArgs,
+  dropdownMenuRef: Ref<HTMLElement>,
+  useTransition: boolean = true
 ) {
 	const menu = () =>
 		toggle.isOn.value
@@ -134,82 +135,117 @@ function generateDropdownMenu(
 }
 
 function generateMobileBackground(
-	menuTag: string,
-	toggle: Toggle,
-	computedId: string,
-	themeClasses: string[],
-	transition: TransitionClasses,
-	slots: Slots
+  menuTag: string,
+  toggle: Toggle,
+  computedId: string,
+  themeClasses: string[],
+  transition: TransitionClasses,
+  slots: Slots,
+  clickOutsideBindingArgs: ClickOutsideBindingArgs,
+  dropdownMenuRef: Ref<HTMLElement>
 ): VNode {
-	return generateTransition(transition, () =>
-		withDirectives(
-			h(
-				'div',
-				{
-					class: 'background',
-					'aria-hidden': toggle.isOff.value,
-					onClick: toggle.setOff
-				},
-				[generateDropdownMenu(menuTag, toggle, computedId, themeClasses, transition, slots, false)]
-			),
-			[[vShow, toggle.isOn.value]]
-		)
-	);
+  return generateTransition(transition, [
+    withDirectives(
+      h(
+        'div',
+        {
+          class: 'background',
+          'aria-hidden': toggle.isOff.value
+        },
+        [
+          generateDropdownMenu(
+            menuTag,
+            toggle,
+            computedId,
+            themeClasses,
+            transition,
+            slots,
+            clickOutsideBindingArgs,
+            dropdownMenuRef,
+            false
+          )
+        ]
+      ),
+      [[vShow, toggle.isOn.value]]
+    )
+  ]);
 }
 
 function generateChildren(
-	menuTag: string,
-	isInline: boolean,
-	toggle: Toggle,
-	computedId: string,
-	transition: TransitionClasses,
-	themeClasses: string[],
-	shouldDisplayMobileBackground: boolean,
-	slots: Slots
+  menuTag: string,
+  isInline: boolean,
+  toggle: Toggle,
+  computedId: string,
+  transition: TransitionClasses,
+  themeClasses: string[],
+  shouldDisplayMobileBackground: boolean,
+  slots: Slots,
+  clickOutsideBindingArgs: ClickOutsideBindingArgs,
+  triggerRef: Ref<HTMLElement>,
+  dropdownMenuRef: Ref<HTMLElement>
 ) {
-	const children: VNode[] = [];
-	if (!isInline) {
-		children.push(generateTrigger(toggle, computedId, slots));
-	}
-	if (shouldDisplayMobileBackground) {
-		children.push(generateMobileBackground(menuTag, toggle, computedId, themeClasses, transition, slots));
-	} else {
-		const menu = generateDropdownMenu(menuTag, toggle, computedId, themeClasses, transition, slots);
-		if (menu) {
-			children.push(menu);
-		}
-	}
-	return children;
+  const children: VNode[] = [];
+  if (!isInline) {
+    children.push(generateTrigger(toggle, computedId, triggerRef, slots));
+  }
+  if (shouldDisplayMobileBackground) {
+    children.push(
+      generateMobileBackground(
+        menuTag,
+        toggle,
+        computedId,
+        themeClasses,
+        transition,
+        slots,
+        clickOutsideBindingArgs,
+        dropdownMenuRef
+      )
+    );
+  } else {
+    children.push(
+      generateDropdownMenu(
+        menuTag,
+        toggle,
+        computedId,
+        themeClasses,
+        transition,
+        slots,
+        clickOutsideBindingArgs,
+        dropdownMenuRef
+      )
+    );
+  }
+  return children;
 }
 
 export default defineComponent({
-	name: 'b-dropdown',
-	props: BDropdownPropsDefinition,
-	setup(props) {
-		const windowSize = useWindowSize();
-		const toggle = useToggle(props, 'isExpanded');
-		const { themeClasses } = useTheme(props);
-		const transition = useTransition(props);
-		const root = shallowRef((null as unknown) as HTMLElement);
-		const trigger = shallowRef((null as unknown) as HTMLElement);
-		const dropdownMenu = shallowRef((null as unknown) as HTMLElement);
-		const computedId = computed(() => `dropdown-menu-${props.id ?? id++}`);
-		const rootClasses: Ref<Classes[]> = computed(() => [
-			props.position,
-			{
-				'is-expanded': toggle.isOn.value,
-				'is-disabled': props.isDisabled,
-				'is-hoverable': props.isHoverable,
-				'is-inline': props.isInline,
-				'is-active': toggle.isOn.value || props.isInline,
-				'is-mobile-modal': props.isMobileModal
-			}
-		]);
-		const displayMenu = computed(
-			() => (!props.isDisabled && (toggle.isOn.value || props.isHoverable)) || props.isInline
-		);
-		const isMobileModal = computed(() => props.isMobileModal && !props.isInline && !props.isHoverable);
-		const displayMobileBackground = computed(() => isMobileModal.value && windowSize.value.isTouch);
+  name: 'b-dropdown',
+  props: BDropdownPropsDefinition,
+  setup(props, { slots }) {
+    const windowSize = useWindowSize();
+    const toggle = useToggle(props, 'isExpanded');
+    const { themeClasses } = useTheme(props);
+    const transition = useTransition(props);
+    const root = shallowRef((null as unknown) as HTMLElement);
+    const trigger = shallowRef((null as unknown) as HTMLElement);
+    const dropdownMenu = shallowRef((null as unknown) as HTMLElement);
+    const computedId = computed(() => `dropdown-menu-${props.id ?? id++}`);
+    const rootClasses: Ref<Classes[]> = computed(() => [
+      props.position,
+      {
+        'is-expanded': toggle.isOn.value,
+        'is-disabled': props.isDisabled,
+        'is-hoverable': props.isHoverable,
+        'is-inline': props.isInline,
+        'is-active': toggle.isOn.value || props.isInline,
+        'is-mobile-modal': props.isMobileModal
+      }
+    ]);
+    const displayMenu = computed(
+      () => (!props.isDisabled && (toggle.isOn.value || props.isHoverable)) || props.isInline
+    );
+    const isMobileModal = computed(() => props.isMobileModal && !props.isInline && !props.isHoverable);
+    const displayMobileBackground = computed(() => isMobileModal.value && windowSize.value.isTouch);
 
 		function getDependentElements(): HTMLElement[] {
 			return Array.from(dropdownMenu.value?.querySelectorAll('*') ?? []);
@@ -238,41 +274,29 @@ export default defineComponent({
 
 		const closeConditional = useCloseConditional(menuToggle, isInWhiteList);
 
-		const clickOutsideArgs = {
-			include: getDependentElements,
-			closeConditional
-		};
-		return {
-			root,
-			rootClasses,
-			clickOutsideArgs,
-			toggle,
-			transition,
-			themeClasses,
-			dropdownMenu,
-			displayMobileBackground,
-			menuToggle,
-			trigger,
-			computedId
-		};
-	},
-	render() {
-		return withDirectives(
-			h(
-				'div',
-				{ ref: 'root', class: ['dropdown', ...this.rootClasses] },
-				generateChildren(
-					this.menuTag,
-					this.isInline,
-					this.menuToggle,
-					this.computedId,
-					this.transition,
-					this.themeClasses,
-					this.displayMobileBackground,
-					this.$slots
-				)
-			),
-			[[ClickOutside, this.toggle.setOff, (this.clickOutsideArgs as unknown) as string]]
-		);
-	}
+    const clickOutsideArgs = {
+      include: getDependentElements,
+      closeConditional
+    };
+
+    return () => {
+      return h(
+        'div',
+        { ref: root, class: ['dropdown', ...rootClasses.value] },
+        generateChildren(
+          props.menuTag,
+          props.isInline,
+          menuToggle,
+          computedId.value,
+          transition.value,
+          themeClasses.value,
+          displayMobileBackground.value,
+          slots,
+          clickOutsideArgs as any,
+          trigger,
+          dropdownMenu
+        )
+      );
+    };
+  }
 });

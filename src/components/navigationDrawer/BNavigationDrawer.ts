@@ -49,19 +49,19 @@ function generateDrawer(
 	themeClasses: string[],
 	context: SetupContext
 ): VNode {
-	return h(
-		props.tag,
-		{
-			class: ['b-navigation-drawer', { 'is-fullheight': props.isFullheight }, ...themeClasses]
-		},
-		context.slots.default &&
-			context.slots.default({
-				showNavigationDrawer: controller.show,
-				hideNavigationDrawer: controller.hide,
-				navigationDrawerIsVisible: controller.isVisible.value,
-				toggleNavigationDrawer: controller.toggle
-			})
-	);
+  return h(
+    props.tag,
+    {
+      class: ['b-navigation-drawer', { 'is-fullheight': props.isFullheight }, ...themeClasses]
+    },
+    context.slots.default &&
+    context.slots.default({
+      showNavigationDrawer: controller.show,
+      hideNavigationDrawer: controller.hide,
+      navigationDrawerIsVisible: controller.isVisible.value,
+      toggleNavigationDrawer: controller.toggle
+    })
+  );
 }
 
 function generateMobileDrawer(
