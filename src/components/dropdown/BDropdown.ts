@@ -11,12 +11,11 @@ import {
   VNode,
   defineComponent,
   shallowRef,
-  resolveDirective,
   computed,
   Ref,
   h,
   withDirectives,
-  Directive,
+  vShow,
   Slots
 } from 'vue';
 import ClickOutside, { ClickOutsideBindingArgs } from '../../directives/clickOutside';
@@ -116,7 +115,6 @@ function generateDropdownMenu(
   themeClasses: string[],
   transition: TransitionClasses,
   slots: Slots,
-  vShow: Directive,
   clickOutsideBindingArgs: ClickOutsideBindingArgs,
   dropdownMenuRef: Ref<HTMLElement>,
   useTransition: boolean = true
@@ -145,7 +143,6 @@ function generateMobileBackground(
   themeClasses: string[],
   transition: TransitionClasses,
   slots: Slots,
-  vShow: Directive,
   clickOutsideBindingArgs: ClickOutsideBindingArgs,
   dropdownMenuRef: Ref<HTMLElement>
 ): VNode {
@@ -165,7 +162,6 @@ function generateMobileBackground(
             themeClasses,
             transition,
             slots,
-            vShow,
             clickOutsideBindingArgs,
             dropdownMenuRef,
             false
@@ -186,7 +182,6 @@ function generateChildren(
   themeClasses: string[],
   shouldDisplayMobileBackground: boolean,
   slots: Slots,
-  vShow: Directive,
   clickOutsideBindingArgs: ClickOutsideBindingArgs,
   triggerRef: Ref<HTMLElement>,
   dropdownMenuRef: Ref<HTMLElement>
@@ -204,7 +199,6 @@ function generateChildren(
         themeClasses,
         transition,
         slots,
-        vShow,
         clickOutsideBindingArgs,
         dropdownMenuRef
       )
@@ -218,7 +212,6 @@ function generateChildren(
         themeClasses,
         transition,
         slots,
-        vShow,
         clickOutsideBindingArgs,
         dropdownMenuRef
       )
@@ -238,7 +231,6 @@ export default defineComponent({
     const root = shallowRef((null as unknown) as HTMLElement);
     const trigger = shallowRef((null as unknown) as HTMLElement);
     const dropdownMenu = shallowRef((null as unknown) as HTMLElement);
-    const vShow = resolveDirective('show') as Directive;
     const computedId = computed(() => `dropdown-menu-${props.id ?? id++}`);
     const rootClasses: Ref<Classes[]> = computed(() => [
       props.position,
@@ -302,7 +294,6 @@ export default defineComponent({
           themeClasses.value,
           displayMobileBackground.value,
           slots,
-          vShow,
           clickOutsideArgs as any,
           trigger,
           dropdownMenu

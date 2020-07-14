@@ -20,9 +20,8 @@ import {
   ExtractPropTypes,
   shallowRef,
   withDirectives,
-  resolveDirective,
-  Directive,
-  SetupContext
+  SetupContext,
+  vShow
 } from 'vue';
 import { alwaysEmptyArray } from '../../../utils/helpers';
 
@@ -78,8 +77,7 @@ function getGenerateNotice(
   props: BNotificationProps,
   context: SetupContext,
   messageController: Message,
-  noticeController: NoticeController,
-  vShow: Directive
+  noticeController: NoticeController
 ) {
   return (options: OpenNoticeOptions) => () => {
     const notice = h(
@@ -102,11 +100,10 @@ export default defineComponent({
   name: 'b-notification',
   props: BNotificationPropsDefinition,
   setup(props, context) {
-    const vShow = resolveDirective('show') as Directive;
     const renderNotification = shallowRef(constant(alwaysEmptyArray) as FunctionN<[RenderNoticeOptions], IO<VNode[]>>);
     const noticeController = useNoticeController(props, renderNotification);
     const messageController = useMessage(props);
-    renderNotification.value = getGenerateNotice(props, context, messageController, noticeController, vShow);
+    renderNotification.value = getGenerateNotice(props, context, messageController, noticeController);
     return () =>
       props.isNotice
         ? context.slots.default && context.slots.default({ open: noticeController.open, close: noticeController.close })

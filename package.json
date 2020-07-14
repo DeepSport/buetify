@@ -47,7 +47,7 @@
     "@fortawesome/vue-fontawesome": "^0.1.8",
     "bulma": "^0.8.0",
     "fp-ts": "^2.6.5",
-    "fp-ts-local-storage": "^0.2.0",
+    "fp-ts-local-storage": "^1.0.3",
     "vue": "3.0.0-beta.20"
   },
   "dependencies": {
@@ -68,7 +68,7 @@
     "bulma": "^0.8.0",
     "cross-env": "^7.0.0",
     "fp-ts": "^2.6.5",
-    "fp-ts-local-storage": "^0.2.0",
+    "fp-ts-local-storage": "^1.0.3",
     "np": "^5.2.1",
     "prettier": "^1.19.1",
     "rimraf": "^3.0.1",

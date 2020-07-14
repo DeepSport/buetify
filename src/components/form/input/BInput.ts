@@ -7,7 +7,7 @@ import { isNumber, isString } from '../../../utils/helpers';
 import { constant } from 'fp-ts/lib/function';
 import { VNode } from 'vue';
 import { DEFAULT_INPUT_ICONS, InputIcons } from '../shared/types';
-import { Component, defineComponent, PropType, shallowRef, h, Ref, computed, SetupContext } from 'vue';
+import { Component, defineComponent, PropType, shallowRef, h, Ref, computed, SetupContext, shallowReactive } from 'vue';
 
 export function getBInputPropsDefinition<T>() {
   return {
@@ -244,7 +244,7 @@ export function defineInput<T>() {
     setup(props, context: SetupContext) {
       const inputRef = shallowRef((null as unknown) as HTMLInputElement);
       const inputData = useInput(props as UseInputProps<T>, inputRef);
-      const passwordToggle = useToggle({ isVisible: false, hasPopup: false }, 'isVisible');
+      const passwordToggle = useToggle(shallowReactive({ isVisible: false, hasPopup: false }), 'isVisible');
       const rightIcon = computed(() =>
         getRightIcon(
           props.inputIcons,

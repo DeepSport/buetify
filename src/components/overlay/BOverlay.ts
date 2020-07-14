@@ -1,6 +1,6 @@
 import './overlay.sass';
 import { Classes, mergeClasses } from '../../utils/mergeClasses';
-import { h, SetupContext, withDirectives, resolveDirective, Directive } from 'vue';
+import { h, SetupContext, withDirectives, vShow } from 'vue';
 
 type OverlayPosition = 'is-left' | 'is-right' | 'is-centered';
 
@@ -11,7 +11,6 @@ export interface BOverlayProps {
 }
 
 export default function BOverlay(props: BOverlayProps, { attrs, slots }: SetupContext) {
-  const vShow = resolveDirective('show') as Directive;
   if (!!props.isFullscreen) {
     return withDirectives(
       h(

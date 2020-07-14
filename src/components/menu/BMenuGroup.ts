@@ -4,7 +4,7 @@ import VerticalExpandTransition from '../../transitions/verticalExpandTransition
 import { Classes, mergeClasses } from '../../utils/mergeClasses';
 import VerticalExpansionIcon from '../icons/verticalExpansion/VerticalExpansionIcon';
 import BMenuList from './BMenuList';
-import { withDirectives, resolveDirective, defineComponent, h, PropType, Directive } from 'vue';
+import { withDirectives, vShow, defineComponent, h, PropType } from 'vue';
 
 export default defineComponent({
   name: 'b-menu-group',
@@ -21,7 +21,6 @@ export default defineComponent({
   },
   setup(props, { slots }) {
     const toggle = useToggle(props, 'isExpanded');
-    const vShow = resolveDirective('show') as Directive;
     return () =>
       h('section', [
         h(

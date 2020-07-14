@@ -1797,10 +1797,10 @@ for-in@^1.0.2:
   resolved "https://registry.yarnpkg.com/for-in/-/for-in-1.0.2.tgz#81068d295a8142ec0ac726c6e2200c30fb6d5e80"
   integrity sha1-gQaNKVqBQuwKxybG4iAMMPttXoA=
 
-fp-ts-local-storage@^0.2.0:
-  version "0.2.0"
-  resolved "https://registry.yarnpkg.com/fp-ts-local-storage/-/fp-ts-local-storage-0.2.0.tgz#44e159cfcd0e49e36a88743f880abbcce09088bf"
-  integrity sha512-onAEKVdNY3lxyWqtKOepn69vo5w15orUw1LDQ1aFK0Xa7NII0s6A05a+qmdWjI4ddE6W7YG78J59Oq5R9XRw8A==
+fp-ts-local-storage@^1.0.3:
+  version "1.0.3"
+  resolved "https://registry.yarnpkg.com/fp-ts-local-storage/-/fp-ts-local-storage-1.0.3.tgz#abf99da5cb5a7518a73be9384ae71786af424efb"
+  integrity sha512-72nXiVVA7Fj1FS0lfGIED18/AS8gA50OjOrUCWuhNEYL9f614MkLjkQVkpnAFr0QI1H8/1CxH2tAfPs0CkncHQ==
 
 fp-ts@^2.6.5:
   version "2.6.5"

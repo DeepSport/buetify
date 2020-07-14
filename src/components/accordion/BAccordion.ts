@@ -1,5 +1,5 @@
 import './accordion.sass';
-import { defineComponent, h, Slots, Ref } from 'vue';
+import { defineComponent, h, Slots, Ref, vShow, withDirectives } from 'vue';
 import { DefaultThemePropsDefinition, useTheme } from '../../composables/theme';
 import { getUseTogglePropsDefinition, Toggle, useToggle } from '../../composables/toggle';
 import { FadeTransitionPropsDefinition, useTransition } from '../../composables/transition';
@@ -58,13 +58,15 @@ const BAccordionContent = getThemeableFunctionalComponent({
 
 function generateBody(toggle: Toggle, transition: Ref<TransitionClasses>, slots: Slots) {
   return h('transition', transition.value, [
-    h(
-      BAccordionContent,
-      {
-        directives: [{ name: 'show', value: toggle.isOn.value }],
-        'aria-hidden': !toggle.isOn.value
-      },
-      slots.default!()
+    withDirectives(
+      h(
+        BAccordionContent,
+        {
+          'aria-hidden': !toggle.isOn.value
+        },
+        slots.default!()
+      ),
+      [[vShow, toggle.isOn.value]]
     )
   ]);
 }

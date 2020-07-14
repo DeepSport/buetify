@@ -2,8 +2,6 @@ import '../sass/form.sass';
 import { FieldDataAttrs, provideFieldData, ProvideFieldDataPropsDefinition } from '../../../composables/fieldData';
 import { DefaultThemePropsDefinition } from '../../../composables/theme';
 import {
-  resolveDirective,
-  Directive,
   withDirectives,
   h,
   PropType,
@@ -15,7 +13,8 @@ import {
   ExtractPropTypes,
   shallowRef,
   watch,
-  Slots
+  Slots,
+  vShow
 } from 'vue';
 import { Classes } from '../../../utils/mergeClasses';
 
@@ -97,7 +96,7 @@ function generateLabel(isHorizontal: boolean, fieldData: FieldDataAttrs, customC
   }
 }
 
-function generateHelpMessage(isHorizontal: boolean, fieldDataAttrs: FieldDataAttrs, vShow: Directive): VNode {
+function generateHelpMessage(isHorizontal: boolean, fieldDataAttrs: FieldDataAttrs): VNode {
   const showHelpMessage = !isHorizontal && !!fieldDataAttrs.message.value;
   return withDirectives(
     h('p', {
@@ -109,19 +108,20 @@ function generateHelpMessage(isHorizontal: boolean, fieldDataAttrs: FieldDataAtt
   );
 }
 
-function generateFieldBody(fieldData: FieldDataAttrs, role: string, slots: Slots): VNode {
-  return h(BFieldBody, {
-    class: { 'is-expanded': fieldData.isExpanded.value },
-    message: fieldData.message.value,
-    variant: fieldData.messageVariant.value,
-    slots,
-    role
-  });
-}
-
 function generateBody(isHorizontal: boolean, fieldData: FieldDataAttrs, role: string, slots: Slots): VNode[] {
   if (isHorizontal) {
-    return [generateFieldBody(fieldData, role, slots)];
+    return [
+      h(
+        BFieldBody,
+        {
+          class: { 'is-expanded': fieldData.isExpanded.value },
+          message: fieldData.message.value,
+          variant: fieldData.messageVariant.value,
+          role
+        },
+        () => slots.default!()
+      )
+    ];
   } else {
     return slots.default!();
   }
@@ -139,7 +139,6 @@ export default defineComponent({
   name: 'b-field',
   props: BFieldPropsDefinition,
   setup(props, { slots }) {
-    const vShow = resolveDirective('show') as Directive;
     const field = shallowRef((null as unknown) as HTMLElement);
     const fieldData = provideFieldData(props);
     const classes = getFieldClasses(props);
@@ -165,7 +164,7 @@ export default defineComponent({
         [
           generateLabel(props.isHorizontal, fieldData.attrs, props.customLabelClass, size.value),
           ...generateBody(props.isHorizontal, fieldData.attrs, role.value, slots),
-          generateHelpMessage(props.isHorizontal, fieldData.attrs, vShow)
+          generateHelpMessage(props.isHorizontal, fieldData.attrs)
         ]
       );
     };

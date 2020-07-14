@@ -50,7 +50,8 @@ function generateDrawer(
     {
       class: ['b-navigation-drawer', { 'is-fullheight': props.isFullheight }, ...themeClasses]
     },
-    context.slots.default!({
+    context.slots.default &&
+    context.slots.default({
       showNavigationDrawer: controller.show,
       hideNavigationDrawer: controller.hide,
       navigationDrawerIsVisible: controller.isVisible.value,

@@ -1,4 +1,5 @@
 import './app.sass';
+import { isSome } from 'fp-ts/lib/Option';
 import { defineComponent, shallowRef, h, Slots, Ref } from 'vue';
 import {
   provideNavigationDrawerController,
@@ -70,16 +71,17 @@ export default defineComponent({
     const { isVisible } = provideNavigationDrawerController(props);
 
     return () => {
+      const useNavigationDrawer = isSome(isVisible.value) && isVisible.value.value;
       const nodes = [
         generateNoticeContainer(top),
         generateNoticeContainer(bottom),
         generatePopupContainer(popup),
         generateMainContent(slots)
       ];
-      if (isVisible.value) {
+      if (useNavigationDrawer) {
         nodes.push(generateNavigationSlot(slots));
       }
-      return h('div', { class: ['b-app', { 'has-navigation-drawer': isVisible.value }] }, nodes);
+      return h('div', { class: ['b-app', { 'has-navigation-drawer': useNavigationDrawer }] }, nodes);
     };
   }
 });
