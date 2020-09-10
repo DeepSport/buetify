@@ -210,7 +210,7 @@ $all-colors: mergeColorMaps($colors, $shades)
 			&.is-drop-target
 				background-color: $table-row-active-background-color
 			&:hover
-				background-color: darken($table-row-active-background-color, 2.5%)
+				background-color: bulmaDarken($table-row-active-background-color, 2.5%)
 		&.is-empty:hover
 			background-color: transparent
 	@each $name, $pair in $all-colors
@@ -246,21 +246,21 @@ $all-colors: mergeColorMaps($colors, $shades)
 				tbody
 					tr:not(.is-selected):not(.is-undroppable):not(.is-droppable):not(.is-drop-target)
 						&:hover
-							background-color: darken($color, 10%)
+							background-color: bulmaDarken($color, 10%)
 				&.is-striped
 					tbody
 						tr:not(.is-selected):not(.is-undroppable):not(.is-droppable):not(.is-drop-target)
 							&:hover
-								background-color: darken($color, 10%)
+								background-color: bulmaDarken($color, 10%)
 								&:nth-child(even)
-									background-color: darken($color, 10%)
+									background-color: bulmaDarken($color, 10%)
 			&.is-striped
 				tbody
 					tr:not(.is-selected):not(.is-undroppable):not(.is-droppable):not(.is-drop-target)
 						&:nth-child(even)
-							background-color: darken($color, 2.5%)
+							background-color: bulmaDarken($color, 2.5%)
 							th
-								background-color: darken($color, 2.5%)
+								background-color: bulmaDarken($color, 2.5%)
 						&:nth-child(odd)
 							background-color: $color
 							th

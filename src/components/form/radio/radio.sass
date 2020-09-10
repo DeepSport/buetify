@@ -58,14 +58,14 @@ $radio-active-background-color: $primary !default
 						border-color: $color
 		&:focus
 			input[type='radio'] + .check
-				box-shadow: 0 0 0.5em rgba($grey, 0.8)
+				box-shadow: 0 0 0.5em bulmaRgba($grey, 0.8)
 
 			input[type='radio']:checked + .check
-				box-shadow: 0 0 0.5em rgba($radio-active-background-color, 0.8)
+				box-shadow: 0 0 0.5em bulmaRgba($radio-active-background-color, 0.8)
 				@each $name, $pair in $colors
 					$color: nth($pair, 1)
 					&.is-#{$name}
-						box-shadow: 0 0 0.5em rgba($color, 0.8)
+						box-shadow: 0 0 0.5em bulmaRgba($color, 0.8)
 		&.is-small
 			@include control-small
 

@@ -1,5 +1,6 @@
 // Main container
 
+
 .hero
   align-items: stretch
   display: flex
@@ -11,7 +12,7 @@
     ul
       border-bottom: none
   // Colors
-  @each $name, $pair in $all-colors
+  @each $name, $pair in $colors
     $color: nth($pair, 1)
     $color-invert: nth($pair, 2)
     &.is-#{$name}
@@ -31,12 +32,12 @@
           background-color: $color
       .navbar-item,
       .navbar-link
-        color: rgba($color-invert, 0.7)
+        color: bulmaRgba($color-invert, 0.7)
       a.navbar-item,
       .navbar-link
         &:hover,
         &.is-active
-          background-color: darken($color, 5%)
+          background-color: bulmaDarken($color, 5%)
           color: $color-invert
       .tabs
         a
@@ -52,7 +53,7 @@
           a
             color: $color-invert
             &:hover
-              background-color: rgba($black, 0.1)
+              background-color: bulmaRgba($black, 0.1)
           li.is-active a
             &,
             &:hover
