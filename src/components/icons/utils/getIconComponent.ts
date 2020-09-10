@@ -1,40 +1,34 @@
 import { parse as faParse, icon as faIcon } from '@fortawesome/fontawesome-svg-core';
-import { h, SetupContext } from 'vue';
+import { h, SetupContext, VNode, FunctionalComponent } from 'vue';
 import { IconDefinition } from '@fortawesome/fontawesome-common-types';
-// @ts-ignore
-import { convert } from '@fortawesome/vue-fontawesome/src/converter';
-// @ts-ignore
-import { objectWithKey, classList } from '@fortawesome/vue-fontawesome/src/utils';
 import { camelize } from '../../../utils/helpers';
 import { mergeClasses } from '../../../utils/mergeClasses';
 import { BIcon } from '../../icon';
+import { BIconProps } from '../../icon/BIcon';
 
-export function getIconComponent(name: string, iconDefinition: IconDefinition) {
+//replace iconDefinition with actual definition from fontawesome. causing some typescript issues at the moment
+
+export function getIconComponent(name: string, iconDefinition: any): FunctionalComponent {
   const icon = getFontAwesomeIconComponent(iconDefinition);
-  return (_: any, { attrs }: SetupContext) => h(BIcon, { ...attrs, icon });
+  return function IconComponent(props: BIconProps, { attrs }: SetupContext) {
+    return h(BIcon, { ...props, ...attrs }, () => h(icon, { class: props.size }));
+  }
 }
 
-export function getFontAwesomeIconComponent(icon: IconDefinition) {
-  return (_: any, { attrs }: SetupContext) => h(FontAwesomeIcon, { ...attrs, icon });
-}
+export function getFontAwesomeIconComponent(iconArgs: IconDefinition): FunctionalComponent {
+  return function FontAwesomeIcon(_, { attrs }: SetupContext): VNode {
+    const { mask: maskArgs, symbol, title } = attrs as any;
+    const icon = normalizeIconArgs(iconArgs);
+    const classes = objectWithKey('classes', classList(attrs));
+    const transform = objectWithKey(
+      'transform',
+      typeof attrs.transform === 'string' ? faParse.transform(attrs.transform) : attrs.transform
+    );
+    const mask = objectWithKey('mask', normalizeIconArgs(maskArgs));
 
-// Until Vue Font Awesome support v3
-
-export function FontAwesomeIcon(props: any, { attrs }: SetupContext) {
-  const { icon: iconArgs, mask: maskArgs, symbol, title } = props;
-  const icon = normalizeIconArgs(iconArgs);
-  const classes = objectWithKey('classes', classList(props));
-  const transform = objectWithKey(
-    'transform',
-    typeof props.transform === 'string' ? faParse.transform(props.transform) : props.transform
-  );
-  const mask = objectWithKey('mask', normalizeIconArgs(maskArgs));
-
-  const renderedIcon = faIcon(icon, { ...classes, ...transform, ...mask, symbol, title });
-
-  const { abstract } = renderedIcon;
-
-  return convert(abstract[0], {}, attrs);
+    const { abstract } = faIcon(icon, { ...classes, ...transform, ...mask, symbol, title });
+    return convert(abstract[0], attrs);
+  };
 }
 
 function convert(element: any, props: any = {}, data: any = {}) {
@@ -62,8 +56,7 @@ function convert(element: any, props: any = {}, data: any = {}) {
     },
     { class: {}, style: {} } as any
   );
-
-  const { class: dClass = {}, style: dStyle = {}, ...remainingData } = data;
+  const { class: dClass = {}, style: dStyle = {}, ...remainingData } = attrs;
   const { class: mClass = {}, style: mStyle = {}, ...mRemainingData } = mixins;
   return h(
     element.tag,
@@ -118,4 +111,29 @@ function classToObject(cls: string) {
 
     return acc;
   }, {} as any);
+}
+
+function objectWithKey(key: any, value: any) {
+  return (Array.isArray(value) && value.length > 0) || (!Array.isArray(value) && value) ? { [key]: value } : {};
+}
+
+export function classList(props: any) {
+  let classes = {
+    'fa-spin': props.spin,
+    'fa-pulse': props.pulse,
+    'fa-fw': props.fixedWidth,
+    'fa-border': props.border,
+    'fa-li': props.listItem,
+    'fa-inverse': props.inverse,
+    'fa-flip-horizontal': props.flip === 'horizontal' || props.flip === 'both',
+    'fa-flip-vertical': props.flip === 'vertical' || props.flip === 'both',
+    [`fa-${props.size}`]: props.size !== undefined,
+    [`fa-rotate-${props.rotation}`]: props.rotation !== undefined,
+    [`fa-pull-${props.pull}`]: props.pull !== undefined,
+    'fa-swap-opacity': props.swapOpacity
+  };
+
+  return Object.keys(classes)
+    .map(key => (classes[key] ? key : null))
+    .filter(key => key);
 }
