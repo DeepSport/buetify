@@ -1,124 +1,111 @@
 import './datepicker.sass';
 import { FunctionN } from 'fp-ts/lib/function';
-import { useFocus } from '../../../composables/focus';
+import { toggleListItem } from '../../../utils/helpers';
 import { DateCell, DetailedDateEvent, EventIndicator } from './shared';
-import { addDays, isSameDay } from './utils';
-import {
-  isArrowDownEvent,
-  isArrowLeftEvent,
-  isArrowRightEvent,
-  isArrowUpEvent,
-  isEnterEvent,
-  isSpaceEvent
-} from '../../../utils/eventHelpers';
-import { exists, none, Option, some } from 'fp-ts/lib/Option';
+import { eqSerialDate, isSameDay } from './utils';
+import { exists, getEq, Option, some } from 'fp-ts/lib/Option';
 import { pipe } from 'fp-ts/lib/pipeable';
-import { PropType, VNode, computed, defineComponent, reactive, shallowRef, h, nextTick } from 'vue';
+import { PropType, VNode, defineComponent, shallowRef, h, watch, onMounted } from 'vue';
 
 function generateEvents(events: DetailedDateEvent[]): VNode {
-  return h(
-    'div',
-    { class: 'events' },
-    events.map((event, index) =>
-      h('div', {
-        key: index,
-        class: ['event', event.variant]
-      })
-    )
-  );
+	return h(
+		'div',
+		{ class: 'events' },
+		events.map((event, index) =>
+			h('div', {
+				key: index,
+				class: ['event', event.variant]
+			})
+		)
+	);
 }
 
+const toggleSerialDate = toggleListItem(eqSerialDate);
+
+const eqOptionSerialDate = getEq(eqSerialDate);
+
 export default defineComponent({
-  name: 'b-datepicker-table-cell',
-  props: {
-    selectedDates: {
-      type: Array as PropType<Date[]>,
-      required: true
-    },
-    focusedDate: {
-      type: Object as PropType<Option<Date>>,
-      required: true
-    },
-    indicators: {
-      type: String as PropType<EventIndicator>,
-      required: true
-    },
-    cell: {
-      type: Object as PropType<DateCell>,
-      required: true
-    },
-    onSelect: {
-      type: Function as PropType<FunctionN<[Date], void>>,
-      required: true
-    },
-    onFocus: {
-      type: Function as PropType<FunctionN<[Option<Date>], void>>,
-      required: true
-    }
-  },
-  setup(props) {
-    const buttonRef = shallowRef((null as unknown) as HTMLElement);
-    const focus = useFocus(
-      reactive({
-        isFocused: computed(() =>
-          pipe(
-            props.focusedDate,
-            exists(date => isSameDay(date, props.cell.date))
-          )
-        ),
-        focusOnMount: false
-      }),
-      buttonRef
-    );
+	name: 'b-datepicker-table-cell',
+	props: {
+		modelValue: {
+			type: [Date, Array] as PropType<Date | Date[]>,
+			required: true
+		},
+		'onUpdate:modelValue': {
+			type: Function as PropType<FunctionN<[Date | Date[]], void>>,
+			required: true
+		},
+		focusedDate: {
+			type: Object as PropType<Option<Date>>,
+			required: true
+		},
+		'onUpdate:focusedDate': {
+			type: Function as PropType<FunctionN<[Option<Date>], void>>,
+			required: true
+		},
+		indicators: {
+			type: String as PropType<EventIndicator>,
+			required: true
+		},
+		cell: {
+			type: Object as PropType<DateCell>,
+			required: true
+		}
+	},
+	setup(props) {
+		const buttonRef = shallowRef((null as unknown) as HTMLElement);
 
-    function onClick(e: MouseEvent) {
-      e.preventDefault();
-      props.onSelect(props.cell.date);
-    }
+		function onClick(e?: MouseEvent) {
+			e && e.preventDefault();
+			const currentValue = props.modelValue;
+			props['onUpdate:modelValue'](
+				Array.isArray(currentValue) ? toggleSerialDate(props.cell.date, currentValue) : props.cell.date
+			);
+		}
 
-    function onKeydown(e: KeyboardEvent) {
-      if (isEnterEvent(e) || isSpaceEvent(e)) {
-        e.preventDefault();
-        props.onSelect(props.cell.date);
-      } else if (isArrowUpEvent(e)) {
-        e.preventDefault();
-        props.onFocus(some(addDays(props.cell.date, -7)));
-      } else if (isArrowRightEvent(e)) {
-        e.preventDefault();
-        props.onFocus(some(addDays(props.cell.date, 1)));
-      } else if (isArrowDownEvent(e)) {
-        e.preventDefault();
-        props.onFocus(some(addDays(props.cell.date, 7)));
-      } else if (isArrowLeftEvent(e)) {
-        e.preventDefault();
-        props.onFocus(some(addDays(props.cell.date, -1)));
-      }
-    }
-    return () => {
-      return h('td', [
-        h(
-          'button',
-          {
-            ref: buttonRef,
-            staticClass: 'datepicker-cell',
-            class: [props.cell.classes, props.indicators, 'datepicker-cell'],
-            disabled: props.cell.isDisabled,
-            tabindex: props.cell.isDisabled || props.cell.isSelected ? -1 : 0,
-            'aria-label': props.cell.ariaLabel,
-            onClick,
-            onKeydown,
-            onFocus: () => props.onSelect(props.cell.date),
-            onBlur: () => {
-              nextTick(() => {
-                if (focus.isFocused.value) {
-                  props.onFocus(none);
-                }
-              });
-            }
-          },
-          props.cell.hasEvents ? generateEvents(props.cell.events) : undefined
-        )
-      ]);
-    };
-  }
+		const onFocus = () => {
+			props['onUpdate:focusedDate'](some(props.cell.date));
+		};
+
+		onMounted(() =>
+			watch(
+				() => props.focusedDate,
+				(newVal, oldVal) => {
+					if (
+						((oldVal && !eqOptionSerialDate.equals(newVal, oldVal)) || oldVal === undefined) &&
+						buttonRef.value &&
+						pipe(
+							newVal,
+							exists(d => isSameDay(d, props.cell.date))
+						) &&
+						document.activeElement !== buttonRef.value
+					) {
+						buttonRef.value.focus({ preventScroll: true });
+					}
+				},
+				{
+					immediate: true
+				}
+			)
+		);
+
+		return () => {
+			return h('td', [
+				h(
+					'button',
+					{
+						ref: buttonRef,
+						class: ['datepicker-cell', props.cell.classes, props.indicators],
+						disabled: props.cell.isDisabled,
+						tabindex: props.cell.isDisabled || props.cell.isSelected ? -1 : 0,
+						'aria-label': props.cell.ariaLabel,
+						onClick,
+						onFocus,
+						onMouseenter: onFocus
+					},
+					[props.cell.date.getDate(), props.cell.hasEvents ? generateEvents(props.cell.events) : undefined]
+				)
+			]);
+		};
+	}
 });

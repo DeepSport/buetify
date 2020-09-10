@@ -1,4 +1,4 @@
 export const TabsThemeMap = {
-  dark: 'is-link',
-  light: ''
+	dark: 'is-link',
+	light: ''
 };

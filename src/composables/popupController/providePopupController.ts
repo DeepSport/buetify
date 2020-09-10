@@ -7,23 +7,23 @@ import { Remove } from '../shared';
 export const POPUP_CONTROLLER_SYMBOL = Symbol('popup-controller');
 
 export interface ShowPopupOptions {
-  render: IO<VNode[]>;
-  transition?: Transition;
+	render: IO<VNode[]>;
+	transition?: Transition;
 }
 
 export interface PopupControllerInjection {
-  showPopup: (options: ShowPopupOptions) => Remove;
+	showPopup: (options: ShowPopupOptions) => Remove;
 }
 
 export const DEFAULT_POPUP_CONTROLLER_INJECTION: PopupControllerInjection = {
-  showPopup: constant(constVoid)
+	showPopup: constant(constVoid)
 };
 
 export function providePopupController(showPopup: (options: ShowPopupOptions) => Remove) {
-  const injection: PopupControllerInjection = {
-    showPopup
-  };
+	const injection: PopupControllerInjection = {
+		showPopup
+	};
 
-  provide(POPUP_CONTROLLER_SYMBOL, injection);
-  return injection;
+	provide(POPUP_CONTROLLER_SYMBOL, injection);
+	return injection;
 }

@@ -1,57 +1,48 @@
 import './dialog.sass';
-import { getUseThemePropsDefinition, useTheme } from '../../composables/theme';
+import { useThemePropsDefinition, useTheme } from '../../composables/theme';
 import { SizeVariant } from '../../types/SizeVariants';
-import { PropType, VNode, defineComponent, Slots, h } from 'vue';
-import { mergeClasses } from '../../utils/mergeClasses';
+import { PropType, VNode, defineComponent, h } from 'vue';
 import { DialogTheme } from './theme';
-
-function generateHeader(slots: Slots) {
-  return h('header', { staticClass: 'modal-card-head' }, slots.header!());
-}
-
-function generateFooter(slots: Slots) {
-  return h('footer', { staticClass: 'modal-card-foot' }, slots.footer!());
-}
-
-function generateBody(slots: Slots) {
-  return h('section', { staticClass: 'modal-card-body' }, slots.default!());
-}
 
 export const B_DIALOG_CONTENT_NAME = 'b-dialog-content';
 
 export default defineComponent({
-  name: B_DIALOG_CONTENT_NAME,
-  props: {
-    ...getUseThemePropsDefinition(DialogTheme, true),
-    size: {
-      type: String as PropType<SizeVariant>,
-      required: false
-    },
-    cardClass: {
-      type: String as PropType<string>,
-      required: false
-    }
-  },
-  setup(props, { slots }) {
-    const { themeClasses } = useTheme(props);
-    return () => {
-      const nodes: VNode[] = [];
-      if (slots.header) {
-        nodes.push(generateHeader(slots));
-      }
-      nodes.push(generateBody(slots));
-      if (slots.footer) {
-        nodes.push(generateFooter(slots));
-      }
-      return h('div', { class: mergeClasses(props.size, 'b-dialog') }, [
-        h(
-          'article',
-          {
-            class: mergeClasses(props.cardClass, themeClasses.value)
-          },
-          nodes
-        )
-      ]);
-    };
-  }
+	name: B_DIALOG_CONTENT_NAME,
+	props: {
+		...useThemePropsDefinition(DialogTheme, true),
+		size: {
+			type: String as PropType<SizeVariant>,
+			required: false
+		},
+		cardClass: {
+			type: String as PropType<string>,
+			required: false
+		},
+		asCard: {
+			type: Boolean as PropType<boolean>,
+			default: true
+		}
+	},
+	setup(props, { slots }) {
+		const { themeClasses } = useTheme(props);
+		return () => {
+			const nodes: VNode[] = [];
+			if (slots.header) {
+				nodes.push(h('header', { class: 'modal-card-head' }, slots.header()));
+			}
+			nodes.push(h('section', { class: 'modal-card-body' }, slots.default && slots.default()));
+			if (slots.footer) {
+				nodes.push(h('footer', { class: 'modal-card-foot' }, slots.footer()));
+			}
+			return h('div', { class: [props.size, 'b-dialog'] }, [
+				h(
+					'article',
+					{
+						class: ['card modal-card', ...themeClasses.value, props.cardClass]
+					},
+					nodes
+				)
+			]);
+		};
+	}
 });

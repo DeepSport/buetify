@@ -30,7 +30,7 @@ $subtitle-negative-margin: -1.25rem
     vertical-align: middle
 
 .title
-  color: $title-color
+  color: inherit
   font-size: $title-size
   font-weight: $title-weight
   line-height: $title-line-height
@@ -46,15 +46,9 @@ $subtitle-negative-margin: -1.25rem
     $i: index($sizes, $size)
     &.is-#{$i}
       font-size: $size
-  @each $name, $pair in $all-colors
-    $color: nth($pair, 1)
-    $color-invert: findColorInvert($color)
-    &.is-#{$name}
-      color: $color-invert
-      background-color: transparent
 
 .subtitle
-  color: $subtitle-color
+  color: inherit
   font-size: $subtitle-size
   font-weight: $subtitle-weight
   line-height: $subtitle-line-height
@@ -68,9 +62,3 @@ $subtitle-negative-margin: -1.25rem
     $i: index($sizes, $size)
     &.is-#{$i}
       font-size: $size
-  @each $name, $pair in $all-colors
-    $color: nth($pair, 1)
-    $color-invert: findColorInvert($color)
-    &.is-#{$name}
-      color: $color-invert
-      background-color: transparent

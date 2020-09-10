@@ -1,30 +1,48 @@
 import './dropdown.sass';
-import { ThemeProps, useTheme } from '../../composables/theme';
-import { Classes, mergeClasses } from '../../utils/mergeClasses';
-import { SetupContext, h } from 'vue';
+import { useTheme, useThemePropsDefinition } from '../../composables/theme';
+import { h, defineComponent, PropType } from 'vue';
 import { DropdownThemeMap } from './theme';
 
-interface BDropdownItemProps extends Partial<ThemeProps> {
-  isActive?: boolean;
-  href?: string;
-  tag?: string;
-}
-
-export default function BDropdownItem(props: BDropdownItemProps, { attrs, slots }: SetupContext) {
-  const { themeClasses } = useTheme({
-    isThemeable: props.isThemeable ?? true,
-    themeMap: props.themeMap ?? DropdownThemeMap
-  });
-  attrs.class = mergeClasses(attrs.class as Classes, [
-    'dropdown-item dropdown-link',
-    ...themeClasses.value,
-    { 'is-active': !!props.isActive }
-  ]);
-  return h(
-    props.tag ?? 'li',
-    {
-      role: 'menuitem'
-    },
-    [h('a', attrs, slots.default ? slots.default() : undefined)]
-  );
-}
+export default defineComponent({
+	name: 'b-dropdown-link-item',
+	props: {
+		...useThemePropsDefinition(DropdownThemeMap, true),
+		isActive: {
+			type: Boolean as PropType<boolean>,
+			default: false
+		},
+		href: {
+			type: String as PropType<string>,
+			required: true
+		},
+		tag: {
+			type: String as PropType<string>,
+			default: 'li'
+		}
+	},
+	setup(props, { attrs, slots }) {
+		const { themeClasses } = useTheme(props);
+		return () => {
+			return h(
+				props.tag ?? 'li',
+				{
+					role: 'menuitem'
+				},
+				[
+					h(
+						'a',
+						{
+							...attrs,
+							class: [
+								'dropdown-item dropdown-link',
+								...themeClasses.value,
+								{ 'is-active': props.isActive }
+							]
+						},
+						slots.default && slots.default()
+					)
+				]
+			);
+		};
+	}
+});

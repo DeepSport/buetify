@@ -1,4 +1,4 @@
 import { faMinus } from '@fortawesome/free-solid-svg-icons/faMinus';
-import { getIconComponent } from '../utils/getIconComponent';
+import { useIconComponent } from '../utils/index';
 
-export default getIconComponent('Minus', faMinus);
+export default useIconComponent('Minus', faMinus);

@@ -8,26 +8,26 @@ import { Remove } from '../shared';
 export const NOTICE_CONTROLLER_SYMBOL = Symbol('notice-controller');
 
 export interface ShowNoticeOptions {
-  render: IO<VNode[]>;
-  placement: NoticePlacement;
-  duration: number;
-  shouldQueue: boolean;
-  transition?: Transition;
+	render: IO<VNode[]>;
+	placement: NoticePlacement;
+	duration: number;
+	shouldQueue: boolean;
+	transition?: Transition;
 }
 
 export interface NoticeControllerInjection {
-  showNotice: (options: ShowNoticeOptions) => Remove;
+	showNotice: (options: ShowNoticeOptions) => Remove;
 }
 
 export const DEFAULT_NOTICE_CONTROLLER_INJECTION: NoticeControllerInjection = {
-  showNotice: constant(constVoid)
+	showNotice: constant(constVoid)
 };
 
 export function provideNoticeController(showNotice: (options: ShowNoticeOptions) => Remove) {
-  const injection: NoticeControllerInjection = {
-    showNotice
-  };
+	const injection: NoticeControllerInjection = {
+		showNotice
+	};
 
-  provide(NOTICE_CONTROLLER_SYMBOL, injection);
-  return injection;
+	provide(NOTICE_CONTROLLER_SYMBOL, injection);
+	return injection;
 }

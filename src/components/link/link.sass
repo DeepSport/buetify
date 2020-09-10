@@ -1,4 +1,3 @@
-$all-colors: mergeColorMaps($colors, $shades)
 
 .b-link
   color: $link
@@ -14,7 +13,7 @@ $all-colors: mergeColorMaps($colors, $shades)
     color: inherit
     &:hover
       color: inherit
-  @each $name, $pair in $all-colors
+  @each $name, $pair in $colors
     @if length($pair) >= 4
       $color: nth($pair, 1)
       $color-dark: nth($pair, 4)

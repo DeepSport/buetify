@@ -1,4 +1,4 @@
 import { faExclamationTriangle } from '@fortawesome/free-solid-svg-icons/faExclamationTriangle';
-import { getIconComponent } from '../utils/getIconComponent';
+import { useIconComponent } from '../utils/index';
 
-export default getIconComponent('ExclamationTriangle', faExclamationTriangle);
+export default useIconComponent('ExclamationTriangle', faExclamationTriangle);

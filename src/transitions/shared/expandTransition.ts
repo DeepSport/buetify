@@ -1,88 +1,88 @@
+import { BaseTransitionProps } from 'vue';
 import { capitalizeFirstLetter } from '../../utils/helpers';
 
 interface HTMLExpandElement extends HTMLElement {
-  _parent?: (Node & ParentNode & HTMLElement) | null;
-  _initialStyle: {
-    transition: string;
-    visibility: string | null;
-    overflow: string | null;
-    height?: string | null;
-    width?: string | null;
-  };
+	_parent?: (Node & ParentNode & HTMLElement) | null;
+	_initialStyle: {
+		transition: string;
+		visibility: string | null;
+		overflow: string | null;
+		height?: string | null;
+		width?: string | null;
+	};
 }
+export function createExpandTransition(expandedParentClass = '', x = false): BaseTransitionProps<HTMLExpandElement> {
+	const sizeProperty = x ? 'width' : ('height' as 'width' | 'height');
+	const offsetProperty = `offset${capitalizeFirstLetter(sizeProperty)}` as 'offsetHeight' | 'offsetWidth';
 
-export function createExpandTransition(transitionClass = '', x = false) {
-  const sizeProperty = x ? 'width' : ('height' as 'width' | 'height');
-  const offsetProperty = `offset${capitalizeFirstLetter(sizeProperty)}` as 'offsetHeight' | 'offsetWidth';
+	function resetStyles(el: HTMLExpandElement) {
+		const size = el._initialStyle[sizeProperty];
+		el.style.overflow = el._initialStyle.overflow as string;
+		if (size != null) el.style[sizeProperty] = size;
+		delete el._initialStyle;
+	}
 
-  return {
-    onBeforeEnter(el: HTMLExpandElement) {
-      el._parent = el.parentNode as (Node & ParentNode & HTMLElement) | null;
-      el._initialStyle = {
-        transition: el.style.transition,
-        visibility: el.style.visibility,
-        overflow: el.style.overflow,
-        [sizeProperty]: el.style[sizeProperty]
-      };
-    },
+	function onAfterLeave(el: HTMLExpandElement) {
+		if (expandedParentClass && el._parent) {
+			el._parent.classList.remove(expandedParentClass);
+		}
+		resetStyles(el);
+	}
 
-    onEnter(el: HTMLExpandElement) {
-      const initialStyle = el._initialStyle;
-      const offset = `${el[offsetProperty]}px`;
+	return {
+		onBeforeEnter(el: HTMLExpandElement) {
+			el._parent = el.parentNode as (Node & ParentNode & HTMLElement) | null;
+			el._initialStyle = {
+				transition: el.style.transition,
+				visibility: el.style.visibility,
+				overflow: el.style.overflow,
+				[sizeProperty]: el.style[sizeProperty]
+			};
+		},
 
-      el.style.setProperty('transition', 'none', 'important');
-      el.style.visibility = 'hidden';
-      el.style.visibility = initialStyle.visibility === null ? 'visible' : initialStyle.visibility;
-      el.style.overflow = 'hidden';
-      el.style[sizeProperty] = '0';
+		onEnter(el: HTMLExpandElement) {
+			const initialStyle = el._initialStyle;
+			const offset = `${el[offsetProperty]}px`;
 
-      // tslint:disable-next-line
-      void el.offsetHeight; // force reflow
+			el.style.setProperty('transition', 'none', 'important');
+			el.style.visibility = 'hidden';
+			el.style.visibility = initialStyle.visibility as string;
+			el.style.overflow = 'hidden';
+			el.style[sizeProperty] = '0';
 
-      el.style.transition = initialStyle.transition;
+			void el.offsetHeight; // force reflow
 
-      if (transitionClass) {
-        el.classList.add(transitionClass);
-      }
+			el.style.transition = initialStyle.transition;
 
-      requestAnimationFrame(() => {
-        el.style[sizeProperty] = offset;
-      });
-    },
+			if (expandedParentClass && el._parent) {
+				el._parent.classList.add(expandedParentClass);
+			}
 
-    onAfterEnter: resetStyles,
-    onEnterCancelled: resetStyles,
+			requestAnimationFrame(() => {
+				el.style[sizeProperty] = offset;
+			});
+		},
 
-    onLeave(el: HTMLExpandElement) {
-      el._initialStyle = {
-        transition: '',
-        visibility: '',
-        overflow: el.style.overflow,
-        [sizeProperty]: el.style[sizeProperty]
-      };
+		onAfterEnter: resetStyles,
+		onEnterCancelled: resetStyles,
 
-      el.style.overflow = 'hidden';
-      el.style[sizeProperty] = `${el[offsetProperty]}px`;
-      void el.offsetHeight; // force reflow
+		onLeave(el: HTMLExpandElement) {
+			el._initialStyle = {
+				transition: '',
+				visibility: '',
+				overflow: el.style.overflow,
+				[sizeProperty]: el.style[sizeProperty]
+			};
 
-      requestAnimationFrame(() => (el.style[sizeProperty] = '0'));
-    },
+			el.style.overflow = 'hidden';
+			el.style[sizeProperty] = `${el[offsetProperty]}px`;
+			void el.offsetHeight; // force reflow
 
-    onAfterLeave,
-    onLeaveCancelled: onAfterLeave
-  };
+			requestAnimationFrame(() => (el.style[sizeProperty] = '0'));
+		},
 
-  function onAfterLeave(el: HTMLExpandElement) {
-    if (transitionClass) {
-      el.classList.remove(transitionClass);
-    }
-    resetStyles(el);
-  }
+		onAfterLeave,
+		onLeaveCancelled: onAfterLeave
+	};
 
-  function resetStyles(el: HTMLExpandElement) {
-    const size = el._initialStyle[sizeProperty];
-    el.style.overflow = el._initialStyle.overflow === null ? 'auto' : el._initialStyle.overflow;
-    if (size != null) el.style[sizeProperty] = size;
-    delete el._initialStyle;
-  }
 }

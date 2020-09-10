@@ -1,4 +1,4 @@
 import { faEyeSlash } from '@fortawesome/free-solid-svg-icons/faEyeSlash';
-import { getIconComponent } from '../utils/getIconComponent';
+import { useIconComponent } from '../utils/index';
 
-export default getIconComponent('EyeSlash', faEyeSlash);
+export default useIconComponent('EyeSlash', faEyeSlash);

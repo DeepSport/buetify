@@ -1,4 +1,4 @@
 import { faPlus } from '@fortawesome/free-solid-svg-icons/faPlus';
-import { getIconComponent } from '../utils/getIconComponent';
+import { useIconComponent } from '../utils/index';
 
-export default getIconComponent('Plus', faPlus);
+export default useIconComponent('Plus', faPlus);

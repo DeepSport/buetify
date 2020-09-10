@@ -1,22 +1,33 @@
 import { FunctionN } from 'fp-ts/lib/function';
-import { Ref, shallowRef, watch } from 'vue';
+import { Ref, shallowRef, watch, computed, unref } from 'vue';
 
-export function useProxy<T>(ref: Ref<T>, onUpdate?: Ref<FunctionN<[T], void> | undefined>): Proxy<T> {
-  const value = shallowRef(ref.value);
-  watch(ref, newValue => {
-    value.value = newValue;
-  });
-  function set(val: T) {
-    value.value = val;
-    if (onUpdate && onUpdate.value) onUpdate.value(val);
-  }
-  return {
-    value,
-    set
-  };
+export function useProxy<T>(
+	ref: Ref<T>,
+	onUpdate?: Ref<FunctionN<[T], void> | undefined> | FunctionN<[T], void>
+): Proxy<T> {
+	const internalValue = shallowRef(ref.value);
+	watch(ref, newValue => {
+		internalValue.value = newValue;
+	});
+
+	const value = computed({
+		get() {
+			return internalValue.value;
+		},
+		set(val: T) {
+			internalValue.value = val;
+			const update = unref(onUpdate);
+			if (update) {
+				update(val);
+			}
+		}
+	});
+
+	return {
+		value
+	};
 }
 
 export interface Proxy<T> {
-  value: Ref<T>;
-  set: FunctionN<[T], void>;
+	value: Ref<T>;
 }

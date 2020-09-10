@@ -1,635 +1,634 @@
 import './datepicker.sass';
 import { IO } from 'fp-ts/es6/IO';
 import { useDisable, UseDisablePropsDefinition } from '../../../composables/disable';
+import { useEqRef } from '../../../composables/eqRef';
 import { useFieldData } from '../../../composables/fieldData';
 import { getUseInputPropsDefinition } from '../../../composables/input/useInput';
-import { Model, useModel } from '../../../composables/model';
-import { UseToggleProps } from '../../../composables/toggle';
-import { DateSelectionData, EventIndicator, MonthNumber } from './shared';
-import { isDate, serialDateOrd } from './utils';
+import { Toggle } from '../../../composables/toggle';
+import {
+	DateEvent,
+	DateSelectionData,
+	DEFAULT_DAY_NAMES,
+	DEFAULT_MONTH_NAMES,
+	EventIndicator,
+	MonthNumber
+} from './shared';
+import { addDays, eqSerialDate, isDate, WeekdayNumber } from './utils';
 import { BInput } from '../input/BInput';
-import { isEnterEvent, isEscEvent, isSpaceEvent } from '../../../utils/eventHelpers';
-import { head, range } from 'fp-ts/lib/Array';
+import {
+	isArrowDownEvent,
+	isArrowLeftEvent,
+	isArrowRightEvent,
+	isArrowUpEvent,
+	isEnterEvent,
+	isEscEvent,
+	isSpaceEvent
+} from '../../../utils/eventHelpers';
+import { head, isNonEmpty, range } from 'fp-ts/lib/Array';
 import { constant, FunctionN } from 'fp-ts/lib/function';
-import { alt, chain, fromNullable, getOrElse, isSome, Option, some } from 'fp-ts/lib/Option';
+import { alt, fromNullable, getEq, getOrElse, isNone, isSome, Option, some } from 'fp-ts/lib/Option';
 import { pipe } from 'fp-ts/lib/pipeable';
 import BDropdown, { BDropdownPropsDefinition } from '../../dropdown/BDropdown';
-import BDatepickerTable, { BDatepickerTablePropsDefinition } from './BDatepickerTable';
+import BDatepickerTable from './BDatepickerTable';
 import BField from '../field/BField';
 import { BSelect, SelectItem } from '../select/BSelect';
 import {
-  onUnmounted,
-  onMounted,
-  PropType,
-  VNode,
-  defineAsyncComponent,
-  defineComponent,
-  h,
-  Component,
-  ExtractPropTypes,
-  shallowRef,
-  SetupContext,
-  Ref,
-  shallowReactive,
-  watch
+	nextTick,
+	computed,
+	onUnmounted,
+	onMounted,
+	PropType,
+	VNode,
+	defineAsyncComponent,
+	defineComponent,
+	h,
+	Component,
+	ExtractPropTypes,
+	shallowRef,
+	SetupContext,
+	Ref,
+	watch
 } from 'vue';
-import { isString, toggleListItem } from '../../../utils/helpers';
+import { constEmptyArray, isString, toggleListItem } from '../../../utils/helpers';
 
-function defaultDateFormatter(date: Date | Date[], isMultiple: boolean): string {
-  const targetDates = Array.isArray(date) ? date : [date];
-  const dates = targetDates.map(date => {
-    const yyyyMMdd = date.getFullYear() + '/' + (date.getMonth() + 1) + '/' + date.getDate();
-    const d = new Date(yyyyMMdd);
-    return d.toLocaleDateString();
-  });
-  return !isMultiple ? dates.join(' - ') : dates.join(', ');
-}
-
-function defaultDateParser(date: string): Date | null {
-  if (date) {
-    const s = date.split('/');
-    const year = s[0].length === 4 ? s[0] : s[1];
-    const month = s[0].length === 2 ? s[0] : s[1];
-    if (year && month) {
-      return new Date(parseInt(year, 10), parseInt(month, 10) - 1, 1, 0, 0, 0, 0);
-    }
-  }
-  return null;
-}
+type Dropdown = InstanceType<typeof BDropdown>;
 
 export type DatepickerPosition = 'is-top-right' | 'is-top-left' | 'is-bottom-left';
 
 export interface DatepickerIcons {
-  next: Component;
-  previous: Component;
-  calendar: Component;
+	next: Component;
+	previous: Component;
+	calendar: Component;
 }
 
 const DEFAULT_DATEPICKER_ICONS: DatepickerIcons = {
-  previous: defineAsyncComponent(() => import('../../icons/angleLeft')),
-  next: defineAsyncComponent(() => import('../../icons/angleRight')),
-  calendar: defineAsyncComponent(() => import('../../icons/calendar'))
+	previous: defineAsyncComponent(() => import('../../icons/angleLeft')),
+	next: defineAsyncComponent(() => import('../../icons/angleRight')),
+	calendar: defineAsyncComponent(() => import('../../icons/calendar'))
 };
 
 export function getDatepickerIcons(icons: Partial<DatepickerIcons>): DatepickerIcons {
-  return {
-    ...DEFAULT_DATEPICKER_ICONS,
-    ...icons
-  };
+	return {
+		...DEFAULT_DATEPICKER_ICONS,
+		...icons
+	};
 }
 
 const BDatepickerPropsDefinition = {
-  ...BDropdownPropsDefinition,
-  ...BDatepickerTablePropsDefinition,
-  ...UseDisablePropsDefinition,
-  ...getUseInputPropsDefinition<Date | Date[]>(),
-  placeholder: {
-    type: String as PropType<string>
-  },
-  initiallyFocusedDate: {
-    type: Date as PropType<Date>,
-    default: () => new Date()
-  },
-  dateFormatter: {
-    type: Function as PropType<FunctionN<[Date | Date[], boolean], string>>,
-    default: constant(defaultDateFormatter)
-  },
-  dateParser: {
-    type: Function as PropType<FunctionN<[string], Date | null>>,
-    default: constant(defaultDateParser)
-  },
-  useMobileNative: {
-    type: Boolean as PropType<boolean>,
-    default: false
-  },
-  position: {
-    type: String as PropType<DatepickerPosition>
-  },
-  indicators: {
-    type: String as PropType<EventIndicator>,
-    default: 'bars' as const
-  },
-  yearsRange: {
-    type: (Array as unknown) as PropType<[number, number]>,
-    default: constant([-5, 3] as const)
-  },
-  closeOnSelect: {
-    type: Boolean as PropType<boolean>,
-    default: true
-  },
-  isMultiple: {
-    type: Boolean as PropType<boolean>,
-    default: false
-  },
-  openOnFocus: {
-    type: Boolean as PropType<boolean>,
-    default: true
-  },
-  icons: {
-    type: Object as PropType<DatepickerIcons>,
-    default: constant(DEFAULT_DATEPICKER_ICONS)
-  }
+	...BDropdownPropsDefinition,
+	...UseDisablePropsDefinition,
+	...getUseInputPropsDefinition<Date | Date[]>(),
+	modelValue: {
+		type: [Array, Date] as PropType<Date | Date[]>,
+		default: constEmptyArray
+	},
+	'onUpdate:modelValue': {
+		type: Function as PropType<FunctionN<[Date | Date[]], void>>,
+		required: true as const
+	},
+	dayNames: {
+		type: Array as PropType<string[]>,
+		default: constant(DEFAULT_DAY_NAMES)
+	},
+	monthNames: {
+		type: Array as PropType<string[]>,
+		default: constant(DEFAULT_MONTH_NAMES)
+	},
+	firstDayOfWeek: {
+		type: Number as PropType<WeekdayNumber>,
+		default: 0 as const
+	},
+	events: {
+		type: Array as PropType<DateEvent[]>,
+		default: constEmptyArray
+	},
+	minDate: {
+		type: Date as PropType<Date>,
+		required: false
+	},
+	maxDate: {
+		type: Date as PropType<Date>,
+		required: false
+	},
+	isDisabled: {
+		type: Boolean,
+		default: false
+	},
+	unselectableDates: {
+		type: Array as PropType<Date[]>,
+		default: constEmptyArray
+	},
+	unselectableDaysOfWeek: {
+		type: Array as PropType<number[]>,
+		default: constEmptyArray
+	},
+	selectableDates: {
+		type: Object as PropType<Date[]>
+	},
+	showWeekNumber: {
+		type: Boolean as PropType<boolean>,
+		default: false as const
+	},
+	isMultiple: {
+		type: Boolean as PropType<boolean>,
+		default: false
+	},
+	placeholder: {
+		type: String as PropType<string>
+	},
+	useMobileNative: {
+		type: Boolean as PropType<boolean>,
+		default: false
+	},
+	position: {
+		type: String as PropType<DatepickerPosition>
+	},
+	indicators: {
+		type: String as PropType<EventIndicator>,
+		default: 'bars' as const
+	},
+	yearsRange: {
+		type: (Array as unknown) as PropType<[number, number]>,
+		default: constant([-5, 3] as const)
+	},
+	closeOnSelect: {
+		type: Boolean as PropType<boolean>,
+		default: true
+	},
+	openOnFocus: {
+		type: Boolean as PropType<boolean>,
+		default: true
+	},
+	icons: {
+		type: Object as PropType<DatepickerIcons>,
+		default: constant(DEFAULT_DATEPICKER_ICONS)
+	}
 };
 
 export type BDatepickerProps = ExtractPropTypes<typeof BDatepickerPropsDefinition>;
 
 function useNative(props: BDatepickerProps) {
-  return props.useMobileNative && !props.isInline;
+	return props.useMobileNative && !props.isInline;
 }
 
-function formatDateInput(props: BDatepickerProps, value: Date | Date[] | null): string | null {
-  if (Array.isArray(value)) {
-    return value.every(isDate) ? props.dateFormatter(value, props.isMultiple) : null;
-  } else {
-    return isDate(value) ? props.dateFormatter(value, props.isMultiple) : null;
-  }
+const useFormattedDate = Intl.DateTimeFormat('default', {
+	year: 'numeric',
+	month: 'numeric',
+	day: 'numeric'
+}).format;
+
+function useFormattedModelValue(modelValue: Date | Date[]) {
+	return Array.isArray(modelValue) ? modelValue.map(useFormattedDate).join(', ') : useFormattedDate(modelValue);
 }
 
-function formatYYYYMMDD(value: any) {
-  const date = new Date(value);
-  if (value && isDate(date)) {
-    const year = date.getFullYear();
-    const month = date.getMonth() + 1;
-    const day = date.getDate();
-    return year + '-' + ((month < 10 ? '0' : '') + month) + '-' + ((day < 10 ? '0' : '') + day);
-  }
-  return '';
+function parseInputString(str: string): Date[] {
+	const splits = str.split(',').map(s => s.trim());
+	return splits.map(s => new Date(s)).filter(d => isDate(d) && !isNaN(d.getTime()));
 }
 
-function getUpdateValue(
-  props: BDatepickerProps,
-  model: Model<Date | Date[]>,
-  dateSelectionData: Ref<DateSelectionData>
-) {
-  return (value: Date | Date[] | null | undefined) => {
-    if (value === null || value === undefined) {
-      return;
-    } else if (Array.isArray(value)) {
-      model.modelValue.value = value;
-      const currentDate = value.length ? value[0] : props.dateCreator();
-      dateSelectionData.value = {
-        month: currentDate.getMonth() as MonthNumber,
-        year: currentDate.getFullYear()
-      };
-    } else {
-      if (props.isMultiple) {
-        const currentValue = model.modelValue.value;
-        const existingDates = Array.isArray(currentValue) ? currentValue : [currentValue].filter(isDate);
-        const newDates = toggleDate(value, existingDates);
-        model.modelValue.value = newDates;
-        const currentDate = newDates.length ? newDates[0] : props.dateCreator();
-        dateSelectionData.value = {
-          month: currentDate.getMonth() as MonthNumber,
-          year: currentDate.getFullYear()
-        };
-      } else {
-        model.modelValue.value = value;
-        dateSelectionData.value = {
-          month: value.getMonth() as MonthNumber,
-          year: value.getFullYear()
-        };
-      }
-    }
-  };
-}
-
-type UpdateValue = ReturnType<typeof getUpdateValue>;
-
-function getOnNativeInput(updateValue: UpdateValue) {
-  return function onNativeInput(event: any) {
-    const value = event.target.value;
-    const date = new Date(value + 'T00:00:00');
-    updateValue(isDate(date) ? date : null);
-  };
-}
-
-type OnNativeInput = ReturnType<typeof getOnNativeInput>;
-
-function getOnInput(props: BDatepickerProps, updateValue: UpdateValue) {
-  return function onInput(value: string) {
-    const date = props.dateParser(value);
-    if (isDate(date)) {
-      updateValue(date);
-    } else {
-      updateValue(null);
-    }
-  };
-}
-
-type OnInput = ReturnType<typeof getOnInput>;
-
-function generateInput(
-  props: BDatepickerProps,
-  context: SetupContext,
-  model: Model<Date | Date[]>,
-  dropdownProps: BDatepickerData
-): VNode {
-  const isMobile = useNative(props);
-  return h(BInput, {
-    ...(isMobile
-      ? context.attrs
-      : { ...context.attrs, max: formatYYYYMMDD(props.maxDate), min: formatYYYYMMDD(props.minDate) }),
-    autocomplete: 'off',
-    type: isMobile ? 'date' : 'text',
-    value: formatDateInput(props, model.modelValue.value as any),
-    placeholder: props.placeholder,
-    size: props.size,
-    icon: props.icons.calendar,
-    isRounded: props.isRounded,
-    isDisabled: props.isDisabled,
-    isReadonly: props.isReadonly,
-    isLoading: props.isLoading,
-    useNativeValidation: props.useNativeValidation,
-    onFocus: () => {
-      if (!isMobile && props.openOnFocus) {
-        dropdownProps.open();
-      }
-    },
-    ...(isMobile
-      ? {
-          onChange: dropdownProps.onNativeInput
-        }
-      : {
-          onKeyup: (e: KeyboardEvent) => {
-            if (isEscEvent(e)) {
-              dropdownProps.close();
-            }
-          },
-          onInput: dropdownProps.onInput
-        })
-  });
+function generateInput(props: BDatepickerProps, context: SetupContext, data: BDatepickerData, toggle?: Toggle): VNode {
+	const isMobile = useNative(props);
+	return h(BInput, {
+		max: props.maxDate ? useFormattedDate(props.maxDate) : null,
+		min: props.minDate ? useFormattedDate(props.minDate) : null,
+		autocomplete: 'off',
+		type: isMobile ? 'date' : 'text',
+		modelValue: useFormattedModelValue(data.modelValue.value),
+		'onUpdate:modelValue': (val: string) => {
+			data.modelValue.value = parseInputString(val);
+		},
+		placeholder: props.placeholder,
+		size: props.size,
+		icon: props.icons.calendar,
+		isRounded: props.isRounded,
+		isDisabled: props.isDisabled,
+		isReadonly: props.isReadonly,
+		isLoading: props.isLoading,
+		useNativeValidation: props.useNativeValidation,
+		onFocus: () => {
+			if (!isMobile && props.openOnFocus && toggle) {
+				nextTick(() => {
+					if (toggle.isOff.value) {
+						toggle.setOff();
+					}
+				});
+			}
+		}
+	});
 }
 
 function generateButton(props: BDatepickerProps, data: BDatepickerData, isNext: boolean): VNode {
-  return h(
-    'button',
-    {
-      class: isNext ? 'pagination-next datepicker-next' : 'pagination-previous datepicker-previous',
-      disabled: data.isDisabled,
-      onClick: isNext ? data.nextMonth : data.previousMonth,
-      onKeydown: (e: KeyboardEvent) => {
-        if (isEnterEvent(e) || isSpaceEvent(e)) {
-          e.preventDefault();
-          isNext ? data.nextMonth() : data.previousMonth();
-        }
-      }
-    },
-    [
-      h(isNext ? props.icons.next : props.icons.previous, {
-        props: { variant: 'is-link', isThemeable: false }
-      })
-    ]
-  );
+	return h(
+		'button',
+		{
+			class: isNext ? 'pagination-next datepicker-next' : 'pagination-previous datepicker-previous',
+			disabled: data.isDisabled,
+			onClick: isNext ? data.nextMonth : data.previousMonth,
+			onKeydown: (e: KeyboardEvent) => {
+				if (isEnterEvent(e) || isSpaceEvent(e)) {
+					e.preventDefault();
+					isNext ? data.nextMonth() : data.previousMonth();
+				}
+			}
+		},
+		[
+			h(isNext ? props.icons.next : (props.icons.previous as any), {
+				variant: 'is-link',
+				isThemeable: false
+			})
+		]
+	);
 }
 
 function generateYearSelect(props: BDatepickerProps, data: BDatepickerData): VNode {
-  return h(BSelect, {
-    items: data.years,
-    value: data.dateSelectionData.year,
-    isDisabled: data.isDisabled,
-    size: props.size,
-    onInput: data.setYear
-  });
+	return h(BSelect, {
+		items: data.years,
+		modelValue: data.dateSelectionData.year,
+		isDisabled: data.isDisabled,
+		size: props.size,
+		'onUpdate:modelValue': data.setYear
+	});
 }
 
 function generateMonthSelect(props: BDatepickerProps, data: BDatepickerData): VNode {
-  return h(BSelect, {
-    items: data.months,
-    isDisabled: data.isDisabled,
-    size: props.size,
-    value: data.dateSelectionData.month,
-    onInput: data.setMonth
-  });
+	return h(BSelect, {
+		items: data.months,
+		isDisabled: data.isDisabled,
+		size: props.size,
+		modelValue: data.dateSelectionData.month,
+		'onUpdate:modelValue': data.setMonth
+	});
 }
 
 function generateSelects(props: BDatepickerProps, data: BDatepickerData): VNode {
-  return h('div', { class: 'pagination-list' }, [
-    h(BField, [generateMonthSelect(props, data), generateYearSelect(props, data)])
-  ]);
+	return h('div', { class: 'pagination-list' }, [
+		h(BField, { isGrouped: true, isHorizontal: true, hasAddons: true, class: 'is-marginless' }, () => [
+			generateMonthSelect(props, data),
+			generateYearSelect(props, data)
+		])
+	]);
 }
 
 function generateDefaultHeaderContents(props: BDatepickerProps, data: BDatepickerData): VNode {
-  return h('div', { class: ['pagination field is-centered', props.size] }, [
-    generateButton(props, data, false),
-    generateSelects(props, data),
-    generateButton(props, data, true)
-  ]);
+	return h('div', { class: ['pagination field is-centered', props.size] }, [
+		generateButton(props, data, false),
+		generateSelects(props, data),
+		generateButton(props, data, true)
+	]);
 }
 
 function generateHeader(props: BDatepickerProps, context: SetupContext, data: BDatepickerData): VNode {
-  return h(
-    'header',
-    { class: 'datepicker-header' },
-    context.slots.header ? context.slots.header(data) : [generateDefaultHeaderContents(props, data)]
-  );
+	return h(
+		'header',
+		{ class: 'datepicker-header' },
+		context.slots.header ? context.slots.header(data) : [generateDefaultHeaderContents(props, data)]
+	);
 }
 
-function generateDatepickerTable(
-  props: BDatepickerProps,
-  context: SetupContext,
-  model: Model<Date | Date[]>,
-  data: BDatepickerData
-): VNode {
-  return h(BDatepickerTable, {
-    value: model.modelValue.value as Date | Date[],
-    dayNames: props.dayNames,
-    monthNames: props.monthNames,
-    firstDayOfWeek: props.firstDayOfWeek,
-    minDate: props.minDate,
-    maxDate: props.maxDate,
-    dateSelectionData: data.dateSelectionData,
-    isDisabled: data.isDisabled,
-    unselectableDates: props.unselectableDates,
-    unselectableDaysOfWeek: props.unselectableDaysOfWeek,
-    selectableDates: props.selectableDates,
-    events: props.events,
-    indicators: props.indicators,
-    dateCreator: props.dateCreator,
-    showWeekNumber: props.showWeekNumber,
-    isMultiple: props.isMultiple,
-    focusedDate: data.focusedDate,
-    onInput: model.set,
-    onFocus: data.setFocusedDate
-  });
+function generateDatepickerTable(props: BDatepickerProps, context: SetupContext, data: BDatepickerData): VNode {
+	return h(BDatepickerTable, {
+		modelValue: data.modelValue.value,
+		'onUpdate:modelValue': (val: Date | Date[]) => {
+			data.modelValue.value = val;
+		},
+		focusedDate: data.focusedDate.value,
+		'onUpdate:focusedDate': (val: Option<Date>) => {
+			data.focusedDate.value = val;
+		},
+		dayNames: props.dayNames,
+		monthNames: props.monthNames,
+		firstDayOfWeek: props.firstDayOfWeek,
+		minDate: props.minDate,
+		maxDate: props.maxDate,
+		dateSelectionData: data.dateSelectionData,
+		isDisabled: data.isDisabled,
+		unselectableDates: props.unselectableDates,
+		unselectableDaysOfWeek: props.unselectableDaysOfWeek,
+		selectableDates: props.selectableDates,
+		events: props.events,
+		indicators: props.indicators,
+		showWeekNumber: props.showWeekNumber
+	});
 }
 
 function generateFooter(context: SetupContext): VNode {
-  return h('footer', { class: 'datepicker-footer' }, context.slots.footer!());
+	return h('footer', { class: 'datepicker-footer' }, context.slots.footer && context.slots.footer());
 }
 
-function generateCalendar(
-  props: BDatepickerProps,
-  context: SetupContext,
-  model: Model<Date | Date[]>,
-  data: BDatepickerData
-): VNode {
-  return h(
-    'section',
-    {
-      class: 'datepicker-content',
-      'aria-label': 'Datepicker calendar'
-    },
-    [generateDatepickerTable(props, context, model, data)]
-  );
+function generateCalendar(props: BDatepickerProps, context: SetupContext, data: BDatepickerData): VNode {
+	return h(
+		'section',
+		{
+			class: 'datepicker-content',
+			'aria-label': 'Datepicker calendar'
+		},
+		[generateDatepickerTable(props, context, data)]
+	);
 }
 
-function generateDatepickerBody(
-  props: BDatepickerProps,
-  context: SetupContext,
-  model: Model<Date | Date[]>,
-  data: BDatepickerData
-): VNode {
-  const nodes = [generateHeader(props, context, data), generateCalendar(props, context, model, data)];
-  if (context.slots.footer) {
-    nodes.push(generateFooter(context));
-  }
-  return h('div', nodes);
+function generateDatepickerBody(props: BDatepickerProps, context: SetupContext, data: BDatepickerData): VNode {
+	const nodes = [generateHeader(props, context, data), generateCalendar(props, context, data)];
+	if (context.slots.footer) {
+		nodes.push(generateFooter(context));
+	}
+	return h('div', nodes);
 }
 
 function generateDropdown(
-  props: BDatepickerProps,
-  context: SetupContext,
-  model: Model<Date | Date[]>,
-  data: BDatepickerData
+	props: BDatepickerProps,
+	context: SetupContext,
+	data: BDatepickerData,
+	dropdown: Ref<Dropdown | null>
 ): VNode {
-  return h(BDropdown, {
-    ...data.toggleProps,
-    position: props.position,
-    isDisabled: props.isDisabled,
-    isInline: props.isInline,
-    slots: {
-      trigger: () => generateInput(props, context, model, data),
-      default: () => generateDatepickerBody(props, context, model, data)
-    }
-  });
+	return h(
+		BDropdown,
+		{
+			ref: dropdown,
+			position: props.position,
+			isDisabled: props.isDisabled,
+			isInline: props.isInline
+		},
+		{
+			trigger: (toggle: Toggle) => {
+				return generateInput(props, context, data, toggle);
+			},
+			default: () => generateDatepickerBody(props, context, data)
+		}
+	);
 }
 
-const toggleDate = toggleListItem(serialDateOrd);
-
 interface BDatepickerData {
-  toggleProps: UseToggleProps<'isExpanded'>;
-  dateSelectionData: DateSelectionData;
-  nextMonth: IO<void>;
-  previousMonth: IO<void>;
-  setYear: FunctionN<[string | number], void>;
-  setMonth: FunctionN<[string | number], void>;
-  onInput: OnInput;
-  onNativeInput: OnNativeInput;
-  open: IO<void>;
-  close: IO<void>;
-  months: SelectItem<number>[];
-  years: SelectItem<number>[];
-  isDisabled: boolean;
-  focusedDate: Option<Date>;
-  setFocusedDate: FunctionN<[Option<Date>], void>;
+	dateSelectionData: DateSelectionData;
+	nextMonth: IO<void>;
+	previousMonth: IO<void>;
+	setYear: FunctionN<[string | number], void>;
+	setMonth: FunctionN<[string | number], void>;
+	months: SelectItem<number>[];
+	years: SelectItem<number>[];
+	isDisabled: boolean;
+	focusedDate: Ref<Option<Date>>;
+	modelValue: Ref<Date | Date[]>;
 }
 
 function getMonths(props: BDatepickerProps, dateSelectionData: DateSelectionData): SelectItem<number>[] {
-  return props.monthNames.map((month: string, index: number) => ({
-    value: index,
-    text: month,
-    isDisabled: false,
-    isSelected: dateSelectionData.month === index
-  }));
+	return props.monthNames.map((month: string, index: number) => ({
+		value: index,
+		text: month,
+		isDisabled: false,
+		isSelected: dateSelectionData.month === index
+	}));
 }
 
 function getYears(props: BDatepickerProps, dateSelectionData: DateSelectionData): SelectItem<number>[] {
-  const currentYear = props.dateCreator().getFullYear();
-  return range(props.yearsRange[0], props.yearsRange[1])
-    .map(inc => currentYear + inc)
-    .map(year => ({
-      value: year,
-      text: year.toString(),
-      isDisabled: false,
-      isSelected: dateSelectionData.year === year
-    }));
-}
-
-function getStartDate(props: BDatepickerProps) {
-  return pipe(
-    fromNullable(props.value),
-    chain(val => (Array.isArray(val) ? head(val) : some(val))),
-    alt(constant(fromNullable(props.initiallyFocusedDate))),
-    getOrElse(props.dateCreator)
-  );
+	const currentYear = new Date().getFullYear();
+	return range(props.yearsRange[0], props.yearsRange[1])
+		.map(inc => currentYear + inc)
+		.map(year => ({
+			value: year,
+			text: year.toString(),
+			isDisabled: false,
+			isSelected: dateSelectionData.year === year
+		}));
 }
 
 function getDateSelectionData(date: Date): DateSelectionData {
-  return {
-    month: date.getMonth() as MonthNumber,
-    year: date.getFullYear()
-  };
-}
-
-function getInitialDateSelectionData(props: BDatepickerProps) {
-  return getDateSelectionData(getStartDate(props));
+	return {
+		month: date.getMonth() as MonthNumber,
+		year: date.getFullYear()
+	};
 }
 
 function getSetPreviousMonth(props: BDatepickerProps, dateSelectionData: Ref<DateSelectionData>) {
-  return (e?: Event) => {
-    if (e) {
-      e.preventDefault();
-    }
-    if (!props.isDisabled) {
-      if (dateSelectionData.value.month > 0) {
-        dateSelectionData.value = {
-          month: (dateSelectionData.value.month - 1) as MonthNumber,
-          year: dateSelectionData.value.year
-        };
-      } else {
-        dateSelectionData.value = {
-          month: 11,
-          year: dateSelectionData.value.year - 1
-        };
-      }
-    }
-  };
+	return (e?: Event) => {
+		if (e) {
+			e.preventDefault();
+		}
+		if (!props.isDisabled) {
+			if (dateSelectionData.value.month > 0) {
+				dateSelectionData.value = {
+					month: (dateSelectionData.value.month - 1) as MonthNumber,
+					year: dateSelectionData.value.year
+				};
+			} else {
+				dateSelectionData.value = {
+					month: 11,
+					year: dateSelectionData.value.year - 1
+				};
+			}
+		}
+	};
 }
 
 function getSetNextMonth(props: BDatepickerProps, dateSelectionData: Ref<DateSelectionData>) {
-  return (e?: Event) => {
-    if (e) {
-      e.preventDefault();
-    }
-    if (!props.isDisabled) {
-      if (dateSelectionData.value.month < 11) {
-        dateSelectionData.value = {
-          month: (dateSelectionData.value.month + 1) as MonthNumber,
-          year: dateSelectionData.value.year
-        };
-      } else {
-        dateSelectionData.value = {
-          month: 0,
-          year: dateSelectionData.value.year + 1
-        };
-      }
-    }
-  };
+	return (e?: Event) => {
+		if (e) {
+			e.preventDefault();
+		}
+		if (!props.isDisabled) {
+			if (dateSelectionData.value.month < 11) {
+				dateSelectionData.value = {
+					month: (dateSelectionData.value.month + 1) as MonthNumber,
+					year: dateSelectionData.value.year
+				};
+			} else {
+				dateSelectionData.value = {
+					month: 0,
+					year: dateSelectionData.value.year + 1
+				};
+			}
+		}
+	};
 }
 
 function getSetMonth(dateSelectionData: Ref<DateSelectionData>) {
-  return (month: number | string) => {
-    if (isString(month)) {
-      const newVal = fromNullable(parseInt(month, 10));
-      if (isSome(newVal)) {
-        dateSelectionData.value = {
-          month: newVal.value as MonthNumber,
-          year: dateSelectionData.value.year
-        };
-      }
-    } else {
-      dateSelectionData.value = {
-        month: month as MonthNumber,
-        year: dateSelectionData.value.year
-      };
-    }
-  };
+	return (month: number | string) => {
+		if (isString(month)) {
+			const newVal = fromNullable(parseInt(month, 10));
+			if (isSome(newVal)) {
+				dateSelectionData.value = {
+					month: newVal.value as MonthNumber,
+					year: dateSelectionData.value.year
+				};
+			}
+		} else {
+			dateSelectionData.value = {
+				month: month as MonthNumber,
+				year: dateSelectionData.value.year
+			};
+		}
+	};
 }
 
 function getSetYear(dateSelectionData: Ref<DateSelectionData>) {
-  return (year: number | string) => {
-    if (isString(year)) {
-      const newVal = fromNullable(parseInt(year, 10));
-      if (isSome(newVal)) {
-        dateSelectionData.value = {
-          month: dateSelectionData.value.month,
-          year: newVal.value
-        };
-      }
-    } else {
-      dateSelectionData.value = {
-        month: dateSelectionData.value.month,
-        year
-      };
-    }
-  };
+	return (year: number | string) => {
+		if (isString(year)) {
+			const newVal = fromNullable(parseInt(year, 10));
+			if (isSome(newVal)) {
+				dateSelectionData.value = {
+					month: dateSelectionData.value.month,
+					year: newVal.value
+				};
+			}
+		} else {
+			dateSelectionData.value = {
+				month: dateSelectionData.value.month,
+				year
+			};
+		}
+	};
 }
 
-function getSetFocusedDate(focusedDate: Ref<Option<Date>>) {
-  return (date: Option<Date>) => {
-    focusedDate.value = date;
-  };
-}
+const toggleSerialDate = toggleListItem(eqSerialDate);
 
 export default defineComponent({
-  name: 'b-datepicker',
-  props: BDatepickerPropsDefinition,
-  setup(props, context) {
-    const fieldData = useFieldData();
-    const isDisabled = useDisable(props);
-    const model = useModel(props);
-    const toggleProps = shallowReactive({ isExpanded: false, hasPopup: true });
-    const open = () => {
-      toggleProps.isExpanded = false;
-    };
-    const close = () => {
-      toggleProps.isExpanded = true;
-    };
-    const focusedDate = shallowRef(fromNullable(props.initiallyFocusedDate));
-    const dateSelectionData = shallowRef(getInitialDateSelectionData(props));
+	name: 'b-datepicker',
+	props: BDatepickerPropsDefinition,
+	setup(props, context) {
+		const fieldData = useFieldData();
+		const isDisabled = useDisable(props);
 
-    const updateValue = getUpdateValue(props, model, dateSelectionData);
-    const onInput = getOnInput(props, updateValue);
-    const onNativeInput = getOnNativeInput(updateValue);
+		const dropdown: Ref<null | Dropdown> = shallowRef(null);
 
-    const setFocusedDate = getSetFocusedDate(focusedDate);
-    const nextMonth = getSetNextMonth(props, dateSelectionData);
-    const previousMonth = getSetPreviousMonth(props, dateSelectionData);
-    const setMonth = getSetMonth(dateSelectionData);
-    const setYear = getSetYear(dateSelectionData);
-    function onEscape(e: KeyboardEvent) {
-      if (isEscEvent(e)) {
-        close();
-      }
-    }
+		const internalValue = shallowRef(props.modelValue);
 
-    onMounted(() => {
-      if (typeof window !== 'undefined') {
-        document.addEventListener('keyup', onEscape);
-      }
-    });
+		watch(
+			() => props.modelValue,
+			newVal => {
+				internalValue.value = newVal;
+			}
+		);
 
-    onUnmounted(() => {
-      if (typeof window !== 'undefined') {
-        document.removeEventListener('keyup', onEscape);
-      }
-    });
+		const modelValue = computed({
+			get() {
+				return internalValue.value;
+			},
+			set(val: Date | Date[]) {
+				if ((Array.isArray(val) && props.isMultiple) || isDate(val)) {
+					props['onUpdate:modelValue'](val);
+					internalValue.value = val;
+				} else if (props.isMultiple && isDate(val)) {
+					const newVal = toggleSerialDate(
+						val,
+						Array.isArray(internalValue.value) ? internalValue.value : [internalValue.value]
+					);
+					props['onUpdate:modelValue'](newVal);
+					internalValue.value = newVal;
+				} else if (Array.isArray(val) && isNonEmpty(val)) {
+					props['onUpdate:modelValue'](val[0]);
+					internalValue.value = val[0];
+				}
+				dropdown.value && dropdown.value.toggle.setOff();
+			}
+		});
 
-    watch(focusedDate, newVal => {
-      if (isSome(newVal.value)) {
-        dateSelectionData.value = getDateSelectionData(newVal.value.value);
-      }
-    });
+		const focusedDate = useEqRef(getEq(eqSerialDate))(
+			pipe(
+				Array.isArray(props.modelValue) ? head(props.modelValue) : some(props.modelValue),
+				alt(() => some(new Date()))
+			)
+		);
 
-    return () => {
-      const data: BDatepickerData = {
-        toggleProps,
-        isDisabled: isDisabled.value,
-        open,
-        close,
-        focusedDate: focusedDate.value,
-        onInput,
-        onNativeInput,
-        dateSelectionData: dateSelectionData.value,
-        setFocusedDate,
-        nextMonth,
-        previousMonth,
-        setMonth,
-        setYear,
-        months: getMonths(props, dateSelectionData.value),
-        years: getYears(props, dateSelectionData.value)
-      };
-      return h(
-        'article',
-        {
-          class: [
-            'b-datepicker control',
-            props.size,
-            { 'is-expanded': props.isExpanded || fieldData.attrs.isExpanded.value }
-          ]
-        },
-        [useNative(props) ? generateInput(props, context, model, data) : generateDropdown(props, context, model, data)]
-      );
-    };
-  }
+		const dateSelectionData = shallowRef(
+			getDateSelectionData(
+				pipe(
+					focusedDate.value,
+					getOrElse(() => new Date())
+				)
+			)
+		);
+
+		const nextMonth = getSetNextMonth(props, dateSelectionData);
+		const previousMonth = getSetPreviousMonth(props, dateSelectionData);
+		const setMonth = getSetMonth(dateSelectionData);
+		const setYear = getSetYear(dateSelectionData);
+
+		function onKeydown(e: KeyboardEvent) {
+			if (isEscEvent(e)) {
+				dropdown.value && dropdown.value.toggle.setOff();
+				return;
+			}
+			const fd = focusedDate.value;
+			if (isNone(fd)) {
+				return;
+			}
+			if (isEnterEvent(e) || isSpaceEvent(e)) {
+				e.preventDefault();
+				modelValue.value = fd.value;
+			} else if (isArrowUpEvent(e)) {
+				e.preventDefault();
+				focusedDate.value = some(addDays(fd.value, -7));
+			} else if (isArrowRightEvent(e)) {
+				e.preventDefault();
+				focusedDate.value = some(addDays(fd.value, 1));
+			} else if (isArrowDownEvent(e)) {
+				e.preventDefault();
+				focusedDate.value = some(addDays(fd.value, 7));
+			} else if (isArrowLeftEvent(e)) {
+				e.preventDefault();
+				focusedDate.value = some(addDays(fd.value, -1));
+			}
+		}
+
+		onMounted(() => {
+			if (typeof window !== 'undefined') {
+				document.addEventListener('keyup', onKeydown);
+			}
+		});
+
+		onUnmounted(() => {
+			if (typeof window !== 'undefined') {
+				document.removeEventListener('keyup', onKeydown);
+			}
+		});
+
+		watch(
+			() => focusedDate.value,
+			newVal => {
+				if (
+					isSome(newVal) &&
+					(newVal.value.getMonth() !== dateSelectionData.value.month ||
+						newVal.value.getFullYear() !== dateSelectionData.value.year)
+				) {
+					dateSelectionData.value = getDateSelectionData(newVal.value);
+				}
+			}
+		);
+
+		watch(dateSelectionData, newVal => {
+			const fd = focusedDate.value;
+			if (isNone(fd) || fd.value.getMonth() !== newVal.month || fd.value.getFullYear() !== newVal.year) {
+				focusedDate.value = some(new Date(newVal.year, newVal.month));
+			}
+		});
+
+		return () => {
+			const data: BDatepickerData = {
+				modelValue,
+				isDisabled: isDisabled.value,
+				focusedDate: focusedDate,
+				dateSelectionData: dateSelectionData.value,
+				nextMonth,
+				previousMonth,
+				setMonth,
+				setYear,
+				months: getMonths(props, dateSelectionData.value),
+				years: getYears(props, dateSelectionData.value)
+			};
+			return h(
+				'article',
+				{
+					class: [
+						'b-datepicker control',
+						props.size,
+						{ 'is-expanded': props.isExpanded || fieldData.attrs.isExpanded.value }
+					]
+				},
+				[
+					useNative(props)
+						? generateInput(props, context, data)
+						: generateDropdown(props, context, data, dropdown)
+				]
+			);
+		};
+	}
 });
