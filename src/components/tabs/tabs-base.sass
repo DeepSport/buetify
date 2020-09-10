@@ -170,7 +170,7 @@ $tabs-toggle-link-active-color: $link-invert !default
       font-size: $size-medium
     &.is-large-touch
       font-size: $size-large
-  @each $name, $pair in $all-colors
+  @each $name, $pair in $colors
     $color: nth($pair, 1)
     $color-invert: nth($pair, 2)
     &.is-#{$name}

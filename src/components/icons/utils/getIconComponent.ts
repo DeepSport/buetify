@@ -31,9 +31,9 @@ export function getFontAwesomeIconComponent(iconArgs: IconDefinition): Functiona
   };
 }
 
-function convert(element: any, props: any = {}, data: any = {}) {
+function convert(element: any, props: any = {}, data: any = {}): VNode {
   if (typeof element === 'string') {
-    return element;
+    return h(element);
   }
   const children = (element.children || []).map(h);
 
@@ -56,7 +56,7 @@ function convert(element: any, props: any = {}, data: any = {}) {
     },
     { class: {}, style: {} } as any
   );
-  const { class: dClass = {}, style: dStyle = {}, ...remainingData } = attrs;
+  const { class: dClass = {}, style: dStyle = {}, ...remainingData } = props;
   const { class: mClass = {}, style: mStyle = {}, ...mRemainingData } = mixins;
   return h(
     element.tag,

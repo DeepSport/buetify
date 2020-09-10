@@ -1,7 +1,7 @@
 @import '~bulma/sass/components/card'
 $modal-z: 40 !default
 
-$modal-background-background-color: rgba($scheme-invert, 0.86) !default
+$modal-background-background-color: bulmaRgba($scheme-invert, 0.86) !default
 
 $modal-content-width: 640px !default
 $modal-content-margin-mobile: 20px !default
@@ -28,6 +28,8 @@ $modal-card-foot-border-top: 1px solid $border !default
 
 $modal-card-body-background-color: $scheme-main !default
 $modal-card-body-padding: 20px !default
+
+$all-colors: mergeColorMaps($colors, $shades)
 
 .modal
   @extend %overlay
@@ -81,7 +83,7 @@ $modal-card-body-padding: 20px !default
     &.is-#{$name}
       .modal-card-head,
       .modal-card-foot
-        background-color: darken($color, 5%)
+        background-color: bulmaDarken($color, 5%)
         color: $color-invert
       .modal-card-body
         background-color: $color
