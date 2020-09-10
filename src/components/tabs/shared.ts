@@ -1,40 +1,38 @@
-import { IO } from 'fp-ts/lib/IO';
 import { none, Option } from 'fp-ts/lib/Option';
-import { PropType, ExtractPropTypes, Component, VNode, Ref, shallowRef } from 'vue';
+import { PropType, ExtractPropTypes, Component, Ref, shallowRef } from 'vue';
 
 export const TABS_SYMBOL = Symbol('tabs');
 
+export const TAB_ITEM_NAME = 'b-tab-item';
+
 export interface BTabItemData {
-  props: BTabItemProps;
-  render: IO<VNode[]>;
+	props: BTabItemProps;
 }
 
 export interface TabInjection {
-  tabs: Ref<BTabItemData[]>;
-  activeLabel: Ref<Option<string>>;
+	activeLabel: Ref<Option<string>>;
 }
 
 export const DEFAULT_TAB_INJECTION: TabInjection = {
-  tabs: shallowRef([]),
-  activeLabel: shallowRef(none)
+	activeLabel: shallowRef(none)
 };
 
 export const BTabItemPropsDefinition = {
-  label: {
-    type: String as PropType<string>,
-    required: true as const
-  },
-  icon: {
-    type: Function as PropType<Component>
-  },
-  isDisabled: {
-    type: Boolean as PropType<boolean>,
-    default: false
-  },
-  isVisible: {
-    type: Boolean as PropType<boolean>,
-    default: true
-  }
+	label: {
+		type: String as PropType<string>,
+		required: true as const
+	},
+	icon: {
+		type: Function as PropType<Component>
+	},
+	isDisabled: {
+		type: Boolean as PropType<boolean>,
+		default: false
+	},
+	isVisible: {
+		type: Boolean as PropType<boolean>,
+		default: true
+	}
 };
 
 export type BTabItemProps = ExtractPropTypes<typeof BTabItemPropsDefinition>;

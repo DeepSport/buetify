@@ -1,6 +1,6 @@
 {
-  "name": "buetify",
-  "version": "0.1.2",
+  "name": "deepsport-buetify",
+  "version": "0.0.0",
   "description": "A Vue component framework based on Bulma",
   "main": "./src/index.ts",
   "author": {
@@ -44,11 +44,10 @@
   "peerDependencies": {
     "@fortawesome/fontawesome-svg-core": "^1.2.25",
     "@fortawesome/free-solid-svg-icons": "^5.11.2",
-    "@fortawesome/vue-fontawesome": "^0.1.8",
     "bulma": "^0.8.0",
     "fp-ts": "^2.6.5",
-    "fp-ts-local-storage": "^0.2.0",
-    "vue": "3.0.0-beta.20"
+    "fp-ts-local-storage": "^1.0.3",
+    "vue": "3.0.0-rc.10"
   },
   "dependencies": {
     "lodash.debounce": "^4.0.8"
@@ -60,7 +59,6 @@
     "@babel/preset-env": "^7.8.4",
     "@fortawesome/fontawesome-svg-core": "^1.2.25",
     "@fortawesome/free-solid-svg-icons": "^5.11.2",
-    "@fortawesome/vue-fontawesome": "^0.1.8",
     "@types/lodash.debounce": "^4.0.6",
     "babel-plugin-detective": "^2.0.0",
     "babel-plugin-module-resolver": "^4.0.0",
@@ -68,12 +66,12 @@
     "bulma": "^0.8.0",
     "cross-env": "^7.0.0",
     "fp-ts": "^2.6.5",
-    "fp-ts-local-storage": "^0.2.0",
+    "fp-ts-local-storage": "^1.0.3",
     "np": "^5.2.1",
     "prettier": "^1.19.1",
     "rimraf": "^3.0.1",
     "shelljs": "^0.8.3",
-    "typescript": "^3.9.5",
-    "vue": "3.0.0-beta.20"
+    "typescript": "^3.9.7",
+    "vue": "3.0.0-rc.10"
   }
 }

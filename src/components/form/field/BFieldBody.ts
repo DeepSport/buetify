@@ -10,11 +10,13 @@ export interface BFieldBodyProps {
 }
 
 export default function BFieldBody(props: BFieldBodyProps, { attrs, slots }: SetupContext) {
-  h(
+  const nodes = slots.default!();
+  console.log(nodes);
+  return h(
     props.tag ?? 'div',
     {
       class: mergeClasses(attrs.class as Classes, 'field-body')
     },
-    slots.default!().map((element: VNode) => (!element.el ? undefined : h(BField, props, [element])))
+    nodes.map((element: VNode) => (!!element.el ? element : h(BField, props, [element])))
   );
 }

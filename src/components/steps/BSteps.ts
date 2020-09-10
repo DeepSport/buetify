@@ -1,191 +1,202 @@
 import './steps.sass';
 import { getUseModelPropsDefinition, Model, useModel } from '../../composables/model';
-import { DefaultThemePropsDefinition } from '../../composables/theme';
-import BHorizontalDivider from '../layout/divider/BHorizontalDivider';
+import { DefaultThemePropsDefinition, useTheme } from '../../composables/theme';
+import { constEmptyArray, isObject } from '../../utils/helpers';
 import { ColorVariant } from '../../types/ColorVariants';
-import { lookup } from 'fp-ts/lib/Array';
-import { isSome, map } from 'fp-ts/lib/Option';
+import { head } from 'fp-ts/lib/Array';
+import { chain, getOrElse, none, Option, some } from 'fp-ts/lib/Option';
 import { pipe } from 'fp-ts/lib/pipeable';
 import {
-  Transition,
-  withDirectives,
-  resolveDirective,
-  Directive,
-  Ref,
-  defineComponent,
-  nextTick,
-  VNode,
-  PropType,
-  onBeforeMount,
-  h,
-  ExtractPropTypes,
-  provide,
-  computed,
-  shallowRef
+	Transition,
+	Ref,
+	defineComponent,
+	nextTick,
+	VNode,
+	PropType,
+	onBeforeMount,
+	h,
+	ExtractPropTypes,
+	provide,
+	shallowRef,
+	Slots,
+	isVNode
 } from 'vue';
-import { BStepItemData, StepInjection, STEPS_SYMBOL } from './shared';
+import { BStepItemProps, STEP_ITEM_NAME, StepInjection, STEPS_SYMBOL } from './shared';
 
 export type StepsSize = 'is-small' | 'is-medium' | 'is-large' | '';
 
 type StepTransition = 'slide-next' | 'slide-prev';
 
 export const BStepsPropsDefinition = {
-  ...getUseModelPropsDefinition<number>(),
-  ...DefaultThemePropsDefinition,
-  variant: {
-    type: String as PropType<ColorVariant>,
-    default: 'is-link' as const
-  },
-  size: {
-    type: String as PropType<StepsSize>,
-    default: '' as const
-  },
-  isAnimated: {
-    type: Boolean as PropType<boolean>,
-    default: true
-  }
+	...getUseModelPropsDefinition<number>(),
+	...DefaultThemePropsDefinition,
+	variant: {
+		type: String as PropType<ColorVariant>,
+		default: 'is-link' as const
+	},
+	size: {
+		type: String as PropType<StepsSize>,
+		default: '' as const
+	},
+	isAnimated: {
+		type: Boolean as PropType<boolean>,
+		default: true
+	}
 };
 
 export type BStepsProps = ExtractPropTypes<typeof BStepsPropsDefinition>;
 
-function getOnStepClick(index: number, model: Model<number>, transition: Ref<StepTransition>) {
-  return () => {
-    const val = model.modelValue.value || 0;
-    if (val !== index) {
-      transition.value = index < val ? 'slide-next' : 'slide-prev';
-      nextTick(() => {
-        model.set(index);
-      });
-    }
-  };
-}
-
-function generateNavItemStepDetails(step: BStepItemData): VNode {
-  return h('div', { class: 'step-details' }, [h('span', { class: 'step-title' }, step.props.label)]);
-}
-
-function generateNavItemStepMarker(props: BStepsProps, step: BStepItemData): VNode {
-  return h('div', { class: 'step-marker' }, step.props.icon ? [h(step.props.icon, { size: props.size })] : []);
-}
-
-function generateNavItemContent(
-  props: BStepsProps,
-  step: BStepItemData,
-  index: number,
-  model: Model<number>,
-  transition: Ref<StepTransition>
-): VNode {
-  return h(
-    'a',
-    {
-      class: ['step-link', { 'is-clickable': step.props.isClickable }],
-      onClick: step.props.isClickable ? getOnStepClick(index, model, transition) : undefined
-    },
-    [generateNavItemStepMarker(props, step), generateNavItemStepDetails(step)]
-  );
+function getOnStepItemClick(
+	step: BStepItemNode,
+	index: number,
+	model: Model<number>,
+	activeLabel: Ref<Option<string>>,
+	transition: Ref<StepTransition>
+) {
+	return () => {
+		const val = model.modelValue.value || 0;
+		if (val !== index) {
+			transition.value = index < val ? 'slide-next' : 'slide-prev';
+			nextTick(() => {
+				model.set(index);
+				activeLabel.value = some(step.props.label);
+			});
+		}
+	};
 }
 
 function getGenerateNavItem(
-  props: BStepsProps,
-  model: Model<number>,
-  transition: Ref<StepTransition>,
-  vShow: Directive
+	props: BStepsProps,
+	model: Model<number>,
+	activeLabel: Ref<Option<string>>,
+	transition: Ref<StepTransition>
 ) {
-  return function generateNavItem(step: BStepItemData, index: number): VNode {
-    return withDirectives(
-      h(
-        'li',
-        {
-          key: step.props.label,
-          class: [
-            'step-item',
-            step.props.variant || props.variant,
-            {
-              'is-active': index === model.modelValue.value,
-              'is-completed': step.props.isCompleted || (model.modelValue.value as number) > index
-            }
-          ]
-        },
-        [generateNavItemContent(props, step, index, model, transition)]
-      ),
-      [[vShow, step.props.isVisible]]
-    );
-  };
+	return function generateNavItem(step: BStepItemNode, index: number): VNode {
+		return h(
+			'li',
+			{
+				key: step.props.label,
+				class: [
+					{
+						'is-active': index === model.modelValue.value
+					}
+				]
+			},
+			[
+				h(
+					'a',
+					{ onClick: getOnStepItemClick(step, index, model, activeLabel, transition) },
+					step.props.icon ? [h(step.props.icon), step.props.label] : step.props.label
+				)
+			]
+		);
+	};
+}
+
+function generateNavItems(
+	props: BStepsProps,
+	tabs: BStepItemNode[],
+	model: Model<number>,
+	activeLabel: Ref<Option<string>>,
+	transition: Ref<StepTransition>
+) {
+	return h('ul', tabs.map(getGenerateNavItem(props, model, activeLabel, transition)));
+}
+
+function generateNavHeaderContent(
+	props: BStepsProps,
+	steps: BStepItemNode[],
+	model: Model<number>,
+	activeLabel: Ref<Option<string>>,
+	transition: Ref<StepTransition>,
+	themeClasses: string[]
+): VNode {
+	return h(
+		'nav',
+		{
+			class: ['tabs', props.size, ...(props.variant === '' ? themeClasses : [props.variant])]
+		},
+		generateNavItems(props, steps, model, activeLabel, transition)
+	);
 }
 
 function generateNavHeader(
-  props: BStepsProps,
-  steps: BStepItemData[],
-  model: Model<number>,
-  transition: Ref<StepTransition>,
-  vShow: Directive
+	props: BStepsProps,
+	steps: BStepItemNode[],
+	model: Model<number>,
+	activeLabel: Ref<Option<string>>,
+	transition: Ref<StepTransition>,
+	themeClasses: string[]
 ): VNode {
-  return h('nav', { class: ['steps', props.variant, props.size] }, [
-    h('ul', { class: 'step-items' }, steps.map(getGenerateNavItem(props, model, transition, vShow)))
-  ]);
+	return generateNavHeaderContent(props, steps, model, activeLabel, transition, themeClasses);
 }
 
 function generateStepContent(
-  props: BStepsProps,
-  steps: BStepItemData[],
-  model: Model<number>,
-  transition: Ref<StepTransition>
+	props: BStepsProps,
+	steps: BStepItemNode[],
+	model: Model<number>,
+	transition: Ref<StepTransition>
 ): VNode {
-  return h(
-    'section',
-    {
-      class: 'step-content',
-      'aria-label': 'Step Content'
-    },
-    props.isAnimated
-      ? [h(Transition, { name: transition.value }, steps[model.modelValue.value || 0].render())]
-      : steps[model.modelValue.value || 0].render()
-  );
+	return props.isAnimated
+		? h(Transition, { name: transition.value }, () => steps[model.modelValue.value || 0])
+		: steps[model.modelValue.value || 0];
 }
 
-const HorizontalDivider = h(BHorizontalDivider);
+interface BStepItemNode extends VNode {
+	type: {
+		name: typeof STEP_ITEM_NAME;
+	};
+	props: BStepItemProps;
+}
+
+function isStepItemNode(node: unknown): node is BStepItemNode {
+	return (
+		isObject(node) &&
+		isObject((node as any).type) &&
+		(node as any).type.name === STEP_ITEM_NAME &&
+		((node as any).props['is-visible'] === undefined ||
+			(node as any).props['is-visible'] ||
+			(node as any).props.isVisible === undefined ||
+			(node as any).props.isVisible)
+	);
+}
+
+function getSteps(slots: Slots): any[] {
+	return pipe(
+		slots.default ? slots.default() : [],
+		head,
+		chain(fragment =>
+			fragment.children && Array.isArray(fragment.children) ? some(fragment.children.filter(isVNode)) : none
+		),
+		getOrElse<VNode[]>(constEmptyArray)
+	).filter(isStepItemNode) as any;
+}
 
 export default defineComponent({
-  name: 'b-steps',
-  props: BStepsPropsDefinition,
-  setup(props, context) {
-    const vShow = resolveDirective('show') as Directive;
-    const model = useModel(props);
-    const transition = shallowRef('slide-next' as 'slide-next' | 'slide-prev');
-    const currentStep = computed(() => lookup(model.modelValue.value || 0, injection.steps.value));
-    const injection: StepInjection = {
-      steps: shallowRef([] as BStepItemData[]),
-      activeLabel: computed(() =>
-        pipe(
-          currentStep.value,
-          map(n => n.props.label)
-        )
-      )
-    };
+	name: 'b-steps',
+	props: BStepsPropsDefinition,
+	setup(props, context) {
+		const { themeClasses } = useTheme(props);
+		const model = useModel(props);
+		const transition = shallowRef('slide-next' as 'slide-next' | 'slide-prev');
+		const injection: StepInjection = {
+			activeLabel: shallowRef(none)
+		};
 
-    provide(STEPS_SYMBOL, injection);
+		provide(STEPS_SYMBOL, injection);
 
-    onBeforeMount(() => {
-      if (
-        model.modelValue.value === undefined ||
-        (isSome(currentStep.value) && !currentStep.value.value.props.isVisible)
-      ) {
-        model.set(
-          Math.max(
-            injection.steps.value.findIndex(step => step.props.isVisible),
-            0
-          )
-        );
-      }
-    });
+		onBeforeMount(() => {
+			if (model.modelValue.value === undefined) {
+				model.set(0);
+			}
+		});
 
-    return () => {
-      const steps = injection.steps.value;
-      return h('article', { class: 'b-steps' }, [
-        generateNavHeader(props, steps, model, transition, vShow),
-        HorizontalDivider,
-        generateStepContent(props, steps, model, transition)
-      ]);
-    };
-  }
+		return () => {
+			const steps = getSteps(context.slots);
+			return h('article', { class: 'b-steps' }, [
+				generateNavHeader(props, steps, model, injection.activeLabel, transition, themeClasses.value),
+				generateStepContent(props, steps, model, transition)
+			]);
+		};
+	}
 });

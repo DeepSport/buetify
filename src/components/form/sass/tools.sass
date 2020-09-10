@@ -1,3 +1,4 @@
+@import "./shared"
 $label-color: $text-strong !default
 $label-weight: $weight-bold !default
 
@@ -17,7 +18,7 @@ $help-size: $size-small !default
     font-size: $size-medium
   &.is-large
     font-size: $size-large
-  @each $name, $pair in $all-colors
+  @each $name, $pair in $colors
     $color: nth($pair, 1)
     $color-invert: nth($pair, 2)
     &.is-#{$name}
@@ -27,7 +28,7 @@ $help-size: $size-small !default
   display: block
   font-size: $help-size
   margin-top: 0.25rem
-  @each $name, $pair in $all-colors
+  @each $name, $pair in $colors
     $color: nth($pair, 1)
     &.is-#{$name}
       color: $color

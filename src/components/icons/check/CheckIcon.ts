@@ -1,4 +1,4 @@
 import { faCheck } from '@fortawesome/free-solid-svg-icons/faCheck';
-import { getIconComponent } from '../utils/getIconComponent';
+import { useIconComponent } from '../utils/index';
 
-export default getIconComponent('Check', faCheck);
+export default useIconComponent('Check', faCheck);

@@ -38,11 +38,14 @@ export function FontAwesomeIcon(props: any, { attrs }: SetupContext) {
 }
 
 function convert(element: any, props: any = {}, data: any = {}) {
+  if (typeof element === 'string') {
+    return element;
+  }
   const children = (element.children || []).map(h);
 
-  const mixins = Object.keys(element.attributes || {}).reduce(
+  const mixins = Object.keys(element.attrs || {}).reduce(
     (acc, key) => {
-      const val = element.attributes[key];
+      const val = element.attrs[key];
 
       switch (key) {
         case 'class':
@@ -62,21 +65,17 @@ function convert(element: any, props: any = {}, data: any = {}) {
 
   const { class: dClass = {}, style: dStyle = {}, ...remainingData } = data;
   const { class: mClass = {}, style: mStyle = {}, ...mRemainingData } = mixins;
-  if (typeof element === 'string') {
-    return element;
-  } else {
-    return h(
-      element.tag,
-      {
-        class: mergeClasses(mClass, dClass),
-        style: { ...mStyle, ...dStyle },
-        ...mRemainingData,
-        ...remainingData,
-        ...props
-      },
-      children
-    );
-  }
+  return h(
+    element.tag,
+    {
+      class: mergeClasses(mClass, dClass),
+      style: { ...mStyle, ...dStyle },
+      ...mRemainingData,
+      ...remainingData,
+      ...props
+    },
+    children
+  );
 }
 
 function normalizeIconArgs(icon: any) {

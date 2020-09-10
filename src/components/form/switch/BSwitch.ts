@@ -1,4 +1,4 @@
-import './switch.scss';
+import './switch.sass';
 import { getSelectionControl } from '../shared/getSelectionControl';
 
 export const defineSwitch = getSelectionControl('switch', 'checkbox', 'b-switch', 'switch');
