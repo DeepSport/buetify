@@ -1,11 +1,18 @@
 import './vertical-expansion-icon.sass';
-import { SetupContext, h } from 'vue';
-import { Classes, mergeClasses } from '../../../utils/mergeClasses';
+import { h, defineComponent } from 'vue';
 import { AngleDownIcon } from '../angleDown';
 
-export default function VerticalExpansionIcon(props: { isExpanded: boolean }, { attrs }: SetupContext) {
-	return h(AngleDownIcon, {
-		...attrs,
-		class: mergeClasses(attrs.class as Classes, ['vertical-expansion-icon', { 'is-expanded': props.isExpanded }])
-	});
-}
+export default defineComponent({
+	name: 'vertical-expansion-icon',
+	props: {
+		isExpanded: {
+			type: Boolean,
+			required: true
+		}
+	},
+	setup(props) {
+		return () => h(AngleDownIcon, {
+			class: ['vertical-expansion-icon', { 'is-expanded': props.isExpanded }]
+		});
+	}
+})
