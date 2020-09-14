@@ -12,17 +12,17 @@ export interface BIconProps {
 }
 
 function convertVariant(variant: ColorVariant | ColorVariantFlags): string | ColorVariantFlags {
-	if (isString(variant)) {
-		return variant.replace('is', 'has-text');
-	} else {
-		// eslint-disable-next-line
-		const x: any = {};
-		for (const k in variant) {
-			const nk = k.replace('is', 'has-text');
-			x[nk] = variant[k as ColorVariant];
-		}
-		return x;
-	}
+  if (isString(variant)) {
+    return variant.replace('is', 'has-text');
+  } else {
+    // eslint-disable-next-line
+    const x: any = {};
+    for (const k in variant) {
+      const nk = k.replace('is', 'has-text');
+      x[nk] = variant[k as ColorVariant];
+    }
+    return x;
+  }
 }
 
 export default function BIcon(props: BIconProps, { attrs, slots }: SetupContext) {

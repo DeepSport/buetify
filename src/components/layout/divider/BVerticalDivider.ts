@@ -5,13 +5,13 @@ import { h, SetupContext } from 'vue';
 import { BDividerProps } from './BHorizontalDivider';
 
 export default function BVerticalDivider(props: BDividerProps, { attrs }: SetupContext) {
-	const { themeClasses } = useTheme({
-		themeMap: props.themeMap ?? DEFAULT_THEME_COLOR_MAP,
-		isThemeable: props.isThemeable ?? true
-	});
-	attrs.class = mergeClasses(attrs.class as Classes, ['is-divider-vertical', ...themeClasses.value]);
-	if (props.text) {
-		attrs['data-content'] = props.text;
-	}
-	return h(props.tag ?? 'div', attrs);
+  const { themeClasses } = useTheme({
+    themeMap: props.themeMap ?? DEFAULT_THEME_COLOR_MAP,
+    isThemeable: props.isThemeable ?? true
+  });
+  attrs.class = mergeClasses(attrs.class as Classes, ['is-divider-vertical', ...themeClasses.value]);
+  if (props.text) {
+    attrs['data-content'] = props.text;
+  }
+  return h(props.tag ?? 'div', attrs);
 }

@@ -17,7 +17,8 @@ import {
   h,
   withDirectives,
   vShow,
-  Slots
+  Slots,
+  Transition
 } from 'vue';
 import ClickOutside from '../../directives/clickOutside';
 import { isString } from '../../utils/helpers';
@@ -27,36 +28,36 @@ import { DropdownThemeMap } from './theme';
 export type DropdownPosition = 'is-top-right' | 'is-top-left' | 'is-bottom-left';
 
 export const BDropdownPropsDefinition = {
-	...useThemePropsDefinition(DropdownThemeMap),
-	...getUseTogglePropsDefinition('isExpanded'),
-	...FadeTransitionPropsDefinition,
-	id: String as PropType<string>,
-	isDisabled: {
-		type: Boolean as PropType<boolean>,
-		default: false
-	},
-	isHoverable: {
-		type: Boolean as PropType<boolean>,
-		default: false
-	},
-	isInline: {
-		type: Boolean as PropType<boolean>,
-		default: false
-	},
-	position: {
-		type: String as PropType<DropdownPosition>,
-		validator: (value: unknown) => {
-			return isString(value) && ['is-top-right', 'is-top-left', 'is-bottom-left'].includes(value);
-		}
-	},
-	isMobileModal: {
-		type: Boolean as PropType<boolean>,
-		default: true
-	},
-	menuTag: {
-		type: String as PropType<string>,
-		default: 'ul'
-	}
+  ...useThemePropsDefinition(DropdownThemeMap),
+  ...getUseTogglePropsDefinition('isExpanded'),
+  ...FadeTransitionPropsDefinition,
+  id: String as PropType<string>,
+  isDisabled: {
+    type: Boolean as PropType<boolean>,
+    default: false
+  },
+  isHoverable: {
+    type: Boolean as PropType<boolean>,
+    default: false
+  },
+  isInline: {
+    type: Boolean as PropType<boolean>,
+    default: false
+  },
+  position: {
+    type: String as PropType<DropdownPosition>,
+    validator: (value: unknown) => {
+      return isString(value) && ['is-top-right', 'is-top-left', 'is-bottom-left'].includes(value);
+    }
+  },
+  isMobileModal: {
+    type: Boolean as PropType<boolean>,
+    default: true
+  },
+  menuTag: {
+    type: String as PropType<string>,
+    default: 'ul'
+  }
 };
 
 export type BDropdownProps = ExtractPropTypes<typeof BDropdownPropsDefinition>;
@@ -64,49 +65,49 @@ export type BDropdownProps = ExtractPropTypes<typeof BDropdownPropsDefinition>;
 let id = 0;
 
 function generateTrigger(toggle: Toggle, id: string, slots: Slots) {
-	return h(
-		'div',
-		{
-			ref: 'trigger',
-			class: 'dropdown-trigger',
-			role: 'button',
-			'aria-owns': id,
-			'aria-haspopup': 'listbox',
-			'aria-expanded': `${toggle.isOn.value}`,
-			onClick: toggle.toggle
-		},
-		slots.trigger && slots.trigger(toggle)
-	);
+  return h(
+    'div',
+    {
+      ref: 'trigger',
+      class: 'dropdown-trigger',
+      role: 'button',
+      'aria-owns': id,
+      'aria-haspopup': 'listbox',
+      'aria-expanded': `${toggle.isOn.value}`,
+      onClick: toggle.toggle
+    },
+    slots.trigger && slots.trigger(toggle)
+  );
 }
 
 function generateTransition(transition: TransitionClasses, children: IO<VNode | undefined>) {
-	return h(Transition, transition, children);
+  return h(Transition, transition, children);
 }
 
 function useCloseConditional(toggle: Toggle, isInWhiteList: Predicate<HTMLElement>): Predicate<Event> {
-	return (e: Event) => {
-		const target = e.target as HTMLElement;
-		return toggle.isOn.value && isInWhiteList(target);
-	};
+  return (e: Event) => {
+    const target = e.target as HTMLElement;
+    return toggle.isOn.value && isInWhiteList(target);
+  };
 }
 
 function generateDropdownContent(
-	menuTag: string,
-	toggle: Toggle,
-	computedId: string,
-	themeClasses: string[],
-	slots: Slots
+  menuTag: string,
+  toggle: Toggle,
+  computedId: string,
+  themeClasses: string[],
+  slots: Slots
 ): VNode {
-	return h(
-		menuTag,
-		{
-			class: ['dropdown-content', ...themeClasses],
-			role: 'menu',
-			id: computedId,
-			'aria-hidden': toggle.isOff.value
-		},
-		slots.default && slots.default(toggle)
-	);
+  return h(
+    menuTag,
+    {
+      class: ['dropdown-content', ...themeClasses],
+      role: 'menu',
+      id: computedId,
+      'aria-hidden': toggle.isOff.value
+    },
+    slots.default && slots.default(toggle)
+  );
 }
 
 function generateDropdownMenu(
@@ -116,22 +117,20 @@ function generateDropdownMenu(
   themeClasses: string[],
   transition: TransitionClasses,
   slots: Slots,
-  clickOutsideBindingArgs: ClickOutsideBindingArgs,
-  dropdownMenuRef: Ref<HTMLElement>,
-  useTransition: boolean = true
+  useTransition = true
 ) {
-	const menu = () =>
-		toggle.isOn.value
-			? h(
-					'div',
-					{
-						ref: 'dropdownMenu',
-						class: 'dropdown-menu'
-					},
-					[generateDropdownContent(menuTag, toggle, computedId, themeClasses, slots)]
-			  )
-			: undefined;
-	return useTransition ? generateTransition(transition, menu) : menu();
+  const menu = () =>
+    toggle.isOn.value
+      ? h(
+          'div',
+          {
+            ref: 'dropdownMenu',
+            class: 'dropdown-menu'
+          },
+          [generateDropdownContent(menuTag, toggle, computedId, themeClasses, slots)]
+        )
+      : undefined;
+  return useTransition ? generateTransition(transition, menu) : menu();
 }
 
 function generateMobileBackground(
@@ -140,35 +139,22 @@ function generateMobileBackground(
   computedId: string,
   themeClasses: string[],
   transition: TransitionClasses,
-  slots: Slots,
-  clickOutsideBindingArgs: ClickOutsideBindingArgs,
-  dropdownMenuRef: Ref<HTMLElement>
+  slots: Slots
 ): VNode {
-  return generateTransition(transition, [
+  return generateTransition(transition, () =>
     withDirectives(
       h(
         'div',
         {
           class: 'background',
-          'aria-hidden': toggle.isOff.value
+            'aria-hidden': toggle.isOff.value,
+          onClick: toggle.setOff
         },
-        [
-          generateDropdownMenu(
-            menuTag,
-            toggle,
-            computedId,
-            themeClasses,
-            transition,
-            slots,
-            clickOutsideBindingArgs,
-            dropdownMenuRef,
-            false
-          )
-        ]
+        [generateDropdownMenu(menuTag, toggle, computedId, themeClasses, transition, slots, false)]
       ),
       [[vShow, toggle.isOn.value]]
     )
-  ]);
+  );
 }
 
 function generateChildren(
@@ -179,41 +165,19 @@ function generateChildren(
   transition: TransitionClasses,
   themeClasses: string[],
   shouldDisplayMobileBackground: boolean,
-  slots: Slots,
-  clickOutsideBindingArgs: ClickOutsideBindingArgs,
-  triggerRef: Ref<HTMLElement>,
-  dropdownMenuRef: Ref<HTMLElement>
+  slots: Slots
 ) {
   const children: VNode[] = [];
   if (!isInline) {
-    children.push(generateTrigger(toggle, computedId, triggerRef, slots));
+    children.push(generateTrigger(toggle, computedId, slots));
   }
   if (shouldDisplayMobileBackground) {
-    children.push(
-      generateMobileBackground(
-        menuTag,
-        toggle,
-        computedId,
-        themeClasses,
-        transition,
-        slots,
-        clickOutsideBindingArgs,
-        dropdownMenuRef
-      )
-    );
+    children.push(generateMobileBackground(menuTag, toggle, computedId, themeClasses, transition, slots));
   } else {
-    children.push(
-      generateDropdownMenu(
-        menuTag,
-        toggle,
-        computedId,
-        themeClasses,
-        transition,
-        slots,
-        clickOutsideBindingArgs,
-        dropdownMenuRef
-      )
-    );
+    const menu = generateDropdownMenu(menuTag, toggle, computedId, themeClasses, transition, slots);
+    if (menu) {
+      children.push(menu);
+    }
   }
   return children;
 }
@@ -221,7 +185,7 @@ function generateChildren(
 export default defineComponent({
   name: 'b-dropdown',
   props: BDropdownPropsDefinition,
-  setup(props, { slots }) {
+  setup(props) {
     const windowSize = useWindowSize();
     const toggle = useToggle(props, 'isExpanded');
     const { themeClasses } = useTheme(props);
@@ -247,56 +211,68 @@ export default defineComponent({
     const isMobileModal = computed(() => props.isMobileModal && !props.isInline && !props.isHoverable);
     const displayMobileBackground = computed(() => isMobileModal.value && windowSize.value.isTouch);
 
-		function getDependentElements(): HTMLElement[] {
-			return Array.from(dropdownMenu.value?.querySelectorAll('*') ?? []);
-		}
+    function getDependentElements(): HTMLElement[] {
+      return Array.from(dropdownMenu.value?.querySelectorAll('*') ?? []);
+    }
 
-		function isInDropdown(el: HTMLElement): boolean {
-			return dropdownMenu.value !== undefined && dropdownMenu.value.contains(el);
-		}
+    function isInDropdown(el: HTMLElement): boolean {
+      return dropdownMenu.value !== undefined && dropdownMenu.value.contains(el);
+    }
 
-		function isInTrigger(el: HTMLElement): boolean {
-			return trigger.value !== undefined && trigger.value.contains(el);
-		}
+    function isInTrigger(el: HTMLElement): boolean {
+      return trigger.value !== undefined && trigger.value.contains(el);
+    }
 
-		function isInWhiteList(el: HTMLElement) {
-			if (el === root.value) return true;
-			if (el === dropdownMenu.value) return true;
-			if (el === trigger.value) return true;
-			return isInDropdown(el) || isInTrigger(el);
-		}
+    function isInWhiteList(el: HTMLElement) {
+      if (el === root.value) return true;
+      if (el === dropdownMenu.value) return true;
+      if (el === trigger.value) return true;
+      return isInDropdown(el) || isInTrigger(el);
+    }
 
-		const menuToggle = {
-			...toggle,
-			isOn: displayMenu,
-			isOff: computed(() => !displayMenu.value)
-		};
+    const menuToggle = {
+      ...toggle,
+      isOn: displayMenu,
+      isOff: computed(() => !displayMenu.value)
+    };
 
-		const closeConditional = useCloseConditional(menuToggle, isInWhiteList);
+    const closeConditional = useCloseConditional(menuToggle, isInWhiteList);
 
     const clickOutsideArgs = {
       include: getDependentElements,
       closeConditional
     };
-
-    return () => {
-      return h(
-        'div',
-        { ref: root, class: ['dropdown', ...rootClasses.value] },
-        generateChildren(
-          props.menuTag,
-          props.isInline,
-          menuToggle,
-          computedId.value,
-          transition.value,
-          themeClasses.value,
-          displayMobileBackground.value,
-          slots,
-          clickOutsideArgs as any,
-          trigger,
-          dropdownMenu
-        )
-      );
+    return {
+      root,
+      rootClasses,
+      clickOutsideArgs,
+      toggle,
+      transition,
+      themeClasses,
+      dropdownMenu,
+      displayMobileBackground,
+      menuToggle,
+      trigger,
+      computedId
     };
+  },
+  render() {
+    return withDirectives(
+      h(
+        'div',
+        { ref: 'root', class: ['dropdown', ...this.rootClasses] },
+        generateChildren(
+          this.menuTag,
+          this.isInline,
+          this.menuToggle,
+          this.computedId,
+          this.transition,
+          this.themeClasses,
+          this.displayMobileBackground,
+          this.$slots
+        )
+      ),
+      [[ClickOutside, this.toggle.setOff, (this.clickOutsideArgs as unknown) as string]]
+    );
   }
 });

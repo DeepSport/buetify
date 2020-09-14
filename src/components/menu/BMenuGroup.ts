@@ -27,7 +27,7 @@ export default defineComponent({
           'button',
           {
             class: mergeClasses(
-              'is-flex flex-direction-row justify-content-space-between align-items-center is-fullwidth',
+              'is-flex flex-direction-row justify-content-space-between align-items-center is-fullwidth padding-bottom-size-8',
               props.menuLabelClass
             ),
             ...toggle.listeners,
@@ -40,15 +40,15 @@ export default defineComponent({
             })
           ]
         ),
-        h(VerticalExpandTransition, [
+        h(VerticalExpandTransition, undefined, () => [
           withDirectives(
             h(
               BMenuList,
               {
-                class: props.menuListClass,
+                class: [props.menuListClass, 'expand-vertical-transition'],
                 'aria-hidden': toggle.isOff.value
               },
-              slots.default && slots.default()
+              slots.default
             ),
             [[vShow, toggle.isOn.value]]
           )
