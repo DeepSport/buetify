@@ -12,7 +12,7 @@ export function getIconComponent(name: string, iconDefinition: any): FunctionalC
   const icon = getFontAwesomeIconComponent(iconDefinition);
   return function IconComponent(props: BIconProps, { attrs }: SetupContext) {
     return h(BIcon, { ...props, ...attrs }, () => h(icon, { class: props.size }));
-  }
+  };
 }
 
 export function getFontAwesomeIconComponent(iconArgs: IconDefinition): FunctionalComponent {

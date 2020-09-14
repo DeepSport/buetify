@@ -3,6 +3,6 @@ import { createJavascriptTransitionGroup } from '../shared/createJavascriptTrans
 import { createExpandTransition } from '../shared/expandTransition';
 
 export default createJavascriptTransitionGroup(
-	'vertical-expand-transition',
-	createExpandTransition('expand-vertical-transition')
+  'vertical-expand-transition',
+  createExpandTransition('expand-vertical-transition')
 );

@@ -1,5 +1,5 @@
 import { Eq } from 'fp-ts/lib/Eq';
-import { Ref, customRef } from 'vue'
+import { Ref, customRef } from 'vue';
 
 export function useEqRef<A>(eq: Eq<A>) {
   return (v: A): Ref<A> =>

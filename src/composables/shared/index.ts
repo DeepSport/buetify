@@ -9,14 +9,14 @@ export type Remove = IO<void>;
 const eqDeep: Eq<any> = fromEquals(deepEqual);
 
 export function getEqPropsDefinition<T>(eq: Eq<T> = eqDeep) {
-	return {
-		eq: {
-			type: Object as PropType<Eq<T>>,
-			default: constant(eq)
-		}
-	};
+  return {
+    eq: {
+      type: Object as PropType<Eq<T>>,
+      default: constant(eq)
+    }
+  };
 }
 
 export interface EqProps<T> {
-	eq: Eq<T>;
+  eq: Eq<T>;
 }
