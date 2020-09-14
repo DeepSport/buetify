@@ -1,6 +1,6 @@
 import './sheet.sass';
-import { h, SetupContext } from 'vue';
-import { DEFAULT_THEME_COLOR_MAP, ThemeProps, useTheme } from '../../composables/theme';
+import { h, defineComponent } from 'vue';
+import { DefaultThemePropsDefinition, ThemeProps, useTheme } from '../../composables/theme';
 import BButton from '../button/BButton';
 
 export interface BSheetProps extends Partial<ThemeProps> {
@@ -16,14 +16,28 @@ const IsLoadingButton = h(BButton, {
 	class: 'is-borderless is-fullwidth'
 });
 
-export default function BSheet(props: BSheetProps, { slots }: SetupContext) {
-	const { themeClasses } = useTheme({
-		isThemeable: props.isThemeable ?? true,
-		themeMap: props.themeMap ?? DEFAULT_THEME_COLOR_MAP
-	});
-	return h(
-		props.tag ?? 'main',
-		{ class: ['b-sheet', ...themeClasses.value] },
-		props.isLoading ? [IsLoadingButton] : slots.default!()
-	);
-}
+export default defineComponent({
+	name: 'b-sheet',
+	props: {
+		...DefaultThemePropsDefinition,
+		tag: {
+			type: String,
+			default: 'main'
+		},
+		isLoading: {
+			type: Boolean,
+			default: false
+		}
+	},
+	setup(props, { slots }) {
+		const { themeClasses } = useTheme(props);
+
+		return 	() => h(
+			props.tag,
+			{ class: ['b-sheet', ...themeClasses.value] },
+			props.isLoading ? slots.loading ? slots.loading() : IsLoadingButton : slots.default && slots.default()
+		);
+
+
+	}
+})
