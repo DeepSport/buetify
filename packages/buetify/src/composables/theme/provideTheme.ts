@@ -19,7 +19,9 @@ export const DEFAULT_THEME_INJECTION: ThemeInjection = {
 
 export const THEME_INJECTION_SYMBOL = Symbol('theme');
 
-const persistentTheme = getOrElse<ThemeVariant>(constant<ThemeVariant>('dark'))(getItem('theme')() as Option<ThemeVariant>);
+const persistentTheme = getOrElse<ThemeVariant>(constant<ThemeVariant>('dark'))(
+  getItem('theme')() as Option<ThemeVariant>
+);
 
 export const ProvideThemePropDefinitions = {
   isThemeable: {
