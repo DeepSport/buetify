@@ -1,0 +1,41 @@
+@import '~bulma/sass/components/card'
+@import "src/sass/helpers/animations"
+
+$card-header-icon-hover-color: $link
+
+.b-card
+  &:last-child
+    margin-bottom: 1rem
+  &.card
+    background-color: inherit
+    color: inherit
+    @each $name, $pair in mergeColorMaps($colors, $shades)
+      $color: nth($pair, 1)
+      $color-invert: nth($pair, 2)
+      &.is-#{$name}
+        box-shadow: 0 2px 3px rgba($color-invert, 0.1), 0 0 0 1px rgba($color-invert, 0.1)
+        .card-header
+          box-shadow: 0 0.125em 0.25em rgba($color-invert, 0.1)
+
+    .card-header-title
+      color: inherit
+
+    .card-header-icon
+      &:hover
+        color: $card-header-icon-hover-color
+
+    .card-content
+      background-color: inherit
+      margin-top: calc(1.5rem * 0.5)
+      padding: calc(1.5rem * 0.5) 1.5rem 1.5rem 1.5rem
+      @each $name, $pair in mergeColorMaps($colors, $shades)
+        $color: nth($pair, 1)
+        $color-invert: nth($pair, 2)
+        &.is-#{$name}
+          background-color: $color
+          color: $color-invert
+      +touch
+        padding: $size-6
+
+    .card-footer
+      background-color: transparent
