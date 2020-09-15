@@ -1,16 +1,17 @@
 .DS_Store
 node_modules
-packages/buetify/lib
-es5
+/dist
+
 
 # local env files
 .env.local
-.env.*.local statu
+.env.*.local
 
 # Log files
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
+pnpm-debug.log*
 
 # Editor directories and files
 .idea

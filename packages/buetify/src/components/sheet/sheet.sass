@@ -1,0 +1,29 @@
+@import 'src/sass/helpers/border-helpers'
+@import 'src/sass/helpers/height-width-helpers'
+
+$sheet-color: $text !default
+$sheet-background-color: $white !default
+
+.b-sheet
+    background-color: $sheet-background-color
+    color: $sheet-color
+    &.is-loading
+        display: flex
+        flex-direction: column
+        justify-content: center
+        &.is-fullheight
+            // So that loading indicator is displayed on center of viewport on mobile
+            position: fixed
+            top: 0
+            bottom: 0
+            height: auto
+            +touch
+                width: 100% !important
+    &.is-fullheight
+        min-height: 100vh
+    @each $name, $pair in mergeColorMaps($colors, $shades)
+        $color: nth($pair, 1)
+        $color-invert: findColorInvert($color)
+        &.is-#{$name}
+            background-color: $color
+            color: $color-invert
