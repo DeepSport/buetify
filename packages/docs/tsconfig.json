@@ -14,6 +14,9 @@
       "webpack-env",
       "jest"
     ],
+    "paths": {
+      "buetify/lib/*": ["../buetify/lib/*"]
+    },
     "lib": [
       "esnext",
       "dom",

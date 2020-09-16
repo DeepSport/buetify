@@ -60,7 +60,7 @@ export default defineComponent({
         const children = [];
         const value = isString(column.value)
           ? getObjectValueByPath(props.row.data, column.value)
-          : column.value(props.row);
+          : column.value && column.value(props.row);
         const slotName = column.slotName || column.label;
         const columnSlot = slots[slotName];
 

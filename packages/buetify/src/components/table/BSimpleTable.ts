@@ -10,7 +10,7 @@ export interface BSimpleTableProps extends Partial<ThemeProps> {
   tableClasses?: Classes;
 }
 
-export default function BSimpleTable(props: BSimpleTableProps, { attrs, slots }: SetupContext) {
+export default function BSimpleTable(props: BSimpleTableProps, { slots }: SetupContext) {
   const { themeClasses } = useTheme({
     isThemeable: props.isThemeable ?? true,
     themeMap: props.themeMap ?? DEFAULT_THEME_COLOR_MAP

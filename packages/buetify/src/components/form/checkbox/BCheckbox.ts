@@ -1,5 +1,6 @@
 import './checkbox.sass';
-import { getSelectionControl } from '../shared/getSelectionControl';
-export const defineCheckbox = getSelectionControl('checkbox', 'checkbox', 'b-checkbox', 'b-checkbox checkbox');
+import { useSelectionControl } from '../shared/useSelectionControl';
+
+export const defineCheckbox = useSelectionControl('checkbox', 'checkbox', 'b-checkbox', 'b-checkbox checkbox');
 
 export const BCheckbox = defineCheckbox<any>();

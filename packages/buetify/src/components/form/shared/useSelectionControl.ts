@@ -2,7 +2,7 @@ import {
   getUseSelectablePropsDefinition,
   SelectionControl,
   UseSelectableProps,
-  useSelectionControl
+  useSelectionControl as useControl
 } from '../../../composables/selectionControl/useSelectionControl';
 import { ColorVariant } from '../../../types/ColorVariants';
 import { defineComponent, shallowRef, Slots, h } from 'vue';
@@ -30,14 +30,14 @@ function generateLabelText(selectionControl: SelectionControl, slots: Slots) {
   );
 }
 
-export function getSelectionControl(role: string, type: string, name: string, staticClass: string) {
+export function useSelectionControl(role: string, type: string, name: string, staticClass: string) {
   return <T>() =>
     defineComponent({
       name,
       props: getUseSelectablePropsDefinition<T>(),
       setup(props, { slots }) {
         const label = shallowRef((null as unknown) as HTMLElement);
-        const selection = useSelectionControl(props as UseSelectableProps<T>, label, role, type);
+        const selection = useControl(props as UseSelectableProps<T>, label, role, type);
         return () => {
           return h(
             'label',

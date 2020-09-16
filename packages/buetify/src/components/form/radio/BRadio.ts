@@ -1,6 +1,6 @@
 import './radio.sass';
-import { getSelectionControl } from '../shared/getSelectionControl';
+import { useSelectionControl } from '../shared/useSelectionControl';
 
-export const defineRadio = getSelectionControl('radio', 'radio', 'b-radio', 'b-radio radio');
+export const defineRadio = useSelectionControl('radio', 'radio', 'b-radio', 'b-radio radio');
 
 export const BRadio = defineRadio<any>();

@@ -16,7 +16,8 @@ export interface BTableColumnData<T = any> {
   label: string;
   detail?: string;
   slotName?: string;
-  value: string | ((val: T) => any);
+  value?: string | ((val: T) => any);
+  asHtml?: boolean;
   isSortable?: boolean;
   meta?: any;
   isVisible?: boolean;

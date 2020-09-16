@@ -1,2 +1,2 @@
-export * from './getSelectionControl';
+export * from './useSelectionControl';
 export * from './types';

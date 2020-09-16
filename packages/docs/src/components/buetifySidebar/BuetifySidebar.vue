@@ -1,0 +1,37 @@
+<template>
+  <b-menu>
+    <b-menu-group>
+      <template #menu-label>
+        <b-menu-label>
+          UI Components
+        </b-menu-label>
+      </template>
+      <template #default>
+        <b-menu-list-item>
+          <a>Button</a>
+        </b-menu-list-item>
+      </template>
+    </b-menu-group>
+  </b-menu>
+</template>
+
+<script lang="ts">
+import {
+  BMenu,
+  BMenuGroup,
+  BMenuLabel,
+  BMenuListItem
+} from "buetify/lib/components";
+import { defineComponent } from "vue";
+export default defineComponent({
+  name: "buetify-sidebar",
+  components: {
+    BMenu,
+    BMenuLabel,
+    BMenuListItem,
+    BMenuGroup
+  }
+});
+</script>
+
+<style lang="sass"></style>
