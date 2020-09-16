@@ -18,7 +18,7 @@ export interface ButtonProps {
   tag: 'button' | 'a' | 'input';
 }
 
-function getButtonClasses(props: ButtonProps): Classes {
+function useButtonClasses(props: ButtonProps): Classes {
   return [
     'button',
     props.variant,
@@ -86,16 +86,15 @@ export default defineComponent({
     }
   },
 
-  setup(props, { slots, attrs }) {
+  setup(props, { slots }) {
     return () =>
       h(
         props.tag,
         {
-          ...attrs,
-          class: getButtonClasses(props),
-          ...(props.isDisabled ? { disabled: true } : {})
+          class: useButtonClasses(props),
+          disabled: props.isDisabled ? true : null
         },
-        slots.default && slots.default!()
+        slots.default && slots.default()
       );
   }
 });
