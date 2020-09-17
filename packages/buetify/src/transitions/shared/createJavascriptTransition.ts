@@ -11,9 +11,9 @@ export function createJavascriptTransition(
 ): FunctionalComponent {
   return (props: JavascriptTransitionProps, { attrs, slots }: SetupContext) => {
     return h(
-      Transition,
+      Transition as any,
       {
-        mode: props.mode ?? mode,
+        mode: props.mode ?? mode as 'in-out' | 'out-in' | 'default',
         ...functions,
         ...attrs
       },

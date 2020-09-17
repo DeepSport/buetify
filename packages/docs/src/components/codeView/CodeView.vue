@@ -4,14 +4,14 @@
     <figure class="highlight" :class="classes">
       <div class="button-container">
         <b-button class="is-text is-small copy-code">Copy</b-button>
-        <b-button v-if="isOff" class="is-text is-small" @click="setOn">
+        <b-button v-if="isOn" class="is-text is-small" @click="setOff">
           Hide
         </b-button>
       </div>
-      <pre><code :class="lang" v-html="highlightedCode.value"></code></pre>
-      <b-button v-if="isOff" class="codeview-showcode" @click="setOn">
+      <pre><code class="hljs" :class="lang === 'html' ? 'xml' : lang" v-html="highlightedCode.value"></code></pre>
+      <b-button v-if="isOff" class="is-fullheight codeview-showcode" @click="setOn">
         <code-icon size="is-small"></code-icon>
-        Show code
+        Show Code
       </b-button>
       <b-button v-if="isOn" class="codeview-hidecode" @click="setOff">
         <eye-slash-icon size="is-small"></eye-slash-icon>

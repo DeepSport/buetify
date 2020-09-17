@@ -17,17 +17,17 @@ $divider-color: $grey-light !default
     -ms-transform: translateY(-1rem)
     transform: translateY(-1rem)
     text-align: center
-@each $name, $pair in mergeColorMaps($colors, $shades)
-    $color: nth($pair, 1)
-    $color-invert: nth($pair, 2)
-    .is-#{$name}.is-divider[data-content]::after, .is-#{$name}.is-divider-vertical[data-content]::after
-        background: $color
-        color: darken($color-invert, 25%)
+    @each $name, $pair in mergeColorMaps($colors, $shades)
+        $color: nth($pair, 1)
+        $color-invert: nth($pair, 2)
+        .is-#{$name}.is-divider[data-content]::after, .is-#{$name}.is-divider-vertical[data-content]::after
+            background: $color
+            color: darken($color-invert, 25%)
 
 .is-divider
     border-top: .1rem solid $divider-background-color
     height: .1rem
-    margin: 1rem 0
+    margin: 2rem 0
     text-align: center
 
 .is-divider-vertical

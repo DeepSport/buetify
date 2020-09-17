@@ -23,11 +23,3 @@ $icon-hover-color: $link !default
 	&.is-large
 		height: $icon-dimensions-large
 		width: $icon-dimensions-large
-	@each $name, $pair in $colors
-		$color: nth($pair, 1)
-		&.is-#{$name}
-			color: $color
-			&.is-hoverable
-				&:hover
-					color: bulmaDarken($color, 2.5%)
-

@@ -1,13 +1,10 @@
 import './tabs.sass';
-import { head } from 'fp-ts/lib/Array';
-import { pipe } from 'fp-ts/lib/pipeable';
 import { getUseModelPropsDefinition, Model, useModel } from '../../composables/model';
 import { useThemePropsDefinition, useTheme } from '../../composables/theme';
 import { AllColorsVariant } from '../../types/ColorVariants';
-import { constEmptyArray, isObject } from '../../utils/helpers';
+import { isObject } from '../../utils/helpers';
 import BScroll from '../scroll/BScroll';
 import {
-  isVNode,
   PropType,
   h,
   shallowRef,
@@ -19,10 +16,9 @@ import {
   defineComponent,
   VNode,
   Slots,
-  onBeforeMount,
-  ConcreteComponent
+  onBeforeMount
 } from 'vue';
-import { chain, getOrElse, none, Option, some } from 'fp-ts/lib/Option';
+import { none, Option, some } from 'fp-ts/lib/Option';
 import { BTabItemData, BTabItemProps, TAB_ITEM_NAME, TabInjection, TABS_SYMBOL } from './shared';
 import { TabsThemeMap } from './theme';
 
@@ -115,7 +111,7 @@ function useGenerateNavItem(
           { onClick: useOnTabItemClick(step, index, model, activeLabel, transition) },
           step.props.icon
             ? [
-                h(step.props.icon as ConcreteComponent, {
+                h(step.props.icon as any, {
                   size: props.size
                 }),
                 step.props.label
@@ -221,14 +217,7 @@ function isBTabItemNode(node: unknown): node is BTabItemNode {
 }
 
 function getTabs(slots: Slots): any[] {
-  return pipe(
-    slots.default ? slots.default() : [],
-    head,
-    chain(fragment =>
-      fragment.children && Array.isArray(fragment.children) ? some(fragment.children.filter(isVNode)) : none
-    ),
-    getOrElse<VNode[]>(constEmptyArray)
-  ).filter(isBTabItemNode) as any;
+  return (slots.default ? slots.default() : []).filter(isBTabItemNode);
 }
 
 export default defineComponent({

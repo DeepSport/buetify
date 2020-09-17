@@ -8,7 +8,7 @@ import { isNumber, isString } from '../../../utils/helpers';
 import { constant } from 'fp-ts/lib/function';
 import { VNode } from 'vue';
 import { DEFAULT_INPUT_ICONS, InputIcons } from '../shared/types';
-import { ConcreteComponent, defineComponent, PropType, shallowRef, h, Ref, computed, SetupContext } from 'vue';
+import { Component, defineComponent, PropType, shallowRef, h, Ref, computed, SetupContext } from 'vue';
 
 export function getBInputPropsDefinition<T>() {
   return {
@@ -34,7 +34,7 @@ export function getBInputPropsDefinition<T>() {
   };
 }
 
-function getIconPosition(leftIcon: ConcreteComponent | undefined, rightIcon: ConcreteComponent | undefined): string {
+function getIconPosition(leftIcon: Component | undefined, rightIcon: Component | undefined): string {
   if (leftIcon && rightIcon) {
     return 'has-icons-left has-icons-right';
   } else if (rightIcon) {
@@ -70,21 +70,21 @@ function getRightIcon(
   }
 }
 
-function generateLeftIcon(icon: ConcreteComponent, size: SizeVariant): VNode {
-  return h(icon, {
+function generateLeftIcon(icon: Component, size: SizeVariant): VNode {
+  return h(icon as any, {
     class: 'is-left',
     size
   });
 }
 
 function generateRightIcon(
-  icon: ConcreteComponent,
+  icon: Component,
   size: SizeVariant,
   variant: ColorVariant,
   usePasswordReveal: boolean,
   passwordToggle: Toggle
 ): VNode {
-  return h(icon, {
+  return h(icon as any, {
     class: ['is-right', { 'is-clickable': usePasswordReveal }],
     variant,
     size,
@@ -123,8 +123,8 @@ function getInputClasses(
   isExpanded: boolean,
   isLoading: boolean,
   hasMessage: boolean,
-  leftIcon: ConcreteComponent | undefined,
-  rightIcon: ConcreteComponent | undefined,
+  leftIcon: Component | undefined,
+  rightIcon: Component | undefined,
   themeClasses: string[]
 ) {
   return [
@@ -143,7 +143,7 @@ function generateNonTextInput(
   inputRef: Ref<HTMLInputElement>,
   inputData: Input,
   isLoading: boolean,
-  rightIcon: ConcreteComponent | undefined,
+  rightIcon: Component | undefined,
   context: SetupContext,
   themeClasses: string[]
 ): VNode {
@@ -184,7 +184,7 @@ function generateTextarea(
   inputRef: Ref<HTMLInputElement>,
   inputData: Input,
   isLoading: boolean,
-  rightIcon: ConcreteComponent | undefined,
+  rightIcon: Component | undefined,
   context: SetupContext,
   themeClasses: string[]
 ): VNode {
@@ -221,7 +221,7 @@ function generateInput(
   inputRef: Ref<HTMLInputElement>,
   inputData: Input,
   isLoading: boolean,
-  rightIcon: ConcreteComponent | undefined,
+  rightIcon: Component | undefined,
   context: SetupContext,
   themeClasses: string[]
 ): VNode {

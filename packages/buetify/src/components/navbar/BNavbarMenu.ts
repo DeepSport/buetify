@@ -1,8 +1,22 @@
 import 'bulma/sass/components/navbar.sass';
-import { SetupContext, h } from 'vue';
-import { Classes, mergeClasses } from '../../utils/mergeClasses';
+import { h, defineComponent } from 'vue';
 
-export default function BNavbarMenu(props: { isActive?: boolean }, { attrs, slots }: SetupContext) {
-  attrs.class = mergeClasses(attrs.class as Classes, ['navbar-menu', { 'is-active': !!props.isActive }]);
-  return h('div', attrs, slots.default && slots.default());
-}
+export default defineComponent({
+  name: 'b-navbar-menu',
+  props: {
+    isActive: {
+      type: Boolean,
+      default: false
+    }
+  },
+  setup(props, { slots }) {
+    return () =>
+      h(
+        'div',
+        {
+          class: ['navbar-menu', { isActive: props.isActive }]
+        },
+        slots.default && slots.default()
+      );
+  }
+});

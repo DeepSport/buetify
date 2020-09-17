@@ -1,0 +1,10 @@
+{
+  "compilerOptions": {
+    "paths": {
+      "buetify/lib/*": ["./packages/buetify/src/*"]
+    }
+  },
+  "exclude": [
+    "node_modules"
+  ]
+}

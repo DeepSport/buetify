@@ -1,5 +1,5 @@
-import { ComponentApiDescription } from "../../../components/apiView";
-import { ColorVariantPropApi } from "../../shared/ColorVariantPropApi";
+import { ComponentApiDescription } from "../../../../components/apiView";
+import { ColorVariantPropApi } from "../../../shared/ColorVariantPropApi";
 
 export const BUTTON_APIS: ComponentApiDescription[] = [
   {
@@ -94,6 +94,13 @@ export const BUTTON_APIS: ComponentApiDescription[] = [
         values: "<code>button</code>, <code>a</code>, <code>input</code>",
         default: "<code>button</code>",
         required: "false"
+      }
+    ],
+    events: [
+      {
+        name: '<code>[any]</code>',
+        description: 'All listeners are bound to the native element',
+        parameters: '<code>event: $event</code>'
       }
     ]
   }

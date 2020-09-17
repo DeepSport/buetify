@@ -5,7 +5,6 @@ $toast-border-radius: $radius !default
 $snackbar-border-radius: $radius !default
 $all-colors: mergeColorMaps($colors, $shades) !default
 
-
 .b-app
 	width: 100%
 	position: relative
@@ -15,8 +14,8 @@ $all-colors: mergeColorMaps($colors, $shades) !default
 		.b-sheet
 			&.is-loading
 				width: 100%
-	+mobile
-		&.is-fullheight-mobile
+	&.is-fullheight-mobile
+		+mobile
 			height: 100vh
 	&.has-navigation-drawer
 		+widescreen
@@ -25,6 +24,12 @@ $all-colors: mergeColorMaps($colors, $shades) !default
 			.b-sheet
 				&.is-loading
 					width: calc(100% - #{$navigation-drawer-width})
+	&.has-header
+		display: flex
+		flex-direction: column
+		.b-app-body-content
+			flex: 1
+			position: relative
 
 	.toast
 		margin: 2rem

@@ -20,7 +20,8 @@ module.exports = {
 				vue$: path.resolve(__dirname, '../../node_modules/vue'),
 				'fp-ts/lib': 'fp-ts/es6/',
 				'io-ts/lib': 'io-ts/es6/',
-				'buetify': path.resolve(__dirname, '../buetify/')
+				'buetify/src': path.resolve(__dirname, '../buetify/src/'),
+				'buetify/lib': path.resolve(__dirname, '../buetify/src/')
 			}
 		},
 	},

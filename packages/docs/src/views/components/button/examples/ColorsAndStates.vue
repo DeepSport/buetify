@@ -45,7 +45,7 @@
     </div>
 
     <div class="buttons">
-      <b-button variant="is-primary" is-expanded>Expanded</b-button>
+      <b-button variant="is-primary" is-fullwidth>Fullwidth</b-button>
     </div>
 
     <div class="notification is-primary">

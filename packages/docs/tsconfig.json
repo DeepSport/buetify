@@ -14,15 +14,16 @@
       "webpack-env",
       "jest"
     ],
-    "paths": {
-      "buetify/lib/*": ["../buetify/lib/*"]
-    },
     "lib": [
       "esnext",
       "dom",
       "dom.iterable",
       "scripthost"
-    ]
+    ],
+    "paths": {
+      "buetify/lib/*": ["../buetify/src/*"]
+    }
+
   },
   "include": [
     "src/**/*.ts",

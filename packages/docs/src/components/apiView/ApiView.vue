@@ -1,22 +1,21 @@
 <template>
   <article id="api">
     <router-link to="#api">
-      <b-title>API</b-title>
+      <b-title># API</b-title>
     </router-link>
     <section v-for="api in data" :key="api.title" :id="api.slug">
-      <router-link :to="api.slug">
-        <b-subtitle tag="h1"> {{ api.title }} API </b-subtitle>
+      <router-link v-if="data.length > 1" :to="api.slug">
+        <b-subtitle tag="h1"> # {{ api.title }} API </b-subtitle>
       </router-link>
-      <b-tabs>
+      <b-tabs class="margin-top-size-6">
         <b-tab-item v-if="api.props && api.props.length" label="Props">
           <b-simple-table>
             <thead>
               <tr>
                 <th
                   v-for="column in PropColumns"
-                  :key="column.name"
-                  v-text="column.name"
-                ></th>
+                  :key="column.label"
+                >{{ column.label }}</th>
               </tr>
             </thead>
             <tbody>
@@ -120,6 +119,7 @@ const PropColumns: Column[] = [
   { label: "Name", field: "name" },
   { label: "Description", field: "description" },
   { label: "Type", field: "type" },
+  { label: "Required", field: "required" },
   { label: "Values", field: "values" },
   { label: "Default", field: "default" }
 ];
