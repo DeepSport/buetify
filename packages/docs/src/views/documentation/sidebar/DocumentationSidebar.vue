@@ -7,9 +7,13 @@
 				</b-menu-label>
 			</template>
 			<template #default>
-				<b-menu-list-item>
-					<router-link to="/documentation/button">Button</router-link>
-				</b-menu-list-item>
+        <router-link to="/documentation/button" custom>
+          <template #default="{ isActive, navigate, href }">
+            <b-menu-list-item>
+              <a :href="href" :class="{ 'is-active': isActive }" @click="navigate">Button</a>
+            </b-menu-list-item>
+          </template>
+        </router-link>
 			</template>
 		</b-menu-group>
 	</b-menu>
