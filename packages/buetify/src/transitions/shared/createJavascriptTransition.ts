@@ -13,7 +13,7 @@ export function createJavascriptTransition(
     return h(
       Transition as any,
       {
-        mode: props.mode ?? mode as 'in-out' | 'out-in' | 'default',
+        mode: props.mode ?? (mode as 'in-out' | 'out-in' | 'default'),
         ...functions,
         ...attrs
       },

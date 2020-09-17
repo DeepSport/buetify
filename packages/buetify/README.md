@@ -16,7 +16,7 @@ Since the components are in such a high state of flux I have not invested the ti
 * Has light / dark theme functionality
 * Greater emphasis on performance utilizing functional components where possible
 * Completely tree-shakeable and modular. Importing an individual component only imports the styling and code relating to that component. This comes at a cost of a more manual setup which will hopefully be mitigated by a vue-cli plugin in the future.
-* Greater emphasis on accessibility. This is by no means a finished product in terms of accessibility but I think offers an improvement
+* Greater emphasis on accessibility. This is by no means a finished product in terms of accessibility, but I think offers an improvement
 
 ### Small Differences
 * Requires all components to be nested inside a `b-app` component for themes, notifications, and modals to work properly

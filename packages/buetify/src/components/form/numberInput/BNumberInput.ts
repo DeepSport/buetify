@@ -2,15 +2,7 @@ import './b-numberinput.sass';
 import { IO } from 'fp-ts/lib/IO';
 import { getUseInputPropsDefinition } from '../../../composables/input/useInput';
 import { constant, constVoid, FunctionN } from 'fp-ts/lib/function';
-import {
-  h,
-  VNode,
-  defineComponent,
-  defineAsyncComponent,
-  PropType,
-  ExtractPropTypes,
-  computed
-} from 'vue';
+import { h, VNode, defineComponent, defineAsyncComponent, PropType, ExtractPropTypes, computed } from 'vue';
 import BButton from '../../button/BButton';
 import { BInput } from '../input/BInput';
 import { InputIcons, NumberInputIcons, DEFAULT_INPUT_ICONS } from '../shared/types';
