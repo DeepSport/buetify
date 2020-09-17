@@ -1,5 +1,5 @@
 <template>
-  <b-menu>
+  <b-menu class="padding-size-1 is-light">
     <b-menu-group>
       <template #menu-label>
         <b-menu-label>
@@ -21,7 +21,7 @@ import {
   BMenuGroup,
   BMenuLabel,
   BMenuListItem
-} from "buetify/lib/components";
+} from 'buetify/lib/components';
 import { defineComponent } from "vue";
 export default defineComponent({
   name: "buetify-sidebar",

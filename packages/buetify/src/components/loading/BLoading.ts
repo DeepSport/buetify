@@ -69,7 +69,7 @@ export default defineComponent({
         }
       };
       const render = getGenerateModal(onClick);
-      return () => h(Transition, { name: props.transition }, toggle.isOn.value && render());
+      return () => h(Transition as any, { name: props.transition }, toggle.isOn.value && render());
     }
   }
 });

@@ -9,8 +9,7 @@ import {
   defineAsyncComponent,
   PropType,
   ExtractPropTypes,
-  computed,
-  ConcreteComponent
+  computed
 } from 'vue';
 import BButton from '../../button/BButton';
 import { BInput } from '../input/BInput';
@@ -98,7 +97,7 @@ function generateControl(props: BNumberInputProps, data: BNumberInputData, isDec
           onClick: isDecrement ? data.onDecrement : data.onIncrement
         },
         () =>
-          h((isDecrement ? props.numberInputIcons.minus : props.numberInputIcons.plus) as ConcreteComponent, {
+          h((isDecrement ? props.numberInputIcons.minus : props.numberInputIcons.plus) as any, {
             size: props.size
           })
       )
@@ -106,7 +105,7 @@ function generateControl(props: BNumberInputProps, data: BNumberInputData, isDec
   );
 }
 
-function generateInput(props: BNumberInputProps, data: BNumberInputData): VNode {
+function generateInput(props: BNumberInputProps): VNode {
   return h(BInput, {
     modelValue: props.modelValue,
     'onUpdate:modelValue': props['onUpdate:modelValue'],
@@ -156,8 +155,8 @@ export default defineComponent({
         onIncrement
       };
       const nodes = props.displayControls
-        ? [generateControl(props, data, true), generateInput(props, data), generateControl(props, data, false)]
-        : [generateInput(props, data)];
+        ? [generateControl(props, data, true), generateInput(props), generateControl(props, data, false)]
+        : [generateInput(props)];
       return h('div', { class: ['b-number-input field', getFieldClasses(props.controlsPosition)] }, nodes);
     };
   }

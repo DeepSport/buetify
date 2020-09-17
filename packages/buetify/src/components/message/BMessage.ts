@@ -1,14 +1,14 @@
 import './message.sass';
 import { Message, useMessage, UseMessageProps, UseMessagePropsDefinition } from '../../composables/message';
 import { FadeTransitionPropsDefinition, useTransition } from '../../composables/transition';
-import { VNode, defineComponent, h, Transition, SetupContext, ConcreteComponent } from 'vue';
+import { VNode, defineComponent, h, Transition, SetupContext } from 'vue';
 
 function generateBody(props: UseMessageProps, context: SetupContext, message: Message): VNode {
   const nodes: VNode[] = [];
   if (!!message.icon.value && props.useIcon) {
     nodes.push(
       h('div', { class: 'media-left' }, [
-        h(message.icon.value as ConcreteComponent, {
+        h(message.icon.value as any, {
           size: message.iconSize.value,
           variant: props.variant,
           class: props.variant

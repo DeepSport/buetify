@@ -1,12 +1,12 @@
-import { ConcreteComponent, defineAsyncComponent } from 'vue';
+import { Component, defineAsyncComponent } from 'vue';
 
 export interface InputIcons {
-  isSuccess: ConcreteComponent;
-  isDanger: ConcreteComponent;
-  isWarning: ConcreteComponent;
-  isInfo: ConcreteComponent;
-  passwordVisible: ConcreteComponent;
-  passwordInvisible: ConcreteComponent;
+  isSuccess: Component;
+  isDanger: Component;
+  isWarning: Component;
+  isInfo: Component;
+  passwordVisible: Component;
+  passwordInvisible: Component;
 }
 
 export const DEFAULT_INPUT_ICONS: InputIcons = {
@@ -26,8 +26,8 @@ export function getInputIcons(icons: Partial<InputIcons>): InputIcons {
 }
 
 export interface NumberInputIcons {
-  minus: ConcreteComponent;
-  plus: ConcreteComponent;
+  minus: Component;
+  plus: Component;
 }
 
 export const DEFAULT_NUMBER_INPUT_ICONS: NumberInputIcons = {

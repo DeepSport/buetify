@@ -1,5 +1,8 @@
 <template>
-  <b-app>
+  <b-app :is-themeable="false">
+    <template #header>
+      <buetify-navbar></buetify-navbar>
+    </template>
     <template #navigation-drawer>
       <buetify-sidebar class="is-fullheight"></buetify-sidebar>
     </template>
@@ -12,13 +15,15 @@
 <script lang="ts">
 import {BApp} from 'buetify/lib/components';
 import { defineComponent } from 'vue';
+import BuetifyNavbar from './components/buetifyNavbar/BuetifyNavbar.vue';
 import BuetifySidebar from './components/buetifySidebar/BuetifySidebar.vue';
 
 export default defineComponent({
   name: 'buetify',
   components: {
     BApp,
-    BuetifySidebar
+    BuetifySidebar,
+    BuetifyNavbar
   }
 })
 </script>

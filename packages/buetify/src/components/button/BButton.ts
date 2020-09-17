@@ -1,4 +1,4 @@
-import './button.sass';
+import 'bulma/sass/elements/button.sass';
 import { h, PropType, defineComponent } from 'vue';
 import { ColorVariant } from '../../types/ColorVariants';
 import { SizeVariant } from '../../types/SizeVariants';
@@ -14,6 +14,8 @@ export interface ButtonProps {
   isActive: boolean;
   isDisabled: boolean;
   isHovered: boolean;
+  isSelected: boolean;
+  isFullwidth: boolean;
   size: SizeVariant;
   tag: 'button' | 'a' | 'input';
 }
@@ -22,7 +24,7 @@ function useButtonClasses(props: ButtonProps): Classes {
   return [
     'button',
     props.variant,
-    props.size ? props.size : '',
+    props.size,
     {
       'is-rounded': props.isRounded,
       'is-loading': props.isLoading,
@@ -31,7 +33,9 @@ function useButtonClasses(props: ButtonProps): Classes {
       'is-focused': props.isFocused,
       'is-active': props.isActive,
       'is-disabled': props.isDisabled,
-      'is-hovered': props.isHovered
+      'is-hovered': props.isHovered,
+      'is-selected': props.isSelected,
+      'is-fullwidth': props.isFullwidth
     }
   ];
 }
@@ -83,9 +87,16 @@ export default defineComponent({
     isHovered: {
       type: Boolean as PropType<boolean>,
       default: false
+    },
+    isSelected: {
+      type: Boolean as PropType<boolean>,
+      default: false
+    },
+    isFullwidth: {
+      type: Boolean as PropType<boolean>,
+      default: false
     }
   },
-
   setup(props, { slots }) {
     return () =>
       h(

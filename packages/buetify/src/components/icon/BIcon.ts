@@ -1,15 +1,8 @@
 import './icon.sass';
 import { isString } from '../../utils/helpers';
-import { Component, SetupContext, h } from 'vue';
+import { h, defineComponent, PropType, ExtractPropTypes } from 'vue';
 import { ColorVariant, ColorVariantFlags } from '../../types/ColorVariants';
 import { SizeVariant } from '../../types/SizeVariants';
-
-export interface BIconProps {
-  variant?: ColorVariant | ColorVariantFlags;
-  isHoverable?: boolean;
-  size?: SizeVariant;
-  tag?: string | Component;
-}
 
 function convertVariant(variant: ColorVariant | ColorVariantFlags): string | ColorVariantFlags {
   if (isString(variant)) {
@@ -25,13 +18,34 @@ function convertVariant(variant: ColorVariant | ColorVariantFlags): string | Col
   }
 }
 
-export default function BIcon(props: BIconProps, { attrs, slots }: SetupContext) {
-  return h(
-    props.tag ?? ('span' as any),
-    {
-      ...attrs,
-      class: ['icon', props.size, { 'is-hoverable': props.isHoverable }, convertVariant(props.variant || '')]
-    },
-    slots.default!()
-  );
+export const BIconPropsDefinition = {
+  variant: {
+    type: String as PropType<ColorVariant>,
+    default: '' as const
+  },
+  size: {
+    type: String as PropType<SizeVariant>,
+    default: '' as const
+  },
+  tag: {
+    type: String,
+    default: 'span'
+  }
 }
+
+export type BIconProps = ExtractPropTypes<typeof BIconPropsDefinition>
+
+export default defineComponent({
+  name: 'b-icon',
+  props: BIconPropsDefinition,
+  setup(props, { slots }) {
+    return () => h(
+        // eslint-disable-next-line
+        props.tag, {
+          class: ['icon', props.size, convertVariant(props.variant)]
+        },
+        // eslint-disable-next-line
+        slots.default && slots.default()
+    )
+  }
+})

@@ -10,6 +10,7 @@
   </section></template
 >
 <script lang="ts">
+import { BButton } from "buetify/lib/components";
 import { defineComponent } from "vue";
 export default defineComponent({
   name: "button-sizes-example",
@@ -18,5 +19,3 @@ export default defineComponent({
   }
 });
 </script>
-
-<style lang="sass"></style>

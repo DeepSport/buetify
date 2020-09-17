@@ -1,15 +1,15 @@
 <template>
-  <b-navbar>
+  <b-navbar class="is-spaced has-shadow">
     <b-navbar-brand>
       <b-navbar-item href="/" @click.prevent="goToHome">
-        <b-title>DeepSport</b-title>
+        <b-title>Buetify</b-title>
       </b-navbar-item>
       <b-navbar-item
         target="_blank"
         rel="noopener"
         href="https://github.com/DeepSport/buetify"
       >
-        <github-icon></github-icon>
+        <github-icon size="is-large" icon-class="fa-lg"></github-icon>
       </b-navbar-item>
     </b-navbar-brand>
     <b-navbar-menu :is-active="isOn">
@@ -29,8 +29,8 @@ import {
   BNavbarItem,
   BTitle,
   BNavbarStart,
-  BNavbarEnd
-} from "buetify/lib/components";
+  BNavbarEnd, BNavbarMenu
+} from 'buetify/lib/components';
 import { useToggle } from "buetify/lib/composables";
 import { defineComponent } from "vue";
 import { useRouter } from "vue-router";
@@ -40,10 +40,12 @@ export default defineComponent({
   name: "buetify-navbar",
   components: {
     BNavbar,
+    BNavbarEnd,
+    BNavbarMenu,
     BNavbarBrand,
     BNavbarItem,
     GithubIcon,
-    BNavbarEnd
+    BTitle
   },
   setup() {
     const router = useRouter();

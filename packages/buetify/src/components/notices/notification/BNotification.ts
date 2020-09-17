@@ -49,7 +49,7 @@ function generateCloseButton(
 
 function generateIcon(messageController: Message): VNode {
   return h('div', { class: 'media-left' }, [
-    h(messageController.icon.value as ConcreteComponent, { size: messageController.iconSize.value })
+    h(messageController.icon.value as any, { size: messageController.iconSize.value })
   ]);
 }
 

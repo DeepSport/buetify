@@ -1,10 +1,10 @@
 import { parse as faParse, icon as faIcon } from '@fortawesome/fontawesome-svg-core';
-import { h, SetupContext, VNode, FunctionalComponent } from 'vue';
+import { h, SetupContext, VNode, FunctionalComponent, defineComponent } from 'vue';
 // import { IconDefinition } from '@fortawesome/fontawesome-common-types';
 import { camelize } from '../../../utils/helpers';
 import { mergeClasses } from '../../../utils/mergeClasses';
 import { BIcon } from '../../icon';
-import { BIconProps } from '../../icon/BIcon';
+import { BIconPropsDefinition } from '../../icon/BIcon';
 
 //replace iconDefinition with actual definition from fontawesome. causing some typescript issues at the moment
 
@@ -137,7 +137,15 @@ export function useFontAwesomeIconComponent(iconArgs: any): FunctionalComponent 
 // eslint-disable-next-line
 export function useIconComponent(name: string, iconDefinition: any): FunctionalComponent {
   const icon = useFontAwesomeIconComponent(iconDefinition);
-  return function IconComponent(props: BIconProps) {
-    return h(BIcon, props, () => h(icon, { class: props.size }));
-  };
+  return defineComponent({
+    props: {
+      ...BIconPropsDefinition,
+      iconClass: {
+        type: String
+      }
+    },
+    setup(props) {
+      return () => h(BIcon, props, () => h(icon, { class: props.iconClass }));
+    }
+  }) as any;
 }

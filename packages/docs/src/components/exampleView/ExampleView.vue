@@ -1,22 +1,22 @@
 <template>
   <section :id="slug" class="example-section">
-    <router-link :to="slug">
+    <router-link v-if="title" :to="slug">
       <b-title>
-        {{ title }}
+        # {{ title }}
       </b-title>
     </router-link>
     <div class="example" :class="{ 'is-vertical': isVertical }">
       <div class="example-component">
         <slot name="component"></slot>
       </div>
-      <code-view :code="code" is-bordered> </code-view>
+      <code-view class="code-view" :code="code" is-bordered> </code-view>
     </div>
   </section>
 </template>
 
 <script lang="ts">
 import { BTitle } from "buetify/lib/components";
-import { defineComponent, toRef, computed } from "vue";
+import { defineComponent, computed } from "vue";
 import { useSlug } from "../../composables";
 import CodeView from "../codeView/CodeView.vue";
 export default defineComponent({
@@ -28,7 +28,7 @@ export default defineComponent({
   props: {
     title: {
       type: String,
-      required: true
+      required: false
     },
     code: {
       type: String,
@@ -41,7 +41,7 @@ export default defineComponent({
   },
   setup(props, { slots }) {
     return {
-      slug: useSlug(toRef(props, "title"))
+      slug: useSlug(computed(() => props.title || ''))
     };
   }
 });
