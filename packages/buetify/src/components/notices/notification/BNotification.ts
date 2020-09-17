@@ -11,7 +11,6 @@ import {
 } from '../../../composables/noticeController';
 import { formatTransition } from '../../../composables/transition';
 import {
-  ConcreteComponent,
   Transition,
   VNode,
   h,

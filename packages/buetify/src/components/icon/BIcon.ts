@@ -31,21 +31,23 @@ export const BIconPropsDefinition = {
     type: String,
     default: 'span'
   }
-}
+};
 
-export type BIconProps = ExtractPropTypes<typeof BIconPropsDefinition>
+export type BIconProps = ExtractPropTypes<typeof BIconPropsDefinition>;
 
 export default defineComponent({
   name: 'b-icon',
   props: BIconPropsDefinition,
   setup(props, { slots }) {
-    return () => h(
+    return () =>
+      h(
         // eslint-disable-next-line
-        props.tag, {
+        props.tag,
+        {
           class: ['icon', props.size, convertVariant(props.variant)]
         },
         // eslint-disable-next-line
         slots.default && slots.default()
-    )
+      );
   }
-})
+});

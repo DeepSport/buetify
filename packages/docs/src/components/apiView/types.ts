@@ -1,10 +1,9 @@
-
 export interface ComponentApiDescription {
 	title: string;
-	props?: PropApiDescription[]
-	slots?: SlotApiDescription[]
-	events?: EventApiDescription[]
-	methods?: MethodApiDescription[]
+	props?: PropApiDescription[];
+	slots?: SlotApiDescription[];
+	events?: EventApiDescription[];
+	methods?: MethodApiDescription[];
 }
 
 export interface PropApiDescription {
@@ -13,10 +12,10 @@ export interface PropApiDescription {
 	type: PropType;
 	values: string;
 	required: string;
-	default?: string
+	default?: string;
 }
 
-export type PropType = 'Object' | 'Date' | 'String' | 'Number' | 'Array' | 'Boolean'
+export type PropType = 'Object' | 'Date' | 'String' | 'Number' | 'Array' | 'Boolean';
 
 export interface SlotApiDescription {
 	name: string;

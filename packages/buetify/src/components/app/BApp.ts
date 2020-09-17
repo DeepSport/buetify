@@ -49,10 +49,15 @@ function generateBodyContent(slots: Slots, hasNavigationDrawer: boolean, display
     h(
       'div',
       { class: 'b-app-body-content' },
-      hasNavigationDrawer ? [withDirectives(generateNavigationSlot(slots), [[vShow, displayNavigationDrawer]]), generateMainContent(slots)] : [generateMainContent(slots)]
+      hasNavigationDrawer
+        ? [
+            withDirectives(generateNavigationSlot(slots), [[vShow, displayNavigationDrawer]]),
+            generateMainContent(slots)
+          ]
+        : [generateMainContent(slots)]
     )
   );
-  return nodes
+  return nodes;
 }
 
 export default defineComponent({
@@ -100,7 +105,12 @@ export default defineComponent({
 
       return h(
         'div',
-        { class: ['b-app', { 'has-navigation-drawer': hasNavigationDrawer && displayNavigationDrawer, 'has-header': !!slots.header }] },
+        {
+          class: [
+            'b-app',
+            { 'has-navigation-drawer': hasNavigationDrawer && displayNavigationDrawer, 'has-header': !!slots.header }
+          ]
+        },
         nodes
       );
     };
