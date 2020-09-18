@@ -32,7 +32,7 @@ export default defineComponent({
               'button',
               {
                 class: [
-                  'is-flex flex-direction-row justify-content-space-between align-items-center is-fullwidth padding-bottom-size-8',
+                  'is-flex flex-direction-row justify-content-space-between align-items-center is-fullwidth',
                   props.menuLabelClass
                 ],
                 ...toggle.listeners,
