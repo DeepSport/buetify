@@ -17,30 +17,31 @@ export function usePopupController(props: UsePopupProps, render: Ref<IO<VNode[]>
   onMounted(() => {
     hasMounted.value = true;
   });
-  const remove = shallowRef(constVoid);
+  let remove = constVoid;
   const { isOn, setOn, setOff, toggle, listeners } = useToggle(props, 'isActive');
   const { showPopup } = inject(POPUP_CONTROLLER_SYMBOL, DEFAULT_POPUP_CONTROLLER_INJECTION);
   const isOpen = computed(() => hasMounted.value && isOn.value);
   const attrs = getToggleAttrs(isOpen, toRef(props, 'hasPopup'));
-  watch(isOpen, (newValue, oldValue) => {
+  watch(isOpen, (newValue) => {
     if (newValue) {
-      remove.value();
-      remove.value = showPopup({
+      remove();
+      remove = showPopup({
         render: render.value,
         transition: props.transition
       });
     } else {
-      remove.value();
-      remove.value = constVoid;
+      remove();
+      remove = constVoid;
     }
   });
   onUnmounted(() => {
-    remove.value();
+    remove();
   });
   return {
     isOpen,
     attrs,
     listeners,
+    props: computed(() => ({ ...attrs.value, ...listeners })),
     open: setOn,
     close: setOff,
     toggle: toggle

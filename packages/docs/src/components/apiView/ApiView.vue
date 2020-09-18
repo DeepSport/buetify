@@ -30,15 +30,15 @@
 					<b-simple-table>
 						<thead>
 							<tr>
-								<th v-for="column in SlotColumns" :key="column.name" v-text="column.name"></th>
+								<th v-for="column in SlotColumns" :key="column.name">{{ column.label }}</th>
 							</tr>
 						</thead>
 						<tbody>
-							<tr v-for="prop in api.slots" :key="prop.name">
+							<tr v-for="slot in api.slots" :key="slot.name">
 								<td
 									v-for="column in SlotColumns"
-									:key="column.name"
-									v-html="prop[column.field] || '-'"
+									:key="column.label"
+									v-html="slot[column.field] || '-'"
 								></td>
 							</tr>
 						</tbody>
@@ -48,14 +48,14 @@
 					<b-simple-table>
 						<thead>
 							<tr>
-								<th v-for="column in EventsColumns" :key="column.name" v-text="column.name"></th>
+								<th v-for="column in EventsColumns" :key="column.name" v-text="column.label"></th>
 							</tr>
 						</thead>
 						<tbody>
 							<tr v-for="prop in api.events" :key="prop.name">
 								<td
 									v-for="column in EventsColumns"
-									:key="column.name"
+									:key="column.label"
 									v-html="prop[column.field] || '-'"
 								></td>
 							</tr>

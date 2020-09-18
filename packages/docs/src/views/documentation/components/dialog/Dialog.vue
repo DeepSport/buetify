@@ -6,18 +6,12 @@
 			</template>
 		</example-view>
 		<b-horizontal-divider></b-horizontal-divider>
-		<example-view title="Colors and states" :code="ColorsAndStatesCode" is-vertical>
-			<template #component>
-				<colors-and-states></colors-and-states>
-			</template>
-		</example-view>
-		<b-horizontal-divider></b-horizontal-divider>
-		<example-view title="Sizes" :code="SizesCode" is-vertical>
-			<template #component>
-				<sizes></sizes>
-			</template>
-		</example-view>
-		<b-horizontal-divider></b-horizontal-divider>
+    <example-view title="Nested Dialog" :code="NestedDialogsCode" is-vertical>
+      <template #component>
+        <nested-dialogs></nested-dialogs>
+      </template>
+    </example-view>
+    <b-horizontal-divider></b-horizontal-divider>
 		<api-view :apis="apis"> </api-view>
 	</article>
 </template>
@@ -27,29 +21,25 @@ import BHorizontalDivider from 'buetify/lib/components/layout/divider/BHorizonta
 import { defineComponent } from 'vue';
 import { ApiView } from '../../../../components/apiView';
 import ExampleView from '../../../../components/exampleView/ExampleView.vue';
+import NestedDialogs from './examples/NestedDialogs.vue';
+import NestedDialogsCode from '!!raw-loader!./examples/NestedDialogs.vue';
 import Simple from './examples/Simple.vue';
 import SimpleCode from '!!raw-loader!./examples/Simple.vue';
-import Sizes from './examples/Sizes.vue';
-import SizesCode from '!!raw-loader!./examples/Sizes.vue';
-import ColorsAndStates from './examples/ColorsAndStates.vue';
-import ColorsAndStatesCode from '!!raw-loader!./examples/ColorsAndStates.vue';
-import { api } from './api';
+import { apis } from './apis';
 
 export default defineComponent({
-	name: 'Button',
+	name: 'dialog',
 	components: {
 		ExampleView,
-		ColorsAndStates,
-		Sizes,
 		ApiView,
 		Simple,
+    NestedDialogs,
     BHorizontalDivider
 	},
 	setup() {
 		return {
-			apis: api,
-			ColorsAndStatesCode,
-			SizesCode,
+			apis,
+      NestedDialogsCode,
 			SimpleCode
 		};
 	}
