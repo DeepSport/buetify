@@ -101,7 +101,7 @@ export default defineComponent({
         generatePopupContainer(popup)
       ];
 
-      nodes.push(...generateBodyContent(slots, hasNavigationDrawer, displayNavigationDrawer));
+      nodes.push(h('div', { style: { 'z-index': 0 } }, generateBodyContent(slots, hasNavigationDrawer, displayNavigationDrawer)));
 
       return h(
         'div',

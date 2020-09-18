@@ -1,9 +1,9 @@
 import { ComponentApiDescription } from '../../../../../components/apiView';
 import { ColorVariantPropApi } from '../../../shared/ColorVariantPropApi';
 
-export const api: ComponentApiDescription[] = [
+export const apis: ComponentApiDescription[] = [
 	{
-		title: 'Button',
+		title: 'Dialog',
 		props: [
 			ColorVariantPropApi,
 			{
