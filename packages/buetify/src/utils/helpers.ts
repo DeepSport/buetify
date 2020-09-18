@@ -1,3 +1,4 @@
+import { VNode, Fragment } from 'vue';
 import { snoc, unsafeDeleteAt } from 'fp-ts/lib/Array';
 import { Eq } from 'fp-ts/lib/Eq';
 import { constant, not } from 'fp-ts/lib/function';
@@ -153,6 +154,10 @@ export function toggleListItem<A>(E: Eq<A>) {
     const index = as.findIndex(i => E.equals(a, i));
     return index > -1 ? unsafeDeleteAt(index, as) : snoc(as, a);
   };
+}
+
+export function isFragment(node: VNode): boolean {
+  return node.type === Fragment;;
 }
 
 export function isEmptyString(str: string): boolean {

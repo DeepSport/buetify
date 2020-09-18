@@ -8,6 +8,7 @@
 				<b-subtitle tag="h1"> # {{ api.title }} API </b-subtitle>
 			</router-link>
 			<b-tabs class="margin-top-size-6">
+
 				<b-tab-item v-if="api.props && api.props.length" label="Props">
 					<b-simple-table>
 						<thead>
