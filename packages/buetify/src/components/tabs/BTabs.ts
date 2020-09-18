@@ -2,7 +2,7 @@ import './tabs.sass';
 import { getUseModelPropsDefinition, Model, useModel } from '../../composables/model';
 import { useThemePropsDefinition, useTheme } from '../../composables/theme';
 import { AllColorsVariant } from '../../types/ColorVariants';
-import { isObject } from '../../utils/helpers';
+import { isFragment, isObject } from '../../utils/helpers';
 import BScroll from '../scroll/BScroll';
 import {
   PropType,
@@ -217,7 +217,10 @@ function isBTabItemNode(node: unknown): node is BTabItemNode {
 }
 
 function getTabs(slots: Slots): any[] {
-  return (slots.default ? slots.default() : []).filter(isBTabItemNode);
+  return (
+      ((slots.default && slots.default()) ||
+    []).flatMap(node => (isFragment(node) ? node.children : [node])).filter(isBTabItemNode)
+  );
 }
 
 export default defineComponent({
