@@ -1,0 +1,48 @@
+@import '~bulma/sass/components/modal'
+
+.b-dialog
+	.modal-card 
+		max-width: 540px
+		width: auto
+		background-color: inherit
+		.modal-card-head 
+			font-size: $size-5
+			font-weight: $weight-semibold
+		.modal-card-body 
+			& > .field
+				margin-top: 1rem
+				&:first-child
+					margin-top: 0
+			&.is-titleless 
+				border-top-left-radius: $radius-large
+				border-top-right-radius: $radius-large
+		@include tablet 
+			min-width: 320px
+
+		@each $name, $pair in mergeColorMaps($colors, $shades)
+			$color: nth($pair, 1)
+			$color-invert: nth($pair, 2)
+			&.is-#{$name}
+				.modal-card-head,
+				.modal-card-foot
+					background-color: bulmaDarken($color, 5%)
+					color: $color-invert
+				.modal-card-body
+					background-color: $color
+					color: $color-invert
+
+	&.is-small 
+		.modal-card,
+		.input,
+		.button 
+			@include control-small
+	&.is-medium 
+		.modal-card,
+		.input,
+		.button 
+			@include control-medium
+	&.is-large 
+		.modal-card,
+		.input,
+		.button 
+			@include control-large

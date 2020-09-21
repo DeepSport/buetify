@@ -1,0 +1,78 @@
+{
+  "name": "buetify",
+  "version": "0.1.3",
+  "description": "A Vue component framework based on Bulma",
+  "main": "lib/index.js",
+  "module": "lib/index.js",
+  "types": "lib/index.d.ts",
+  "author": {
+    "name": "Harry Kightlinger",
+    "email": "kightlingerh@gmail.com"
+  },
+  "scripts": {
+    "test": "echo \"No tests specified\"",
+    "pub": "yarn run build && yarn run np",
+    "np": "np",
+    "build": "node build/build-lib.js",
+    "prettier-write": "prettier --write \"./src/**/*.ts\"",
+    "prettier-check": "prettier --list-different \"src/**/*.ts\""
+  },
+  "license": "MIT",
+  "sideEffects": [
+    "*.css",
+    "*.sass",
+    "*.scss"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/kightlingerh/buetify"
+  },
+  "bugs": {
+    "url": "https://github.com/kightlingerh/buetify/issues"
+  },
+  "files": [
+    "src/*.sass",
+    "lib/"
+  ],
+  "keywords": [
+    "bulma",
+    "ui framework",
+    "vue framework",
+    "ui library",
+    "component framework"
+  ],
+  "peerDependencies": {
+    "@fortawesome/fontawesome-svg-core": "^1.2.25",
+    "@fortawesome/free-solid-svg-icons": "^5.11.2",
+    "bulma": "^0.9.0",
+    "fp-ts": "^2.6.5",
+    "fp-ts-local-storage": "^1.0.3",
+    "vue": "3.0.0"
+  },
+  "dependencies": {
+    "lodash.debounce": "^4.0.8"
+  },
+  "devDependencies": {
+    "@babel/cli": "^7.8.4",
+    "@babel/core": "^7.8.4",
+    "@babel/plugin-proposal-object-rest-spread": "^7.8.3",
+    "@babel/preset-env": "^7.8.4",
+    "@fortawesome/fontawesome-svg-core": "^1.2.25",
+    "@fortawesome/free-solid-svg-icons": "^5.11.2",
+    "@types/lodash.debounce": "^4.0.6",
+    "@types/node": "^14.10.1",
+    "babel-plugin-detective": "^2.0.0",
+    "babel-plugin-module-resolver": "^4.0.0",
+    "babel-plugin-transform-define": "^2.0.0",
+    "bulma": "^0.8.0",
+    "cross-env": "^7.0.0",
+    "fp-ts": "^2.6.5",
+    "fp-ts-local-storage": "^1.0.3",
+    "np": "^6.5.0",
+    "prettier": "^1.19.1",
+    "rimraf": "^3.0.1",
+    "shelljs": "^0.8.3",
+    "typescript": "~3.9.7",
+    "vue": "3.0.0"
+  }
+}

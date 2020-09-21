@@ -1,9 +1,10 @@
 {
-  "extends": "./tsconfig.base.json",
   "compilerOptions": {
-    "target": "esnext",
-    "module": "esnext",
-    "outDir": "./lib-temp",
-    "sourceMap": true
-  }
+    "paths": {
+      "buetify/lib/*": ["./packages/buetify/src/*"]
+    }
+  },
+  "exclude": [
+    "node_modules"
+  ]
 }
