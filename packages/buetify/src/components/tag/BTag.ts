@@ -66,7 +66,7 @@ export default defineComponent({
             ),
             h('button', {
               class: ['tag is-delete has-cursor-pointer', props.size, { 'is-rounded': props.isRounded }],
-              tabindex: props.isTabable ? 0 : false,
+              tabindex: props.isTabable ? 0 : null,
               disabled: props.isDisabled,
               onClick: props.isDisabled ? undefined : props.onClose
             })

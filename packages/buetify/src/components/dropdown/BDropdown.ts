@@ -197,7 +197,6 @@ export default defineComponent({
     const rootClasses: Ref<Classes[]> = computed(() => [
       props.position,
       {
-        'is-expanded': toggle.isOn.value,
         'is-disabled': props.isDisabled,
         'is-hoverable': props.isHoverable,
         'is-inline': props.isInline,
