@@ -1,8 +1,8 @@
 import { FunctionN } from 'fp-ts/lib/function';
-import { IO } from 'fp-ts/lib/IO';
-import { ColorVariant } from '../../types/ColorVariants';
 import { BCheckbox } from '../form/checkbox/BCheckbox';
 import { getObjectValueByPath, isString } from '../../utils/helpers';
+import { useInjectedCheckableTable } from './composables/useCheckableTable';
+import { useInjectedSelectableTable } from './composables/useSelectableTable';
 import { BTableColumn, BTableRow } from './shared';
 import { h, VNode, defineComponent, computed, PropType } from 'vue';
 
@@ -17,37 +17,21 @@ export default defineComponent({
       type: Object as PropType<BTableRow>,
       required: true
     },
-    checkboxVariant: {
-      type: String as PropType<ColorVariant>,
-      default: 'is-primary' as ColorVariant
-    },
-    isChecked: {
-      type: Boolean as PropType<boolean>,
-      default: false
-    },
-    'onUpdate:isChecked': {
-      type: Function as PropType<FunctionN<[boolean], void>>,
-      required: false
-    },
-    isSelected: {
-      type: Boolean as PropType<boolean>,
-      default: false
-    },
-    'onUpdate:isSelected': {
-      type: Function as PropType<FunctionN<[boolean], void> | IO<void>>,
-      required: false
-    },
     onRowClick: {
       type: Function as PropType<FunctionN<[BTableRow, MouseEvent], void>>,
       required: false
     }
   },
   setup(props, { slots }) {
+    const { checkedRowIds, variant, toggleRow } = useInjectedCheckableTable();
+    const { selectedRowIds, toggleRowSelection } = useInjectedSelectableTable();
+    const isChecked = computed(() => checkedRowIds.value.has(props.row.id));
+    const isSelected = computed(() => selectedRowIds.value.has(props.row.id));
     const classes = computed(() => {
       return [
         {
-          'is-selected': props.isSelected,
-          'is-checked': props.isChecked,
+          'is-selected': isSelected.value,
+          'is-checked': isChecked.value,
           'is-draggable': props.row.isDraggable,
           'is-droppable': props.row.isDroppable
         },
@@ -61,8 +45,7 @@ export default defineComponent({
         const value = isString(column.value)
           ? getObjectValueByPath(props.row.data, column.value)
           : column.value && column.value(props.row);
-        const slotName = column.slotName || column.label;
-        const columnSlot = slots[slotName];
+        const columnSlot = slots[column.slotName || column.label];
 
         if (columnSlot) {
           children.push(columnSlot({ row: props.row, column, value }));
@@ -91,9 +74,9 @@ export default defineComponent({
         columns.unshift(
           h('td', { class: 'checkbox-cell' }, [
             h(BCheckbox, {
-              modelValue: props.isChecked,
-              variant: props.checkboxVariant,
-              'onUpdate:modelValue': props['onUpdate:isChecked']
+              modelValue: isChecked.value,
+              variant: variant.value,
+              'onUpdate:modelValue': toggleRow
             })
           ])
         );
@@ -107,9 +90,9 @@ export default defineComponent({
             if (props.onRowClick) {
               props.onRowClick(props.row, e);
             }
-            if (props.row.isSelectable && props['onUpdate:isSelected']) {
+            if (props.row.isSelectable) {
               e.stopPropagation();
-              props['onUpdate:isSelected'](!props.isSelected);
+              toggleRowSelection(props.row);
             }
           },
           draggable: props.row.isDraggable

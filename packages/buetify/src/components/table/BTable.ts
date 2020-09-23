@@ -11,11 +11,10 @@ import BSimpleTable from './BSimpleTable';
 import BTableHeader from './BTableHeader';
 import BTableMobileSort from './BTableMobileSort';
 import BTableRowElement from './BTableRow';
-import { BTableCheckPropsDefinition, UseCheckableTable, useCheckableTable } from './composables/useCheckableTable';
+import { BTableCheckPropsDefinition, useCheckableTable } from './composables/useCheckableTable';
 import { BTableDraggablePropsDefinition, UseDraggableTable, useDraggableTable } from './composables/useDraggableTable';
 import {
   BTableSelectablePropsDefinition,
-  UseSelectableTable,
   useSelectableTable
 } from './composables/useSelectableTable';
 import { BTableSortingPropsDefinition, UseSorting, useSorting } from './composables/useSorting';
@@ -116,7 +115,6 @@ function generateMobileSort(props: BTableProps, sort: UseSorting, visibleColumns
 
 function generateTableHeader(
   props: BTableProps,
-  check: UseCheckableTable,
   sort: UseSorting,
   visibleColumns: Ref<BTableColumn[]>,
   slots: Slots
@@ -127,11 +125,6 @@ function generateTableHeader(
       class: props.headerClasses,
       columns: visibleColumns.value,
       sortType: sort.sortType.value,
-      checkboxVariant: props.checkboxVariant,
-      isCheckable: check.hasCheckableRows.value,
-      isChecked: check.allRowsChecked.value,
-      isDisabled: !check.allRowsUnchecked.value,
-      'onUpdate:isChecked': check.toggleAllRows,
       'onUpdate:sortType': sort['onUpdate:sortType'],
       'onUpdate:sortColumn': sort['onUpdate:sortColumn']
     },
@@ -152,12 +145,8 @@ function generateRows(
   rows: Ref<BTableRow[]>,
   visibleColumns: Ref<BTableColumn[]>,
   drag: UseDraggableTable,
-  check: UseCheckableTable,
-  select: UseSelectableTable,
   slots: Slots
 ) {
-  const checkedRowIds = check.checkedRowIds.value;
-  const selectedRowIds = select.selectedRowIds.value;
   return rows.value.map((row, index) =>
     h(
       BTableRowElement,
@@ -172,11 +161,6 @@ function generateRows(
         row,
         onRowClick: props.onRowClick,
         columns: visibleColumns.value,
-        checkboxVariant: props.checkboxVariant,
-        isChecked: checkedRowIds.has(row.id),
-        'onUpdate:isChecked': check.getToggleRowCheck(row),
-        isSelected: selectedRowIds.has(row.id),
-        'onUpdate:isSelected': select.getToggleRowSelection(row),
         ...drag.getRowDragListeners(row, index)
       },
       { ...slots }
@@ -189,8 +173,6 @@ function generateTableBody(
   rows: Ref<BTableRow[]>,
   visibleColumns: Ref<BTableColumn[]>,
   drag: UseDraggableTable,
-  check: UseCheckableTable,
-  select: UseSelectableTable,
   slots: Slots
 ): VNode {
   if (isEmpty(rows.value) || isEmpty(visibleColumns.value)) {
@@ -213,7 +195,7 @@ function generateTableBody(
       )
     );
   } else {
-    return h('tbody', generateRows(props, rows, visibleColumns, drag, check, select, slots));
+    return h('tbody', generateRows(props, rows, visibleColumns, drag, slots));
   }
 }
 
@@ -229,8 +211,6 @@ function generateTable(
   visibleColumns: Ref<BTableColumn[]>,
   drag: UseDraggableTable,
   sort: UseSorting,
-  check: UseCheckableTable,
-  select: UseSelectableTable,
   slots: Slots
 ): VNode {
   return h(
@@ -252,8 +232,8 @@ function generateTable(
     },
     () => {
       const nodes = [
-        generateTableHeader(props, check, sort, visibleColumns, slots),
-        generateTableBody(props, rows, visibleColumns, drag, check, select, slots)
+        generateTableHeader(props, sort, visibleColumns, slots),
+        generateTableBody(props, rows, visibleColumns, drag, slots)
       ];
       if (slots.footer) {
         nodes.push(generateTableFooter(visibleColumns, slots));
@@ -296,8 +276,8 @@ export default defineComponent({
       })
     );
     const sort = useSorting(props, sortColumn, rows, columns);
-    const check = useCheckableTable(props, rows);
-    const select = useSelectableTable(props);
+    useCheckableTable(props, rows);
+    useSelectableTable(props);
     const drag = useDraggableTable(props);
 
     const windowSize = useWindowSize();
@@ -309,7 +289,7 @@ export default defineComponent({
         'div',
         useMobileSorting.value
           ? [generateMobileSort(props, sort, visibleColumns)]
-          : [generateTable(props, rows, visibleColumns, drag, sort, check, select, slots)]
+          : [generateTable(props, rows, visibleColumns, drag, sort, slots)]
       );
   }
 });

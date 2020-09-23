@@ -15,7 +15,8 @@
     "np": "np",
     "build": "node build/build-lib.js",
     "prettier-write": "prettier --write \"./src/**/*.ts\"",
-    "prettier-check": "prettier --list-different \"src/**/*.ts\""
+    "prettier-check": "prettier --list-different \"src/**/*.ts\"",
+    "typecheck": "tsc --project ./tsconfig.json"
   },
   "license": "MIT",
   "sideEffects": [
