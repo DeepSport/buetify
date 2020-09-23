@@ -1,8 +1,7 @@
 import { IO } from 'fp-ts/lib/IO';
-import { ExtractPropTypes, toRef, computed, Ref, ComputedRef, provide, inject } from 'vue';
+import { ExtractPropTypes, computed, Ref, ComputedRef, provide, inject, shallowRef, watch } from 'vue';
 import { constant, constFalse, constTrue, constVoid, FunctionN } from 'fp-ts/lib/function';
 import { PropType } from 'vue';
-import { useProxy } from '../../../composables/proxy/useProxy';
 import { ColorVariant } from '../../../types/ColorVariants';
 import { constEmptyArray } from '../../../utils/helpers';
 import { BTableRow, BTableRowData, toggleBTableRow } from '../shared';
@@ -45,12 +44,14 @@ const USE_CHECKABLE_TABLE_INJECTION_SYMBOL = Symbol();
 
 export function useCheckableTable(props: BTableCheckProps, rows: Ref<BTableRow[]>): UseCheckableTable {
   const checkableRows = computed(() => (props.isCheckable ? rows.value.filter(row => row.isCheckable) : []));
-  const { value: checkedRows } = useProxy<BTableRowData[]>(
-    computed(() => (props.isCheckable ? props.checkedRows : [])),
-    toRef(props, 'onUpdate:checkedRows')
-  );
+  const propCheckedRows = computed(() => (props.isCheckable ? props.checkedRows : []));
+  const newCheckedRows = shallowRef(propCheckedRows.value);
 
-  const checkedRowIds = computed(() => toSet(checkedRows.value));
+  watch(propCheckedRows, newValue => {
+    newCheckedRows.value = newValue
+  })
+
+  const checkedRowIds = computed(() => toSet(newCheckedRows.value));
 
   const allRowsChecked = computed(() => {
     const ids = checkedRowIds.value;
@@ -60,19 +61,31 @@ export function useCheckableTable(props: BTableCheckProps, rows: Ref<BTableRow[]
   const allRowsUncheckable = computed(() => rows.value.every(row => !row.isCheckable));
 
   function checkAllRows() {
-    checkedRows.value = checkableRows.value;
+    const cRows = checkableRows.value;
+    newCheckedRows.value = cRows;
+    props['onUpdate:checkedRows'](cRows)
   }
 
   function toggleRow(row: BTableRow) {
+    console.log('toggle-row', row.isCheckable);
     if (row.isCheckable) {
       const ids = checkedRowIds.value;
-      ids.has(row.id) ? props.onUncheckRow(row) : props.onCheckRow(row);
-      checkedRows.value = toggleBTableRow(row, checkedRows.value as BTableRow[]);
+      if (ids.has(row.id)) {
+        console.log('unchecking-row', row);
+        props.onUncheckRow(row)
+      } else {
+        console.log('checking-row', row)
+        props.onCheckRow(row)
+      }
+      const cRows = toggleBTableRow(row, newCheckedRows.value as BTableRow[])
+      newCheckedRows.value = cRows;
+      props['onUpdate:checkedRows'](cRows)
     }
   }
 
   function uncheckAllRows() {
-    checkedRows.value = [];
+    newCheckedRows.value = [];
+    props['onUpdate:checkedRows']([])
   }
 
   function toggleAllRows() {
