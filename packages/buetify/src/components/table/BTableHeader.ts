@@ -1,23 +1,20 @@
 import { FunctionN } from 'fp-ts/lib/function';
-import { ColorVariant } from '../../types/ColorVariants';
 import { BCheckbox } from '../form/checkbox/BCheckbox';
 import BTableColumn from './BTableColumn';
+import { useInjectedCheckableTable } from './composables/useCheckableTable';
 import { BTableColumn as BTableColumnInterface, SortType } from './shared';
 import { SetupContext, h } from 'vue';
 
 export interface BTableHeaderProps {
   columns: BTableColumnInterface[];
-  isCheckable: boolean;
   isDisabled?: boolean;
-  isChecked: boolean;
   sortType: SortType;
-  checkboxVariant?: ColorVariant;
   'onUpdate:sortType': FunctionN<[SortType], void>;
   'onUpdate:sortColumn': FunctionN<[BTableColumnInterface], void>;
-  'onUpdate:isChecked'?: FunctionN<[boolean], void>;
 }
 
 export default function BTableHeader(props: BTableHeaderProps, { slots }: SetupContext) {
+  const { allRowsChecked, toggleAllRows, variant, isCheckable } = useInjectedCheckableTable();
   const nodes = props.columns.map(column =>
     h(
       BTableColumn,
@@ -31,24 +28,24 @@ export default function BTableHeader(props: BTableHeaderProps, { slots }: SetupC
       slots
     )
   );
-  if (props.isCheckable && props['onUpdate:isChecked']) {
+  if (isCheckable.value) {
     nodes.unshift(
       slots['header.checkbox']
         ? h(
             'th',
             slots['header.checkbox']({
-              modelValue: props.isChecked,
-              variant: props.checkboxVariant,
+              modelValue: allRowsChecked.value,
+              variant: variant.value,
               isDisabled: props.isDisabled,
-              'onUpdate:modelValue': props['onUpdate:isChecked']
+              'onUpdate:modelValue': toggleAllRows
             })
           )
         : h('th', { class: 'checkbox-cell' }, [
             h(BCheckbox, {
-              modelValue: props.isChecked,
-              variant: props.checkboxVariant ?? 'is-primary',
+              modelValue: allRowsChecked.value,
+              variant: variant.value,
               isDisabled: props.isDisabled,
-              'onUpdate:modelValue': props['onUpdate:isChecked']
+              'onUpdate:modelValue': toggleAllRows
             })
           ])
     );

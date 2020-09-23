@@ -1,0 +1,60 @@
+function defaultConditional() {
+    return true;
+}
+function directive(e, el, binding) {
+    const handler = typeof binding.value === 'function' ? binding.value : binding.value.handler;
+    const isActive = (typeof binding.value === 'object' && binding.value.closeConditional) || defaultConditional;
+    // The include element callbacks below can be expensive
+    // so we should avoid calling them when we're not active.
+    // Explicitly check for false to allow fallback compatibility
+    // with non-toggleable components
+    if (!e || isActive(e) === false)
+        return;
+    // If click was triggered programmaticaly (domEl.click()) then
+    // it shouldn't be treated as click-outside
+    // Chrome/Firefox support isTrusted property
+    // IE/Edge support pointerType property (empty if not triggered
+    // by pointing device)
+    if (('isTrusted' in e && !e.isTrusted) || ('pointerType' in e && !e.pointerType))
+        return;
+    // Check if additional elements were passed to be included in check
+    // (click must be outside all included elements, if any)
+    const elements = ((typeof binding.value === 'object' && binding.value.include) || (() => []))();
+    // Add the root element for the component this directive was defined on
+    elements.push(el);
+    // Check if it's a click outside our elements, and then if our callback returns true.
+    // Non-toggleable components should take action in their callback and return falsy.
+    // Toggleable can return true if it wants to deactivate.
+    // Note that, because we're in the capture phase, this callback will occur before
+    // the bubbling click event on any outside elements.
+    // eslint-disable-next-line
+    !elements.some((el) => el.contains(e.target)) &&
+        setTimeout(() => {
+            isActive(e) && handler && handler(e);
+        }, 0);
+}
+export const ClickOutside = {
+    // .b-app may not be found
+    // if using bind, inserted makes
+    // sure that the root element is
+    // available, iOS does not support
+    // clicks on body
+    mounted(el, binding) {
+        const onClick = (e) => directive(e, el, binding);
+        // iOS does not recognize click events on document
+        // or body, this is the entire purpose of the v-app
+        // component and [data-app], stop removing this
+        const app = document.querySelector('.b-app') || document.body; // This is only for unit tests
+        app.addEventListener('click', onClick, true);
+        el._clickOutside = onClick;
+    },
+    unmounted(el) {
+        if (!el._clickOutside)
+            return;
+        const app = document.querySelector('.b-app') || document.body; // This is only for unit tests
+        app && app.removeEventListener('click', el._clickOutside, true);
+        delete el._clickOutside;
+    }
+};
+export default ClickOutside;
+//# sourceMappingURL=data:application/json;base64,eyJ2ZXJzaW9uIjozLCJmaWxlIjoiaW5kZXguanMiLCJzb3VyY2VSb290IjoiIiwic291cmNlcyI6WyIuLi8uLi8uLi9zcmMvZGlyZWN0aXZlcy9jbGlja091dHNpZGUvaW5kZXgudHMiXSwibmFtZXMiOltdLCJtYXBwaW5ncyI6IkFBZ0JBLFNBQVMsa0JBQWtCO0lBQ3pCLE9BQU8sSUFBSSxDQUFDO0FBQ2QsQ0FBQztBQUVELFNBQVMsU0FBUyxDQUFDLENBQWUsRUFBRSxFQUFlLEVBQUUsT0FBcUM7SUFDeEYsTUFBTSxPQUFPLEdBQUcsT0FBTyxPQUFPLENBQUMsS0FBSyxLQUFLLFVBQVUsQ0FBQyxDQUFDLENBQUMsT0FBTyxDQUFDLEtBQUssQ0FBQyxDQUFDLENBQUMsT0FBTyxDQUFDLEtBQU0sQ0FBQyxPQUFPLENBQUM7SUFFN0YsTUFBTSxRQUFRLEdBQUcsQ0FBQyxPQUFPLE9BQU8sQ0FBQyxLQUFLLEtBQUssUUFBUSxJQUFJLE9BQU8sQ0FBQyxLQUFLLENBQUMsZ0JBQWdCLENBQUMsSUFBSSxrQkFBa0IsQ0FBQztJQUU3Ryx1REFBdUQ7SUFDdkQseURBQXlEO0lBQ3pELDZEQUE2RDtJQUM3RCxpQ0FBaUM7SUFDakMsSUFBSSxDQUFDLENBQUMsSUFBSSxRQUFRLENBQUMsQ0FBQyxDQUFDLEtBQUssS0FBSztRQUFFLE9BQU87SUFFeEMsOERBQThEO0lBQzlELDJDQUEyQztJQUMzQyw0Q0FBNEM7SUFDNUMsK0RBQStEO0lBQy9ELHNCQUFzQjtJQUN0QixJQUFJLENBQUMsV0FBVyxJQUFJLENBQUMsSUFBSSxDQUFDLENBQUMsQ0FBQyxTQUFTLENBQUMsSUFBSSxDQUFDLGFBQWEsSUFBSSxDQUFDLElBQUksQ0FBQyxDQUFDLENBQUMsV0FBVyxDQUFDO1FBQUUsT0FBTztJQUV6RixtRUFBbUU7SUFDbkUsd0RBQXdEO0lBQ3hELE1BQU0sUUFBUSxHQUFHLENBQUMsQ0FBQyxPQUFPLE9BQU8sQ0FBQyxLQUFLLEtBQUssUUFBUSxJQUFJLE9BQU8sQ0FBQyxLQUFLLENBQUMsT0FBTyxDQUFDLElBQUksQ0FBQyxHQUFHLEVBQUUsQ0FBQyxFQUFFLENBQUMsQ0FBQyxFQUFFLENBQUM7SUFDaEcsdUVBQXVFO0lBQ3ZFLFFBQVEsQ0FBQyxJQUFJLENBQUMsRUFBRSxDQUFDLENBQUM7SUFFbEIscUZBQXFGO0lBQ3JGLG1GQUFtRjtJQUNuRix3REFBd0Q7SUFDeEQsaUZBQWlGO0lBQ2pGLG9EQUFvRDtJQUVwRCwyQkFBMkI7SUFDM0IsQ0FBQyxRQUFRLENBQUMsSUFBSSxDQUFDLENBQUMsRUFBTyxFQUFFLEVBQUUsQ0FBQyxFQUFFLENBQUMsUUFBUSxDQUFDLENBQUMsQ0FBQyxNQUFjLENBQUMsQ0FBQztRQUN4RCxVQUFVLENBQUMsR0FBRyxFQUFFO1lBQ2QsUUFBUSxDQUFDLENBQUMsQ0FBQyxJQUFJLE9BQU8sSUFBSSxPQUFPLENBQUMsQ0FBQyxDQUFDLENBQUM7UUFDdkMsQ0FBQyxFQUFFLENBQUMsQ0FBQyxDQUFDO0FBQ1YsQ0FBQztBQUVELE1BQU0sQ0FBQyxNQUFNLFlBQVksR0FBYztJQUNyQywwQkFBMEI7SUFDMUIsZ0NBQWdDO0lBQ2hDLGdDQUFnQztJQUNoQyxrQ0FBa0M7SUFDbEMsaUJBQWlCO0lBQ2pCLE9BQU8sQ0FBQyxFQUFlLEVBQUUsT0FBcUM7UUFDNUQsTUFBTSxPQUFPLEdBQUcsQ0FBQyxDQUFRLEVBQUUsRUFBRSxDQUFDLFNBQVMsQ0FBQyxDQUFpQixFQUFFLEVBQUUsRUFBRSxPQUFPLENBQUMsQ0FBQztRQUN4RSxrREFBa0Q7UUFDbEQsbURBQW1EO1FBQ25ELCtDQUErQztRQUMvQyxNQUFNLEdBQUcsR0FBRyxRQUFRLENBQUMsYUFBYSxDQUFDLFFBQVEsQ0FBQyxJQUFJLFFBQVEsQ0FBQyxJQUFJLENBQUMsQ0FBQyw4QkFBOEI7UUFDN0YsR0FBRyxDQUFDLGdCQUFnQixDQUFDLE9BQU8sRUFBRSxPQUFPLEVBQUUsSUFBSSxDQUFDLENBQUM7UUFDN0MsRUFBRSxDQUFDLGFBQWEsR0FBRyxPQUFPLENBQUM7SUFDN0IsQ0FBQztJQUVELFNBQVMsQ0FBQyxFQUFlO1FBQ3ZCLElBQUksQ0FBQyxFQUFFLENBQUMsYUFBYTtZQUFFLE9BQU87UUFFOUIsTUFBTSxHQUFHLEdBQUcsUUFBUSxDQUFDLGFBQWEsQ0FBQyxRQUFRLENBQUMsSUFBSSxRQUFRLENBQUMsSUFBSSxDQUFDLENBQUMsOEJBQThCO1FBQzdGLEdBQUcsSUFBSSxHQUFHLENBQUMsbUJBQW1CLENBQUMsT0FBTyxFQUFFLEVBQUUsQ0FBQyxhQUFhLEVBQUUsSUFBSSxDQUFDLENBQUM7UUFDaEUsT0FBTyxFQUFFLENBQUMsYUFBYSxDQUFDO0lBQzFCLENBQUM7Q0FDRixDQUFDO0FBRUYsZUFBZSxZQUFZLENBQUMiLCJzb3VyY2VzQ29udGVudCI6WyJpbXBvcnQgeyBEaXJlY3RpdmUsIERpcmVjdGl2ZUJpbmRpbmcgfSBmcm9tICd2dWUnO1xuXG5pbnRlcmZhY2UgSFRNTEVsZW1lbnQge1xuICBfY2xpY2tPdXRzaWRlPzogRXZlbnRMaXN0ZW5lck9yRXZlbnRMaXN0ZW5lck9iamVjdDtcbn1cblxuaW50ZXJmYWNlIENsaWNrT3V0c2lkZUJpbmRpbmdBcmdzIHtcbiAgaGFuZGxlcjogKGU6IEV2ZW50KSA9PiB2b2lkO1xuICBjbG9zZUNvbmRpdGlvbmFsPzogKGU6IEV2ZW50KSA9PiBib29sZWFuO1xuICBpbmNsdWRlPzogKCkgPT4gSFRNTEVsZW1lbnRbXTtcbn1cblxuaW50ZXJmYWNlIENsaWNrT3V0c2lkZURpcmVjdGl2ZUJpbmRpbmcgZXh0ZW5kcyBEaXJlY3RpdmVCaW5kaW5nIHtcbiAgdmFsdWU6ICgoZTogRXZlbnQpID0+IHZvaWQpIHwgQ2xpY2tPdXRzaWRlQmluZGluZ0FyZ3M7XG59XG5cbmZ1bmN0aW9uIGRlZmF1bHRDb25kaXRpb25hbCgpIHtcbiAgcmV0dXJuIHRydWU7XG59XG5cbmZ1bmN0aW9uIGRpcmVjdGl2ZShlOiBQb2ludGVyRXZlbnQsIGVsOiBIVE1MRWxlbWVudCwgYmluZGluZzogQ2xpY2tPdXRzaWRlRGlyZWN0aXZlQmluZGluZyk6IHZvaWQge1xuICBjb25zdCBoYW5kbGVyID0gdHlwZW9mIGJpbmRpbmcudmFsdWUgPT09ICdmdW5jdGlvbicgPyBiaW5kaW5nLnZhbHVlIDogYmluZGluZy52YWx1ZSEuaGFuZGxlcjtcblxuICBjb25zdCBpc0FjdGl2ZSA9ICh0eXBlb2YgYmluZGluZy52YWx1ZSA9PT0gJ29iamVjdCcgJiYgYmluZGluZy52YWx1ZS5jbG9zZUNvbmRpdGlvbmFsKSB8fCBkZWZhdWx0Q29uZGl0aW9uYWw7XG5cbiAgLy8gVGhlIGluY2x1ZGUgZWxlbWVudCBjYWxsYmFja3MgYmVsb3cgY2FuIGJlIGV4cGVuc2l2ZVxuICAvLyBzbyB3ZSBzaG91bGQgYXZvaWQgY2FsbGluZyB0aGVtIHdoZW4gd2UncmUgbm90IGFjdGl2ZS5cbiAgLy8gRXhwbGljaXRseSBjaGVjayBmb3IgZmFsc2UgdG8gYWxsb3cgZmFsbGJhY2sgY29tcGF0aWJpbGl0eVxuICAvLyB3aXRoIG5vbi10b2dnbGVhYmxlIGNvbXBvbmVudHNcbiAgaWYgKCFlIHx8IGlzQWN0aXZlKGUpID09PSBmYWxzZSkgcmV0dXJuO1xuXG4gIC8vIElmIGNsaWNrIHdhcyB0cmlnZ2VyZWQgcHJvZ3JhbW1hdGljYWx5IChkb21FbC5jbGljaygpKSB0aGVuXG4gIC8vIGl0IHNob3VsZG4ndCBiZSB0cmVhdGVkIGFzIGNsaWNrLW91dHNpZGVcbiAgLy8gQ2hyb21lL0ZpcmVmb3ggc3VwcG9ydCBpc1RydXN0ZWQgcHJvcGVydHlcbiAgLy8gSUUvRWRnZSBzdXBwb3J0IHBvaW50ZXJUeXBlIHByb3BlcnR5IChlbXB0eSBpZiBub3QgdHJpZ2dlcmVkXG4gIC8vIGJ5IHBvaW50aW5nIGRldmljZSlcbiAgaWYgKCgnaXNUcnVzdGVkJyBpbiBlICYmICFlLmlzVHJ1c3RlZCkgfHwgKCdwb2ludGVyVHlwZScgaW4gZSAmJiAhZS5wb2ludGVyVHlwZSkpIHJldHVybjtcblxuICAvLyBDaGVjayBpZiBhZGRpdGlvbmFsIGVsZW1lbnRzIHdlcmUgcGFzc2VkIHRvIGJlIGluY2x1ZGVkIGluIGNoZWNrXG4gIC8vIChjbGljayBtdXN0IGJlIG91dHNpZGUgYWxsIGluY2x1ZGVkIGVsZW1lbnRzLCBpZiBhbnkpXG4gIGNvbnN0IGVsZW1lbnRzID0gKCh0eXBlb2YgYmluZGluZy52YWx1ZSA9PT0gJ29iamVjdCcgJiYgYmluZGluZy52YWx1ZS5pbmNsdWRlKSB8fCAoKCkgPT4gW10pKSgpO1xuICAvLyBBZGQgdGhlIHJvb3QgZWxlbWVudCBmb3IgdGhlIGNvbXBvbmVudCB0aGlzIGRpcmVjdGl2ZSB3YXMgZGVmaW5lZCBvblxuICBlbGVtZW50cy5wdXNoKGVsKTtcblxuICAvLyBDaGVjayBpZiBpdCdzIGEgY2xpY2sgb3V0c2lkZSBvdXIgZWxlbWVudHMsIGFuZCB0aGVuIGlmIG91ciBjYWxsYmFjayByZXR1cm5zIHRydWUuXG4gIC8vIE5vbi10b2dnbGVhYmxlIGNvbXBvbmVudHMgc2hvdWxkIHRha2UgYWN0aW9uIGluIHRoZWlyIGNhbGxiYWNrIGFuZCByZXR1cm4gZmFsc3kuXG4gIC8vIFRvZ2dsZWFibGUgY2FuIHJldHVybiB0cnVlIGlmIGl0IHdhbnRzIHRvIGRlYWN0aXZhdGUuXG4gIC8vIE5vdGUgdGhhdCwgYmVjYXVzZSB3ZSdyZSBpbiB0aGUgY2FwdHVyZSBwaGFzZSwgdGhpcyBjYWxsYmFjayB3aWxsIG9jY3VyIGJlZm9yZVxuICAvLyB0aGUgYnViYmxpbmcgY2xpY2sgZXZlbnQgb24gYW55IG91dHNpZGUgZWxlbWVudHMuXG5cbiAgLy8gZXNsaW50LWRpc2FibGUtbmV4dC1saW5lXG4gICFlbGVtZW50cy5zb21lKChlbDogYW55KSA9PiBlbC5jb250YWlucyhlLnRhcmdldCBhcyBOb2RlKSkgJiZcbiAgICBzZXRUaW1lb3V0KCgpID0+IHtcbiAgICAgIGlzQWN0aXZlKGUpICYmIGhhbmRsZXIgJiYgaGFuZGxlcihlKTtcbiAgICB9LCAwKTtcbn1cblxuZXhwb3J0IGNvbnN0IENsaWNrT3V0c2lkZTogRGlyZWN0aXZlID0ge1xuICAvLyAuYi1hcHAgbWF5IG5vdCBiZSBmb3VuZFxuICAvLyBpZiB1c2luZyBiaW5kLCBpbnNlcnRlZCBtYWtlc1xuICAvLyBzdXJlIHRoYXQgdGhlIHJvb3QgZWxlbWVudCBpc1xuICAvLyBhdmFpbGFibGUsIGlPUyBkb2VzIG5vdCBzdXBwb3J0XG4gIC8vIGNsaWNrcyBvbiBib2R5XG4gIG1vdW50ZWQoZWw6IEhUTUxFbGVtZW50LCBiaW5kaW5nOiBDbGlja091dHNpZGVEaXJlY3RpdmVCaW5kaW5nKSB7XG4gICAgY29uc3Qgb25DbGljayA9IChlOiBFdmVudCkgPT4gZGlyZWN0aXZlKGUgYXMgUG9pbnRlckV2ZW50LCBlbCwgYmluZGluZyk7XG4gICAgLy8gaU9TIGRvZXMgbm90IHJlY29nbml6ZSBjbGljayBldmVudHMgb24gZG9jdW1lbnRcbiAgICAvLyBvciBib2R5LCB0aGlzIGlzIHRoZSBlbnRpcmUgcHVycG9zZSBvZiB0aGUgdi1hcHBcbiAgICAvLyBjb21wb25lbnQgYW5kIFtkYXRhLWFwcF0sIHN0b3AgcmVtb3ZpbmcgdGhpc1xuICAgIGNvbnN0IGFwcCA9IGRvY3VtZW50LnF1ZXJ5U2VsZWN0b3IoJy5iLWFwcCcpIHx8IGRvY3VtZW50LmJvZHk7IC8vIFRoaXMgaXMgb25seSBmb3IgdW5pdCB0ZXN0c1xuICAgIGFwcC5hZGRFdmVudExpc3RlbmVyKCdjbGljaycsIG9uQ2xpY2ssIHRydWUpO1xuICAgIGVsLl9jbGlja091dHNpZGUgPSBvbkNsaWNrO1xuICB9LFxuXG4gIHVubW91bnRlZChlbDogSFRNTEVsZW1lbnQpIHtcbiAgICBpZiAoIWVsLl9jbGlja091dHNpZGUpIHJldHVybjtcblxuICAgIGNvbnN0IGFwcCA9IGRvY3VtZW50LnF1ZXJ5U2VsZWN0b3IoJy5iLWFwcCcpIHx8IGRvY3VtZW50LmJvZHk7IC8vIFRoaXMgaXMgb25seSBmb3IgdW5pdCB0ZXN0c1xuICAgIGFwcCAmJiBhcHAucmVtb3ZlRXZlbnRMaXN0ZW5lcignY2xpY2snLCBlbC5fY2xpY2tPdXRzaWRlLCB0cnVlKTtcbiAgICBkZWxldGUgZWwuX2NsaWNrT3V0c2lkZTtcbiAgfVxufTtcblxuZXhwb3J0IGRlZmF1bHQgQ2xpY2tPdXRzaWRlO1xuIl19

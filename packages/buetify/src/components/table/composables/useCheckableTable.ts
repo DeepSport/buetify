@@ -1,10 +1,12 @@
-import { ExtractPropTypes, toRef, computed, Ref } from 'vue';
-import { constant, constVoid, FunctionN } from 'fp-ts/lib/function';
+import { IO } from 'fp-ts/lib/IO';
+import { ExtractPropTypes, toRef, computed, Ref, ComputedRef, provide, inject } from 'vue';
+import { constant, constFalse, constTrue, constVoid, FunctionN } from 'fp-ts/lib/function';
 import { PropType } from 'vue';
 import { useProxy } from '../../../composables/proxy/useProxy';
 import { ColorVariant } from '../../../types/ColorVariants';
 import { constEmptyArray } from '../../../utils/helpers';
 import { BTableRow, BTableRowData, toggleBTableRow } from '../shared';
+import { toSet } from './shared';
 
 export const BTableCheckPropsDefinition = {
   isCheckable: {
@@ -39,14 +41,16 @@ export const BTableCheckPropsDefinition = {
 
 export interface BTableCheckProps extends ExtractPropTypes<typeof BTableCheckPropsDefinition> {}
 
-export function useCheckableTable(props: BTableCheckProps, rows: Ref<BTableRow[]>) {
+const USE_CHECKABLE_TABLE_INJECTION_SYMBOL = Symbol();
+
+export function useCheckableTable(props: BTableCheckProps, rows: Ref<BTableRow[]>): UseCheckableTable {
   const checkableRows = computed(() => (props.isCheckable ? rows.value.filter(row => row.isCheckable) : []));
   const { value: checkedRows } = useProxy<BTableRowData[]>(
     computed(() => (props.isCheckable ? props.checkedRows : [])),
     toRef(props, 'onUpdate:checkedRows')
   );
 
-  const checkedRowIds = computed(() => new Set(checkedRows.value.map(row => row.id)));
+  const checkedRowIds = computed(() => toSet(checkedRows.value));
 
   const allRowsChecked = computed(() => {
     const ids = checkedRowIds.value;
@@ -59,16 +63,12 @@ export function useCheckableTable(props: BTableCheckProps, rows: Ref<BTableRow[]
     checkedRows.value = checkableRows.value;
   }
 
-  function toggleRowCheck(row: BTableRow) {
+  function toggleRow(row: BTableRow) {
     if (row.isCheckable) {
       const ids = checkedRowIds.value;
-      ids.has(row.id) ? props.onCheckRow(row) : props.onUncheckRow(row);
+      ids.has(row.id) ? props.onUncheckRow(row) : props.onCheckRow(row);
       checkedRows.value = toggleBTableRow(row, checkedRows.value as BTableRow[]);
     }
-  }
-
-  function getToggleRowCheck(row: BTableRow) {
-    return () => toggleRowCheck(row);
   }
 
   function uncheckAllRows() {
@@ -81,17 +81,55 @@ export function useCheckableTable(props: BTableCheckProps, rows: Ref<BTableRow[]
 
   const hasCheckableRows = computed(() => checkableRows.value.length > 0);
 
-  return {
+  const state = {
+    isCheckable: computed(() => props.isCheckable),
+    variant: computed(() => props.checkboxVariant),
     checkedRowIds,
     toggleAllRows,
     checkAllRows,
     uncheckAllRows,
     allRowsChecked,
-    getToggleRowCheck,
+    toggleRow,
     allRowsUncheckable,
     hasCheckableRows,
     allRowsUnchecked: computed(() => hasCheckableRows.value && checkedRowIds.value.size === 0)
   };
+
+  provide(USE_CHECKABLE_TABLE_INJECTION_SYMBOL, state);
+
+  return state;
 }
 
-export type UseCheckableTable = ReturnType<typeof useCheckableTable>;
+export interface UseCheckableTable {
+  isCheckable: ComputedRef<boolean>;
+  variant: ComputedRef<ColorVariant>;
+  checkedRowIds: ComputedRef<Set<string>>;
+  toggleAllRows: IO<void>;
+  checkAllRows: IO<void>;
+  uncheckAllRows: IO<void>;
+  allRowsChecked: ComputedRef<boolean>;
+  toggleRow: FunctionN<[BTableRow], void>;
+  allRowsUncheckable: ComputedRef<boolean>;
+  hasCheckableRows: ComputedRef<boolean>;
+  allRowsUnchecked: ComputedRef<boolean>;
+}
+
+function useDefaultCheckableTableState(): UseCheckableTable {
+  return {
+    isCheckable: computed(constFalse),
+    variant: computed(() => 'is-primary'),
+    checkedRowIds: computed(() => new Set()),
+    toggleAllRows: constVoid,
+    checkAllRows: constVoid,
+    uncheckAllRows: constVoid,
+    toggleRow: constVoid,
+    allRowsChecked: computed(constFalse),
+    allRowsUncheckable: computed(constFalse),
+    hasCheckableRows: computed(constFalse),
+    allRowsUnchecked: computed(constTrue)
+  };
+}
+
+export function useInjectedCheckableTable(): UseCheckableTable {
+  return inject(USE_CHECKABLE_TABLE_INJECTION_SYMBOL, useDefaultCheckableTableState, true);
+}
