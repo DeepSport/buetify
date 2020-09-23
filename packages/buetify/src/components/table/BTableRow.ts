@@ -39,6 +39,11 @@ export default defineComponent({
       ];
     });
 
+    function toggleCheck() {
+      console.log('in row')
+      toggleRow(props.row);
+    }
+
     return () => {
       const columns: VNode[] = props.columns.map((column: BTableColumn) => {
         const children = [];
@@ -76,7 +81,7 @@ export default defineComponent({
             h(BCheckbox, {
               modelValue: isChecked.value,
               variant: variant.value,
-              'onUpdate:modelValue': toggleRow
+              'onUpdate:modelValue': toggleCheck
             })
           ])
         );

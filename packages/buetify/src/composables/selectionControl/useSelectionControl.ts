@@ -79,7 +79,8 @@ function getOnChange<T>(
   isMultiple: Ref<boolean>,
   eq: Ref<Eq<T>>
 ) {
-  return function onChange() {
+  return function onChange(e?: Event) {
+    console.log(e);
     if (isDisabled.value) return;
     if (trueValue.value === undefined) return;
     const currentValue = value.value;
