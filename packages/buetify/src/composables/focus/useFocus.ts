@@ -30,7 +30,7 @@ export function useFocus(props: UseFocusProps, ref: Ref<HTMLElement | VNode>) {
     if (props.onFocus) props.onFocus();
   }
   function focus() {
-    if (isFocused.value || props.isFocused === false) {
+    if (isFocused.value) {
       return;
     }
     if (isHTMLElement(ref.value)) {

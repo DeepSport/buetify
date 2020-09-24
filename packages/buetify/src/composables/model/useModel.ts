@@ -1,5 +1,5 @@
 import { constant, constVoid, FunctionN, Lazy } from 'fp-ts/lib/function';
-import { PropType, shallowRef, watch, toRef, Ref } from 'vue';
+import { PropType, shallowRef, watch, toRef, Ref, computed } from 'vue';
 import { exists, isObject } from '../../utils/helpers';
 
 export function getUseModelPropsDefinition<T>(): {
@@ -63,7 +63,18 @@ export function useModel<T, ValueKey extends string = 'modelValue', UpdateKey ex
   watch(toRef(props, valueKey), newVal => {
     internalValue.value = newVal;
   });
-  watch(internalValue, newVal => props[updateKey](newVal as T));
+
+  const value = computed({
+    get() {
+      return internalValue.value;
+    },
+    set(val: T | undefined) {
+      internalValue.value = val;
+      if (val) {
+        props[updateKey](val);
+      }
+    }
+  });
 
   function onUpdate(e: Event) {
     // eslint-disable-next-line
@@ -71,21 +82,16 @@ export function useModel<T, ValueKey extends string = 'modelValue', UpdateKey ex
     if (isObject(e.target) && exists(e.target.value)) {
       // eslint-disable-next-line
       // @ts-ignore-next-line
-      internalValue.value = e.target.value;
+      value.value = e.target.value;
     }
   }
-  function set(val: T) {
-    internalValue.value = val;
-  }
   return {
-    modelValue: internalValue,
-    set,
+    modelValue: value,
     onNativeInput: onUpdate
   };
 }
 
 export type Model<T> = {
   modelValue: Ref<T | undefined>;
-  set: FunctionN<[T], void>;
   onNativeInput: FunctionN<[Event], void>;
 };

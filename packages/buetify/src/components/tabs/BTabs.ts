@@ -80,7 +80,7 @@ function useOnTabItemClick(
     if (val !== index) {
       transition.value = index < val ? 'slide-next' : 'slide-prev';
       nextTick(() => {
-        model.set(index);
+        model.modelValue.value = index;
         activeLabel.value = some(tab.props.label);
       });
     }
@@ -238,7 +238,7 @@ export default defineComponent({
 
     onBeforeMount(() => {
       if (model.modelValue.value === undefined) {
-        model.set(0);
+        model.modelValue.value = 0
       }
     });
 

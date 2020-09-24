@@ -12,6 +12,11 @@ import { EqProps, getEqPropsDefinition } from '../shared';
 
 export function getUseSelectablePropsDefinition<T>() {
   return {
+    nativeValue: {
+      type: (null as unknown) as PropType<unknown>,
+      required: false,
+      default: null
+    },
     trueValue: {
       type: (null as unknown) as PropType<T>,
       default: (true as unknown) as T
@@ -48,6 +53,7 @@ export function getUseSelectablePropsDefinition<T>() {
 }
 
 export type UseSelectableProps<T> = {
+  nativeValue: unknown;
   trueValue: T;
   falseValue: T;
   indeterminateValue?: T;
@@ -80,7 +86,6 @@ function getOnChange<T>(
   eq: Ref<Eq<T>>
 ) {
   return function onChange(e?: Event) {
-    console.log(e);
     if (isDisabled.value) return;
     if (trueValue.value === undefined) return;
     const currentValue = value.value;
@@ -107,30 +112,46 @@ function getInputAttrs<T>(
   type: string,
   id: string,
   labelId: string,
+  isInitiallyActive: boolean,
   isActive: boolean,
   isDisabled: boolean,
   isReadonly: boolean,
   isRequired: boolean,
-  value: T,
   trueValue: T,
-  falseValue: T
+  falseValue: T,
+  nativeValue: unknown
 ) {
-  return {
-    role,
-    type,
-    id,
-    value,
-    checked: isActive,
-    'aria-checked': isActive,
-    'aria-disabled': isDisabled,
-    'aria-labelledby': labelId,
-    tabindex: -1,
-    readonly: isReadonly,
-    disabled: isDisabled,
-    required: isRequired,
-    'true-value': JSON.stringify(trueValue),
-    'false-value': JSON.stringify(falseValue)
-  };
+  if (role === 'checkbox') {
+    return {
+      role,
+      type,
+      id,
+      checked: isInitiallyActive,
+      'aria-checked': isActive,
+      'aria-disabled': isDisabled,
+      'aria-labelledby': labelId,
+      tabindex: -1,
+      readonly: isReadonly,
+      disabled: isDisabled,
+      required: isRequired,
+      value: JSON.stringify(nativeValue),
+      'true-value': JSON.stringify(trueValue),
+      'false-value': JSON.stringify(falseValue)
+    };
+  } else {
+    return {
+      role,
+      type,
+      id,
+      'aria-disabled': isDisabled,
+      'aria-labelledby': labelId,
+      tabindex: -1,
+      readonly: isReadonly,
+      disabled: isDisabled,
+      required: isRequired,
+      value: JSON.stringify(nativeValue ?? trueValue)
+    };
+  }
 }
 
 export function useSelectionControl<T>(
@@ -145,6 +166,8 @@ export function useSelectionControl<T>(
   const isMultiple = computed(() => props.isMultiple || Array.isArray(modelValue.value));
   const isActive = computed(() => getIsActive(modelValue.value, props.trueValue, isMultiple.value, props.eq));
   const isDisabled = useDisable(props);
+
+  const isInitiallyActive = isActive.value;
 
   const onChange = getOnChange(
     modelValue,
@@ -161,26 +184,25 @@ export function useSelectionControl<T>(
       type,
       label.id.value,
       label.labelId.value,
+      isInitiallyActive,
       isActive.value,
       isDisabled.value,
       props.isReadonly,
       props.isRequired,
-      modelValue.value,
       props.trueValue,
-      props.falseValue
+      props.falseValue,
+      props.nativeValue
     )
   );
 
   function onKeydown(e: KeyboardEvent) {
     if (isEnterEvent(e) || isSpaceEvent(e)) {
-      onChange();
+      ref.value?.click();
     }
   }
 
   function onClick(e: MouseEvent) {
-    e.preventDefault();
-    e.stopPropagation();
-    onChange();
+    focus.focus();
   }
 
   return {
