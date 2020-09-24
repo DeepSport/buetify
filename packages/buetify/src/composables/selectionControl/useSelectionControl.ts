@@ -121,37 +121,22 @@ function getInputAttrs<T>(
   falseValue: T,
   nativeValue: unknown
 ) {
-  if (role === 'checkbox') {
-    return {
-      role,
-      type,
-      id,
-      checked: isInitiallyActive,
-      'aria-checked': isActive,
-      'aria-disabled': isDisabled,
-      'aria-labelledby': labelId,
-      tabindex: -1,
-      readonly: isReadonly,
-      disabled: isDisabled,
-      required: isRequired,
-      value: JSON.stringify(nativeValue),
-      'true-value': JSON.stringify(trueValue),
-      'false-value': JSON.stringify(falseValue)
-    };
-  } else {
-    return {
-      role,
-      type,
-      id,
-      'aria-disabled': isDisabled,
-      'aria-labelledby': labelId,
-      tabindex: -1,
-      readonly: isReadonly,
-      disabled: isDisabled,
-      required: isRequired,
-      value: JSON.stringify(nativeValue ?? trueValue)
-    };
-  }
+  return {
+    role,
+    type,
+    id,
+    checked: isInitiallyActive,
+    'aria-checked': isActive,
+    'aria-disabled': isDisabled,
+    'aria-labelledby': labelId,
+    tabindex: -1,
+    readonly: isReadonly,
+    disabled: isDisabled,
+    required: isRequired,
+    value: JSON.stringify(nativeValue),
+    'true-value': JSON.stringify(trueValue),
+    'false-value': JSON.stringify(falseValue)
+  };
 }
 
 export function useSelectionControl<T>(
