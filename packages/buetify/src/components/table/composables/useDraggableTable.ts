@@ -71,6 +71,7 @@ export function useDraggableTable(props: BTableDraggableProps) {
         props.onDrop(row, e, index);
       }
       dragIsActive.value = false;
+      dropTarget.value = none;
     };
   }
   function getOnDragEnterListener(row: BTableRow, index: number): DragHandler {

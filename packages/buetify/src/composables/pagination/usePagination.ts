@@ -31,24 +31,24 @@ export function usePagination(props: UsePaginationProps) {
   function next(e: Event) {
     e.preventDefault();
     if (hasNext.value) {
-      model.set(nextPage.value);
+      model.modelValue.value = nextPage.value;
     }
   }
   function previous(e: Event) {
     e.preventDefault();
     if (hasPrevious.value) {
-      model.set(previousPage.value);
+      model.modelValue.value = previousPage.value;
     }
   }
   function first() {
-    model.set(1);
+    model.modelValue.value = 1;
   }
   function last() {
-    model.set(numberOfPages.value);
+    model.modelValue.value = numberOfPages.value;
   }
   function set(num: number) {
     if (num >= 1 && num <= numberOfPages.value) {
-      model.set(num);
+      model.modelValue.value = num;
     }
   }
   return {

@@ -13,10 +13,11 @@ function generateCheck(variant: ColorVariant) {
 
 function generateInput(selectionControl: SelectionControl) {
   return h('input', {
-    ...selectionControl.attrs.value,
+    modelValue: selectionControl.modelValue.value,
+    'onUpdate:modelValue': selectionControl.onChange,
     onBlur: selectionControl.onBlur,
-    onChange: selectionControl.onChange,
-    onFocus: selectionControl.onFocus
+    onFocus: selectionControl.onFocus,
+    ...selectionControl.attrs.value,
   });
 }
 

@@ -1,5 +1,0 @@
-export const TabsThemeMap = {
-    dark: 'is-link',
-    light: ''
-};
-//# sourceMappingURL=data:application/json;base64,eyJ2ZXJzaW9uIjozLCJmaWxlIjoidGhlbWUuanMiLCJzb3VyY2VSb290IjoiIiwic291cmNlcyI6WyIuLi8uLi8uLi9zcmMvY29tcG9uZW50cy90YWJzL3RoZW1lLnRzIl0sIm5hbWVzIjpbXSwibWFwcGluZ3MiOiJBQUFBLE1BQU0sQ0FBQyxNQUFNLFlBQVksR0FBRztJQUMxQixJQUFJLEVBQUUsU0FBUztJQUNmLEtBQUssRUFBRSxFQUFFO0NBQ1YsQ0FBQyIsInNvdXJjZXNDb250ZW50IjpbImV4cG9ydCBjb25zdCBUYWJzVGhlbWVNYXAgPSB7XG4gIGRhcms6ICdpcy1saW5rJyxcbiAgbGlnaHQ6ICcnXG59O1xuIl19
