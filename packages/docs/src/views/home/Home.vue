@@ -1,7 +1,7 @@
 <template>
   <main>
     <buetify-navbar class="is-primary"></buetify-navbar>
-    <b-hero class="is-primary is-bold is-fullheight-with-navbar">
+    <b-hero class="is-primary is-fullheight-with-navbar">
       <b-hero-body>
         <b-container>
           <b-title>

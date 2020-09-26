@@ -66,6 +66,7 @@ $dropdown-divider-background-color: $border !default
     &.is-#{$name}
       color: $color-invert
 
+
 a.dropdown-item,
 button.dropdown-item,
 li.dropdown-item
@@ -76,8 +77,11 @@ li.dropdown-item
     background-color: $dropdown-item-hover-background-color
     color: $dropdown-item-hover-color
   &.is-active
-    background-color: $dropdown-item-active-background-color
-    color: $dropdown-item-active-color
+    background-color: $dropdown-item-active-background-color !important
+    color: $dropdown-item-active-color !important
+    &:hover,
+    &.is-hovered
+      background-color: bulmaDarken($dropdown-item-active-background-color, 2.5%) !important
   @each $name, $pair in mergeColorMaps($colors, $shades)
     $color: nth($pair, 1)
     $color-invert: nth($pair, 2)

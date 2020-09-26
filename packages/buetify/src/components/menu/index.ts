@@ -3,6 +3,6 @@ import BMenuGroup from './BMenuGroup';
 import BMenuLabel from './BMenuLabel';
 import BMenuList from './BMenuList';
 import BMenuListItem from './BMenuListItem';
-import { MenuListItemThemeMap, MenuThemeMap } from './theme';
+import { MenuThemeMap } from './theme';
 
-export { BMenu, BMenuGroup, BMenuLabel, BMenuList, BMenuListItem, MenuThemeMap, MenuListItemThemeMap };
+export { BMenu, BMenuGroup, BMenuLabel, BMenuList, BMenuListItem, MenuThemeMap };

@@ -126,13 +126,15 @@ function getInputClasses(
   hasMessage: boolean,
   leftIcon: Component | undefined,
   rightIcon: Component | undefined,
-  themeClasses: string[]
+  themeClasses: string[],
+  isRounded: boolean
 ) {
   return [
     ...themeClasses,
     getIconPosition(leftIcon, rightIcon),
     size,
     {
+      'is-rounded': isRounded,
       'is-expanded': isExpanded,
       'is-loading': isLoading,
       'is-clearfix': !hasMessage
@@ -162,7 +164,8 @@ function generateNonTextInput(
         hasMessage,
         inputData.icon && inputData.icon.value,
         rightIcon,
-        themeClasses
+        themeClasses,
+        inputData.isRounded.value
       )
     ],
     value: inputData.modelValue.value,
@@ -202,7 +205,8 @@ function generateTextarea(
         hasMessage,
         inputData.icon && inputData.icon.value,
         rightIcon,
-        themeClasses
+        themeClasses,
+        inputData.isRounded.value
       )
     ],
     value: inputData.modelValue.value,
@@ -244,6 +248,7 @@ function getValueLength(modelValue: unknown) {
 export function defineInput<T>() {
   return defineComponent({
     name: 'b-input',
+    inheritAttrs: false,
     props: getBInputPropsDefinition<T>(),
     setup(props, context: SetupContext) {
       const inputRef = shallowRef((null as unknown) as HTMLInputElement);
@@ -304,7 +309,8 @@ export function defineInput<T>() {
                 !!inputData.message.value,
                 inputData.icon && inputData.icon.value,
                 rightIcon.value,
-                themeClasses.value
+                themeClasses.value,
+                inputData.isRounded.value
               )
             ]
           },

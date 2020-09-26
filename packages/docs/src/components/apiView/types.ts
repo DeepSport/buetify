@@ -9,7 +9,7 @@ export interface ComponentApiDescription {
 export interface PropApiDescription {
 	name: string;
 	description: string;
-	type: PropType;
+	type: PropType | string;
 	values: string;
 	required: string;
 	default?: string;

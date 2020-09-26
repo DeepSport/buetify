@@ -6,7 +6,8 @@ import { getUseModelPropsDefinition } from '../../../composables/model/useModel'
 import { useProxy } from '../../../composables/proxy';
 import { getEqPropsDefinition } from '../../../composables/shared';
 import { useThemePropsDefinition } from '../../../composables/theme';
-import { constEmptyArray, extractProp, toggleListItem } from '../../../utils/helpers';
+import { Toggle } from '../../../composables/toggle';
+import { constEmptyArray, Extractor, extractProp, toggleListItem } from '../../../utils/helpers';
 import { DropdownThemeMap } from '../../dropdown';
 import BDropdown from '../../dropdown/BDropdown';
 import { isArrowDownEvent, isArrowUpEvent, isEnterEvent, isEscEvent, isTabEvent } from '../../../utils/eventHelpers';
@@ -198,8 +199,13 @@ function getGenerateItem<T>(
 }
 
 function generateHeaderItem(slots: Slots): VNode {
-  return h('li', { tabindex: -1 }, [h(BDropdownItem, { tag: 'div' }, slots.header!())]);
+  return h('li', { class: 'dropdown-item', tabindex: -1 }, slots.header && slots.header());
 }
+
+function generateFooterItem(slots: Slots): VNode {
+  return h('li', { class: 'dropdown-item', tabindex: -1 }, slots.footer && slots.footer());
+}
+
 
 function generateLoadingItem(slots: Slots): VNode {
   return h('li', { tabindex: -1 }, [
@@ -213,7 +219,12 @@ function generateEmptyItem(modelValue: string | undefined, slots: Slots) {
     {
       class: 'is-disabled'
     },
-    () => (slots.empty ? slots.empty() : modelValue ? `No results` : `No results for ${modelValue}`)
+    () =>
+      slots.empty
+        ? slots.empty({ searchValue: modelValue })
+        : modelValue
+        ? `No results`
+        : `No results for ${modelValue}`
   );
 }
 
@@ -274,10 +285,20 @@ function defineAutocomplete<T>() {
       const { value: selectedItems } = useProxy(toRef(props, 'selectedItems'), toRef(props, 'onUpdate:selectedItems'));
 
       const itemsRef = shallowRef([] as HTMLElement[]);
-      const filteredItems = computed(() =>
-        props.itemFilter ? props.items.filter(props.itemFilter(searchValue.value)) : props.items
-      );
-      onBeforeUpdate(() => (itemsRef.value = []));
+      const filteredItems = computed(() => {
+        if (props.itemFilter) {
+          return props.items.filter(props.itemFilter(searchValue.value));
+        } else {
+          const sv = searchValue.value.toLowerCase();
+          const extract = props.itemText;
+          return props.items.filter(i =>
+            ((extractProp(extract as Extractor<T>, i) as unknown) as string).toLowerCase().includes(sv)
+          );
+        }
+      });
+      onBeforeUpdate(() => {
+        itemsRef.value = [];
+      });
       const dropdown: Ref<InstanceType<typeof BDropdown> | null> = shallowRef(null);
       function close() {
         dropdown.value && dropdown.value.toggle.setOff();
@@ -308,7 +329,7 @@ function defineAutocomplete<T>() {
             class: ['b-autocomplete', { 'is-expanded': props.isExpanded }]
           },
           {
-            trigger: () => {
+            trigger: (toggle: Toggle) => {
               return h(BInput, {
                 modelValue: searchValue.value,
                 type: 'text',
@@ -317,23 +338,20 @@ function defineAutocomplete<T>() {
                 isRounded: props.isRounded,
                 icon: props.icon,
                 maxlength: props.maxlength,
-                autocomplete: props.autocomplete || 'list',
+                autocomplete: 'off',
                 placeholder: props.placeholder,
                 role: 'searchbox',
                 'aria-activedescendant': activeDescendentId.value,
                 'onUpdate:modelValue': (val: string) => {
                   searchValue.value = val;
                 },
-                onFocus: () => {
-                  if (props.openOnFocus) {
-                    nextTick(() => {
-                      const d = dropdown.value;
-                      if (d && d.toggle.isOff.value) {
-                        d.toggle.setOn();
-                      }
-                    });
-                  }
-                },
+                // onFocus: () => {
+                //   nextTick().then(() => {
+                //     if (props.openOnFocus && toggle.isOff.value) {
+                //       toggle.setOn();
+                //     }
+                //   });
+                // },
                 onBlur: props.onBlur,
                 onKeydown
               });
@@ -348,6 +366,9 @@ function defineAutocomplete<T>() {
                   : autocompleteItems.value.map(generateItem);
                 if (slots.header) {
                   nodes.unshift(generateHeaderItem(slots), h(BDropdownDivider));
+                }
+                if(slots.footer) {
+                  nodes.push(h(BDropdownDivider), generateFooterItem(slots))
                 }
               }
               return nodes;

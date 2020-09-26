@@ -25,11 +25,14 @@ function generatePopupContainer(ref: Ref<PopupContainer>) {
   return h(BPopupContainer, { ref });
 }
 
-function generateNavigationSlot(slots: Slots) {
+function generateNavigationSlot(slots: Slots, hasHeader: boolean) {
   return h(
     BNavigationDrawer,
     {
-      isFullheight: true
+      isFullheight: true,
+      class: {
+        'is-absolute': hasHeader
+      }
     },
     slots['navigation-drawer']
   );
@@ -51,7 +54,7 @@ function generateBodyContent(slots: Slots, hasNavigationDrawer: boolean, display
       { class: 'b-app-body-content' },
       hasNavigationDrawer
         ? [
-            withDirectives(generateNavigationSlot(slots), [[vShow, displayNavigationDrawer]]),
+            withDirectives(generateNavigationSlot(slots, !!slots.header), [[vShow, displayNavigationDrawer]]),
             generateMainContent(slots)
           ]
         : [generateMainContent(slots)]

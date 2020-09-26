@@ -120,16 +120,16 @@ function generateDropdownMenu(
   useTransition = true
 ) {
   const menu = () =>
-    toggle.isOn.value
-      ? h(
-          'div',
-          {
-            ref: 'dropdownMenu',
-            class: 'dropdown-menu'
-          },
-          [generateDropdownContent(menuTag, toggle, computedId, themeClasses, slots)]
-        )
-      : undefined;
+    withDirectives(
+      h(
+        'div',
+        {
+          class: 'dropdown-menu'
+        },
+        [generateDropdownContent(menuTag, toggle, computedId, themeClasses, slots)]
+      ),
+      [[vShow, toggle.isOn.value]]
+    );
   return useTransition ? generateTransition(transition, menu) : menu();
 }
 

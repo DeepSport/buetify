@@ -49,10 +49,10 @@ export default defineComponent({
 		const toggle = useToggle({ isOpen: false, hasPopup: true }, 'isOpen');
 
 		function goToHome() {
-			router.push('/').then(toggle.setOff);
+			router.push('/').then(() => toggle.setOff());
 		}
 		function goToDocumentation() {
-			router.push('/documentation').then(toggle.setOff);
+			router.push('/documentation').then(() => toggle.setOff());
 		}
 
 		return {

@@ -21,6 +21,13 @@ export const removePopup = removeListItem(eqPopup);
 
 let id = 0
 
+function generatePopup(popup: Popup, index: number): VNode {
+  return h('div', { key: popup.id, style: { 'z-index': index + 1 } }, [
+    h(transition, popup.transition, popup.render)
+  ]);
+}
+
+
 const BPopupContainer = defineComponent({
   name: 'b-popup-container',
   setup() {
@@ -40,7 +47,7 @@ const BPopupContainer = defineComponent({
           }, 250)
         };
       }
-      const rootZ = computed(() => popups.value.length ? 1 : 0)
+      const rootZ = computed(() => popups.value.length ? 1 : -1)
       return {
         showPopup,
         popups,
@@ -48,17 +55,12 @@ const BPopupContainer = defineComponent({
       }
   },
   methods: {
-    generatePopup(popup: Popup, index: number): VNode {
-      return h('div', { key: popup.id, style: { 'z-index': index + 1 } }, [
-        h(transition, popup.transition, popup.render)
-      ]);
-    }
   },
   render(): VNode {
     return h(
       'div',
       { style: { 'z-index': this.rootZ } },
-      this.rootZ ? this.popups.map(this.generatePopup) : undefined
+      this.rootZ ? this.popups.map(generatePopup) : undefined
     );
   }
 });

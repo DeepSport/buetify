@@ -46,7 +46,7 @@ export default defineComponent({
                     asCard: false
                   },
                   {
-                    header: () => slots.header && slots.header(popup),
+                    header: slots.header ? () => slots.header && slots.header(popup) : undefined,
                     default: () => nodes,
                     footer: () => slots.footer && slots.footer(popup)
                   }
@@ -55,6 +55,9 @@ export default defineComponent({
         )
       ];
     };
-    return () => slots.trigger && slots.trigger(popup);
+    return { popup };
+  },
+  render() {
+    return this.$slots.trigger && this.$slots.trigger(this.popup);
   }
 });

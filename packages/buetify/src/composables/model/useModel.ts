@@ -70,7 +70,7 @@ export function useModel<T, ValueKey extends string = 'modelValue', UpdateKey ex
     },
     set(val: T | undefined) {
       internalValue.value = val;
-      if (val) {
+      if (val !== undefined) {
         props[updateKey](val);
       }
     }

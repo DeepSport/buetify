@@ -126,13 +126,13 @@ export default defineComponent({
   name: 'b-number-input',
   props: BNumberInputPropsDefinition,
   setup(props) {
-    const canDecrement = computed(() => props.modelValue - props.step > props.min);
+    const canDecrement = computed(() => props.modelValue - props.step >= props.min);
     function onDecrement() {
       if (canDecrement.value) {
         props['onUpdate:modelValue'](props.modelValue - props.step);
       }
     }
-    const canIncrement = computed(() => props.modelValue + props.step < props.max);
+    const canIncrement = computed(() => props.modelValue + props.step <= props.max);
     function onIncrement() {
       if (canIncrement.value) {
         props['onUpdate:modelValue'](props.modelValue + props.step);
