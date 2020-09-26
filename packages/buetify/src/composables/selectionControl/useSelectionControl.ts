@@ -25,8 +25,9 @@ export function getUseSelectablePropsDefinition<T>() {
       type: (null as unknown) as PropType<T>,
       default: (false as unknown) as T
     },
-    indeterminateValue: {
-      type: (null as unknown) as PropType<T>
+    isIndeterminate: {
+      type: Boolean as PropType<boolean>,
+      default: false
     },
     isMultiple: {
       type: Boolean as PropType<boolean>,
@@ -43,6 +44,10 @@ export function getUseSelectablePropsDefinition<T>() {
     isRequired: {
       type: Boolean as PropType<boolean>,
       default: false
+    },
+    name: {
+      type: String as PropType<string>,
+      required: false
     },
     ...getEqPropsDefinition<T>(),
     ...getUseModelPropsDefinition<T>(),
@@ -61,6 +66,8 @@ export type UseSelectableProps<T> = {
   variant: ColorVariant;
   size: SizeVariant;
   isRequired: boolean;
+  isIndeterminate: boolean;
+  name?: string;
 } & EqProps<T> &
   UseModelProps<T> &
   UseDisableProps &
@@ -86,10 +93,12 @@ function getOnChange<T>(
   eq: Ref<Eq<T>>
 ) {
   return function onChange(e?: Event) {
+    console.log(e);
     if (isDisabled.value) return;
     if (trueValue.value === undefined) return;
     const currentValue = value.value;
     const tValue = trueValue.value;
+    const fValue = falseValue.value;
 
     if (isMultiple.value) {
       if (!Array.isArray(currentValue)) {
@@ -99,9 +108,11 @@ function getOnChange<T>(
       }
     } else if (!Array.isArray(currentValue)) {
       if (currentValue === undefined || (currentValue !== undefined && !eq.value.equals(currentValue, tValue))) {
-        value.value = trueValue.value;
+        console.log('setting true value', tValue);
+        value.value = tValue;
       } else {
-        value.value = falseValue.value;
+        console.log('settings false value', fValue);
+        value.value = fValue;
       }
     }
   };
@@ -112,20 +123,22 @@ function getInputAttrs<T>(
   type: string,
   id: string,
   labelId: string,
-  isInitiallyActive: boolean,
   isActive: boolean,
   isDisabled: boolean,
   isReadonly: boolean,
   isRequired: boolean,
   trueValue: T,
   falseValue: T,
-  nativeValue: unknown
+  nativeValue: unknown,
+  isIndeterminate?: boolean,
+  name?: string
 ) {
   return {
     role,
     type,
     id,
-    checked: isInitiallyActive,
+    name,
+    checked: isActive,
     'aria-checked': isActive,
     'aria-disabled': isDisabled,
     'aria-labelledby': labelId,
@@ -133,6 +146,7 @@ function getInputAttrs<T>(
     readonly: isReadonly,
     disabled: isDisabled,
     required: isRequired,
+    indeterminate: isIndeterminate,
     value: JSON.stringify(nativeValue),
     'true-value': JSON.stringify(trueValue),
     'false-value': JSON.stringify(falseValue)
@@ -152,8 +166,6 @@ export function useSelectionControl<T>(
   const isActive = computed(() => getIsActive(modelValue.value, props.trueValue, isMultiple.value, props.eq));
   const isDisabled = useDisable(props);
 
-  const isInitiallyActive = isActive.value;
-
   const onChange = getOnChange(
     modelValue,
     toRef(props, 'trueValue'),
@@ -169,14 +181,15 @@ export function useSelectionControl<T>(
       type,
       label.id.value,
       label.labelId.value,
-      isInitiallyActive,
       isActive.value,
       isDisabled.value,
       props.isReadonly,
       props.isRequired,
       props.trueValue,
       props.falseValue,
-      props.nativeValue
+      props.nativeValue,
+      props.isIndeterminate,
+      props.name
     )
   );
 

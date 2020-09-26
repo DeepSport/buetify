@@ -1,105 +1,60 @@
 import { ComponentApiDescription } from '../../../../../components/apiView';
-import { ColorVariantPropApi } from '../../../shared/ColorVariantPropApi';
+import { getUseTransitionPropsApi } from '../../../shared/api';
 
 export const apis: ComponentApiDescription[] = [
 	{
 		title: 'Dialog',
 		props: [
-			ColorVariantPropApi,
-			{
-				name: '<code>size</code>',
-				description: 'Vertical size of button',
-				type: 'String',
-				values: '<code>is-small</code>, <code>is-medium</code>, <code>is-large</code>',
-				default: '—',
-				required: 'false'
-			},
-			{
-				name: '<code>isLoading</code>',
-				description: 'Add the loading state to the button',
-				type: 'Boolean',
-				values: '—',
-				default: '<code>false</code>',
-				required: 'false'
-			},
-			{
-				name: '<code>isRounded</code>',
-				description: 'Rounded style',
-				type: 'Boolean',
-				values: '—',
-				default: '<code>false</code>',
-				required: 'false'
-			},
-			{
-				name: '<code>isOutlined</code>',
-				description: 'Outlined style',
-				type: 'Boolean',
-				values: '—',
-				default: '<code>false</code>',
-				required: 'false'
-			},
-			{
-				name: '<code>isFocused</code>',
-				description: 'Focused style',
-				type: 'Boolean',
-				values: '—',
-				default: '<code>false</code>',
-				required: 'false'
-			},
-			{
-				name: '<code>isInverted</code>',
-				description: 'Inverted style',
-				type: 'Boolean',
-				values: '—',
-				default: '<code>false</code>',
-				required: 'false'
-			},
-			{
-				name: '<code>isHovered</code>',
-				description: 'Hovered style',
-				type: 'Boolean',
-				values: '—',
-				default: '<code>false</code>',
-				required: 'false'
-			},
+			getUseTransitionPropsApi('fade'),
 			{
 				name: '<code>isActive</code>',
-				description: 'Active style',
+				description: 'Can be used by parent to open / close dialog',
 				type: 'Boolean',
 				values: '—',
 				default: '<code>false</code>',
-				required: 'false'
-			},
-			{
-				name: '<code>isSelected</code>',
-				description: 'Selected style',
-				type: 'Boolean',
-				values: '—',
-				default: '<code>false</code>',
-				required: 'false'
-			},
-			{
-				name: '<code>isExpanded</code>',
-				description: 'Button will be expanded (full-width)',
-				type: 'Boolean',
-				values: '—',
-				default: '<code>false</code>',
-				required: 'false'
-			},
-			{
-				name: '<code>tag</code>',
-				description: 'HTML tag for button',
-				type: 'String',
-				values: '<code>button</code>, <code>a</code>, <code>input</code>',
-				default: '<code>button</code>',
 				required: 'false'
 			}
 		],
 		events: [
 			{
-				name: '<code>[any]</code>',
-				description: 'All listeners are bound to the native element',
-				parameters: '<code>event: $event</code>'
+				name: '<code>set-on</code>',
+				description: 'Listen to open event',
+				parameters: '-'
+			},
+			{
+				name: '<code>set-off</code>',
+				description: 'Listen to close event',
+				parameters: '-'
+			},
+			{
+				name: '<code>toggle</code>',
+				description: 'Listen to toggle event',
+				parameters: '<code>status: boolean</code>'
+			}
+		],
+		slots: [
+			{
+				name: '<code>trigger</code>',
+				description: 'Trigger slot',
+				props:
+					'<code>toggle: { isOpen: Ref<boolean>, isClosed: Ref<boolean>, attrs: object, listeners: object, open: IO<void>, close: IO<void>, toggle: IO<void>}</code>'
+			},
+			{
+				name: '<code>title</code>',
+				description: 'Trigger content',
+				props:
+					'<code>toggle: { isOpen: Ref<boolean>, isClosed: Ref<boolean>, attrs: object, listeners: object, open: IO<void>, close: IO<void>, toggle: IO<void>}</code>'
+			},
+			{
+				name: '<code>default</code>',
+				description: 'Content inside body of dialog',
+				props: '—'
+			},
+			{
+				name: '<code>footer</code>',
+				description: 'Trigger content',
+				props:
+					'<code>toggle: { isOpen: Ref<boolean>, isClosed: Ref<boolean>, attrs: object, listeners: object, open: IO<void>, close: IO<void>, toggle: IO<void>}</code>'
 			}
 		]
 	}

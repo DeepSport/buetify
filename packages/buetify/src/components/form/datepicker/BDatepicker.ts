@@ -204,16 +204,16 @@ function generateInput(props: BDatepickerProps, context: SetupContext, data: BDa
     isDisabled: props.isDisabled,
     isReadonly: props.isReadonly,
     isLoading: props.isLoading,
-    useNativeValidation: props.useNativeValidation,
-    onFocus: () => {
-      if (!isMobile && props.openOnFocus && toggle) {
-        nextTick(() => {
-          if (toggle.isOff.value) {
-            toggle.setOff();
-          }
-        });
-      }
-    }
+    useNativeValidation: props.useNativeValidation
+    // onFocus: () => {
+    //   if (!isMobile && props.openOnFocus && toggle) {
+    //     nextTick().then(() => {
+    //       if (toggle.isOff.value) {
+    //         toggle.setOn();
+    //       }
+    //     });
+    //   }
+    // }
   });
 }
 
@@ -517,6 +517,7 @@ export default defineComponent({
           props['onUpdate:modelValue'](val[0]);
           internalValue.value = val[0];
         }
+        console.log('from-model-value')
         dropdown.value && dropdown.value.toggle.setOff();
       }
     });

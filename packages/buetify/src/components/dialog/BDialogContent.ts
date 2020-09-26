@@ -30,7 +30,13 @@ export default defineComponent({
       if (slots.header) {
         nodes.push(h('header', { class: 'modal-card-head' }, slots.header()));
       }
-      nodes.push(h('section', { class: 'modal-card-body', 'is-titleless': !slots.header }, slots.default && slots.default()));
+      nodes.push(
+        h(
+          'section',
+          { class: ['modal-card-body', { 'is-titleless': !slots.header }] },
+          slots.default && slots.default()
+        )
+      );
       if (slots.footer) {
         nodes.push(h('footer', { class: 'modal-card-foot' }, slots.footer()));
       }
@@ -38,7 +44,7 @@ export default defineComponent({
         h(
           'article',
           {
-            class: ['modal-card', { card: props.asCard },  ...themeClasses.value, props.cardClass]
+            class: ['modal-card', { card: props.asCard }, ...themeClasses.value, props.cardClass]
           },
           nodes
         )

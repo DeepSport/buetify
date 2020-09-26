@@ -13,11 +13,7 @@ function generateCheck(variant: ColorVariant) {
 
 function generateInput(selectionControl: SelectionControl) {
   return h('input', {
-    modelValue: selectionControl.modelValue.value,
-    'onUpdate:modelValue': (val: unknown) => {
-        console.log(val);
-        selectionControl.modelValue.value = val;
-    },
+    onChange: selectionControl.onChange,
     onBlur: selectionControl.onBlur,
     onFocus: selectionControl.onFocus,
     ...selectionControl.attrs.value,

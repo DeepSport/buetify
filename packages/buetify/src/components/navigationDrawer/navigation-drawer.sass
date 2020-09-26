@@ -6,6 +6,8 @@
   overflow-x: hidden
   &.is-fullheight
     bottom: 0
+  &.is-absolute
+    position: absolute
   @each $name, $pair in mergeColorMaps($colors, $shades)
     $color: nth($pair, 1)
     $color-invert: findColorInvert($color)

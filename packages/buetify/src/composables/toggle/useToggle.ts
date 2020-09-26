@@ -9,6 +9,10 @@ export function getUseTogglePropsDefinition<K extends string>(statusName: K): Us
       type: Boolean,
       default: false
     },
+    [`onUpdate:${statusName}`]: {
+      type: Function as PropType<FunctionN<[boolean], void>>,
+      required: false
+    },
     hasPopup: {
       type: Boolean,
       default: false
@@ -92,39 +96,56 @@ export function useToggle<K extends string>(
   statusName: K
 ) {
   const internalStatus = shallowRef(props[statusName] as boolean);
+  const value = computed({
+    get() {
+      return internalStatus.value;
+    },
+    set(val: boolean) {
+      const cValue = internalStatus.value;
+      if (cValue !== val && props.onToggle) {
+        props.onToggle(val);
+      }
+      if (val && props.onSetOn) {
+        props.onSetOn();
+      }
+      if (!val && props.onSetOff) {
+        props.onSetOff();
+      }
+      internalStatus.value = val;
+      const updateModel = (props as any)[`onUpdate:${statusName}`]; //eslint-disable-line
+      if (updateModel) {
+        updateModel(val);
+      }
+    }
+  });
   watch(
     () => props[statusName],
     status => {
       internalStatus.value = status;
     }
   );
-  watch(internalStatus, (value, oldValue) => {
-    if (value !== oldValue && props.onToggle) {
-      props.onToggle(value);
-    }
-    if (value && oldValue === false && props.onSetOn) {
-      props.onSetOn();
-    }
-    if (value === false && oldValue === true && props.onSetOff) {
-      props.onSetOff();
-    }
-  });
-  function setOn() {
-    internalStatus.value = true;
+
+  function setOn(e?: Event) {
+    e && e?.stopPropagation();
+    value.value = true;
   }
-  function setOff() {
-    internalStatus.value = false;
+  function setOff(e?: Event) {
+    e && e?.stopPropagation();
+    value.value = false;
   }
-  function toggle() {
-    internalStatus.value = !internalStatus.value;
+  function toggle(e?: Event) {
+    e && e?.stopPropagation();
+    value.value = !value.value;
   }
-  const attrs = getToggleAttrs(internalStatus, toRef(props, 'hasPopup'));
+
+  const attrs = getToggleAttrs(value, toRef(props, 'hasPopup'));
   const listeners = getListeners(toggle);
   return {
-    isOn: internalStatus,
+    isOn: value,
     isOff: computed(() => internalStatus.value === false),
     attrs,
     listeners,
+    props: computed(() => ({ ...attrs.value, ...listeners })),
     setOn,
     setOff,
     toggle

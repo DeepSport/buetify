@@ -2,7 +2,7 @@ import BMenu from 'buetify/lib/components/menu/BMenu';
 import BMenuGroup from 'buetify/lib/components/menu/BMenuGroup';
 import BMenuLabel from 'buetify/lib/components/menu/BMenuLabel';
 import BMenuListItem from 'buetify/lib/components/menu/BMenuListItem';
-import {constant} from 'fp-ts/lib/function';
+import { constant } from 'fp-ts/lib/function';
 import { defineComponent, PropType, h, computed } from 'vue';
 import { RouterLink, useLink } from 'vue-router';
 import {
@@ -18,6 +18,10 @@ const BuetifyMenuGroup = defineComponent({
 		group: {
 			type: Object as PropType<BuetifyMenuNavigationGroup>,
 			required: true
+		},
+		isNested: {
+			type: Boolean,
+			default: false
 		}
 	},
 	setup(props) {
@@ -26,8 +30,10 @@ const BuetifyMenuGroup = defineComponent({
 				BMenuGroup,
 				{ isExpanded: true },
 				{
-					'menu-label': () => h(BMenuLabel, () => props.group.label),
-					default: () => props.group.items.map(item => h(BuetifyMenuItem, { key: item.label, item })) // eslint-disable-line
+					'menu-label': () => (props.isNested ? props.group.label
+						: h(BMenuLabel, () => props.group.label)),
+					default: () =>
+						props.group.items.map(item => h(BuetifyMenuItem, { key: item.label, item, isNested: true })) // eslint-disable-line
 				}
 			);
 	}
@@ -62,15 +68,21 @@ const BuetifyMenuLink = defineComponent({
 	}
 });
 
-function BuetifyMenuItem(props: { item: BuetifyMenuNavigationItem }) {
+function BuetifyMenuItem(props: { item: BuetifyMenuNavigationItem; isNested?: boolean }) {
 	return props.item._tag === 'group'
-		? h(BuetifyMenuGroup, { group: props.item })
+		? props.isNested
+			? h(BMenuListItem, () => h(BuetifyMenuGroup, { group: props.item, isNested: props.isNested } as any)) //eslint-disable-line
+			: h(BuetifyMenuGroup, { group: props.item })
 		: h(BuetifyMenuLink, { link: props.item });
 }
 
-const groups = constant(menu.map(item => h(BuetifyMenuItem, { item })))
+const groups = constant(menu.map(item => h(BuetifyMenuItem, { item })));
 
-const staticMenu = h(BMenu, { class: 'padding-top-size-3 padding-bottom-size-3 padding-left-size-2 padding-right-size-2' }, groups)
+const staticMenu = h(
+	BMenu,
+	{ class: 'padding-top-size-3 padding-bottom-size-3 padding-left-size-2 padding-right-size-2' },
+	groups
+);
 
 export default function BuetifyMenu() {
 	return staticMenu;

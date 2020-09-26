@@ -45,7 +45,7 @@ export default defineComponent({
                 })
               ]
             )
-          : h('div', { class: 'padding-bottom-size-8' }, slots['menu-label'] && slots['menu-label']()),
+          : h('div', slots['menu-label'] && slots['menu-label']()),
         props.isExpandable
           ? h(VerticalExpandTransition, undefined, () => [
               withDirectives(
