@@ -80,7 +80,7 @@ const groups = constant(menu.map(item => h(BuetifyMenuItem, { item })));
 
 const staticMenu = h(
 	BMenu,
-	{ class: 'padding-top-size-3 padding-bottom-size-3 padding-left-size-2 padding-right-size-2' },
+	{ class: 'is-light padding-top-size-3 padding-bottom-size-3 padding-left-size-2 padding-right-size-2' },
 	groups
 );
 

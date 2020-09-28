@@ -1,13 +1,19 @@
 import './tag.sass';
-import { Classes, mergeClasses } from '../../utils/mergeClasses';
-import { h, Component, SetupContext } from 'vue';
+import { h, defineComponent } from 'vue';
 
-export interface BTagListProps {
-  isAttached?: boolean;
-  tag?: string | Component;
-}
-
-export default function BTagList(props: BTagListProps, { attrs, slots }: SetupContext) {
-  attrs.class = mergeClasses(attrs.class as Classes, ['tags', { 'has-addons': !!props.isAttached }]);
-  return h(props.tag ?? ('div' as any), attrs, slots.default!());
-}
+export default defineComponent({
+  name: 'b-tag-list',
+  props: {
+    isAttached: {
+      type: Boolean,
+      default: false
+    },
+    tag: {
+      type: String,
+      default: 'div'
+    }
+  },
+  setup(props, { slots }) {
+    return () => h(props.tag, { class: ['tags', { 'has-addons': props.isAttached }]}, slots.default && slots.default());
+  }
+})
