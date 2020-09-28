@@ -1,0 +1,22 @@
+@import '../../../sass/helpers/animations'
+
+.notices
+  position: fixed
+  display: flex
+  top: 0
+  bottom: 0
+  left: 0
+  right: 0
+  padding: 2em
+  overflow: hidden
+  z-index: 1000
+  pointer-events: none
+  .notification
+    max-width: 600px
+
+  &.has-custom-container
+    position: absolute
+
+  @include mobile
+    padding: 0
+    position: fixed !important

@@ -1,0 +1,20 @@
+@each $name, $pair in $colors
+  $color: nth($pair, 1)
+  .has-text-#{$name}-hover
+    &:hover
+      color: $color
+
+.white-space-normal
+  white-space: normal
+
++mobile
+  .white-space-normal-mobile
+    white-space: normal
+
+.inherit-color
+  color: inherit
+
+.ellipsis
+  text-overflow: ellipsis
+  white-space: nowrap
+  overflow: hidden

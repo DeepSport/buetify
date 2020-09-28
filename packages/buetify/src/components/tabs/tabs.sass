@@ -1,0 +1,39 @@
+@import '~bulma/sass/components/tabs'
+@import '../../sass/helpers/animations'
+@import '../../sass/helpers/flex-helpers'
+@import '../../sass/helpers/padding-margin-helpers'
+
+.b-tabs
+	.tabs
+		padding-bottom: 1rem
+		margin-bottom: 0
+		flex-shrink: 0
+		li
+			a
+				color: inherit
+	.is-disabled
+		pointer-events: none
+		cursor: not-allowed
+		opacity: 0.5
+	.tab-content
+		position: relative
+		overflow: hidden
+		display: flex
+		flex-direction: column
+		padding: 0.5rem 1rem 1rem 1rem
+		+mobile
+			padding-left: 0
+			padding-right: 0
+		.tab-item
+			flex-shrink: 0
+			max-width: 100%
+			flex-basis: auto
+	&:not(:last-child)
+		margin-bottom: 1.5rem
+	&.is-fullwidth
+		width: 100%
+	&.is-scrollable
+		.tabs
+			padding-bottom: 0.5rem
+		.b-scroll
+			margin-bottom: 0.5rem
