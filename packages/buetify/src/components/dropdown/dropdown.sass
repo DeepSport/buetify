@@ -2,8 +2,6 @@
 @import '../../sass/helpers/animations'
 
 .dropdown
-	& + .dropdown
-		margin-left: 0.5em
 	.background
 		@include overlay
 		position: fixed
@@ -55,12 +53,14 @@
 		.dropdown-menu
 			top: auto
 			bottom: 100%
+			padding-bottom: $dropdown-content-offset
 	&.is-top-left
 		.dropdown-menu
 			top: auto
 			bottom: 100%
 			right: 0
 			left: auto
+			padding-bottom: $dropdown-content-offset
 	&.is-bottom-left
 		.dropdown-menu
 			right: 0

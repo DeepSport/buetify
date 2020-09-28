@@ -96,16 +96,13 @@ function generateLabel(isHorizontal: boolean, fieldData: FieldDataAttrs, customC
   }
 }
 
-function generateHelpMessage(isHorizontal: boolean, fieldDataAttrs: FieldDataAttrs): VNode {
-  const showHelpMessage = !isHorizontal && !!fieldDataAttrs.message.value;
-  return withDirectives(
-    h('p', {
-      class: ['help', fieldDataAttrs.messageVariant.value],
-      'aria-hidden': showHelpMessage,
-      innerHTML: fieldDataAttrs.message.value
-    }),
-    [[vShow, showHelpMessage]]
-  );
+function generateHelpMessage(isHorizontal: boolean, fieldDataAttrs: FieldDataAttrs): VNode | undefined {
+  return !isHorizontal && !!fieldDataAttrs.message.value
+    ? h('p', {
+        class: ['help', fieldDataAttrs.messageVariant.value],
+        innerHTML: fieldDataAttrs.message.value
+      })
+    : undefined;
 }
 
 function generateBody(isHorizontal: boolean, fieldData: FieldDataAttrs, role: string, slots: Slots): VNode[] {

@@ -17,14 +17,14 @@
 					Item C
 				</b-dropdown-item>
 				<b-dropdown-divider></b-dropdown-divider>
-				<li>
+				<b-dropdown-item>
 					<b-button is-fullwidth variant="is-warning" @click="setOff">
 						Close me
 					</b-button>
-				</li>
+				</b-dropdown-item>
 			</template>
 		</b-dropdown>
-		<b-dropdown is-hoverable>
+		<b-dropdown is-hoverable class="margin-left-size-6">
 			<template #trigger="{ attrs }">
 				<b-button variant="is-primary" v-bind="attrs.value">
 					Hover me!
