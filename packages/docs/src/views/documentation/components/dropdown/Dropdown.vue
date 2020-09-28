@@ -6,7 +6,7 @@
 			</template>
 		</example-view>
 		<b-horizontal-divider></b-horizontal-divider>
-		<example-view title="Position" :code="PositionCode" is-vertical>
+		<example-view title="Position" :code="PositionCode">
 			<template #component>
 				<position></position>
 			</template>

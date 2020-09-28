@@ -1,9 +1,9 @@
 <template>
-	<section aria-label="dropdown simple example">
+	<section aria-label="dropdown simple example" class="is-flex flex-direction-row justify-content-space-between">
 		<b-dropdown>
 			<template #trigger="{ props }">
 				<b-button v-bind="props.value">
-					Open Bottom Left!
+					Bottom Right!
 				</b-button>
 			</template>
 			<template #default="{ setOff }">
@@ -17,17 +17,17 @@
 					Item C
 				</b-dropdown-item>
 				<b-dropdown-divider></b-dropdown-divider>
-				<li>
+				<b-dropdown-item>
 					<b-button is-fullwidth variant="is-warning" @click="setOff">
 						Close me
 					</b-button>
-				</li>
+				</b-dropdown-item>
 			</template>
 		</b-dropdown>
-		<b-dropdown position="is-bottom-right">
+		<b-dropdown position="is-bottom-left" class="margin-left-size-7">
 			<template #trigger="{ attrs }">
 				<b-button variant="is-primary" v-bind="attrs.value">
-					Open Bottom Right!
+					Bottom Left!
 				</b-button>
 			</template>
 			<template #default>
@@ -42,28 +42,10 @@
 				</b-dropdown-item>
 			</template>
 		</b-dropdown>
-    <b-dropdown position="is-top-left">
+    <b-dropdown position="is-top-right" class="margin-left-size-7">
       <template #trigger="{ attrs }">
-        <b-button variant="is-warning" v-bind="attrs.value">
-          Open Top Left!
-        </b-button>
-      </template>
-      <template #default>
-        <b-dropdown-item>
-          Item A
-        </b-dropdown-item>
-        <b-dropdown-item>
-          Item B
-        </b-dropdown-item>
-        <b-dropdown-item>
-          Item C
-        </b-dropdown-item>
-      </template>
-    </b-dropdown>
-    <b-dropdown position="is-top-right">
-      <template #trigger="{ attrs }">
-        <b-button variant="is-warning" v-bind="attrs.value">
-          Open Top Right!
+        <b-button variant="is-info" v-bind="attrs.value">
+          Top Right!
         </b-button>
       </template>
       <template #default>
@@ -78,6 +60,24 @@
         </b-dropdown-item>
       </template>
     </b-dropdown>
+		<b-dropdown position="is-top-left" class="margin-left-size-7">
+			<template #trigger="{ attrs }">
+				<b-button variant="is-warning" v-bind="attrs.value">
+					Top Left!
+				</b-button>
+			</template>
+			<template #default>
+				<b-dropdown-item>
+					Item A
+				</b-dropdown-item>
+				<b-dropdown-item>
+					Item B
+				</b-dropdown-item>
+				<b-dropdown-item>
+					Item C
+				</b-dropdown-item>
+			</template>
+		</b-dropdown>
 	</section>
 </template>
 

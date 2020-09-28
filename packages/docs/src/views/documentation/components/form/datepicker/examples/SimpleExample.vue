@@ -1,44 +1,30 @@
 <template>
-	<section aria-label="simple checkbox example">
-		<div class="field">
-			<b-checkbox>Basic</b-checkbox>
-		</div>
-		<div class="field">
-			<b-checkbox v-model="checked">
-				{{ checked }}
-			</b-checkbox>
-		</div>
-		<div class="field">
-			<b-checkbox v-model="custom" true-value="Yes" false-value="No">
-				{{ custom }}
-			</b-checkbox>
-		</div>
-		<div class="field">
-			<b-checkbox is-indeterminate>
-				Indeterminate
-			</b-checkbox>
-		</div>
-		<div class="field">
-			<b-checkbox is-disabled>Disabled</b-checkbox>
-		</div>
+	<section aria-label="simple datepicker example">
+		<b-field label="Select a Date:">
+      <b-datepicker
+          placeholder="Click to select"
+          v-model="selectedDate"
+      >
+      </b-datepicker>
+		</b-field>
 	</section>
 </template>
 <script lang="ts">
-import { BCheckbox } from 'buetify/lib/components';
+import BDatepicker from 'buetify/lib/components/form/datepicker/BDatepicker';
+import BField from 'buetify/lib/components/form/field';
 import { defineComponent, shallowRef } from 'vue';
 
 export default defineComponent({
 	name: 'checkbox-simple-example',
 	components: {
-		BCheckbox
+		BField,
+    BDatepicker
 	},
 	setup() {
-		const checked = shallowRef(false);
-		const custom = shallowRef<'Yes' | 'No'>('Yes');
+		const selectedDate = shallowRef(new Date());
 
 		return {
-			checked,
-			custom
+			selectedDate
 		};
 	}
 });
