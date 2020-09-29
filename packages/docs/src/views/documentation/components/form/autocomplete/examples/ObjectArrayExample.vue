@@ -1,7 +1,7 @@
 <template>
 	<section aria-label="autocomplete example with object array">
 		<p class="content"><b>Selected:</b> {{ description }}</p>
-		<b-field label="Find a fruit">
+		<b-field label="Select a person">
 			<b-autocomplete
 				:items="people"
 				placeholder="e.g. Apple"

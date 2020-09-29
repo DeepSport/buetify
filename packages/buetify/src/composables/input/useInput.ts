@@ -11,7 +11,7 @@ import { useValidation, UseValidationPropsDefinition } from '../validation';
 export const StaticUseInputProps = {
   variant: {
     type: String as PropType<ColorVariant>,
-    default: 'is-primary' as const
+    default: '' as const
   },
   type: {
     type: String as PropType<string>

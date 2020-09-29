@@ -6,6 +6,12 @@
 			</template>
 		</example-view>
 		<b-horizontal-divider></b-horizontal-divider>
+    <example-view title="Inline" :code="InlineExampleCode" is-vertical>
+      <template #component>
+        <inline-example></inline-example>
+      </template>
+    </example-view>
+    <b-horizontal-divider></b-horizontal-divider>
 		<api-view :apis="apis"> </api-view>
 	</article>
 </template>
@@ -18,6 +24,8 @@ import { ExampleView } from '../../../../../components/exampleView';
 import { apis } from './apis';
 import SimpleExample from './examples/SimpleExample.vue';
 import SimpleCode from '!!raw-loader!./examples/SimpleExample.vue';
+import InlineExample from './examples/InlineExample.vue';
+import InlineExampleCode from '!!raw-loader!./examples/InlineExample.vue';
 
 export default defineComponent({
 	name: 'datepicker',
@@ -25,12 +33,14 @@ export default defineComponent({
 		ExampleView,
 		ApiView,
 		SimpleExample,
+    InlineExample,
 		BHorizontalDivider
 	},
 	setup() {
 		return {
 			apis,
-			SimpleCode
+			SimpleCode,
+      InlineExampleCode
 		};
 	}
 });
