@@ -1,5 +1,5 @@
 import './datepicker.sass';
-import { DateEvent, DateSelectionData, DEFAULT_DAY_NAMES, DEFAULT_MONTH_NAMES } from './shared';
+import {DateEvent, DEFAULT_DAY_NAMES, DEFAULT_MONTH_NAMES, MonthNumber} from './shared';
 import {
   addDays,
   getDatesInWeek,
@@ -37,8 +37,12 @@ export const BDatepickerTablePropsDefinition = {
     type: Function as PropType<FunctionN<[Option<Date>], any>>,
     required: true as const
   },
-  dateSelectionData: {
-    type: Object as PropType<DateSelectionData>,
+  month: {
+    type: Number as PropType<MonthNumber>,
+    required: true as const
+  },
+  year: {
+    type: Number,
     required: true as const
   },
   dayNames: {
@@ -99,7 +103,7 @@ interface WeekData {
 }
 
 function getWeeksWithinMonth(props: BDatepickerTableProps) {
-  const startOfMonth = getStartOfMonth(new Date(props.dateSelectionData.year, props.dateSelectionData.month + 1, 0));
+  const startOfMonth = getStartOfMonth(new Date(props.year, props.month + 1, 0));
   const endOfCalendar = getEndOfWeek(getEndOfMonth(startOfMonth));
   const weeks: Date[][] = [];
   let date = getStartOfWeek(startOfMonth);
@@ -147,7 +151,7 @@ function getGenerateTableRow(props: BDatepickerTableProps, focusedDate: Ref<Opti
       },
       week: weekData.week,
       weekNumber: weekData.weekNumber,
-      month: props.dateSelectionData.month,
+      month: props.month,
       minDate: fromNullable(props.minDate),
       maxDate: fromNullable(props.maxDate),
       unselectableDates: props.unselectableDates,

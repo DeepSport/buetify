@@ -4,10 +4,10 @@ import { useDisable, UseDisablePropsDefinition } from '../../../composables/disa
 import { useEqRef } from '../../../composables/eqRef';
 import { useFieldData } from '../../../composables/fieldData';
 import { getUseInputPropsDefinition } from '../../../composables/input/useInput';
+import { useProxy } from '../../../composables/proxy/useProxy';
 import { Toggle } from '../../../composables/toggle';
 import {
   DateEvent,
-  DateSelectionData,
   DEFAULT_DAY_NAMES,
   DEFAULT_MONTH_NAMES,
   EventIndicator,
@@ -26,14 +26,13 @@ import {
 } from '../../../utils/eventHelpers';
 import { head, isNonEmpty, range } from 'fp-ts/lib/Array';
 import { constant, FunctionN } from 'fp-ts/lib/function';
-import { alt, fromNullable, getEq, getOrElse, isNone, isSome, Option, some } from 'fp-ts/lib/Option';
+import { alt, fromNullable, getEq, isNone, isSome, Option, some } from 'fp-ts/lib/Option';
 import { pipe } from 'fp-ts/lib/pipeable';
 import BDropdown, { BDropdownPropsDefinition } from '../../dropdown/BDropdown';
 import BDatepickerTable from './BDatepickerTable';
 import BField from '../field/BField';
 import { BSelect, SelectItem } from '../select/BSelect';
 import {
-  nextTick,
   computed,
   onUnmounted,
   onMounted,
@@ -47,7 +46,9 @@ import {
   shallowRef,
   SetupContext,
   Ref,
-  watch
+  watch,
+  toRef,
+    watchEffect
 } from 'vue';
 import { constEmptyArray, isString, toggleListItem } from '../../../utils/helpers';
 
@@ -85,6 +86,22 @@ const BDatepickerPropsDefinition = {
   'onUpdate:modelValue': {
     type: Function as PropType<FunctionN<[Date | Date[]], void>>,
     required: true as const
+  },
+  year: {
+    type: Number,
+    default: new Date().getFullYear()
+  },
+  'onUpdate:year': {
+    type: Function as PropType<FunctionN<[number], void>>,
+    required: false
+  },
+  month: {
+    type: Number as PropType<MonthNumber>,
+    default: new Date().getMonth() as MonthNumber
+  },
+  'onUpdate:month': {
+    type: Function as PropType<FunctionN<[MonthNumber], void>>,
+    required: false
   },
   dayNames: {
     type: Array as PropType<string[]>,
@@ -243,7 +260,7 @@ function generateButton(props: BDatepickerProps, data: BDatepickerData, isNext: 
 function generateYearSelect(props: BDatepickerProps, data: BDatepickerData): VNode {
   return h(BSelect, {
     items: data.years,
-    modelValue: data.dateSelectionData.year,
+    modelValue: data.year.value,
     isDisabled: data.isDisabled,
     size: props.size,
     'onUpdate:modelValue': data.setYear
@@ -255,17 +272,14 @@ function generateMonthSelect(props: BDatepickerProps, data: BDatepickerData): VN
     items: data.months,
     isDisabled: data.isDisabled,
     size: props.size,
-    modelValue: data.dateSelectionData.month,
+    modelValue: data.month.value,
     'onUpdate:modelValue': data.setMonth
   });
 }
 
 function generateSelects(props: BDatepickerProps, data: BDatepickerData): VNode {
   return h('div', { class: 'pagination-list' }, [
-    h(BField, { isGrouped: true, isHorizontal: true, hasAddons: true, class: 'is-marginless' }, () => [
-      generateMonthSelect(props, data),
-      generateYearSelect(props, data)
-    ])
+    h(BField, { class: 'is-marginless' }, () => [generateMonthSelect(props, data), generateYearSelect(props, data)])
   ]);
 }
 
@@ -300,7 +314,8 @@ function generateDatepickerTable(props: BDatepickerProps, context: SetupContext,
     firstDayOfWeek: props.firstDayOfWeek,
     minDate: props.minDate,
     maxDate: props.maxDate,
-    dateSelectionData: data.dateSelectionData,
+    month: data.month.value,
+    year: data.year.value,
     isDisabled: data.isDisabled,
     unselectableDates: props.unselectableDates,
     unselectableDaysOfWeek: props.unselectableDaysOfWeek,
@@ -358,7 +373,8 @@ function generateDropdown(
 }
 
 interface BDatepickerData {
-  dateSelectionData: DateSelectionData;
+  month: Ref<MonthNumber>;
+  year: Ref<number>;
   nextMonth: IO<void>;
   previousMonth: IO<void>;
   setYear: FunctionN<[string | number], void>;
@@ -370,16 +386,16 @@ interface BDatepickerData {
   modelValue: Ref<Date | Date[]>;
 }
 
-function getMonths(props: BDatepickerProps, dateSelectionData: DateSelectionData): SelectItem<number>[] {
+function getMonths(props: BDatepickerProps, focusedMonth: MonthNumber): SelectItem<number>[] {
   return props.monthNames.map((month: string, index: number) => ({
     value: index,
     text: month,
     isDisabled: false,
-    isSelected: dateSelectionData.month === index
+    isSelected: focusedMonth === index
   }));
 }
 
-function getYears(props: BDatepickerProps, dateSelectionData: DateSelectionData): SelectItem<number>[] {
+function getYears(props: BDatepickerProps, focusedYear: number): SelectItem<number>[] {
   const currentYear = new Date().getFullYear();
   return range(props.yearsRange[0], props.yearsRange[1])
     .map(inc => currentYear + inc)
@@ -387,93 +403,64 @@ function getYears(props: BDatepickerProps, dateSelectionData: DateSelectionData)
       value: year,
       text: year.toString(),
       isDisabled: false,
-      isSelected: dateSelectionData.year === year
+      isSelected: focusedYear === year
     }));
 }
 
-function getDateSelectionData(date: Date): DateSelectionData {
-  return {
-    month: date.getMonth() as MonthNumber,
-    year: date.getFullYear()
-  };
-}
-
-function getSetPreviousMonth(props: BDatepickerProps, dateSelectionData: Ref<DateSelectionData>) {
+function getSetPreviousMonth(props: BDatepickerProps, month: Ref<MonthNumber>, year: Ref<number>) {
   return (e?: Event) => {
     if (e) {
       e.preventDefault();
     }
     if (!props.isDisabled) {
-      if (dateSelectionData.value.month > 0) {
-        dateSelectionData.value = {
-          month: (dateSelectionData.value.month - 1) as MonthNumber,
-          year: dateSelectionData.value.year
-        };
+      if (month.value > 0) {
+        month.value = (month.value - 1) as MonthNumber;
       } else {
-        dateSelectionData.value = {
-          month: 11,
-          year: dateSelectionData.value.year - 1
-        };
+        month.value = 11;
+        year.value = year.value - 1;
       }
     }
   };
 }
 
-function getSetNextMonth(props: BDatepickerProps, dateSelectionData: Ref<DateSelectionData>) {
+function getSetNextMonth(props: BDatepickerProps, month: Ref<MonthNumber>, year: Ref<number>) {
   return (e?: Event) => {
     if (e) {
       e.preventDefault();
     }
     if (!props.isDisabled) {
-      if (dateSelectionData.value.month < 11) {
-        dateSelectionData.value = {
-          month: (dateSelectionData.value.month + 1) as MonthNumber,
-          year: dateSelectionData.value.year
-        };
+      if (month.value < 11) {
+        month.value = (month.value + 1) as MonthNumber;
       } else {
-        dateSelectionData.value = {
-          month: 0,
-          year: dateSelectionData.value.year + 1
-        };
+        month.value = 0;
+        year.value = year.value + 1;
       }
     }
   };
 }
 
-function getSetMonth(dateSelectionData: Ref<DateSelectionData>) {
+function getSetMonth(monthRef: Ref<MonthNumber>) {
   return (month: number | string) => {
     if (isString(month)) {
       const newVal = fromNullable(parseInt(month, 10));
       if (isSome(newVal)) {
-        dateSelectionData.value = {
-          month: newVal.value as MonthNumber,
-          year: dateSelectionData.value.year
-        };
+        monthRef.value = newVal.value as MonthNumber;
       }
     } else {
-      dateSelectionData.value = {
-        month: month as MonthNumber,
-        year: dateSelectionData.value.year
-      };
+      monthRef.value = month as MonthNumber;
     }
   };
 }
 
-function getSetYear(dateSelectionData: Ref<DateSelectionData>) {
+function getSetYear(yearRef: Ref<number>) {
   return (year: number | string) => {
     if (isString(year)) {
       const newVal = fromNullable(parseInt(year, 10));
       if (isSome(newVal)) {
-        dateSelectionData.value = {
-          month: dateSelectionData.value.month,
-          year: newVal.value
-        };
+        yearRef.value = newVal.value;
       }
     } else {
-      dateSelectionData.value = {
-        month: dateSelectionData.value.month,
-        year
-      };
+      yearRef.value = year;
     }
   };
 }
@@ -517,7 +504,7 @@ export default defineComponent({
           props['onUpdate:modelValue'](val[0]);
           internalValue.value = val[0];
         }
-        console.log('from-model-value')
+        console.log('from-model-value');
         dropdown.value && dropdown.value.toggle.setOff();
       }
     });
@@ -529,19 +516,13 @@ export default defineComponent({
       )
     );
 
-    const dateSelectionData = shallowRef(
-      getDateSelectionData(
-        pipe(
-          focusedDate.value,
-          getOrElse(() => new Date())
-        )
-      )
-    );
+    const { value: month } = useProxy(toRef(props, 'month'), toRef(props, 'onUpdate:month'));
+    const { value: year } = useProxy(toRef(props, 'year'), toRef(props, 'onUpdate:year'));
 
-    const nextMonth = getSetNextMonth(props, dateSelectionData);
-    const previousMonth = getSetPreviousMonth(props, dateSelectionData);
-    const setMonth = getSetMonth(dateSelectionData);
-    const setYear = getSetYear(dateSelectionData);
+    const nextMonth = getSetNextMonth(props, month, year);
+    const previousMonth = getSetPreviousMonth(props, month, year);
+    const setMonth = getSetMonth(month);
+    const setYear = getSetYear(year);
 
     function onKeydown(e: KeyboardEvent) {
       if (isEscEvent(e)) {
@@ -582,38 +563,38 @@ export default defineComponent({
       }
     });
 
-    watch(
-      () => focusedDate.value,
-      newVal => {
-        if (
-          isSome(newVal) &&
-          (newVal.value.getMonth() !== dateSelectionData.value.month ||
-            newVal.value.getFullYear() !== dateSelectionData.value.year)
-        ) {
-          dateSelectionData.value = getDateSelectionData(newVal.value);
+    watchEffect(() => {
+      const fd = focusedDate.value
+      const m = month.value
+      const y = year.value;
+      if (
+          isSome(fd)
+      ) {
+        const fdValue = fd.value;
+        const nMonth = fdValue.getMonth() as MonthNumber
+        if (nMonth !== m) {
+          month.value = nMonth
+        }
+        const nYear = fdValue.getFullYear()
+        if (nYear !== y) {
+          year.value = nYear;
         }
       }
-    );
-
-    watch(dateSelectionData, newVal => {
-      const fd = focusedDate.value;
-      if (isNone(fd) || fd.value.getMonth() !== newVal.month || fd.value.getFullYear() !== newVal.year) {
-        focusedDate.value = some(new Date(newVal.year, newVal.month));
-      }
-    });
+    })
 
     return () => {
       const data: BDatepickerData = {
         modelValue,
+        month,
+        year,
         isDisabled: isDisabled.value,
         focusedDate: focusedDate,
-        dateSelectionData: dateSelectionData.value,
         nextMonth,
         previousMonth,
         setMonth,
         setYear,
-        months: getMonths(props, dateSelectionData.value),
-        years: getYears(props, dateSelectionData.value)
+        months: getMonths(props, month.value),
+        years: getYears(props, year.value)
       };
       return h(
         'article',

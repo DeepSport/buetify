@@ -3,30 +3,39 @@ import { constant } from 'fp-ts/lib/function';
 import { FieldDataAttrs, provideFieldData, ProvideFieldDataPropsDefinition } from '../../../composables/fieldData';
 import { DefaultThemePropsDefinition } from '../../../composables/theme';
 import {
-  withDirectives,
   h,
   PropType,
   VNode,
   defineComponent,
-  Ref,
   computed,
   ExtractPropTypes,
   shallowRef,
   watch,
   Slots,
-  vShow,
   SetupContext
 } from 'vue';
 import { AllColorsVariant } from '../../../types/ColorVariants';
-import { Classes, mergeClasses } from '../../../utils/mergeClasses';
+import { Classes } from '../../../utils/mergeClasses';
 
 export type FieldPosition = 'is-left' | 'is-centered' | 'is-right';
 
-function getFieldClasses(props: BFieldProps): Ref<Classes> {
-  return computed(() => {
-    const isGrouped = props.isGrouped;
-    const position = props.position;
-    return {
+function useRootClasses(props: BFieldProps): Classes {
+  return {
+    'is-expanded': props.isExpanded,
+    'is-horizontal': props.isHorizontal
+  };
+}
+
+function useFieldType(isGrouped: boolean, hasAddons: boolean): string {
+  return isGrouped ? 'is-grouped' : hasAddons ? 'has-addons' : '';
+}
+
+function useInnerFieldClasses(props: BFieldProps, fieldType: string): Classes {
+  const isGrouped = props.isGrouped;
+  const position = props.position;
+  return [
+    fieldType,
+    {
       'flex-grow-1': props.isExpanded,
       'is-grouped-multiline': props.isGroupedMultiline,
       'is-horizontal': props.isHorizontal,
@@ -34,8 +43,8 @@ function getFieldClasses(props: BFieldProps): Ref<Classes> {
       'is-grouped-right': isGrouped && position === 'is-right',
       'has-addons-centered': !isGrouped && position === 'is-centered',
       'has-addons-right': !isGrouped && position === 'is-right'
-    };
-  });
+    }
+  ];
 }
 
 export const BFieldPropsDefinition = {
@@ -105,8 +114,15 @@ function generateHelpMessage(isHorizontal: boolean, fieldDataAttrs: FieldDataAtt
     : undefined;
 }
 
-function generateBody(isHorizontal: boolean, fieldData: FieldDataAttrs, role: string, slots: Slots): VNode[] {
-  if (isHorizontal) {
+function generateBody(
+  props: BFieldProps,
+  fieldData: FieldDataAttrs,
+  role: string,
+  hasInnerField: boolean,
+  fieldType: string,
+  slots: Slots
+): VNode[] {
+  if (props.isHorizontal) {
     return [
       h(
         BFieldBody, // eslint-disable-line
@@ -119,17 +135,29 @@ function generateBody(isHorizontal: boolean, fieldData: FieldDataAttrs, role: st
         slots.default
       )
     ];
+  } else if (hasInnerField) {
+    return [
+      h(
+        'div',
+        {
+          class: 'field-body'
+        },
+        [
+          h(
+            BField, // eslint-disable-line
+            {
+              hasAddons: false,
+              variant: fieldData.messageVariant.value,
+              class: useInnerFieldClasses(props, fieldType)
+            },
+            slots.default
+          )
+        ]
+      )
+    ];
   } else {
     return slots.default ? slots.default() : [];
   }
-}
-
-function getFieldType(isGrouped: boolean, hasAddons: boolean, isHorizontal: boolean, slots: Slots): string {
-  return isGrouped
-    ? 'is-grouped'
-    : hasAddons && !isHorizontal && slots.default && slots.default().filter(n => !!n.el).length > 1
-    ? 'has-addons'
-    : '';
 }
 
 const BField = defineComponent({
@@ -138,7 +166,6 @@ const BField = defineComponent({
   setup(props, { slots }) {
     const field = shallowRef((null as unknown) as HTMLElement);
     const fieldData = provideFieldData(props);
-    const classes = getFieldClasses(props);
     const role = computed(() => (props.isGrouped ? 'group' : ''));
     const size = shallowRef('');
     watch(field, newVal => {
@@ -151,18 +178,38 @@ const BField = defineComponent({
       }
     });
     return () => {
+      const hasAddons = !!(
+        props.hasAddons &&
+        !props.isHorizontal &&
+        slots.default &&
+        slots.default().length > 1
+      );
+      const hasInnerField = props.isGrouped || props.isGroupedMultiline || hasAddons;
+
+      const nodes: Array<VNode | undefined> = [
+        ...generateLabel(props.isHorizontal, fieldData.attrs, props.customLabelClass, size.value),
+        ...generateBody(
+          props,
+          fieldData.attrs,
+          role.value,
+          hasInnerField,
+          useFieldType(props.isGrouped, hasAddons),
+          slots
+        )
+      ];
+
+      if (!hasInnerField) {
+        nodes.push(generateHelpMessage(props.isHorizontal, fieldData.attrs));
+      }
+
       return h(
         'div',
         {
           ref: field,
-          class: ['field', classes.value, getFieldType(props.isGrouped, props.hasAddons, props.isHorizontal, slots)],
+          class: ['field', useRootClasses(props)],
           role: role.value
         },
-        [
-          generateLabel(props.isHorizontal, fieldData.attrs, props.customLabelClass, size.value),
-          ...generateBody(props.isHorizontal, fieldData.attrs, role.value, slots),
-          generateHelpMessage(props.isHorizontal, fieldData.attrs)
-        ]
+        nodes
       );
     };
   }
@@ -180,7 +227,7 @@ function BFieldBody(props: BFieldBodyProps, { attrs, slots }: SetupContext) {
   return h(
     props.tag ?? 'div',
     {
-      class: mergeClasses(attrs.class as Classes, 'field-body')
+      class: 'field-body'
     },
     nodes.map((element: VNode) => (element.el ? element : h(BField, props, constant(element))))
   );

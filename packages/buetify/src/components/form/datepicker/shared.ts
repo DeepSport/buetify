@@ -28,11 +28,6 @@ export const DEFAULT_MONTH_NAMES = [
 
 export type MonthNumber = 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10 | 11;
 
-export interface DateSelectionData {
-  month: MonthNumber;
-  year: number;
-}
-
 export interface DateCell {
   date: Date;
   number: number;

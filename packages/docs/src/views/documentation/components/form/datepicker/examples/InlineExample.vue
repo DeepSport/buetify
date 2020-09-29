@@ -1,19 +1,16 @@
 <template>
 	<section aria-label="simple datepicker example">
-		<b-field label="Select a Date">
-			<b-datepicker placeholder="Click to select" v-model="selectedDate"> </b-datepicker>
-		</b-field>
+    <p class="content"> Selected Date: {{ selectedDate.toLocaleDateString() }}</p>
+    <b-datepicker placeholder="Click to select" is-inline v-model="selectedDate"> </b-datepicker>
 	</section>
 </template>
 <script lang="ts">
 import BDatepicker from 'buetify/lib/components/form/datepicker/BDatepicker';
-import BField from 'buetify/lib/components/form/field';
 import { defineComponent, shallowRef } from 'vue';
 
 export default defineComponent({
-	name: 'datepicker-simple-example',
+	name: 'datepicker-inline-example',
 	components: {
-		BField,
 		BDatepicker
 	},
 	setup() {
