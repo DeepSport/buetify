@@ -84,6 +84,7 @@ function generateRightIcon(
   usePasswordReveal: boolean,
   passwordToggle: Toggle
 ): VNode {
+  console.log(usePasswordReveal);
   return h(icon as any, {
     class: ['is-right', { 'is-clickable': usePasswordReveal }],
     variant,
@@ -225,11 +226,12 @@ export function defineInput<T>() {
       const inputRef = shallowRef((null as unknown) as HTMLInputElement);
       const inputData = useInput(props as UseInputProps<T>, inputRef);
 
+
       const rightIcon = computed(() =>
         getRightIcon(
           props.inputIcons,
           inputData.messageVariant.value,
-          props.usePasswordReveal,
+          inputData.usePasswordReveal.value,
           inputData.passwordToggle.isOn.value
         )
       );
@@ -255,7 +257,7 @@ export function defineInput<T>() {
               rightIcon.value,
               inputData.iconSize.value,
               inputData.messageVariant.value,
-              props.usePasswordReveal,
+              inputData.usePasswordReveal.value,
               inputData.passwordToggle
             )
           );
@@ -273,9 +275,9 @@ export function defineInput<T>() {
           'div',
           {
             class: [
-                'control',
-                inputData.size.value,
-                getIconPosition(inputData.icon?.value, rightIcon.value),
+              'control',
+              inputData.size.value,
+              getIconPosition(inputData.icon?.value, rightIcon.value),
               {
                 'is-expanded': inputData.isExpanded.value,
                 'is-loading': props.isLoading,

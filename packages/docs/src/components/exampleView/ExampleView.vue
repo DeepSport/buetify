@@ -3,6 +3,9 @@
 		<router-link v-if="title" :to="`#${slug}`">
 			<b-title> # {{ title }} </b-title>
 		</router-link>
+    <div v-if="$slots.content" class="content" :class="{'margin-top-size-6': title}">
+      <slot name="content"></slot>
+    </div>
 		<div class="example" :class="{ 'is-vertical': isVertical }">
 			<div class="example-component">
 				<slot name="component"></slot>
