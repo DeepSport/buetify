@@ -23,7 +23,6 @@ import BDatepickerTableRow from './BDatepickerTableRow';
 export const BDatepickerTablePropsDefinition = {
   modelValue: {
     type: [Array, Date] as PropType<Date | Date[]>,
-    required: true as const
   },
   'onUpdate:modelValue': {
     type: Function as PropType<FunctionN<[Date | Date[]], void>>,
@@ -104,9 +103,9 @@ interface WeekData {
 
 function getWeeksWithinMonth(props: BDatepickerTableProps) {
   const startOfMonth = getStartOfMonth(new Date(props.year, props.month + 1, 0));
-  const endOfCalendar = getEndOfWeek(getEndOfMonth(startOfMonth));
+  const endOfCalendar = getEndOfWeek(getEndOfMonth(startOfMonth), props.firstDayOfWeek);
   const weeks: Date[][] = [];
-  let date = getStartOfWeek(startOfMonth);
+  let date = getStartOfWeek(startOfMonth, props.firstDayOfWeek);
 
   while (isOnOrBeforeDate(date, endOfCalendar)) {
     weeks.push(getDatesInWeek(date, props.firstDayOfWeek));

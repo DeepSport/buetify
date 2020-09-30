@@ -46,7 +46,7 @@ $checkbox-checkmark-color: $primary-invert !default
 						border-color: $color
 		.control-label 
 			padding-left: 0.5em
-			@each $name, $pair in $all-colors 
+			@each $name, $pair in $colors
 				$color: nth($pair, 1)
 				$color-invert: findColorInvert($color)
 				&.is-#{$name}
@@ -57,7 +57,7 @@ $checkbox-checkmark-color: $primary-invert !default
 		&:hover 
 			input[type='checkbox'] + .check 
 				border-color: $checkbox-active-background-color
-				@each $name, $pair in $all-colors 
+				@each $name, $pair in $colors
 					$color: nth($pair, 1)
 					&.is-#{$name}
 						border-color: $color

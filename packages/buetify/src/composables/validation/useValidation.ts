@@ -7,7 +7,7 @@ import { useFieldData } from '../fieldData';
 export const UseValidationPropsDefinition = {
   useNativeValidation: {
     type: Boolean as PropType<boolean>,
-    default: true
+    default: false
   },
   isValid: {
     type: Boolean as PropType<boolean>,
@@ -24,7 +24,7 @@ export type UseValidationProps = ExtractPropTypes<typeof UseValidationPropsDefin
 
 function isHtmlInputElement(el: HTMLElement): el is HTMLInputElement {
   const newEl = (el as unknown) as HTMLInputElement;
-  return typeof newEl.checkValidity === 'function' && isString(newEl.validationMessage);
+  return el && typeof newEl.checkValidity === 'function' && isString(newEl.validationMessage);
 }
 
 export function useValidation(props: UseValidationProps, ref: Ref<HTMLElement>) {
@@ -43,7 +43,7 @@ export function useValidation(props: UseValidationProps, ref: Ref<HTMLElement>) 
           setters.onNewMessage(el.validationMessage);
           isValid.value = false;
         } else {
-          setters.onNewVariant('');
+          setters.onNewVariant('is-success');
           setters.onNewMessage('');
           isValid.value = true;
         }

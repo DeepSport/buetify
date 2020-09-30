@@ -35,14 +35,14 @@ export const apis: ComponentApiDescription[] = [
 				default: '<code>new Date().getFullYear()</code>',
 				required: 'false'
 			},
-			{
-				name: '<code>v-model:range</code>',
-				description: 'Binding value for date range',
-				type: 'Array as [Date, Date]',
-				values: `-`,
-				default: '-',
-				required: 'false'
-			},
+			// {
+			// 	name: '<code>v-model:range</code>',
+			// 	description: 'Binding value for date range',
+			// 	type: 'Array as [Date, Date]',
+			// 	values: `-`,
+			// 	default: '-',
+			// 	required: 'false'
+			// },
 
 			{
 				name: '<code>min-date</code>',

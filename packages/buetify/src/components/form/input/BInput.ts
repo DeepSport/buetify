@@ -118,34 +118,10 @@ function getAutocomplete(autocomplete: undefined | Ref<string | undefined>, type
   }
 }
 
-function getInputClasses(
-  size: string,
-  isExpanded: boolean,
-  isLoading: boolean,
-  hasMessage: boolean,
-  leftIcon: Component | undefined,
-  rightIcon: Component | undefined,
-  themeClasses: string[],
-  isRounded: boolean
-) {
-  return [
-    ...themeClasses,
-    getIconPosition(leftIcon, rightIcon),
-    size,
-    {
-      'is-rounded': isRounded,
-      'is-expanded': isExpanded,
-      'is-loading': isLoading,
-      'is-clearfix': !hasMessage
-    }
-  ];
-}
-
 function generateNonTextInput(
   inputRef: Ref<HTMLInputElement>,
   inputData: Input,
   isLoading: boolean,
-  rightIcon: Component | undefined,
   context: SetupContext,
   themeClasses: string[]
 ): VNode {
@@ -156,16 +132,15 @@ function generateNonTextInput(
     ref: inputRef,
     class: [
       'input',
-      ...getInputClasses(
-        inputData.iconSize.value,
-        inputData.isExpanded.value,
-        isLoading,
-        hasMessage,
-        inputData.icon && inputData.icon.value,
-        rightIcon,
-        themeClasses,
-        inputData.isRounded.value
-      )
+      inputData.messageVariant.value,
+      inputData.size.value,
+      {
+        'is-rounded': inputData.isRounded.value,
+        'is-expanded': inputData.isExpanded.value,
+        'is-loading': isLoading,
+        'is-clearfix': !hasMessage
+      },
+      ...themeClasses
     ],
     value: inputData.modelValue.value,
     onInput: inputData.onNativeInput,
@@ -187,7 +162,6 @@ function generateTextarea(
   inputRef: Ref<HTMLInputElement>,
   inputData: Input,
   isLoading: boolean,
-  rightIcon: Component | undefined,
   context: SetupContext,
   themeClasses: string[]
 ): VNode {
@@ -197,16 +171,15 @@ function generateTextarea(
     ref: inputRef,
     class: [
       'textarea',
-      ...getInputClasses(
-        inputData.iconSize.value,
-        inputData.isExpanded.value,
-        isLoading,
-        hasMessage,
-        inputData.icon && inputData.icon.value,
-        rightIcon,
-        themeClasses,
-        inputData.isRounded.value
-      )
+      inputData.messageVariant.value,
+      inputData.size.value,
+      {
+        'is-rounded': inputData.isRounded.value,
+        'is-expanded': inputData.isExpanded.value,
+        'is-loading': isLoading,
+        'is-clearfix': !hasMessage
+      },
+      ...themeClasses
     ],
     value: inputData.modelValue.value,
     onInput: inputData.onNativeInput,
@@ -225,14 +198,13 @@ function generateInput(
   inputRef: Ref<HTMLInputElement>,
   inputData: Input,
   isLoading: boolean,
-  rightIcon: Component | undefined,
   context: SetupContext,
   themeClasses: string[]
 ): VNode {
   const type = inputData.type && inputData.type.value;
   return type === 'textarea'
-    ? generateTextarea(inputRef, inputData, isLoading, rightIcon, context, themeClasses)
-    : generateNonTextInput(inputRef, inputData, isLoading, rightIcon, context, themeClasses);
+    ? generateTextarea(inputRef, inputData, isLoading, context, themeClasses)
+    : generateNonTextInput(inputRef, inputData, isLoading, context, themeClasses);
 }
 
 function getValueLength(modelValue: unknown) {
@@ -272,7 +244,7 @@ export function defineInput<T>() {
 
       return () => {
         const nodes: VNode[] = [
-          generateInput(inputRef, inputData as Input, props.isLoading, rightIcon.value, context, themeClasses.value)
+          generateInput(inputRef, inputData as Input, props.isLoading, context, themeClasses.value)
         ];
         if (inputData.icon && inputData.icon.value) {
           nodes.push(generateLeftIcon(inputData.icon.value, inputData.iconSize.value));
@@ -301,17 +273,14 @@ export function defineInput<T>() {
           'div',
           {
             class: [
-              'control',
-              getInputClasses(
-                props.size,
-                inputData.isExpanded.value,
-                props.isLoading,
-                !!inputData.message.value,
-                inputData.icon && inputData.icon.value,
-                rightIcon.value,
-                themeClasses.value,
-                inputData.isRounded.value
-              )
+                'control',
+                inputData.size.value,
+                getIconPosition(inputData.icon?.value, rightIcon.value),
+              {
+                'is-expanded': inputData.isExpanded.value,
+                'is-loading': props.isLoading,
+                'is-clearfix': !inputData.message.value
+              }
             ]
           },
           nodes

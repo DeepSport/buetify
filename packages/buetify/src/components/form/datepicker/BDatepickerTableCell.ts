@@ -28,8 +28,7 @@ export default defineComponent({
   name: 'b-datepicker-table-cell',
   props: {
     modelValue: {
-      type: [Date, Array] as PropType<Date | Date[]>,
-      required: true
+      type: [Date, Array] as PropType<Date | Date[]>
     },
     'onUpdate:modelValue': {
       type: Function as PropType<FunctionN<[Date | Date[]], void>>,
