@@ -7,7 +7,7 @@ import { useFieldData } from '../fieldData';
 export const UseValidationPropsDefinition = {
   useNativeValidation: {
     type: Boolean as PropType<boolean>,
-    default: false
+    default: true
   },
   isValid: {
     type: Boolean as PropType<boolean>,

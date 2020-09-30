@@ -1,7 +1,7 @@
 import { AllColorsVariant, ColorVariant } from '../../types/ColorVariants';
 import { SizeVariant } from '../../types/SizeVariants';
 import { isObject, isString } from '../../utils/helpers';
-import { PropType, ExtractPropTypes, Ref, computed, toRefs, watch, shallowReactive, shallowRef, toRef, reactive } from 'vue';
+import { PropType, ExtractPropTypes, Ref, computed, toRefs, watch, shallowRef, toRef, reactive } from 'vue';
 import { useFieldData } from '../fieldData';
 import { useFocus, UseFocusPropsDefinition } from '../focus';
 import { getUseModelPropsDefinition, useModel, UseModelProps } from '../model';
@@ -48,7 +48,7 @@ export const StaticUseInputProps = {
   icon: null,
   usePasswordReveal: {
     type: Boolean as PropType<boolean>,
-    default: false
+    default: undefined
   },
   ...UseValidationPropsDefinition,
   ...UseFocusPropsDefinition
@@ -89,17 +89,20 @@ export function useInput<T>(props: UseInputProps<T>, ref: Ref<HTMLElement>) {
   const isExpanded = computed(() => props.isExpanded || fieldData.attrs.isExpanded.value);
   const model = useModel(props);
   const validate = useValidation(props, ref);
-  const focus = useFocus(reactive({
-    isFocused: toRef(props, 'isFocused'),
-    onFocus: toRef(props, 'onFocus'),
-    focusOnMount: toRef(props, 'focusOnMount'),
-    onBlur: (e?: Event) => {
-      if (props.onBlur) {
-        props.onBlur(e);
+  const focus = useFocus(
+    reactive({
+      isFocused: toRef(props, 'isFocused'),
+      onFocus: toRef(props, 'onFocus'),
+      focusOnMount: toRef(props, 'focusOnMount'),
+      onBlur: (e?: Event) => {
+        if (props.onBlur) {
+          props.onBlur(e);
+        }
+        validate.validate();
       }
-      validate.validate()
-    }
-  }), ref);
+    }),
+    ref
+  );
   // watch(model.modelValue, (newVal, oldVal) => {
   //   if (newVal !== oldVal) {
   //     validate.validate()
@@ -107,8 +110,15 @@ export function useInput<T>(props: UseInputProps<T>, ref: Ref<HTMLElement>) {
   // });
   const iconSize = computed(() => getIconSize(props.size));
   const messageVariant = computed(() => getMessageVariant(fieldData.attrs.messageVariant.value));
-  const passwordToggle = useToggle(shallowReactive({ isVisible: false, hasPopup: false }), 'isVisible');
+
+  const passwordToggle = useToggle({ isVisible: false, hasPopup: false }, 'isVisible');
   const type = shallowRef(props.type);
+
+  const usePasswordReveal = computed(() => {
+    console.log(props.usePasswordReveal, props.usePasswordReveal === undefined || props.usePasswordReveal);
+    return props.type === 'password' && (props.usePasswordReveal === undefined || props.usePasswordReveal);
+  });
+
   watch(toRef(props, 'type'), newVal => {
     type.value = newVal;
   });
@@ -128,7 +138,8 @@ export function useInput<T>(props: UseInputProps<T>, ref: Ref<HTMLElement>) {
     ...validate,
     iconSize,
     type,
-    passwordToggle
+    passwordToggle,
+    usePasswordReveal
   };
 }
 
