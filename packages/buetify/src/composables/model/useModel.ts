@@ -60,6 +60,7 @@ export function useModel<T, ValueKey extends string = 'modelValue', UpdateKey ex
   updateKey: UpdateKey = 'onUpdate:modelValue' as UpdateKey
 ): Model<T> {
   const internalValue: Ref<T | undefined> = shallowRef(props[valueKey]);
+
   watch(toRef(props, valueKey), newVal => {
     internalValue.value = newVal;
   });

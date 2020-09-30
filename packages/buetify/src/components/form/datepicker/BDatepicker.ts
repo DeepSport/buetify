@@ -6,13 +6,7 @@ import { useFieldData } from '../../../composables/fieldData';
 import { getUseInputPropsDefinition } from '../../../composables/input/useInput';
 import { useProxy } from '../../../composables/proxy/useProxy';
 import { Toggle } from '../../../composables/toggle';
-import {
-  DateEvent,
-  DEFAULT_DAY_NAMES,
-  DEFAULT_MONTH_NAMES,
-  EventIndicator,
-  MonthNumber
-} from './shared';
+import { DateEvent, DEFAULT_DAY_NAMES, DEFAULT_MONTH_NAMES, EventIndicator, MonthNumber } from './shared';
 import { addDays, eqSerialDate, isDate, WeekdayNumber } from './utils';
 import { BInput } from '../input/BInput';
 import {
@@ -26,7 +20,7 @@ import {
 } from '../../../utils/eventHelpers';
 import { head, isNonEmpty, range } from 'fp-ts/lib/Array';
 import { constant, FunctionN } from 'fp-ts/lib/function';
-import { alt, fromNullable, getEq, isNone, isSome, Option, some } from 'fp-ts/lib/Option';
+import { alt, chain, fromNullable, getEq, isNone, isSome, Option, some } from 'fp-ts/lib/Option';
 import { pipe } from 'fp-ts/lib/pipeable';
 import BDropdown, { BDropdownPropsDefinition } from '../../dropdown/BDropdown';
 import BDatepickerTable from './BDatepickerTable';
@@ -48,7 +42,7 @@ import {
   Ref,
   watch,
   toRef,
-    watchEffect
+  watchEffect
 } from 'vue';
 import { constEmptyArray, isString, toggleListItem } from '../../../utils/helpers';
 
@@ -80,8 +74,7 @@ const BDatepickerPropsDefinition = {
   ...UseDisablePropsDefinition,
   ...getUseInputPropsDefinition<Date | Date[]>(),
   modelValue: {
-    type: [Array, Date] as PropType<Date | Date[]>,
-    default: constEmptyArray
+    type: [Array, Date] as PropType<Date | Date[]>
   },
   'onUpdate:modelValue': {
     type: Function as PropType<FunctionN<[Date | Date[]], void>>,
@@ -172,10 +165,10 @@ const BDatepickerPropsDefinition = {
     type: Boolean as PropType<boolean>,
     default: true
   },
-  openOnFocus: {
-    type: Boolean as PropType<boolean>,
-    default: true
-  },
+  // openOnFocus: {
+  //   type: Boolean as PropType<boolean>,
+  //   default: true
+  // },
   icons: {
     type: Object as PropType<DatepickerIcons>,
     default: constant(DEFAULT_DATEPICKER_ICONS)
@@ -194,8 +187,12 @@ const useFormattedDate = Intl.DateTimeFormat('default', {
   day: 'numeric'
 }).format;
 
-function useFormattedModelValue(modelValue: Date | Date[]) {
-  return Array.isArray(modelValue) ? modelValue.map(useFormattedDate).join(', ') : useFormattedDate(modelValue);
+function useFormattedModelValue(modelValue?: Date | Date[]) {
+  return Array.isArray(modelValue)
+    ? modelValue.map(useFormattedDate).join(', ')
+    : modelValue
+    ? useFormattedDate(modelValue)
+    : null;
 }
 
 function parseInputString(str: string): Date[] {
@@ -224,11 +221,11 @@ function generateInput(props: BDatepickerProps, context: SetupContext, data: BDa
     useNativeValidation: props.useNativeValidation
     // onFocus: () => {
     //   if (!isMobile && props.openOnFocus && toggle) {
-    //     nextTick().then(() => {
-    //       if (toggle.isOff.value) {
-    //         toggle.setOn();
-    //       }
-    //     });
+    //     if (toggle.isOff.value) {
+    //       console.log('focus-set-on')
+    //       toggle.setOn();
+    //       Date.now()
+    //     }
     //   }
     // }
   });
@@ -383,7 +380,7 @@ interface BDatepickerData {
   years: SelectItem<number>[];
   isDisabled: boolean;
   focusedDate: Ref<Option<Date>>;
-  modelValue: Ref<Date | Date[]>;
+  modelValue: Ref<Date | Date[] | undefined>;
 }
 
 function getMonths(props: BDatepickerProps, focusedMonth: MonthNumber): SelectItem<number>[] {
@@ -429,8 +426,9 @@ function getSetNextMonth(props: BDatepickerProps, month: Ref<MonthNumber>, year:
       e.preventDefault();
     }
     if (!props.isDisabled) {
-      if (month.value < 11) {
-        month.value = (month.value + 1) as MonthNumber;
+      const mv = month.value;
+      if (mv < 11) {
+        month.value = (mv + 1) as MonthNumber;
       } else {
         month.value = 0;
         year.value = year.value + 1;
@@ -489,14 +487,21 @@ export default defineComponent({
       get() {
         return internalValue.value;
       },
-      set(val: Date | Date[]) {
+      set(val?: Date | Date[]) {
+        if (!val) {
+          return;
+        }
         if ((Array.isArray(val) && props.isMultiple) || isDate(val)) {
           props['onUpdate:modelValue'](val);
           internalValue.value = val;
         } else if (props.isMultiple && isDate(val)) {
           const newVal = toggleSerialDate(
             val,
-            Array.isArray(internalValue.value) ? internalValue.value : [internalValue.value]
+            internalValue.value == undefined
+              ? []
+              : Array.isArray(internalValue.value)
+              ? internalValue.value
+              : [internalValue.value]
           );
           props['onUpdate:modelValue'](newVal);
           internalValue.value = newVal;
@@ -504,14 +509,16 @@ export default defineComponent({
           props['onUpdate:modelValue'](val[0]);
           internalValue.value = val[0];
         }
-        console.log('from-model-value');
-        dropdown.value && dropdown.value.toggle.setOff();
+        if (props.closeOnSelect) {
+          dropdown.value && dropdown.value.toggle.setOff();
+        }
       }
     });
 
     const focusedDate = useEqRef(getEq(eqSerialDate))(
       pipe(
-        Array.isArray(props.modelValue) ? head(props.modelValue) : some(props.modelValue),
+        fromNullable(props.modelValue),
+        chain(v => (Array.isArray(v) ? head(v) : some(v))),
         alt(() => some(new Date()))
       )
     );
@@ -563,24 +570,27 @@ export default defineComponent({
       }
     });
 
-    watchEffect(() => {
-      const fd = focusedDate.value
-      const m = month.value
-      const y = year.value;
-      if (
-          isSome(fd)
-      ) {
-        const fdValue = fd.value;
-        const nMonth = fdValue.getMonth() as MonthNumber
-        if (nMonth !== m) {
-          month.value = nMonth
+    watch(
+      focusedDate,
+      fd => {
+        const m = month.value;
+        const y = year.value;
+        if (isSome(fd)) {
+          const fdValue = fd.value;
+          const nMonth = fdValue.getMonth() as MonthNumber;
+          if (nMonth !== m) {
+            month.value = nMonth;
+          }
+          const nYear = fdValue.getFullYear();
+          if (nYear !== y) {
+            year.value = nYear;
+          }
         }
-        const nYear = fdValue.getFullYear()
-        if (nYear !== y) {
-          year.value = nYear;
-        }
+      },
+      {
+        immediate: true
       }
-    })
+    );
 
     return () => {
       const data: BDatepickerData = {

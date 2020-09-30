@@ -11,8 +11,7 @@ import { defineComponent, PropType, VNode, computed, Ref, ExtractPropTypes, h } 
 
 export const BDatepickerTableRowPropsDefinition = {
   modelValue: {
-    type: [Date, Array] as PropType<Date | Date[]>,
-    required: true as const
+    type: [Date, Array] as PropType<Date | Date[]>
   },
   'onUpdate:modelValue': {
     type: Function as PropType<FunctionN<[Date | Date[]], void>>,
@@ -129,7 +128,9 @@ function getDatePredicates(props: BDatePickerTableRowProps) {
   function isSelectedDate(date: Date): boolean {
     return Array.isArray(props.modelValue)
       ? props.modelValue.some(d => isSameDay(d, date))
-      : isSameDay(props.modelValue, date);
+      : props.modelValue
+      ? isSameDay(props.modelValue, date)
+      : false;
   }
   function isSelectableDate(date: Date): boolean {
     return [

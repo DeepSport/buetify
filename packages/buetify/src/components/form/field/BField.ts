@@ -86,6 +86,7 @@ function generateInnerLabel(fieldData: FieldDataAttrs, customClass: string): VNo
       id: fieldData.labelId.value,
       for: fieldData.id.value
     },
+
     fieldData.label.value
   );
 }
@@ -195,12 +196,9 @@ const BField = defineComponent({
           hasInnerField,
           useFieldType(props.isGrouped, hasAddons),
           slots
-        )
+        ),
+        generateHelpMessage(props.isHorizontal, fieldData.attrs)
       ];
-
-      if (!hasInnerField) {
-        nodes.push(generateHelpMessage(props.isHorizontal, fieldData.attrs));
-      }
 
       return h(
         'div',
