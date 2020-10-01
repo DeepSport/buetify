@@ -1,8 +1,21 @@
 import './b-numberinput.sass';
 import { IO } from 'fp-ts/lib/IO';
 import { getUseInputPropsDefinition } from '../../../composables/input/useInput';
-import { constant, constVoid, FunctionN } from 'fp-ts/lib/function';
-import { h, VNode, defineComponent, defineAsyncComponent, PropType, ExtractPropTypes, computed } from 'vue';
+import { constant, FunctionN } from 'fp-ts/lib/function';
+import {
+  h,
+  VNode,
+  defineComponent,
+  defineAsyncComponent,
+  PropType,
+  ExtractPropTypes,
+  computed,
+  SetupContext,
+  toRef,
+  Ref
+} from 'vue';
+import { useProxy } from '../../../composables/proxy';
+import { isNumber, isString } from '../../../utils/helpers';
 import BButton from '../../button/BButton';
 import { BInput } from '../input/BInput';
 import { InputIcons, NumberInputIcons, DEFAULT_INPUT_ICONS } from '../shared/types';
@@ -16,14 +29,6 @@ const DEFAULT_NUMBER_INPUT_ICONS: NumberInputIcons = {
 
 const BNumberInputPropsDefinition = {
   ...getUseInputPropsDefinition<number>(),
-  modelValue: {
-    type: Number as PropType<number>,
-    default: 0
-  },
-  'onUpdate:modelValue': {
-    type: Function as PropType<FunctionN<[number], void>>,
-    default: constant(constVoid)
-  },
   min: {
     type: Number as PropType<number>,
     default: Number.MIN_SAFE_INTEGER
@@ -42,7 +47,7 @@ const BNumberInputPropsDefinition = {
   },
   controlsRounded: {
     type: Boolean as PropType<boolean>,
-    default: false
+    default: false,
   },
   controlsPosition: {
     type: String as PropType<BNumberInputControlsPosition>,
@@ -64,9 +69,10 @@ export function getNumberInputIcons(icons: Partial<NumberInputIcons>): NumberInp
   return { ...DEFAULT_NUMBER_INPUT_ICONS, ...icons };
 }
 
-function getFieldClasses(controlsPosition: BNumberInputControlsPosition) {
+function getFieldClasses(controlsPosition: BNumberInputControlsPosition, isExpanded: boolean) {
   const isCompact = controlsPosition === 'compact';
   return {
+    'is-expanded': isExpanded,
     'has-addons': isCompact,
     'is-grouped': !isCompact
   };
@@ -82,10 +88,10 @@ function generateControl(props: BNumberInputProps, data: BNumberInputData, isDec
       h(
         BButton,
         {
-          variant: props.variant,
+          variant: props.variant || 'is-primary',
           size: props.size,
           isRounded: props.controlsRounded,
-          isDisabled: isDecrement ? !data.canDecrement : !data.canIncrement,
+          isDisabled: isDecrement ? !data.canDecrement.value : !data.canIncrement.value,
           onClick: isDecrement ? data.onDecrement : data.onIncrement
         },
         () =>
@@ -97,12 +103,15 @@ function generateControl(props: BNumberInputProps, data: BNumberInputData, isDec
   );
 }
 
-function generateInput(props: BNumberInputProps): VNode {
+function generateInput(props: BNumberInputProps, data: BNumberInputData, context: SetupContext): VNode {
   return h(BInput, {
-    modelValue: props.modelValue,
-    'onUpdate:modelValue': props['onUpdate:modelValue'],
+    ...context.attrs,
+    modelValue: data.number.value,
+    'onUpdate:modelValue': data.set,
     type: 'number',
     size: props.size,
+    placeholder: JSON.stringify(props.placeholder),
+    isDisabled: props.isDisabled,
     inputIcons: props.inputIcons,
     isReadonly: props.isReadonly,
     isLoading: props.isLoading,
@@ -116,40 +125,66 @@ function generateInput(props: BNumberInputProps): VNode {
 }
 
 interface BNumberInputData {
-  canIncrement: boolean;
+  set: FunctionN<[unknown], void>;
+  number: Ref<number | undefined>;
+  canIncrement: Ref<boolean>;
   onDecrement: IO<void>;
   onIncrement: IO<void>;
-  canDecrement: boolean;
+  canDecrement: Ref<boolean>;
 }
 
 export default defineComponent({
   name: 'b-number-input',
   props: BNumberInputPropsDefinition,
-  setup(props) {
-    const canDecrement = computed(() => props.modelValue - props.step >= props.min);
+  setup(props, context) {
+    const { value: number } = useProxy<number | undefined>(
+      toRef(props, 'modelValue'),
+      toRef(props, 'onUpdate:modelValue') as Ref<FunctionN<[number | undefined], void>>
+    );
+
+    const defaultMin = computed(() => props.min === Number.MIN_SAFE_INTEGER ? 0 : props.min);
+
+    const defaultMax = computed(() => props.max === Number.MAX_SAFE_INTEGER ? 0 : props.max)
+
+    const canDecrement = computed(() => (number.value ?? defaultMax.value) - props.step >= props.min);
     function onDecrement() {
       if (canDecrement.value) {
-        props['onUpdate:modelValue'](props.modelValue - props.step);
+        number.value = (number.value ?? 0) - props.step;
       }
     }
-    const canIncrement = computed(() => props.modelValue + props.step <= props.max);
+    const canIncrement = computed(() => (props.modelValue ?? defaultMin.value) + props.step <= props.max);
+
     function onIncrement() {
       if (canIncrement.value) {
-        props['onUpdate:modelValue'](props.modelValue + props.step);
+        number.value = (number.value ?? 0) + props.step;
       }
     }
 
+    function set(val: unknown) {
+      if (isString(val)) {
+        const x = Number.parseFloat(val);
+        if (Number.isNaN(x)) return;
+        number.value = x;
+      }
+      if (isNumber(val)) {
+        number.value = val;
+      }
+    }
+
+    const data: BNumberInputData = {
+      set,
+      number,
+      canDecrement,
+      canIncrement,
+      onDecrement,
+      onIncrement
+    };
+
     return () => {
-      const data: BNumberInputData = {
-        canDecrement: canDecrement.value,
-        canIncrement: canIncrement.value,
-        onDecrement,
-        onIncrement
-      };
       const nodes = props.displayControls
-        ? [generateControl(props, data, true), generateInput(props), generateControl(props, data, false)]
-        : [generateInput(props)];
-      return h('div', { class: ['b-number-input field', getFieldClasses(props.controlsPosition)] }, nodes);
+        ? [generateControl(props, data, true), generateInput(props, data, context), generateControl(props, data, false)]
+        : [generateInput(props, data, context)];
+      return h('div', { class: ['b-number-input field', getFieldClasses(props.controlsPosition, props.isExpanded)] }, nodes);
     };
   }
 });

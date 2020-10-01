@@ -41,8 +41,7 @@ import {
   SetupContext,
   Ref,
   watch,
-  toRef,
-  watchEffect
+  toRef
 } from 'vue';
 import { constEmptyArray, isString, toggleListItem } from '../../../utils/helpers';
 
@@ -164,6 +163,14 @@ const BDatepickerPropsDefinition = {
   closeOnSelect: {
     type: Boolean as PropType<boolean>,
     default: true
+  },
+  isReadonly: {
+    type: Boolean as PropType<boolean>,
+    default: true
+  },
+  useNativeValidation: {
+    type: Boolean as PropType<boolean>,
+    default: false
   },
   // openOnFocus: {
   //   type: Boolean as PropType<boolean>,
@@ -532,11 +539,23 @@ export default defineComponent({
     const setYear = getSetYear(year);
 
     function onKeydown(e: KeyboardEvent) {
+      console.log(dropdown.value === undefined || dropdown.value?.$el === undefined || !dropdown.value.$el.contains(e.target));
+      if (dropdown.value === undefined || dropdown.value?.$el === undefined || !dropdown.value.$el.contains(e.target)) {
+        return;
+      }
       if (isEscEvent(e)) {
         dropdown.value && dropdown.value.toggle.setOff();
         return;
       }
-      const fd = focusedDate.value;
+      const fd = pipe(
+        focusedDate.value,
+        alt(() =>
+          pipe(
+            fromNullable(modelValue.value),
+            chain(v => (Array.isArray(v) ? head(v) : some(v)))
+          )
+        )
+      );
       if (isNone(fd)) {
         return;
       }
@@ -573,6 +592,7 @@ export default defineComponent({
     watch(
       focusedDate,
       fd => {
+        console.log(fd);
         const m = month.value;
         const y = year.value;
         if (isSome(fd)) {

@@ -4,7 +4,7 @@ import { getUseInputPropsDefinition, Input, useInput, UseInputProps } from '../.
 import { EqProps, getEqPropsDefinition } from '../../../composables/shared';
 import { DefaultThemePropsDefinition, useTheme } from '../../../composables/theme';
 import { Extractor, extractProp, isBoolean } from '../../../utils/helpers';
-import { PropType, VNode, defineComponent, h, shallowRef, SetupContext, Ref } from 'vue';
+import { PropType, VNode, defineComponent, h, shallowRef, SetupContext, Ref, vModelSelect, withDirectives } from 'vue';
 import { Classes } from '../../../utils/mergeClasses';
 
 export interface SelectItem<T> {
@@ -77,7 +77,7 @@ function isEmpty(val: unknown) {
 function getSelectClasses<T>(props: BSelectProps<T>, input: Input): Classes[] {
   return [
     input.size.value,
-    props.variant,
+    input.messageVariant.value,
     {
       'is-fullwidth': input.isFullwidth.value,
       'is-loading': props.isLoading,
@@ -117,7 +117,6 @@ function generateOptions<T>(props: BSelectProps<T>, context: SetupContext, input
   const isSelected = getIsSelected(props, input);
   return props.items.map((item, index) => {
     const isDisabled = extractProp(props.itemDisabled, item);
-
     return context.slots.option
       ? context.slots.option({ item, index })
       : h(
@@ -144,22 +143,26 @@ function generateSelect<T>(
 ): VNode {
   const value = input.modelValue.value;
   const usePlaceholder = isEmpty(value) && (!!props.placeholder || !!context.slots.placeholder);
-  return h(
-    'select',
-    {
-      ...context.attrs,
-      ref,
-      value,
-      size: props.displayCount,
-      multiple: isMultiple(props, input),
-      class: themeClasses,
-      onBlur: input.onBlur,
-      onFocus: input.onFocus,
-      onChange: input.onNativeInput
-    },
-    usePlaceholder
-      ? [generatePlaceholder(props, context), ...generateOptions(props, context, input)]
-      : generateOptions(props, context, input)
+  return withDirectives(
+    h(
+      'select',
+      {
+        ...context.attrs,
+        ref,
+        required: props.isRequired,
+        disabled: props.isDisabled,
+        size: props.displayCount,
+        multiple: isMultiple(props, input),
+        class: themeClasses,
+        onBlur: input.onBlur,
+        onFocus: input.onFocus,
+        'onUpdate:modelValue': input.set
+      },
+      usePlaceholder
+        ? [generatePlaceholder(props, context), ...generateOptions(props, context, input)]
+        : generateOptions(props, context, input)
+    ),
+    [[vModelSelect, value]]
   );
 }
 
@@ -172,7 +175,7 @@ export function defineSelect<T>(eq?: Eq<T>) {
       const input = useInput(props as UseInputProps<T>, selectRef);
       const { themeClasses } = useTheme(props);
       return () => {
-        return h('div', { class: ['control', getControlClasses(input.isExpanded.value, !!input.icon)] }, [
+        const nodes = [
           h(
             'span',
             {
@@ -180,7 +183,18 @@ export function defineSelect<T>(eq?: Eq<T>) {
             },
             [generateSelect(props as BSelectProps<T>, context, selectRef, input as Input, themeClasses.value)]
           )
-        ]);
+        ];
+
+        if (input.icon && input.icon.value) {
+          nodes.push(
+            h(input.icon.value as any, {
+              class: 'is-left',
+              size: input.size.value
+            })
+          );
+        }
+
+        return h('div', { class: ['control', getControlClasses(input.isExpanded.value, !!input.icon)] }, nodes);
       };
     }
   });

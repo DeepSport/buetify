@@ -138,7 +138,7 @@ function generateNonTextInput(
       inputData.size.value,
       {
         'is-rounded': inputData.isRounded.value,
-        'is-expanded': inputData.isExpanded.value,
+        // 'is-expanded': inputData.isExpanded.value,
         'is-loading': isLoading,
         'is-clearfix': !hasMessage
       },

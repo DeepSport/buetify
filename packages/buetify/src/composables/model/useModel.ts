@@ -86,13 +86,20 @@ export function useModel<T, ValueKey extends string = 'modelValue', UpdateKey ex
       value.value = e.target.value;
     }
   }
+
+  function set(val: T) {
+    value.value = val;
+  }
+
   return {
+    set,
     modelValue: value,
     onNativeInput: onUpdate
   };
 }
 
 export type Model<T> = {
+  set: FunctionN<[T], void>;
   modelValue: Ref<T | undefined>;
   onNativeInput: FunctionN<[Event], void>;
 };

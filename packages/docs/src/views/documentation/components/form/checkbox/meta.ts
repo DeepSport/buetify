@@ -2,7 +2,7 @@ import {BuetifyRouteMeta} from '../../../../../shared/types';
 
 export const meta: BuetifyRouteMeta = {
 	title: 'Checkbox',
-	subtitle: 'Select a single or multiple options',
+	subtitle: 'Select a single option or multiple',
 	fullPath: '/documentation/checkbox',
 	subPath: 'checkbox',
 	githubPath: 'components/form/checkbox/BCheckbox.ts',
