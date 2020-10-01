@@ -115,7 +115,6 @@ export function useInput<T>(props: UseInputProps<T>, ref: Ref<HTMLElement>) {
   const type = shallowRef(props.type);
 
   const usePasswordReveal = computed(() => {
-    console.log(props.usePasswordReveal, props.usePasswordReveal === undefined || props.usePasswordReveal);
     return props.type === 'password' && (props.usePasswordReveal === undefined || props.usePasswordReveal);
   });
 

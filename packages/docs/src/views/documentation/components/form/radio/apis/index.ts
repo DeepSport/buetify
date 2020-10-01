@@ -9,7 +9,7 @@ import {
 
 export const apis: ComponentApiDescription[] = [
 	{
-		title: 'Checkbox',
+		title: 'Radio',
 		props: [
 			{
 				name: '<code>v-model</code>',
@@ -23,14 +23,6 @@ export const apis: ComponentApiDescription[] = [
 				name: '<code>native-value</code>',
 				description: 'Same as native <code>value</code>',
 				type: 'Any',
-				values: '—',
-				default: '—',
-				required: 'false'
-			},
-			{
-				name: '<code>indeterminate</code>',
-				description: 'Same as native <code>indeterminate</code>',
-				type: 'Boolean',
 				values: '—',
 				default: '—',
 				required: 'false'
@@ -75,7 +67,6 @@ export const apis: ComponentApiDescription[] = [
 				default: '—',
 				required: 'false'
 			},
-			getBooleanPropsApi('is-indeterminate', 'Same as native<code>indeterminate</code>'),
 			SizeVariantPropApi,
 			ColorVariantPropApi
 		],
@@ -90,7 +81,7 @@ export const apis: ComponentApiDescription[] = [
 			{
 				name: '<code>update:model-value</code>',
 				description: 'Triggers when checked value is changed',
-				parameters: '<code>modelValue: Boolean</code>'
+				parameters: '<code>modelValue: T</code>'
 			}
 		]
 	}

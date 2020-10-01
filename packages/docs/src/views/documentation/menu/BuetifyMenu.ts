@@ -30,8 +30,7 @@ const BuetifyMenuGroup = defineComponent({
 				BMenuGroup,
 				{ isExpanded: true },
 				{
-					'menu-label': () => (props.isNested ? props.group.label
-						: h(BMenuLabel, () => props.group.label)),
+					'menu-label': () => h(BMenuLabel, { class: 'margin-top-size-8' }, () => props.group.label),
 					default: () =>
 						props.group.items.map(item => h(BuetifyMenuItem, { key: item.label, item, isNested: true })) // eslint-disable-line
 				}

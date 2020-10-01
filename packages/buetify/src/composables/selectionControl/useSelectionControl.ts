@@ -1,5 +1,5 @@
 import { Eq } from 'fp-ts/lib/Eq';
-import { PropType, Ref, computed, toRef } from 'vue';
+import { PropType, Ref, computed, toRef, ComputedRef } from 'vue';
 import { ColorVariant } from '../../types/ColorVariants';
 import { SizeVariant } from '../../types/SizeVariants';
 import { isEnterEvent, isSpaceEvent } from '../../utils/eventHelpers';
@@ -86,20 +86,19 @@ function getIsActive<T>(value: T | T[] | undefined, trueValue: T | undefined, is
 
 function getOnChange<T>(
   value: Ref<T | T[] | undefined>,
-  trueValue: Ref<T | undefined>,
+  trueValue: ComputedRef<T | undefined>,
   falseValue: Ref<T | undefined>,
   isDisabled: Ref<boolean>,
   isMultiple: Ref<boolean>,
   eq: Ref<Eq<T>>
 ) {
   return function onChange(e?: Event) {
-    console.log(e);
     if (isDisabled.value) return;
     if (trueValue.value === undefined) return;
     const currentValue = value.value;
     const tValue = trueValue.value;
     const fValue = falseValue.value;
-
+    console.log(tValue, fValue)
     if (isMultiple.value) {
       if (!Array.isArray(currentValue)) {
         value.value = [];
@@ -161,14 +160,15 @@ export function useSelectionControl<T>(
 ) {
   const { modelValue } = useModel<T>(props);
   const focus = useFocus((props as unknown) as UseFocusProps, ref);
+  const trueValue = computed(() => (props.nativeValue || props.trueValue) as T | undefined)
   const label = useLabelId(props, role);
   const isMultiple = computed(() => props.isMultiple || Array.isArray(modelValue.value));
-  const isActive = computed(() => getIsActive(modelValue.value, props.trueValue, isMultiple.value, props.eq));
+  const isActive = computed(() => getIsActive(modelValue.value, trueValue.value, isMultiple.value, props.eq));
   const isDisabled = useDisable(props);
 
   const onChange = getOnChange(
     modelValue,
-    toRef(props, 'trueValue'),
+    trueValue,
     toRef(props, 'falseValue'),
     isDisabled,
     isMultiple,
