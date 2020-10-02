@@ -1,4 +1,4 @@
 import { faInfoCircle } from '@fortawesome/free-solid-svg-icons/faInfoCircle';
-import { useIconComponent } from '../utils';
+import { useFontAwesomeIconComponent } from '../utils';
 
-export default useIconComponent('InfoCircle', faInfoCircle);
+export default useFontAwesomeIconComponent('InfoCircle', faInfoCircle);

@@ -1,4 +1,4 @@
 import { faAngleLeft } from '@fortawesome/free-solid-svg-icons/faAngleLeft';
-import { useIconComponent } from '../utils';
+import { useFontAwesomeIconComponent } from '../utils';
 
-export default useIconComponent('AngleLeft', faAngleLeft);
+export default useFontAwesomeIconComponent('AngleLeft', faAngleLeft);

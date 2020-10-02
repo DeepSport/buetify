@@ -30,7 +30,7 @@ const BuetifyMenuGroup = defineComponent({
 				BMenuGroup,
 				{ isExpanded: true },
 				{
-					'menu-label': () => h(BMenuLabel, { class: 'margin-top-size-8' }, () => props.group.label),
+					'menu-label': () => h(BMenuLabel, () => props.group.label),
 					default: () =>
 						props.group.items.map(item => h(BuetifyMenuItem, { key: item.label, item, isNested: true })) // eslint-disable-line
 				}
@@ -56,9 +56,13 @@ const BuetifyMenuLink = defineComponent({
 					'a',
 					{
 						href: link.href.value,
-						class: {
-							'is-active': link.isActive.value
-						},
+						class: [
+							'has-text-weight-semibold',
+							'margin-bottom-size-9',
+							{
+								'is-active': link.isActive.value
+							}
+						],
 						onClick: link.navigate
 					},
 					props.link.label

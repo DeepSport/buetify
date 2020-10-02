@@ -1,4 +1,4 @@
 import {faUnderline} from '@fortawesome/free-solid-svg-icons/faUnderline';
-import { useIconComponent } from 'buetify/lib/components/icons/utils';
+import { useFontAwesomeIconComponent } from 'buetify/lib/components/icons/utils';
 
-export default useIconComponent('Underline', faUnderline);
+export default useFontAwesomeIconComponent('Underline', faUnderline);

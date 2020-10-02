@@ -28,7 +28,7 @@ import SimpleCode from '!!raw-loader!./examples/Simple.vue';
 import { apis } from './apis';
 
 export default defineComponent({
-	name: 'dialog',
+	name: 'dialog-examples',
 	components: {
 		ExampleView,
 		ApiView,

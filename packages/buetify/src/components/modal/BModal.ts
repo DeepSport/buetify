@@ -1,64 +1,61 @@
 import './modal.sass';
 import { IO } from 'fp-ts/lib/IO';
-import {
-  PopupController,
-  usePopupController,
-  UsePopupControllerPropsDefinition
-} from '../../composables/popupController';
+import { usePopupController, UsePopupControllerPropsDefinition } from '../../composables/popupController';
 import { constEmptyArray } from '../../utils/helpers';
-import BOverlay from '../overlay/BOverlay';
-import BBox from '../layout/box/BBox';
-import { VNode, defineComponent, PropType, SetupContext, shallowRef, h, ExtractPropTypes } from 'vue';
+import { VNode, defineComponent, PropType, shallowRef, h, ExtractPropTypes } from 'vue';
+import BSheet from '../sheet/BSheet';
 
 const BModalPropsDefinition = {
   ...UsePopupControllerPropsDefinition,
   showExit: {
     type: Boolean as PropType<boolean>,
-    required: false,
+    default: true
+  },
+  isFullscreen: {
+    type: Boolean as PropType<boolean>,
     default: false
   }
 };
 
 export type BModalProps = ExtractPropTypes<typeof BModalPropsDefinition>;
 
-function generateCloseButton(close: IO<void>): VNode {
-  return h('button', {
-    class: 'modal-exit delete is-small',
-    onClick: close
-  });
-}
-
-function generateModalBox(props: BModalProps, context: SetupContext, controller: PopupController): VNode {
-  return h(
-    BBox,
-    {
-      class: 'is-paddingless is-fullheight is-fullwidth overflow-scroll'
-    },
-    () => [
-      h('div', { class: 'is-fullheight' }, () =>
-        props.showExit ? [generateCloseButton(controller.close), context.slots.default!()] : context.slots.default!()
-      )
-    ]
-  );
-}
-
 export default defineComponent({
   name: 'b-modal',
   props: BModalPropsDefinition,
-  setup(props, context) {
+  setup(props, { attrs, slots }) {
     const generateModal = shallowRef(constEmptyArray as IO<VNode[]>);
     const popup = usePopupController(props, generateModal);
     generateModal.value = () => {
-      return [
-        h(
-          BOverlay,
-          {
-            ...context.attrs,
-            onClick: popup.close
-          },
-          () => [generateModalBox(props, context, popup)]
-        )
-      ];
+      if (!props.isFullscreen) {
+        const nodes = [
+          h('div', { onClick: popup.close, class: 'modal-background' }),
+          h('div', { class: 'modal-content' }, slots.default && slots.default(popup))
+        ];
+        if (props.showExit) {
+          nodes.push(h('button', { class: 'modal-close is-large', onClick: popup.close }));
+        }
+        return [
+          h(
+            'div',
+            {
+              ...attrs,
+              class: 'modal is-active'
+            },
+            nodes
+          )
+        ];
+      } else {
+        return [
+          h(
+            'div',
+            {
+              ...attrs,
+              class: 'modal is-active is-fullscreen'
+            },
+            [h(BSheet, () => slots.default && slots.default(popup))]
+          )
+        ];
+      }
     };
     return { popup };
   },

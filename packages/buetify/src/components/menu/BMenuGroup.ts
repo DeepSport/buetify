@@ -26,13 +26,13 @@ export default defineComponent({
   setup(props, { slots }) {
     const toggle = useToggle(props, 'isExpanded');
     return () =>
-      h('section', [
+      h('section', { class: 'is-fullwidth' }, [
         props.isExpandable
           ? h(
               'button',
               {
                 class: [
-                  'is-flex flex-direction-row justify-content-space-between align-items-center is-fullwidth',
+                  'menu-label is-flex flex-direction-row justify-content-space-between align-items-center is-fullwidth',
                   props.menuLabelClass
                 ],
                 ...toggle.listeners,
@@ -45,7 +45,7 @@ export default defineComponent({
                 })
               ]
             )
-          : h('div', slots['menu-label'] && slots['menu-label']()),
+          : h('div', { class: ['menu-label', props.menuLabelClass] }, slots['menu-label'] && slots['menu-label']()),
         props.isExpandable
           ? h(VerticalExpandTransition, undefined, () => [
               withDirectives(

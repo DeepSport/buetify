@@ -1,4 +1,4 @@
 import { faBold } from '@fortawesome/free-solid-svg-icons/faBold';
-import { useIconComponent } from 'buetify/lib/components/icons/utils';
+import { useFontAwesomeIconComponent } from 'buetify/lib/components/icons/utils';
 
-export default useIconComponent('Bold', faBold);
+export default useFontAwesomeIconComponent('Bold', faBold);

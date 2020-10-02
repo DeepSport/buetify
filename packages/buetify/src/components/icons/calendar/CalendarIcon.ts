@@ -1,4 +1,4 @@
 import { faCalendarAlt } from '@fortawesome/free-solid-svg-icons/faCalendarAlt';
-import { useIconComponent } from '../utils';
+import { useFontAwesomeIconComponent } from '../utils';
 
-export default useIconComponent('Calendar', faCalendarAlt);
+export default useFontAwesomeIconComponent('Calendar', faCalendarAlt);

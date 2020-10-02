@@ -84,6 +84,7 @@ export default defineComponent({
     }
 
     function showPopup(params: ShowPopupOptions) {
+      console.log('showing popup');
       return popup.value.showPopup({
         render: params.render,
         transition: params.transition ? formatTransition(params.transition) : DEFAULT_TRANSITION
