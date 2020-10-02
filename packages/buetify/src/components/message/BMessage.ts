@@ -1,7 +1,7 @@
 import './message.sass';
 import { Message, useMessage, UseMessageProps, UseMessagePropsDefinition } from '../../composables/message';
 import { FadeTransitionPropsDefinition, useTransition } from '../../composables/transition';
-import { VNode, defineComponent, h, Transition, SetupContext } from 'vue';
+import { VNode, defineComponent, h, Transition, SetupContext, computed } from 'vue';
 
 function generateBody(props: UseMessageProps, context: SetupContext, message: Message): VNode {
   const nodes: VNode[] = [];
@@ -28,7 +28,7 @@ function generateBody(props: UseMessageProps, context: SetupContext, message: Me
 }
 
 function generateHeader(props: UseMessageProps, context: SetupContext, message: Message): VNode {
-  const nodes = (context.slots.header && context.slots.header()) || [h('h1', props.title)];
+  const nodes = context.slots.title ? context.slots.title() : props.title ? [(props.title as unknown) as VNode] : [];
   if (props.isClosable) {
     nodes.push(
       h('button', {
@@ -60,6 +60,8 @@ export default defineComponent({
   setup(props, context) {
     const message = useMessage(props);
     const transition = useTransition(props);
-    return h(Transition, { ...transition.value }, message.isOn.value && generateMessage(props, context, message));
+    const showMessage = computed(() => message.isOn.value || (props.title === undefined && !!context.slots.title));
+    return () =>
+      h(Transition, transition.value, () => (showMessage.value ? generateMessage(props, context, message) : undefined));
   }
 });

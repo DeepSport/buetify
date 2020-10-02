@@ -17,6 +17,8 @@ $all-colors: mergeColorMaps($colors, $shades)
         $color: nth($pair, 1)
         $color-invert: findColorInvert($color)
         &.is-#{$name}
+            background-color: $color
+            color: $color-invert
             box-shadow: 0 2px 3px rgba($color-invert, 0.1), 0 0 0 1px rgba($color-invert, 0.1)
 
 

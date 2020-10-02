@@ -110,7 +110,7 @@ function generateInput(props: BNumberInputProps, data: BNumberInputData, context
     'onUpdate:modelValue': data.set,
     type: 'number',
     size: props.size,
-    placeholder: JSON.stringify(props.placeholder),
+    placeholder: props.placeholder ? `${props.placeholder}` : '',
     isDisabled: props.isDisabled,
     inputIcons: props.inputIcons,
     isReadonly: props.isReadonly,

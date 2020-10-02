@@ -1,4 +1,4 @@
 import { faExclamationCircle } from '@fortawesome/free-solid-svg-icons/faExclamationCircle';
-import { useIconComponent } from '../utils';
+import { useFontAwesomeIconComponent } from '../utils';
 
-export default useIconComponent('ExclamationCircle', faExclamationCircle);
+export default useFontAwesomeIconComponent('ExclamationCircle', faExclamationCircle);

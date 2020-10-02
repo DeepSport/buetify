@@ -24,7 +24,7 @@ export function getMessageIcons(icons: Partial<MessageIcons>) {
 }
 
 export const UseMessagePropsDefinition = {
-  ...getUseTogglePropsDefinition('isActive'),
+  ...getUseTogglePropsDefinition('isActive', true),
   title: {
     type: String as PropType<string>
   },
@@ -62,6 +62,9 @@ export const UseMessagePropsDefinition = {
   icons: {
     type: Object as PropType<Partial<MessageIcons>>,
     default: constant(DEFAULT_MESSAGE_ICONS)
+  },
+  icon: {
+    type: Object as PropType<Component>
   }
 };
 
@@ -69,7 +72,7 @@ export type UseMessageProps = ExtractPropTypes<typeof UseMessagePropsDefinition>
 
 export function useMessage(props: UseMessageProps) {
   const toggle = useToggle(props, 'isActive');
-  const icon = computed(() => props.icons[props.variant]);
+  const icon = computed(() => props.icon ?? props.icons[props.variant]);
   const iconSize = computed(() => props.iconSize || props.size || 'is-large');
   function setAutoClose() {
     if (props.useAutoClose) {

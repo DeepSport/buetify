@@ -5,7 +5,7 @@
 		</router-link>
 		<section v-for="api in data" :key="api.title" :id="api.slug">
 			<router-link v-if="data.length > 1" :to="api.slug">
-				<b-subtitle tag="h1"> # {{ api.title }} API </b-subtitle>
+				<b-subtitle tag="h1" class="margin-top-size-6"> # {{ api.title }}</b-subtitle>
 			</router-link>
 			<b-tabs class="margin-top-size-6">
 

@@ -1,4 +1,4 @@
 import { faCheck } from '@fortawesome/free-solid-svg-icons/faCheck';
-import { useIconComponent } from '../utils';
+import { useFontAwesomeIconComponent } from '../utils';
 
-export default useIconComponent('Check', faCheck);
+export default useFontAwesomeIconComponent('Check', faCheck);

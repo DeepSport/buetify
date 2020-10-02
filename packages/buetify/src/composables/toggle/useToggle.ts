@@ -3,11 +3,11 @@ import { IO } from 'fp-ts/lib/IO';
 import { watch, computed, Ref, PropType, shallowRef, toRef } from 'vue';
 import { isEnterEvent } from '../../utils/eventHelpers';
 
-export function getUseTogglePropsDefinition<K extends string>(statusName: K): UseTogglePropsDefinition<K> {
+export function getUseTogglePropsDefinition<K extends string>(statusName: K, defaultStatus = false): UseTogglePropsDefinition<K> {
   return {
     [statusName]: {
       type: Boolean,
-      default: false
+      default: defaultStatus
     },
     [`onUpdate:${statusName}`]: {
       type: Function as PropType<FunctionN<[boolean], void>>,
@@ -101,6 +101,7 @@ export function useToggle<K extends string>(
       return internalStatus.value;
     },
     set(val: boolean) {
+      console.log(val);
       const cValue = internalStatus.value;
       if (cValue !== val && props.onToggle) {
         props.onToggle(val);

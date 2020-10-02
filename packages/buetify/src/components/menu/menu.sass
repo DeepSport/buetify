@@ -10,13 +10,20 @@ $menu-item-active-background-color: $link !default
 $menu-list-border-left: 1px solid $border !default
 $menu-list-line-height: 1.25 !default
 $menu-list-link-padding: 0.25em 0 !default
-$menu-nested-list-margin: 0.75em 0 0.75em 0.75em !default
+$menu-nested-list-margin: 0.5em 0 0.75em 0.25em !default
 $menu-nested-list-padding-left: 0.75em !default
 
 $menu-label-color: $text-light !default
-$menu-label-font-size: 0.75em !default
+$menu-label-font-size: 0.9em !default
 $menu-label-letter-spacing: 0.1em !default
 $menu-label-spacing: 1em !default
+
+.menu-label
+    color: $menu-label-color
+    font-size: $menu-label-font-size
+    letter-spacing: $menu-label-letter-spacing
+    text-transform: uppercase
+    margin-bottom: 0.5em
 
 .menu
     font-size: $size-normal
@@ -29,7 +36,10 @@ $menu-label-spacing: 1em !default
         font-size: $size-large
 
     .menu-list
+        margin-left: 0.75rem
         line-height: $menu-list-line-height
+        .menu-label
+            margin-top: $menu-label-spacing
         a
             border-radius: $menu-item-radius
             color: $menu-item-color
@@ -41,6 +51,11 @@ $menu-label-spacing: 1em !default
             &.is-active
                 color: $menu-item-active-color
         li
+            display: flex
+            flex-direction: row
+            align-items: center
+            .icon
+                margin-right: 0.25rem
             &.is-active
                 color: $menu-item-active-color
             ul
@@ -48,15 +63,6 @@ $menu-label-spacing: 1em !default
                 margin: $menu-nested-list-margin
                 padding-left: $menu-nested-list-padding-left
 
-    .menu-label
-        color: $menu-label-color
-        font-size: $menu-label-font-size
-        letter-spacing: $menu-label-letter-spacing
-        text-transform: uppercase
-        //&:not(:first-child)
-        //    margin-top: $menu-label-spacing
-        //&:not(:last-child)
-        //    margin-bottom: $menu-label-spacing
 
     @each $name, $pair in mergeColorMaps($colors, $shades)
         $color: nth($pair, 1)
