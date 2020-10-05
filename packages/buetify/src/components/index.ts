@@ -5,7 +5,6 @@ export * from './button';
 export * from './dialog';
 export * from './dropdown';
 export * from './form';
-export * from './fullscreenModal';
 export * from './higherOrder';
 export * from './icon';
 export * from './icons';

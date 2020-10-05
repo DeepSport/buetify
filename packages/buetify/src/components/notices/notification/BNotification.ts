@@ -20,7 +20,7 @@ import {
   shallowRef,
   withDirectives,
   SetupContext,
-  vShow
+  vShow, Component
 } from 'vue';
 import { constEmptyArray } from '../../../utils/helpers';
 
@@ -29,7 +29,10 @@ export const BNotificationPropsDefinition = {
   ...UseNoticePropsDefinition,
   isNotice: {
     type: Boolean as PropType<boolean>,
-    default: true
+    default: false
+  },
+  icon: {
+    type: Object as PropType<Component>
   }
 };
 
@@ -53,7 +56,7 @@ function generateIcon(messageController: Message): VNode {
 }
 
 function generateNoticeContent(context: SetupContext, message?: string): VNode {
-  return h('div', { class: 'media-content' }, (context.slots.message && context.slots.message()) || h('p', message));
+  return h('div', { class: 'media-content' }, (context.slots.default && context.slots.default()) || h('p', message));
 }
 
 function generateNoticeBody(
@@ -105,7 +108,7 @@ export default defineComponent({
     renderNotification.value = getGenerateNotice(props, context, messageController, noticeController);
     return () =>
       props.isNotice
-        ? context.slots.default && context.slots.default({ open: noticeController.open, close: noticeController.close })
+        ? context.slots.trigger && context.slots.trigger({ open: noticeController.open, close: noticeController.close })
         : h(Transition, props.transition ? formatTransition(props.transition) : {}, renderNotification.value({}));
   }
 });

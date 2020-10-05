@@ -1,9 +1,23 @@
 import './loading.sass';
 import { IO } from 'fp-ts/lib/IO';
 import { usePopupController, UsePopupControllerPropsDefinition } from '../../composables/popupController';
-import { useToggle } from '../../composables/toggle';
 import { isEscEvent } from '../../utils/eventHelpers';
-import { VNode, h, defineComponent, ExtractPropTypes, shallowRef, Transition, onMounted, onUnmounted } from 'vue';
+import {
+  VNode,
+  h,
+  defineComponent,
+  ExtractPropTypes,
+  shallowRef,
+  Transition,
+  onUnmounted,
+  Slots,
+  Ref,
+  toRef,
+  toRefs,
+  reactive,
+  computed,
+  watchEffect
+} from 'vue';
 import { constEmptyArray } from '../../utils/helpers';
 
 export const BLoadingPropsDefinition = {
@@ -20,14 +34,14 @@ export const BLoadingPropsDefinition = {
 
 export type BLoadingProps = ExtractPropTypes<typeof BLoadingPropsDefinition>;
 
-function getGenerateModal(onClick: IO<void>) {
+function getGenerateModal(onClick: IO<void>, slots: Slots, isFullscreen: Ref<boolean>) {
   return () => [
-    h('div', { class: 'b-loading-overlay is-active is-fullscreen' }, [
+    h('div', { class: ['b-loading-overlay is-active', { 'is-fullscreen': isFullscreen.value }] }, [
       h('div', {
         class: 'loading-background',
         onClick
       }),
-      h('div', { class: 'loading-icon' })
+      slots.default ? slots.default({ close: onClick }) : h('div', { class: 'loading-icon' })
     ])
   ];
 }
@@ -36,40 +50,54 @@ export default defineComponent({
   name: 'b-loading',
   props: BLoadingPropsDefinition,
   setup(props, { slots }) {
-    if (props.isFullscreen) {
-      const generateLoadingPopup = shallowRef(constEmptyArray as IO<VNode[]>);
-      const popup = usePopupController(props, generateLoadingPopup);
-      const onClick = () => {
-        if (props.canCancel && popup.isOpen.value) {
-          popup.close();
-        }
-      };
-      const onKeyup = (e: KeyboardEvent) => {
-        if (isEscEvent(e)) {
-          onClick();
-        }
-      };
-      onMounted(() => {
-        if (typeof window !== 'undefined') {
-          document.addEventListener('keyup', onKeyup);
-        }
-      });
-      onUnmounted(() => {
-        if (typeof window !== 'undefined') {
-          document.removeEventListener('keyup', onKeyup);
-        }
-      });
-      generateLoadingPopup.value = getGenerateModal(onClick);
-      return () => (slots.trigger ? slots.trigger(popup) : []);
-    } else {
-      const toggle = useToggle(props, 'isActive');
-      const onClick = () => {
-        if (props.canCancel && toggle.isOn.value) {
-          toggle.setOff();
-        }
-      };
-      const render = getGenerateModal(onClick);
-      return () => h(Transition as any, { name: props.transition }, toggle.isOn.value && render());
+    const isFullscreen = toRef(props, 'isFullscreen');
+    const isActive = computed(() => props.isFullscreen && props.isActive);
+    const render = shallowRef(constEmptyArray as IO<VNode[]>);
+    const popup = usePopupController(
+      reactive({
+        ...toRefs(props),
+        isActive
+      }),
+      render
+    );
+
+    function onClick() {
+      if (props.canCancel && props.isFullscreen ? popup.isOpen.value : props.isActive) {
+        popup.close();
+      }
     }
+
+    render.value = getGenerateModal(onClick, slots, isFullscreen);
+
+    function onKeyup(e: KeyboardEvent) {
+      if (isEscEvent(e)) {
+        onClick();
+      }
+    }
+
+    watchEffect(() => {
+      if (window === undefined) return;
+      if (popup.isOpen.value && props.canCancel) {
+        document.addEventListener('keyup', onKeyup);
+      } else {
+        document.removeEventListener('keyup', onKeyup);
+      }
+    });
+
+    onUnmounted(() => {
+      window && window.removeEventListener('keyup', onKeyup);
+    });
+
+    return () => {
+      if (slots.trigger && props.isFullscreen) {
+        return slots.trigger(popup);
+      } else if (props.isFullscreen) {
+        return undefined;
+      } else {
+        return h(Transition as any, { name: props.transition }, () =>
+          props.isActive ? render.value() : undefined
+        );
+      }
+    };
   }
 });

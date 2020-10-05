@@ -3,7 +3,7 @@
 		<b-modal is-fullscreen>
 			<template #trigger="{ open }">
 				<b-button variant="is-primary" @click="open">
-					Open Box Modal
+					Open Fullscreen Modal
 				</b-button>
 			</template>
 			<template #default="{ close }">

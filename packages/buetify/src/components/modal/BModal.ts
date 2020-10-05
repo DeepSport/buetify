@@ -2,7 +2,7 @@ import './modal.sass';
 import { IO } from 'fp-ts/lib/IO';
 import { usePopupController, UsePopupControllerPropsDefinition } from '../../composables/popupController';
 import { constEmptyArray } from '../../utils/helpers';
-import { VNode, defineComponent, PropType, shallowRef, h, ExtractPropTypes } from 'vue';
+import { VNode, defineComponent, PropType, shallowRef, h, ExtractPropTypes, watchEffect, onUnmounted } from 'vue';
 import BSheet from '../sheet/BSheet';
 
 const BModalPropsDefinition = {
@@ -57,6 +57,21 @@ export default defineComponent({
         ];
       }
     };
+
+    watchEffect(() => {
+      if (window === undefined) {
+        return;
+      }
+      if (popup.isOpen.value && props.isFullscreen) {
+        window.document.documentElement.classList.add('is-clipped');
+      } else {
+        window.document.documentElement.classList.remove('is-clipped');
+      }
+    });
+
+    onUnmounted(() => {
+      window && window.document.documentElement.classList.remove('is-clipped');
+    });
     return { popup };
   },
   render() {
