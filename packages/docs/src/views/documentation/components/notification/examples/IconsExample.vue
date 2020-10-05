@@ -1,46 +1,46 @@
 <template>
-	<section aria-label="b-message color variants examples">
-		<b-message title="Default" :icon="UserIcon" use-icon>
+	<section aria-label="b-notification color variants examples">
+		<b-notification title="Default" use-icon :icon="UserIcon">
 			<template #default>
 				Lorem ipsum dolor sit amet, consectetur adipiscing elit. Fusce id fermentum quam. Proin sagittis, nibh
 				id hendrerit imperdiet, elit sapien laoreet elit
 			</template>
-		</b-message>
-    <b-message title="Success" use-icon variant="is-success">
+		</b-notification>
+    <b-notification title="Success" use-icon variant="is-success">
       <template #default>
         Lorem ipsum dolor sit amet, consectetur adipiscing elit. Fusce id fermentum quam. Proin sagittis, nibh
         id hendrerit imperdiet, elit sapien laoreet elit
       </template>
-    </b-message>
-    <b-message title="Danger" use-icon variant="is-danger">
+    </b-notification>
+    <b-notification title="Danger" use-icon variant="is-danger">
       <template #default>
         Lorem ipsum dolor sit amet, consectetur adipiscing elit. Fusce id fermentum quam. Proin sagittis, nibh
         id hendrerit imperdiet, elit sapien laoreet elit
       </template>
-    </b-message>
-    <b-message title="Warning" use-icon variant="is-warning">
+    </b-notification>
+    <b-notification title="Warning" use-icon variant="is-warning">
       <template #default>
         Lorem ipsum dolor sit amet, consectetur adipiscing elit. Fusce id fermentum quam. Proin sagittis, nibh
         id hendrerit imperdiet, elit sapien laoreet elit
       </template>
-    </b-message>
-    <b-message title="Info" use-icon variant="is-info">
+    </b-notification>
+    <b-notification title="Info" use-icon variant="is-info">
       <template #default>
         Lorem ipsum dolor sit amet, consectetur adipiscing elit. Fusce id fermentum quam. Proin sagittis, nibh
         id hendrerit imperdiet, elit sapien laoreet elit
       </template>
-    </b-message>
+    </b-notification>
 	</section>
 </template>
 <script lang="ts">
-import BMessage from 'buetify/lib/components/message/BMessage';
+import BNotification from 'buetify/lib/components/notices/notification/BNotification';
 import { defineComponent } from 'vue';
 import UserIcon from '../../../../../components/icons/UserIcon';
 
 export default defineComponent({
-	name: 'message-icons-example',
+	name: 'notification-icons-example',
 	components: {
-		BMessage
+		BNotification
 	},
   setup() {
 	  return {

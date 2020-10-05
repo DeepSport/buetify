@@ -29,7 +29,7 @@ export const UseNoticePropsDefinition = {
   },
   variant: {
     type: String as PropType<ColorVariant>,
-    default: 'is-primary' as const
+    default: '' as const
   },
   isIndefinite: {
     type: Boolean as PropType<boolean>,
