@@ -4,7 +4,6 @@ export * from './focus';
 export * from './labelId';
 export * from './message';
 export * from './model';
-export * from './navigationDrawerController';
 export * from './noticeController';
 export * from './pagination';
 export * from './popupController';

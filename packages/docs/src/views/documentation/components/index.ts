@@ -12,6 +12,7 @@ import * as message from './message';
 import * as modal from './modal';
 import * as loading from './loading';
 import * as notification from './notification';
+import * as pagination from './pagination';
 
 export const meta: Record<string, BuetifyRouteMeta> = {
 	[accordion.meta.fullPath]: accordion.meta,
@@ -24,7 +25,8 @@ export const meta: Record<string, BuetifyRouteMeta> = {
 	[menu_.meta.fullPath]: menu_.meta,
 	[message.meta.fullPath]: message.meta,
 	[modal.meta.fullPath]: modal.meta,
-	[notification.meta.fullPath]: notification.meta
+	[notification.meta.fullPath]: notification.meta,
+	[pagination.meta.fullPath]: pagination.meta
 };
 
 export const routes: RouteRecordRaw[] = [
@@ -38,7 +40,8 @@ export const routes: RouteRecordRaw[] = [
 	menu_.route,
 	message.route,
 	modal.route,
-	notification.route
+	notification.route,
+	pagination.route
 ];
 
 export const menu: BuetifyMenuNavigationGroup = group('UI Components', [
@@ -52,5 +55,6 @@ export const menu: BuetifyMenuNavigationGroup = group('UI Components', [
 	menu_.menu,
 	message.menu,
 	modal.menu,
-	notification.menu
+	notification.menu,
+	pagination.menu
 ]);
