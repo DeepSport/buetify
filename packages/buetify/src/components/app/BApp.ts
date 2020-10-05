@@ -1,9 +1,9 @@
 import './app.sass';
-import { isSome } from 'fp-ts/lib/Option';
 import { defineComponent, shallowRef, h, Slots, Ref, vShow, withDirectives, VNode } from 'vue';
 import {
-  provideNavigationDrawerController,
-  ProvideNavigationDrawerControllerPropsDefinition
+  composables,
+  ProvideSidebarControllerPropsDefinition,
+  SidebarController
 } from '../../composables/navigationDrawerController';
 import { provideNoticeController, ShowNoticeOptions } from '../../composables/noticeController';
 import { providePopupController, ShowPopupOptions } from '../../composables/popupController';
@@ -11,7 +11,7 @@ import { provideTheme, ProvideThemePropDefinitions } from '../../composables/the
 import { formatTransition } from '../../composables/transition';
 import { provideWindowSize, ProvideWindowSizePropsDefinition } from '../../composables/windowSize';
 import { TransitionClasses } from '../../types/Transition';
-import BNavigationDrawer from '../navigationDrawer/BNavigationDrawer';
+import BSidebar from '../sidebar/BSidebar';
 import BNoticeContainer, { NoticeContainer, NoticeOptions } from '../notices/noticeContainer/BNoticeContainer';
 import BPopupContainer, { PopupContainer } from '../popupContainer/BPopupContainer';
 
@@ -25,28 +25,35 @@ function generatePopupContainer(ref: Ref<PopupContainer>) {
   return h(BPopupContainer, { ref });
 }
 
-function generateNavigationSlot(slots: Slots, hasHeader: boolean) {
+function generateSidebarSlot(
+  slots: Slots,
+  hasHeader: boolean,
+  currentRoute: Record<string, unknown> | undefined,
+  sidebar: SidebarController
+) {
   return h(
-    BNavigationDrawer,
+    BSidebar,
     {
+      currentRoute,
       isFullheight: true,
       class: {
         'is-absolute': hasHeader
       }
     },
-    slots['navigation-drawer']
+    () => slots.sidebar && slots.sidebar(sidebar)
   );
 }
 
-function generateMainContent(slots: Slots) {
-  return h('div', { class: 'b-app-content' }, slots.default!());
-}
-
-function generateBodyContent(slots: Slots, hasNavigationDrawer: boolean, displayNavigationDrawer: boolean) {
-  const nodes: VNode[] = [];
+function generateBodyContent(
+  slots: Slots,
+  hasNavigationDrawer: boolean,
+  sidebar: SidebarController,
+  currentRoute: Record<string, unknown> | undefined
+) {
+  const nodes: Array<VNode | VNode[]> = [];
   if (slots.header) {
-    const header = slots.header();
-    if (header) nodes.push(...header);
+    const header = slots.header(sidebar);
+    if (header) nodes.push(header);
   }
   nodes.push(
     h(
@@ -54,10 +61,12 @@ function generateBodyContent(slots: Slots, hasNavigationDrawer: boolean, display
       { class: 'b-app-body-content' },
       hasNavigationDrawer
         ? [
-            withDirectives(generateNavigationSlot(slots, !!slots.header), [[vShow, displayNavigationDrawer]]),
-            generateMainContent(slots)
+            withDirectives(generateSidebarSlot(slots, !!slots.header, currentRoute, sidebar), [
+              [vShow, sidebar.isVisible.value]
+            ]),
+            h('div', { class: 'b-app-content' }, slots.default!(sidebar))
           ]
-        : [generateMainContent(slots)]
+        : [h('div', { class: 'b-app-content' }, slots.default!(sidebar))]
     )
   );
   return nodes;
@@ -68,7 +77,7 @@ export default defineComponent({
   props: {
     ...ProvideThemePropDefinitions,
     ...ProvideWindowSizePropsDefinition,
-    ...ProvideNavigationDrawerControllerPropsDefinition
+    ...ProvideSidebarControllerPropsDefinition
   },
   setup(props, { slots }) {
     const popup = shallowRef((null as unknown) as PopupContainer);
@@ -84,7 +93,6 @@ export default defineComponent({
     }
 
     function showPopup(params: ShowPopupOptions) {
-      console.log('showing popup');
       return popup.value.showPopup({
         render: params.render,
         transition: params.transition ? formatTransition(params.transition) : DEFAULT_TRANSITION
@@ -94,25 +102,33 @@ export default defineComponent({
     provideNoticeController(showNotice);
     providePopupController(showPopup);
     provideWindowSize(props);
-    const { isVisible } = provideNavigationDrawerController(props);
+    const sidebarController = composables(props);
 
     return () => {
-      const hasNavigationDrawer = !!slots['navigation-drawer'];
-      const displayNavigationDrawer = isSome(isVisible.value) && isVisible.value.value;
+      const hasNavigationDrawer = !!slots['sidebar'];
       const nodes = [
         generateNoticeContainer('top', top),
         generateNoticeContainer('bottom', bottom),
         generatePopupContainer(popup)
       ];
 
-      nodes.push(h('div', { style: { 'z-index': 0 } }, generateBodyContent(slots, hasNavigationDrawer, displayNavigationDrawer)));
+      nodes.push(
+        h(
+          'div',
+          { style: { 'z-index': 0 } },
+          generateBodyContent(slots, hasNavigationDrawer, sidebarController, props.currentRoute)
+        )
+      );
 
       return h(
         'div',
         {
           class: [
             'b-app',
-            { 'has-navigation-drawer': hasNavigationDrawer && displayNavigationDrawer, 'has-header': !!slots.header }
+            {
+              'has-navigation-drawer': hasNavigationDrawer && sidebarController.isVisible.value,
+              'has-header': !!slots.header
+            }
           ]
         },
         nodes

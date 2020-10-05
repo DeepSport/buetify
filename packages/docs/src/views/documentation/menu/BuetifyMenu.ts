@@ -4,7 +4,7 @@ import BMenuLabel from 'buetify/lib/components/menu/BMenuLabel';
 import BMenuListItem from 'buetify/lib/components/menu/BMenuListItem';
 import { constant } from 'fp-ts/lib/function';
 import { defineComponent, PropType, h, computed } from 'vue';
-import { RouterLink, useLink } from 'vue-router';
+import { useLink } from 'vue-router';
 import {
 	BuetifyMenuNavigationGroup,
 	BuetifyMenuNavigationItem,
@@ -19,9 +19,9 @@ const BuetifyMenuGroup = defineComponent({
 			type: Object as PropType<BuetifyMenuNavigationGroup>,
 			required: true
 		},
-		isNested: {
-			type: Boolean,
-			default: false
+		level: {
+			type: Number,
+			required: true
 		}
 	},
 	setup(props) {
@@ -32,7 +32,11 @@ const BuetifyMenuGroup = defineComponent({
 				{
 					'menu-label': () => h(BMenuLabel, () => props.group.label),
 					default: () =>
-						props.group.items.map(item => h(BuetifyMenuItem, { key: item.label, item, isNested: true })) // eslint-disable-line
+
+						props.group.items.map(item =>
+							// eslint-disable-next-line
+							h(BuetifyMenuItem, { key: item.label, item, level: props.level + 1 })
+						)
 				}
 			);
 	}
@@ -43,6 +47,10 @@ const BuetifyMenuLink = defineComponent({
 	props: {
 		link: {
 			type: Object as PropType<BuetifyMenuNavigationLink>,
+			required: true
+		},
+		level: {
+			type: Number,
 			required: true
 		}
 	},
@@ -57,9 +65,9 @@ const BuetifyMenuLink = defineComponent({
 					{
 						href: link.href.value,
 						class: [
-							'has-text-weight-semibold',
 							'margin-bottom-size-9',
 							{
+								'has-text-weight-semibold': props.level < 2,
 								'is-active': link.isActive.value
 							}
 						],
@@ -71,19 +79,20 @@ const BuetifyMenuLink = defineComponent({
 	}
 });
 
-function BuetifyMenuItem(props: { item: BuetifyMenuNavigationItem; isNested?: boolean }) {
+function BuetifyMenuItem(props: { item: BuetifyMenuNavigationItem; level?: number }) {
+	const level = props.level ?? 0;
 	return props.item._tag === 'group'
-		? props.isNested
-			? h(BMenuListItem, () => h(BuetifyMenuGroup, { group: props.item, isNested: props.isNested } as any)) //eslint-disable-line
-			: h(BuetifyMenuGroup, { group: props.item })
-		: h(BuetifyMenuLink, { link: props.item });
+		? level
+			? h(BMenuListItem, () => h(BuetifyMenuGroup, { group: props.item, level } as any)) //eslint-disable-line
+			: h(BuetifyMenuGroup, { group: props.item, level })
+		: h(BuetifyMenuLink, { link: props.item, level });
 }
 
 const groups = constant(menu.map(item => h(BuetifyMenuItem, { item })));
 
 const staticMenu = h(
 	BMenu,
-	{ class: 'is-light padding-top-size-3 padding-bottom-size-3 padding-left-size-2 padding-right-size-2' },
+	{ tag: 'div', class: 'is-light padding-top-size-3 padding-bottom-size-3 padding-left-size-2 padding-right-size-2' },
 	groups
 );
 

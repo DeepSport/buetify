@@ -3,8 +3,8 @@
 		<template #header>
 			<buetify-navbar></buetify-navbar>
 		</template>
-		<template #navigation-drawer>
-			<buetify-menu class="is-fullheight"></buetify-menu>
+		<template #sidebar>
+      <buetify-menu class="is-fullheight"></buetify-menu>
 		</template>
 		<template #default>
 			<div class="padding-size-3">
@@ -20,6 +20,7 @@
 import { BApp } from 'buetify/lib/components';
 import BHorizontalDivider from 'buetify/lib/components/layout/divider/BHorizontalDivider';
 import { defineComponent } from 'vue';
+import { useRoute, useRouter } from 'vue-router';
 import BuetifyNavbar from '../../components/buetifyNavbar/BuetifyNavbar.vue';
 import BuetifyMenu from './menu/BuetifyMenu';
 import { DocumentationHeader } from './header';

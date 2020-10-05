@@ -1,5 +1,8 @@
-import { PropType, ExtractPropTypes, computed } from 'vue';
+import { PropType, ExtractPropTypes, computed, shallowRef } from 'vue';
+import {isNumber} from '../../utils/helpers';
 import { getUseModelPropsDefinition, useModel } from '../model';
+
+export const DEFAULT_ITEMS_PER_PAGE = shallowRef(25)
 
 export const UsePaginationPropsDefinition = {
   ...getUseModelPropsDefinition<number>(),
@@ -13,7 +16,8 @@ export const UsePaginationPropsDefinition = {
   },
   perPage: {
     type: Number as PropType<number>,
-    default: 25
+    default: () => DEFAULT_ITEMS_PER_PAGE.value,
+    validator: (value: number) => isNumber(value) && value > 0
   }
 };
 
@@ -22,10 +26,14 @@ export type UsePaginationProps = ExtractPropTypes<typeof UsePaginationPropsDefin
 export function usePagination(props: UsePaginationProps) {
   const model = useModel(props);
   const current = computed(() => Math.max(model.modelValue.value as number, 1));
-  const numberOfPages = computed(() => Math.ceil((props.total as number) / props.perPage));
-  const after = computed(() => Math.max(((model.modelValue.value as number) - 1) * props.perPage, 0));
+  const itemsPerPage = computed(() => props.perPage <= 0 ? DEFAULT_ITEMS_PER_PAGE.value : props.perPage);
+  const numberOfPages = computed(() => Math.ceil((props.total as number) / itemsPerPage.value));
+  const after = computed(() => Math.max(((model.modelValue.value as number) - 1) * itemsPerPage.value, 0));
   const nextPage = computed(() => Math.min(numberOfPages.value, (model.modelValue.value as number) + 1));
-  const hasNext = computed(() => props.perPage + after.value < (props.total as number));
+  const hasNext = computed(() => {
+    console.log(itemsPerPage.value + after.value < (props.total as number));
+    return itemsPerPage.value + after.value < (props.total as number);
+  });
   const previousPage = computed(() => Math.max(0, (model.modelValue.value as number) - 1));
   const hasPrevious = computed(() => after.value > 0 && (props.total as number) > 0);
   function next(e: Event) {

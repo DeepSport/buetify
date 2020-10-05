@@ -42,6 +42,7 @@ function getAriaLabel(num: number, total: number): string {
   return `Go to page ${num} of ${total}`;
 }
 
+
 const ellipsis = h('li', [
   h('span', {
     class: 'pagination-ellipsis',
@@ -54,7 +55,7 @@ function generatePreviousButton(context: SetupContext, pagination: Pagination, t
     'button',
     {
       class: ['pagination-previous', ...themeClasses],
-      disabled: pagination.hasPrevious.value,
+      disabled: !pagination.hasPrevious.value,
       'aria-label': getAriaLabel(pagination.previousPage.value, pagination.numberOfPages.value),
       onClick: pagination.previous
     },
@@ -67,7 +68,7 @@ function generateNextButton(context: SetupContext, pagination: Pagination, theme
     'button',
     {
       class: ['pagination-next', ...themeClasses],
-      disabled: pagination.hasNext.value,
+      disabled: !pagination.hasNext.value,
       'aria-label': getAriaLabel(pagination.nextPage.value, pagination.numberOfPages.value),
       onClick: pagination.next
     },

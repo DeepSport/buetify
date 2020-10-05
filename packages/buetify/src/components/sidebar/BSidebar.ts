@@ -1,10 +1,4 @@
-import './navigation-drawer.sass';
-import { identity, pipe } from 'fp-ts/lib/function';
-import { exists } from 'fp-ts/lib/Option';
-import {
-  NavigationDrawerController,
-  useNavigationDrawerController
-} from '../../composables/navigationDrawerController';
+import './sidebar.sass';
 import { useThemePropsDefinition, useTheme } from '../../composables/theme';
 import { useWindowSize } from '../../composables/windowSize';
 import { SlideRightTransition } from '../../transitions/slideRightTransition';
@@ -23,10 +17,11 @@ import {
   vShow
 } from 'vue';
 import BOverlay from '../overlay/BOverlay';
-import { NavigationDrawerThemeMap } from './theme';
+import {SidebarController, useSidebarController} from './composables';
+import { SidebarThemeMap } from './theme';
 
-export const BNavigationDrawerPropsDefinition = {
-  ...useThemePropsDefinition(NavigationDrawerThemeMap),
+export const BSidebarPropsDefinition = {
+  ...useThemePropsDefinition(SidebarThemeMap),
   tag: {
     type: String as PropType<string>,
     default: 'nav'
@@ -41,11 +36,11 @@ export const BNavigationDrawerPropsDefinition = {
   }
 };
 
-export type BNavigationDrawerProps = ExtractPropTypes<typeof BNavigationDrawerPropsDefinition>;
+export type BNavigationDrawerProps = ExtractPropTypes<typeof BSidebarPropsDefinition>;
 
 function generateDrawer(
   props: BNavigationDrawerProps,
-  controller: NavigationDrawerController,
+  controller: SidebarController,
   themeClasses: string[],
   context: SetupContext
 ): VNode {
@@ -66,7 +61,7 @@ function generateDrawer(
 
 function generateMobileDrawer(
   props: BNavigationDrawerProps,
-  controller: NavigationDrawerController,
+  controller: SidebarController,
   themeClasses: string[],
   context: SetupContext
 ): VNode {
@@ -76,7 +71,7 @@ function generateMobileDrawer(
         BOverlay,
         {
           class: 'is-left',
-          isActive: pipe(controller.isVisible.value, exists(identity)),
+          isActive: controller.isVisible.value,
           onClick: controller.hide
         },
         () => generateDrawer(props, controller, themeClasses, context)
@@ -87,10 +82,10 @@ function generateMobileDrawer(
 }
 
 export default defineComponent({
-  name: 'b-navigation-drawer',
-  props: BNavigationDrawerPropsDefinition,
+  name: 'b-sidebar',
+  props: BSidebarPropsDefinition,
   setup(props, context) {
-    const controller = useNavigationDrawerController();
+    const controller = useSidebarController();
     const windowSize = useWindowSize();
     const { themeClasses } = useTheme(props);
     const useSideDrawer = computed(() => {

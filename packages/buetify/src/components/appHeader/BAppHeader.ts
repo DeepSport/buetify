@@ -1,13 +1,13 @@
 import './app-header.sass';
 import { isSome } from 'fp-ts/lib/Option';
 import {
-  NavigationDrawerController,
+  SidebarController,
   useNavigationDrawerController
 } from '../../composables/navigationDrawerController';
 import { SetupContext, h, Slots } from 'vue';
 import BNavbarBurger from '../navbar/BNavbarBurger';
 
-function generateMainSlot(injection: NavigationDrawerController, includeClickHandler: boolean, slots: Slots) {
+function generateMainSlot(injection: SidebarController, includeClickHandler: boolean, slots: Slots) {
   return h(
     'div',
     {
@@ -20,7 +20,7 @@ function generateMainSlot(injection: NavigationDrawerController, includeClickHan
   );
 }
 
-function generateNavigationButton(injection: NavigationDrawerController, slots: Slots) {
+function generateNavigationButton(injection: SidebarController, slots: Slots) {
   const listeners = isSome(injection.listeners.value) ? injection.listeners.value.value : {};
   const attrs = isSome(injection.listeners.value) ? injection.listeners.value.value : {};
   return h(
