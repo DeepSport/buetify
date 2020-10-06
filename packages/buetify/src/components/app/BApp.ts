@@ -1,10 +1,5 @@
 import './app.sass';
 import { defineComponent, shallowRef, h, Slots, Ref, vShow, withDirectives, VNode } from 'vue';
-import {
-  composables,
-  ProvideSidebarControllerPropsDefinition,
-  SidebarController
-} from '../../composables/navigationDrawerController';
 import { provideNoticeController, ShowNoticeOptions } from '../../composables/noticeController';
 import { providePopupController, ShowPopupOptions } from '../../composables/popupController';
 import { provideTheme, ProvideThemePropDefinitions } from '../../composables/theme';
@@ -14,6 +9,11 @@ import { TransitionClasses } from '../../types/Transition';
 import BSidebar from '../sidebar/BSidebar';
 import BNoticeContainer, { NoticeContainer, NoticeOptions } from '../notices/noticeContainer/BNoticeContainer';
 import BPopupContainer, { PopupContainer } from '../popupContainer/BPopupContainer';
+import {
+  provideSidebarController,
+  ProvideSidebarControllerPropsDefinition,
+  SidebarController
+} from '../sidebar/composables';
 
 const DEFAULT_TRANSITION: TransitionClasses = { name: 'fade' };
 
@@ -102,7 +102,7 @@ export default defineComponent({
     provideNoticeController(showNotice);
     providePopupController(showPopup);
     provideWindowSize(props);
-    const sidebarController = composables(props);
+    const sidebarController = provideSidebarController(props);
 
     return () => {
       const hasNavigationDrawer = !!slots['sidebar'];

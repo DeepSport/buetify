@@ -1,17 +1,19 @@
 <template>
 	<article>
-		<example-view :code="SimpleCode">
+		<p>
+			Snackbars have only one button and are queued by default. They can be used programmatically or via a
+			component.
+		</p>
+    <p class="padding-bottom-size-6 padding-top-size-6"><b>Note:</b> Snackbars and Toasts will share a queue</p>
+		<example-view title="Template" :code="TemplateExampleCode">
 			<template #component>
-				<simple></simple>
+				<template-example></template-example>
 			</template>
 		</example-view>
 		<b-horizontal-divider></b-horizontal-divider>
-		<example-view title="Templated" :code="TemplateExampleCode">
-      <template #content>
-        Use the default slot to inject custom content into the loader.
-      </template>
+		<example-view title="Programmatic" :code="ProgrammaticExampleCode">
 			<template #component>
-				<template-example></template-example>
+				<programmatic-example></programmatic-example>
 			</template>
 		</example-view>
 		<b-horizontal-divider></b-horizontal-divider>
@@ -27,22 +29,22 @@ import ExampleView from '../../../../components/exampleView/ExampleView.vue';
 import { apis } from './apis';
 import TemplateExample from './examples/TemplateExample.vue';
 import TemplateExampleCode from '!!raw-loader!./examples/TemplateExample.vue';
-import Simple from './examples/Simple.vue';
-import SimpleCode from '!!raw-loader!./examples/Simple.vue';
+import ProgrammaticExampleCode from '!!raw-loader!./examples/ProgrammaticExample.vue';
+import ProgrammaticExample from './examples/ProgrammaticExample.vue';
 
 export default defineComponent({
-	name: 'loading',
+	name: 'snackbar-documentation',
 	components: {
 		ExampleView,
 		ApiView,
-		Simple,
 		TemplateExample,
+		ProgrammaticExample,
 		BHorizontalDivider
 	},
 	setup() {
 		return {
 			apis,
-			SimpleCode,
+			ProgrammaticExampleCode,
 			TemplateExampleCode
 		};
 	}

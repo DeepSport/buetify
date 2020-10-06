@@ -4,7 +4,7 @@ import { meta } from './meta';
 
 
 export const route: RouteRecordRaw = {
-	component: defineAsyncComponent(() => import('./Button.vue')),
+	component: defineAsyncComponent(() => import('./ButtonDocumentation.vue')),
 	name: meta.fullPath,
 	path: meta.subPath,
 	meta

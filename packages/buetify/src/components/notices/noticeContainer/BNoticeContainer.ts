@@ -1,11 +1,9 @@
-import { constant, constVoid } from 'fp-ts/lib/function';
+import { constVoid } from 'fp-ts/lib/function';
 import { IO } from 'fp-ts/lib/IO';
-import { getOrElse, isNone, none, Option, some } from 'fp-ts/lib/Option';
-import { pipe } from 'fp-ts/lib/pipeable';
 import { VNode } from 'vue';
 import { formatTransition } from '../../../composables/transition';
 import { Transition, TransitionClasses } from '../../../types/Transition';
-import { defineComponent, h, Transition as transition } from 'vue';
+import { defineComponent, h, Transition as transition, computed, reactive, nextTick } from 'vue';
 import { constEmptyArray } from '../../../utils/helpers';
 
 export interface NoticeOptions {
@@ -16,51 +14,74 @@ export interface NoticeOptions {
 }
 
 export interface Notice {
-  render: IO<VNode[]>;
+  id: number;
+  render: IO<VNode[] | undefined>;
   transition: TransitionClasses;
+  onAfterLeave: IO<void>;
+}
+
+let id = 0;
+
+function generateNotice(notice: Notice): VNode {
+  return h(transition, { key: notice.id, ...notice.transition, onAfterLeague: notice.onAfterLeave }, notice.render);
 }
 
 const BNoticeContainer = defineComponent({
   name: 'b-notice-container',
-  data: () => ({
-    id: 0,
-    notice: none as Option<Notice>
-  }),
-  computed: {
-    rootZIndex(): -1 | 1 {
-      return isNone(this.notice) ? -1 : 1;
-    },
-    extractedNotice(): Notice {
-      return pipe(this.notice, getOrElse<Notice>(constant({ transition: { name: 'fade' }, render: constEmptyArray })));
-    }
-  },
-  methods: {
-    addNotice(options: NoticeOptions): IO<void> {
-      const notice = { render: options.render, transition: formatTransition(options.transition) };
-      this.notice = some(notice);
-      return () => {
-        this.notice = none;
-      };
-    },
-    showNotice(params: NoticeOptions): IO<void> {
-      if (params.shouldQueue && !isNone(this.notice)) {
-        setTimeout(() => this.showNotice(params), 250);
-        return constVoid;
+  setup() {
+    const notices = reactive([] as Notice[]);
+
+    const rootZ = computed(() => (notices.length ? 1 : -1));
+
+    function addNotice(options: NoticeOptions): IO<void> {
+      const nId = id++;
+      function remove() {
+        const index = notices.findIndex(n => n.id === nId);
+        if (index > -1) {
+          console.log('removing notice', nId);
+          notices.splice(index, 1);
+        }
       }
-      const removeNotice = this.addNotice(params);
+      const newNotice: Notice = reactive({
+        id: nId,
+        render: constEmptyArray,
+        transition: formatTransition(options.transition),
+        onAfterLeave: remove
+      });
+      notices.push(newNotice);
+      nextTick().then(() => {
+        newNotice.render = options.render;
+      });
+      return remove;
+    }
+
+    function showNotice(params: NoticeOptions): IO<void> {
+      if (params.shouldQueue && notices.length > 0) {
+        let remove = constVoid;
+        setTimeout(() => {
+          remove = showNotice(params);
+        }, 250);
+        return () => {
+          remove();
+        };
+      }
+      const removeNotice = addNotice(params);
       if (params.duration === 0) {
         return removeNotice;
       } else {
         setTimeout(removeNotice, params.duration);
-        return constVoid;
+        return removeNotice;
       }
-    },
-    generateNotice(): VNode {
-      return h(transition, this.extractedNotice.transition, this.extractedNotice.render);
     }
+
+    return {
+      rootZ,
+      showNotice,
+      notices
+    };
   },
-  render(): VNode {
-    return h('div', { style: { 'z-index': this.rootZIndex } }, [this.generateNotice()]);
+  render() {
+    return h('div', { style: { 'z-index': this.rootZ } }, this.notices.map(generateNotice));
   }
 });
 

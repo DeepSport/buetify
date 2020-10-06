@@ -52,7 +52,7 @@ import FooterExample from './examples/FooterExample.vue';
 import FooterExampleCode from '!!raw-loader!./examples/FooterExample.vue';
 
 export default defineComponent({
-	name: 'datepicker',
+	name: 'datepicker-documentation',
 	components: {
 		ExampleView,
 		ApiView,

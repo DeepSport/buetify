@@ -6,9 +6,12 @@
 			</template>
 		</example-view>
 		<b-horizontal-divider></b-horizontal-divider>
-		<example-view title="Fullscreen" :code="FullscreenExampleCode">
+		<example-view title="Templated" :code="TemplateExampleCode">
+      <template #content>
+        Use the default slot to inject custom content into the loader.
+      </template>
 			<template #component>
-				<fullscreen-example></fullscreen-example>
+				<template-example></template-example>
 			</template>
 		</example-view>
 		<b-horizontal-divider></b-horizontal-divider>
@@ -22,25 +25,25 @@ import { defineComponent } from 'vue';
 import { ApiView } from '../../../../components/apiView';
 import ExampleView from '../../../../components/exampleView/ExampleView.vue';
 import { apis } from './apis';
-import FullscreenExample from './examples/FullscreenExample.vue';
-import FullscreenExampleCode from '!!raw-loader!./examples/FullscreenExample.vue';
+import TemplateExample from './examples/TemplateExample.vue';
+import TemplateExampleCode from '!!raw-loader!./examples/TemplateExample.vue';
 import Simple from './examples/Simple.vue';
 import SimpleCode from '!!raw-loader!./examples/Simple.vue';
 
 export default defineComponent({
-	name: 'modal',
+	name: 'loading-documentation',
 	components: {
 		ExampleView,
 		ApiView,
 		Simple,
-		FullscreenExample,
+		TemplateExample,
 		BHorizontalDivider
 	},
 	setup() {
 		return {
 			apis,
 			SimpleCode,
-			FullscreenExampleCode
+			TemplateExampleCode
 		};
 	}
 });

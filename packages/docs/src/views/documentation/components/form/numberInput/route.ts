@@ -3,7 +3,7 @@ import { RouteRecordRaw } from 'vue-router';
 import { meta } from './meta';
 
 export const route: RouteRecordRaw = {
-	component: defineAsyncComponent(() => import('./NumberInput.vue')),
+	component: defineAsyncComponent(() => import('./NumberInputDocumentation.vue')),
 	name: meta.fullPath,
 	path: meta.subPath,
 	meta

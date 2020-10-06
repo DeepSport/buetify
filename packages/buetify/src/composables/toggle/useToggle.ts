@@ -101,7 +101,6 @@ export function useToggle<K extends string>(
       return internalStatus.value;
     },
     set(val: boolean) {
-      console.log(val);
       const cValue = internalStatus.value;
       if (cValue !== val && props.onToggle) {
         props.onToggle(val);

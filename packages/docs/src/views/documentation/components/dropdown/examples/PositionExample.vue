@@ -1,5 +1,5 @@
 <template>
-	<section aria-label="dropdown simple example" class="is-flex flex-direction-row justify-content-space-between">
+	<section aria-label="b-dropdown position example" class="is-flex flex-direction-row justify-content-space-between">
 		<b-dropdown>
 			<template #trigger="{ props }">
 				<b-button v-bind="props.value">
@@ -89,7 +89,7 @@ import BDropdownItem from 'buetify/lib/components/dropdown/BDropdownItem';
 import { defineComponent } from 'vue';
 
 export default defineComponent({
-	name: 'dropdown-simple-example',
+	name: 'dropdown-position-example',
 	components: {
 		BDropdown,
 		BDropdownItem,

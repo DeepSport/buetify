@@ -60,7 +60,7 @@ import VariantsAndStatesExampleCode from '!!raw-loader!./examples/VariantsAndSta
 
 
 export default defineComponent({
-	name: 'input-examples',
+	name: 'input-documentation',
 	components: {
 		ApiView,
 		SimpleExample,

@@ -98,7 +98,6 @@ function getOnChange<T>(
     const currentValue = value.value;
     const tValue = trueValue.value;
     const fValue = falseValue.value;
-    console.log(tValue, fValue)
     if (isMultiple.value) {
       if (!Array.isArray(currentValue)) {
         value.value = [];
@@ -107,10 +106,8 @@ function getOnChange<T>(
       }
     } else if (!Array.isArray(currentValue)) {
       if (currentValue === undefined || (currentValue !== undefined && !eq.value.equals(currentValue, tValue))) {
-        console.log('setting true value', tValue);
         value.value = tValue;
       } else {
-        console.log('settings false value', fValue);
         value.value = fValue;
       }
     }
@@ -160,7 +157,7 @@ export function useSelectionControl<T>(
 ) {
   const { modelValue } = useModel<T>(props);
   const focus = useFocus((props as unknown) as UseFocusProps, ref);
-  const trueValue = computed(() => (props.nativeValue || props.trueValue) as T | undefined)
+  const trueValue = computed(() => (props.nativeValue || props.trueValue) as T | undefined);
   const label = useLabelId(props, role);
   const isMultiple = computed(() => props.isMultiple || Array.isArray(modelValue.value));
   const isActive = computed(() => getIsActive(modelValue.value, trueValue.value, isMultiple.value, props.eq));

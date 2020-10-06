@@ -52,7 +52,7 @@ import CustomizationExample from './examples/CustomizationExample.vue';
 import CustomizationExampleCode from '!!raw-loader!./examples/CustomizationExample.vue';
 
 export default defineComponent({
-	name: 'number-input-examples',
+	name: 'number-input-documentation',
 	components: {
 		ApiView,
 		SimpleExample,

@@ -5,16 +5,16 @@
 				<simple></simple>
 			</template>
 		</example-view>
-		<b-horizontal-divider></b-horizontal-divider>
+    <b-horizontal-divider></b-horizontal-divider>
     <example-view title="Variants" :code="VariantsExampleCode" is-vertical>
       <template #component>
         <variants-example></variants-example>
       </template>
     </example-view>
-    <b-horizontal-divider></b-horizontal-divider>
-    <example-view title="Icons" :code="IconsExampleCode" is-vertical>
+		<b-horizontal-divider></b-horizontal-divider>
+    <example-view title="Sizes" :code="SizesExampleCode" is-vertical>
       <template #component>
-        <icons-example></icons-example>
+        <sizes-example></sizes-example>
       </template>
     </example-view>
     <b-horizontal-divider></b-horizontal-divider>
@@ -25,32 +25,32 @@
 <script lang="ts">
 import BHorizontalDivider from 'buetify/lib/components/layout/divider/BHorizontalDivider';
 import { defineComponent } from 'vue';
-import { ApiView } from '../../../../components/apiView';
-import ExampleView from '../../../../components/exampleView/ExampleView.vue';
+import ApiView from '../../../../../components/apiView/ApiView.vue';
+import { ExampleView } from '../../../../../components/exampleView';
 import { apis } from './apis';
 import Simple from './examples/SimpleExample.vue';
 import SimpleCode from '!!raw-loader!./examples/SimpleExample.vue';
-import IconsExampleCode from '!!raw-loader!./examples/IconsExample.vue';
-import IconsExample from './examples/IconsExample.vue';
+import SizesExample from './examples/SizesExample.vue';
+import SizesExampleCode from '!!raw-loader!./examples/SizesExample.vue';
 import VariantsExample from './examples/VariantsExample.vue';
 import VariantsExampleCode from '!!raw-loader!./examples/VariantsExample.vue';
 
 export default defineComponent({
-	name: 'message',
+	name: 'switch-documentation',
 	components: {
 		ExampleView,
 		ApiView,
 		Simple,
-    VariantsExample,
-    IconsExample,
-		BHorizontalDivider
+    SizesExample,
+		BHorizontalDivider,
+    VariantsExample
 	},
 	setup() {
 		return {
 			apis,
 			SimpleCode,
-      VariantsExampleCode,
-      IconsExampleCode
+      SizesExampleCode,
+      VariantsExampleCode
 		};
 	}
 });
