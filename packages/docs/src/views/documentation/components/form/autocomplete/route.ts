@@ -3,7 +3,7 @@ import { RouteRecordRaw } from 'vue-router';
 import { meta } from './meta';
 
 export const route: RouteRecordRaw = {
-	component: defineAsyncComponent(() => import('./Autocomplete.vue')),
+	component: defineAsyncComponent(() => import('./AutocompleteDocumentation.vue')),
 	name: meta.fullPath,
 	path: meta.subPath,
 	meta

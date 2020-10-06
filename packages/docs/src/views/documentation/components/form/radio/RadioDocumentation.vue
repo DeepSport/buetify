@@ -5,16 +5,16 @@
 				<simple></simple>
 			</template>
 		</example-view>
-		<b-horizontal-divider></b-horizontal-divider>
-		<example-view title="Object Array" :code="ObjectArrayExampleCode" is-vertical>
-			<template #component>
-				<object-array-example></object-array-example>
-			</template>
-		</example-view>
-		<b-horizontal-divider></b-horizontal-divider>
-    <example-view title="Multiple" :code="MultipleExampleCode" is-vertical>
+    <b-horizontal-divider></b-horizontal-divider>
+    <example-view title="Variants" :code="VariantsExampleCode" is-vertical>
       <template #component>
-        <multiple-example></multiple-example>
+        <variants-example></variants-example>
+      </template>
+    </example-view>
+		<b-horizontal-divider></b-horizontal-divider>
+    <example-view title="Sizes" :code="SizesExampleCode" is-vertical>
+      <template #component>
+        <sizes-example></sizes-example>
       </template>
     </example-view>
     <b-horizontal-divider></b-horizontal-divider>
@@ -28,29 +28,29 @@ import { defineComponent } from 'vue';
 import ApiView from '../../../../../components/apiView/ApiView.vue';
 import { ExampleView } from '../../../../../components/exampleView';
 import { apis } from './apis';
-import MultipleExample from './examples/MultipleExample.vue';
-import MultipleExampleCode from '!!raw-loader!./examples/MultipleExample.vue';
-import ObjectArrayExample from './examples/ObjectArrayExample.vue';
-import ObjectArrayExampleCode from '!!raw-loader!./examples/ObjectArrayExample.vue';
 import Simple from './examples/SimpleExample.vue';
 import SimpleCode from '!!raw-loader!./examples/SimpleExample.vue';
+import SizesExample from './examples/SizesExample.vue';
+import SizesExampleCode from '!!raw-loader!./examples/SizesExample.vue';
+import VariantsExample from './examples/VariantsExample.vue';
+import VariantsExampleCode from '!!raw-loader!./examples/VariantsExample.vue';
 
 export default defineComponent({
-	name: 'select-examples',
+	name: 'radio-documentation',
 	components: {
-		ObjectArrayExample,
-    MultipleExample,
 		ExampleView,
 		ApiView,
 		Simple,
-		BHorizontalDivider
+    SizesExample,
+		BHorizontalDivider,
+    VariantsExample
 	},
 	setup() {
 		return {
 			apis,
 			SimpleCode,
-			ObjectArrayExampleCode,
-      MultipleExampleCode
+      SizesExampleCode,
+      VariantsExampleCode
 		};
 	}
 });

@@ -4,7 +4,7 @@ import { meta } from './meta';
 
 
 export const route: RouteRecordRaw = {
-	component: defineAsyncComponent(() => import('./Dialog.vue')),
+	component: defineAsyncComponent(() => import('./DialogDocumentation.vue')),
 	name: meta.fullPath,
 	path: meta.subPath,
 	meta

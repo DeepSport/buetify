@@ -36,7 +36,7 @@ import VariantsExample from './examples/VariantsExample.vue';
 import VariantsExampleCode from '!!raw-loader!./examples/VariantsExample.vue';
 
 export default defineComponent({
-	name: 'radio',
+	name: 'checkbox-documentation',
 	components: {
 		ExampleView,
 		ApiView,

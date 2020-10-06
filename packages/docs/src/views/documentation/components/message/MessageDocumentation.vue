@@ -36,15 +36,15 @@ import ExampleView from '../../../../components/exampleView/ExampleView.vue';
 import { apis } from './apis';
 import HeaderlessExample from './examples/HeaderlessExample.vue';
 import HeaderlessExampleCode from '!!raw-loader!./examples/HeaderlessExample.vue';
-import Simple from './examples/Simple.vue';
-import SimpleCode from '!!raw-loader!./examples/Simple.vue';
+import Simple from './examples/SimpleExample.vue';
+import SimpleCode from '!!raw-loader!./examples/SimpleExample.vue';
 import IconsExampleCode from '!!raw-loader!./examples/IconsExample.vue';
 import IconsExample from './examples/IconsExample.vue';
 import VariantsExample from './examples/VariantsExample.vue';
 import VariantsExampleCode from '!!raw-loader!./examples/VariantsExample.vue';
 
 export default defineComponent({
-	name: 'message',
+	name: 'message-documentation',
 	components: {
 		ExampleView,
 		ApiView,

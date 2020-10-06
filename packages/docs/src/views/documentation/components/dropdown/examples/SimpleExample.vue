@@ -1,5 +1,5 @@
 <template>
-	<section aria-label="dropdown simple example">
+	<section aria-label="b-dropdown simple example">
 		<b-dropdown>
 			<template #trigger="{ props }">
 				<b-button v-bind="props.value">

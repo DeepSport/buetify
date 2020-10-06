@@ -1,8 +1,8 @@
 <template>
 	<article>
-		<example-view :code="SimpleCode" is-vertical>
+		<example-view :code="SimpleExampleCode" is-vertical>
 			<template #component>
-				<simple></simple>
+				<simple-example></simple-example>
 			</template>
 		</example-view>
 		<b-horizontal-divider></b-horizontal-divider>
@@ -13,25 +13,27 @@
 <script lang="ts">
 import BHorizontalDivider from 'buetify/lib/components/layout/divider/BHorizontalDivider';
 import { defineComponent } from 'vue';
-import { ApiView } from '../../../../components/apiView';
+import ApiView from '../../../../components/apiView/ApiView.vue';
 import ExampleView from '../../../../components/exampleView/ExampleView.vue';
-import { apis } from './apis';
-import Simple from './examples/Simple.vue';
-import SimpleCode from '!!raw-loader!./examples/Simple.vue';
+import SimpleExample from './examples/SimpleExample.vue';
+import SimpleExampleCode from '!!raw-loader!./examples/SimpleExample.vue';
+import { apis } from './api';
 
 export default defineComponent({
-	name: 'accordion',
+	name: 'menu-documentation',
 	components: {
+	  ApiView,
 		ExampleView,
-		ApiView,
-		Simple,
+		SimpleExample,
 		BHorizontalDivider
 	},
 	setup() {
 		return {
 			apis,
-			SimpleCode
+			SimpleExampleCode
 		};
 	}
 });
 </script>
+
+<style lang="sass"></style>

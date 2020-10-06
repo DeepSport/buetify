@@ -79,7 +79,7 @@ import HorizontalExampleCode from '!!raw-loader!./examples/HorizontalExample.vue
 
 
 export default defineComponent({
-	name: 'field',
+	name: 'field-documentation',
 	components: {
 		ExampleView,
 		AddonsExample,

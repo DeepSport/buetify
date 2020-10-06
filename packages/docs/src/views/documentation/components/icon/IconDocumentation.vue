@@ -33,7 +33,7 @@ import FontAwesomeExampleCode from '!!raw-loader!./examples/FontAwesomeExample.v
 import { apis } from './api';
 
 export default defineComponent({
-	name: 'Icon',
+	name: 'icon-documentation',
 	components: {
 	  ApiView,
 		ExampleView,

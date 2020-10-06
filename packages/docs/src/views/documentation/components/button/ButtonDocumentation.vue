@@ -27,16 +27,16 @@ import BHorizontalDivider from 'buetify/lib/components/layout/divider/BHorizonta
 import { defineComponent } from 'vue';
 import { ApiView } from '../../../../components/apiView';
 import ExampleView from '../../../../components/exampleView/ExampleView.vue';
-import Simple from './examples/Simple.vue';
-import SimpleCode from '!!raw-loader!./examples/Simple.vue';
-import Sizes from './examples/Sizes.vue';
-import SizesCode from '!!raw-loader!./examples/Sizes.vue';
-import ColorsAndStates from './examples/ColorsAndStates.vue';
-import ColorsAndStatesCode from '!!raw-loader!./examples/ColorsAndStates.vue';
+import Simple from './examples/SimpleExample.vue';
+import SimpleCode from '!!raw-loader!./examples/SimpleExample.vue';
+import Sizes from './examples/SizesExample.vue';
+import SizesCode from '!!raw-loader!./examples/SizesExample.vue';
+import ColorsAndStates from './examples/ColorsAndStatesExample.vue';
+import ColorsAndStatesCode from '!!raw-loader!./examples/ColorsAndStatesExample.vue';
 import { api } from './api';
 
 export default defineComponent({
-	name: 'Button',
+	name: 'button-documentation',
 	components: {
 		ExampleView,
 		ColorsAndStates,

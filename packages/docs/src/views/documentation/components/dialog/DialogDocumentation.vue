@@ -21,14 +21,14 @@ import BHorizontalDivider from 'buetify/lib/components/layout/divider/BHorizonta
 import { defineComponent } from 'vue';
 import { ApiView } from '../../../../components/apiView';
 import ExampleView from '../../../../components/exampleView/ExampleView.vue';
-import NestedDialogs from './examples/NestedDialogs.vue';
-import NestedDialogsCode from '!!raw-loader!./examples/NestedDialogs.vue';
-import Simple from './examples/Simple.vue';
-import SimpleCode from '!!raw-loader!./examples/Simple.vue';
+import NestedDialogs from './examples/NestedDialogsExample.vue';
+import NestedDialogsCode from '!!raw-loader!./examples/NestedDialogsExample.vue';
+import Simple from './examples/SimpleExample.vue';
+import SimpleCode from '!!raw-loader!./examples/SimpleExample.vue';
 import { apis } from './apis';
 
 export default defineComponent({
-	name: 'dialog-examples',
+	name: 'dialog-documentation',
 	components: {
 		ExampleView,
 		ApiView,

@@ -48,7 +48,7 @@ export function useSidebarController(): SidebarController {
   return inject(SIDEBAR_CONTROLLER_INJECTION_SYMBOL, DEFAULT_SIDEBAR_CONTROLLER_INJECTION);
 }
 
-export function composables(props: ProvideNavigationDrawerControllerProps) {
+export function provideSidebarController(props: ProvideNavigationDrawerControllerProps) {
   const toggle = useToggle(props, 'isVisible');
   const injection: SidebarController = {
     isVisible: toggle.isOn,

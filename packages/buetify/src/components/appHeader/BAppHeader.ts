@@ -1,11 +1,8 @@
 import './app-header.sass';
 import { isSome } from 'fp-ts/lib/Option';
-import {
-  SidebarController,
-  useNavigationDrawerController
-} from '../../composables/navigationDrawerController';
 import { SetupContext, h, Slots } from 'vue';
 import BNavbarBurger from '../navbar/BNavbarBurger';
+import {SidebarController, useSidebarController} from '../sidebar/composables';
 
 function generateMainSlot(injection: SidebarController, includeClickHandler: boolean, slots: Slots) {
   return h(
@@ -38,8 +35,8 @@ function generateNavigationButton(injection: SidebarController, slots: Slots) {
 }
 
 export default function(_: any, { attrs, slots }: SetupContext) {
-  const navigationDrawerController = useNavigationDrawerController();
-  const isInvisible = !navigationDrawerController.isVisible.value;
+  const sidebarController = useSidebarController();
+  const isInvisible = !sidebarController.isVisible.value;
   return h(
     'header',
     {
@@ -52,8 +49,8 @@ export default function(_: any, { attrs, slots }: SetupContext) {
       ]
     },
     [
-      generateNavigationButton(navigationDrawerController, slots),
-      generateMainSlot(navigationDrawerController, isInvisible, slots)
+      generateNavigationButton(sidebarController, slots),
+      generateMainSlot(sidebarController, isInvisible, slots)
     ]
   );
 }

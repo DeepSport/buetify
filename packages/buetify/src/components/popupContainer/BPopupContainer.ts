@@ -1,6 +1,6 @@
 import { Eq, eq, eqNumber } from 'fp-ts/lib/Eq';
 import { IO } from 'fp-ts/lib/IO';
-import { VNode, defineComponent, h, Transition as transition, ref, reactive, computed, nextTick } from 'vue';
+import { VNode, defineComponent, h, Transition as transition, reactive, computed, nextTick } from 'vue';
 import { formatTransition } from '../../composables/transition';
 import { Transition, TransitionClasses } from '../../types/Transition';
 import {constEmptyArray, removeListItem} from '../../utils/helpers';
@@ -31,30 +31,28 @@ function generatePopup(popup: Popup, index: number): VNode {
 const BPopupContainer = defineComponent({
   name: 'b-popup-container',
   setup() {
-      const popups = ref<Popup[]>([]);
+      const popups = reactive<Popup[]>([]);
       function showPopup(options: PopupOptions): IO<void> {
         const nid = id++
         const popup = reactive({ id: nid, render: constEmptyArray as IO<VNode[]>, transition: formatTransition(options.transition) });
-        popups.value.push(popup)
-        nextTick(() => { popup.render = options.render })
+        popups.push(popup)
+        nextTick().then(() => { popup.render = options.render })
         return () => {
           popup.render = constEmptyArray
           setTimeout(() => {
-            const index = popups.value.findIndex(p => p.id === nid);
+            const index = popups.findIndex(p => p.id === nid);
             if (index > 0) {
-              popups.value.splice(index, 1)
+              popups.splice(index, 1)
             }
           }, 250)
         };
       }
-      const rootZ = computed(() => popups.value.length ? 1 : -1)
+      const rootZ = computed(() => popups.length ? 1 : -1)
       return {
         showPopup,
         popups,
         rootZ
       }
-  },
-  methods: {
   },
   render(): VNode {
     return h(

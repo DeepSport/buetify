@@ -20,7 +20,7 @@ import Simple from './examples/SimpleExample.vue';
 import SimpleCode from '!!raw-loader!./examples/SimpleExample.vue';
 
 export default defineComponent({
-	name: 'pagination',
+	name: 'pagination-documentation',
 	components: {
 		ExampleView,
 		ApiView,

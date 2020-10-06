@@ -45,7 +45,7 @@ import FooterExampleCode from '!!raw-loader!./examples/FooterExample.vue';
 
 
 export default defineComponent({
-	name: 'autocomplete',
+	name: 'autocomplete-documentation',
 	components: {
     ObjectArrayExample,
 		ExampleView,

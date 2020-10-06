@@ -1,14 +1,14 @@
 <template>
 	<article>
-		<example-view :code="SimpleCode" is-vertical>
+		<example-view :code="SimpleCode">
 			<template #component>
 				<simple></simple>
 			</template>
 		</example-view>
 		<b-horizontal-divider></b-horizontal-divider>
-		<example-view title="Position" :code="PositionCode">
+		<example-view title="Fullscreen" :code="FullscreenExampleCode">
 			<template #component>
-				<position></position>
+				<fullscreen-example></fullscreen-example>
 			</template>
 		</example-view>
 		<b-horizontal-divider></b-horizontal-divider>
@@ -22,26 +22,25 @@ import { defineComponent } from 'vue';
 import { ApiView } from '../../../../components/apiView';
 import ExampleView from '../../../../components/exampleView/ExampleView.vue';
 import { apis } from './apis';
+import FullscreenExample from './examples/FullscreenExample.vue';
+import FullscreenExampleCode from '!!raw-loader!./examples/FullscreenExample.vue';
 import Simple from './examples/Simple.vue';
 import SimpleCode from '!!raw-loader!./examples/Simple.vue';
-import Position from './examples/Position.vue';
-import PositionCode from '!!raw-loader!./examples/Position.vue';
 
 export default defineComponent({
-	name: 'dropdown',
+	name: 'modal-documentation',
 	components: {
 		ExampleView,
 		ApiView,
 		Simple,
-		Position,
+		FullscreenExample,
 		BHorizontalDivider
 	},
 	setup() {
 		return {
 			apis,
 			SimpleCode,
-
-			PositionCode
+			FullscreenExampleCode
 		};
 	}
 });
