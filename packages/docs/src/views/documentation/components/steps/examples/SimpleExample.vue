@@ -25,12 +25,27 @@
 				<b-switch v-model="useSuccess"> Set <code>is-success</code> for profile </b-switch>
 			</p>
 		</b-field>
-		<b-field label="Size">
-			<b-select v-model="size" :items="sizes"> </b-select>
+		<b-field is-grouped is-grouped-multiline>
+			<b-field label="Size">
+				<b-select v-model="size" :items="sizes"> </b-select>
+			</b-field>
+			<b-field label="Label Position">
+				<b-select v-model="labelPosition" :items="positions"></b-select>
+			</b-field>
+			<b-field label="Mobile Mode">
+				<b-select v-model="mobileMode" :items="mobileModes"></b-select>
+			</b-field>
 		</b-field>
 		<p class="padding-top-size-6 has-text-centered"><b>Current Step: </b>{{ activeStep }}</p>
 		<b-horizontal-divider></b-horizontal-divider>
-		<b-steps v-model="activeStep" :is-animated="isAnimated" :is-rounded="isRounded">
+		<b-steps
+			v-model="activeStep"
+			:size="size"
+			:is-animated="isAnimated"
+			:is-rounded="isRounded"
+			:label-position="labelPosition"
+      :mobile-mode="mobileMode"
+		>
 			<b-step-item label="Account" :is-clickable="isClickable">
 				<h1 class="title has-text-centered">Account</h1>
 				Lorem ipsum dolor sit amet.
@@ -58,7 +73,7 @@ import { BSelect, BSwitch } from 'buetify/lib/components';
 import BField from 'buetify/lib/components/form/field';
 import BHorizontalDivider from 'buetify/lib/components/layout/divider/BHorizontalDivider';
 import BStepItem from 'buetify/lib/components/steps/BStepItem';
-import BSteps, { StepsSize } from 'buetify/lib/components/steps/BSteps';
+import BSteps, { StepLabelPosition, StepsMobileMode, StepsSize } from 'buetify/lib/components/steps/BSteps';
 import { defineComponent, shallowRef } from 'vue';
 
 interface Option<T> {
@@ -85,8 +100,38 @@ const sizes: Option<StepsSize>[] = [
 	}
 ];
 
+const positions: Option<StepLabelPosition>[] = [
+	{
+		value: '',
+		text: 'Default'
+	},
+	{
+		value: 'is-right',
+		text: 'Right'
+	},
+	{
+		value: 'is-left',
+		text: 'Left'
+	}
+];
+
+const mobileModes: Option<StepsMobileMode>[] = [
+	{
+		value: '',
+		text: 'Default'
+	},
+	{
+		value: 'compact',
+		text: 'Compact'
+	},
+	{
+		value: 'minimal',
+		text: 'Minimal'
+	}
+];
+
 export default defineComponent({
-	name: 'simple-pagination-example',
+	name: 'simple-steps-example',
 	components: {
 		BSteps,
 		BStepItem,
@@ -102,10 +147,13 @@ export default defineComponent({
 		const isClickable = shallowRef(false);
 		const useSuccess = shallowRef(false);
 		const size = shallowRef<StepsSize>('');
-
+		const labelPosition = shallowRef<StepLabelPosition>('');
 		const activeStep = shallowRef(0);
+		const mobileMode = shallowRef<StepsMobileMode>('');
 
 		return {
+			labelPosition,
+			positions,
 			isClickable,
 			useSuccess,
 			showSocial,
@@ -113,7 +161,9 @@ export default defineComponent({
 			isAnimated,
 			size,
 			sizes,
-			activeStep
+			activeStep,
+			mobileMode,
+			mobileModes
 		};
 	}
 });

@@ -1,11 +1,14 @@
-import './steps.sass';
+import './steps.scss';
+import { lookup } from 'fp-ts/Array';
+import { pipe } from 'fp-ts/function';
 import { getUseModelPropsDefinition, Model, useModel } from '../../composables/model';
 import { DefaultThemePropsDefinition, useTheme } from '../../composables/theme';
-import { isFragment, isObject } from '../../utils/helpers';
 import { ColorVariant } from '../../types/ColorVariants';
-import { none, Option, some } from 'fp-ts/lib/Option';
+import { map } from 'fp-ts/lib/Option';
 import {
-  Transition,
+  computed,
+  cloneVNode,
+  TransitionGroup,
   Ref,
   defineComponent,
   nextTick,
@@ -15,28 +18,28 @@ import {
   ExtractPropTypes,
   provide,
   shallowRef,
-  ComponentInternalInstance,
-  Slots,
   withDirectives,
-  vShow
+  vShow,
+  shallowReactive,
+  SetupContext
 } from 'vue';
-import { BStepItemProps, STEP_ITEM_NAME, StepInjection, STEPS_SYMBOL } from './shared';
+import { BStepItemProps, StepInjection, STEPS_SYMBOL } from './shared';
 
 export type StepsSize = 'is-small' | 'is-medium' | 'is-large' | '';
 
 type StepTransition = 'slide-next' | 'slide-prev';
 
-export type StepPosition = 'is-right' | '';
+export type StepsPosition = 'is-right' | '';
 
 export type StepLabelPosition = 'is-right' | 'is-left' | '';
 
-export type StepMobileMode = 'minimal' | 'compact' | '';
+export type StepsMobileMode = 'minimal' | 'compact' | '';
 
 export const BStepsPropsDefinition = {
   ...getUseModelPropsDefinition<number>(),
   ...DefaultThemePropsDefinition,
   position: {
-    type: String as PropType<StepPosition>,
+    type: String as PropType<StepsPosition>,
     default: '' as const
   },
   labelPosition: {
@@ -45,7 +48,7 @@ export const BStepsPropsDefinition = {
   },
   variant: {
     type: String as PropType<ColorVariant>,
-    default: 'is-link' as const
+    default: '' as const
   },
   size: {
     type: String as PropType<StepsSize>,
@@ -56,12 +59,12 @@ export const BStepsPropsDefinition = {
     default: true
   },
   mobileMode: {
-    type: String as PropType<StepMobileMode>,
-    default: '' as const
+    type: String as PropType<StepsMobileMode>,
+    default: 'minimal' as const
   },
   isRounded: {
     type: Boolean,
-    default: false
+    default: true
   },
   isVertical: {
     type: Boolean,
@@ -71,21 +74,13 @@ export const BStepsPropsDefinition = {
 
 export type BStepsProps = ExtractPropTypes<typeof BStepsPropsDefinition>;
 
-function getOnStepItemClick(
-  step: BStepItemNode,
-  index: number,
-  model: Model<number>,
-  activeLabel: Ref<Option<string>>,
-  transition: Ref<StepTransition>
-) {
+function getOnStepItemClick(index: number, model: Model<number>, transition: Ref<StepTransition>) {
   return () => {
     const val = model.modelValue.value || 0;
     if (val !== index) {
       transition.value = index < val ? 'slide-next' : 'slide-prev';
-      nextTick(() => {
-        const label = step.component?.props.label ?? (step.props?.label as string);
+      nextTick().then(() => {
         model.modelValue.value = index;
-        activeLabel.value = some(label);
       });
     }
   };
@@ -94,22 +89,22 @@ function getOnStepItemClick(
 function getGenerateNavItem(
   props: BStepsProps,
   model: Model<number>,
-  activeLabel: Ref<Option<string>>,
+  injection: StepInjection,
   transition: Ref<StepTransition>
 ) {
-  return function generateNavItem(step: BStepItemNode, index: number): VNode {
-    const label = step.component?.props.label;
-    const icon = step.component?.props.icon;
-    const isClickable = !!step.component?.props.isClickable;
-    console.log(isClickable);
+  return function generateNavItem(step: BStepItemProps, index: number): VNode {
+    const currentIndex = model.modelValue.value || 0;
+    const isClickable = step.isClickable ?? index < currentIndex;
     return withDirectives(
       h(
         'li',
         {
-          key: label ?? index,
+          key: step.label,
           class: [
+            step.variant || props.variant,
             'step-item',
             {
+              'is-previous': index < currentIndex,
               'is-active': index === model.modelValue.value
             }
           ]
@@ -124,35 +119,28 @@ function getGenerateNavItem(
                   'is-clickable': isClickable
                 }
               ],
-              onClick: isClickable ? getOnStepItemClick(step, index, model, activeLabel, transition) : undefined
+              onClick: isClickable ? getOnStepItemClick(index, model, transition) : undefined
             },
             [
-              h('div', { class: 'step-marker' }, icon ? h(icon as any, { size: props.size }) : `${index + 1}`), //eslint-disable-line
-              h('div', { class: 'step-details' }, [h('span', { class: 'step-title' }, label)])
+              h(
+                'div',
+                { class: 'step-marker' },
+                step.icon ? h(step.icon as any, { size: props.size }) : step.step ?? `${index + 1}`
+              ), //eslint-disable-line
+              h('div', { class: 'step-details' }, [h('span', { class: 'step-title' }, step.label)])
             ]
           )
         ]
       ),
-      [[vShow, step.component?.props.isVisible ?? true]]
+      [[vShow, injection.steps[index]?.isVisible ?? true]]
     );
   };
 }
 
-function generateNavItems(
+function generateNavHeader(
   props: BStepsProps,
-  steps: BStepItemNode[],
   model: Model<number>,
-  activeLabel: Ref<Option<string>>,
-  transition: Ref<StepTransition>
-) {
-  return h('ul', { class: ['step-items'] }, steps.map(getGenerateNavItem(props, model, activeLabel, transition)));
-}
-
-function generateNavHeaderContent(
-  props: BStepsProps,
-  steps: BStepItemNode[],
-  model: Model<number>,
-  activeLabel: Ref<Option<string>>,
+  injection: StepInjection,
   transition: Ref<StepTransition>,
   themeClasses: string[]
 ): VNode {
@@ -174,47 +162,12 @@ function generateNavHeaderContent(
         ...themeClasses
       ]
     },
-    generateNavItems(props, steps, model, activeLabel, transition)
+    h('ul', { class: ['step-items'] }, injection.steps.map(getGenerateNavItem(props, model, injection, transition)))
   );
 }
 
-function generateNavHeader(
-  props: BStepsProps,
-  steps: BStepItemNode[],
-  model: Model<number>,
-  activeLabel: Ref<Option<string>>,
-  transition: Ref<StepTransition>,
-  themeClasses: string[]
-): VNode {
-  return generateNavHeaderContent(props, steps, model, activeLabel, transition, themeClasses);
-}
-
-function generateStepContent(
-  props: BStepsProps,
-  steps: BStepItemNode[],
-  model: Model<number>,
-  transition: Ref<StepTransition>
-): VNode {
-  return props.isAnimated
-    ? h(Transition, { name: transition.value }, () => steps[model.modelValue.value || 0])
-    : steps[model.modelValue.value || 0];
-}
-
-interface BStepItemNode extends VNode {
-  type: {
-    name: typeof STEP_ITEM_NAME;
-  };
-  component: null | (ComponentInternalInstance & { props: BStepItemProps });
-}
-
-function isStepItemNode(node: unknown): node is BStepItemNode {
-  return isObject(node) && isObject((node as any).type) && (node as any).type.name === STEP_ITEM_NAME;
-}
-
-function getSteps(slots: Slots): any[] {
-  return ((slots.default && slots.default()) || [])
-    .flatMap(node => (isFragment(node) ? node.children : [node]))
-    .filter(isStepItemNode);
+function BStaticStepContent(_: unknown, { slots }: SetupContext) {
+  return h('div', { class: 'step-content' }, slots.default && slots.default());
 }
 
 export default defineComponent({
@@ -224,19 +177,37 @@ export default defineComponent({
     const { themeClasses } = useTheme(props);
     const model = useModel(props);
     const transition = shallowRef('slide-next' as 'slide-next' | 'slide-prev');
+    const steps = shallowReactive([] as BStepItemProps[]);
+    const isTransitioning = shallowRef(false);
+    const activeLabel = computed(() =>
+      pipe(
+        steps,
+        lookup(model.modelValue.value || 0),
+        map(p => p.label)
+      )
+    );
     const injection: StepInjection = {
-      activeLabel: shallowRef(none)
+      activeLabel,
+      steps
     };
 
     provide(STEPS_SYMBOL, injection);
 
+    function onBeforeEnter() {
+      isTransitioning.value = true;
+    }
+
+    function onAfterLeave() {
+      isTransitioning.value = false;
+    }
+
     return () => {
-      const steps = getSteps(context.slots);
       return h(
         'article',
         {
           class: [
             'b-steps',
+            props.size || null,
             {
               'is-vertical': props.isVertical,
               [props.position]: props.position && props.isVertical
@@ -244,8 +215,28 @@ export default defineComponent({
           ]
         },
         [
-          generateNavHeader(props, steps, model, injection.activeLabel, transition, themeClasses.value),
-          generateStepContent(props, steps, model, transition)
+          generateNavHeader(props, model, injection, transition, themeClasses.value),
+          props.isAnimated
+            ? h(
+                'div',
+                {
+                  class: ['step-content', { 'is-transitioning': isTransitioning.value }]
+                },
+                h(
+                  TransitionGroup,
+                  {
+                    onBeforeEnter,
+                    onAfterLeave,
+                    name: transition.value
+                  },
+                  () =>
+                    context.slots.default &&
+                    context.slots
+                      .default()
+                      .map((node, index) => cloneVNode(node, { key: steps[index]?.label ?? index }))
+                )
+              )
+            : h(BStaticStepContent, context.slots.default)
         ]
       );
     };

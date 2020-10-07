@@ -10,4 +10,6 @@ export { default as ItalicIcon } from './ItalicIcon';
 export { default as SearchIcon } from './SearchIcon';
 export { default as TachometerAltIcon } from './TachometerAltIcon';
 export { default as UnderlineIcon } from './UnderlineIcon';
+export { default as UserCogIcon } from './UserCogIcon';
 export { default as UserIcon } from './UserIcon';
+export { default as UsersIcon } from './UsersIcon'
