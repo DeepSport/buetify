@@ -4,7 +4,7 @@ import { constant, constFalse, constTrue, constVoid, FunctionN } from 'fp-ts/lib
 import { PropType } from 'vue';
 import { ColorVariant } from '../../../types/ColorVariants';
 import { constEmptyArray } from '../../../utils/helpers';
-import { BTableRow, BTableRowData, toggleBTableRow } from '../shared';
+import { BTableRow, toggleBTableRow } from '../shared';
 import { toSet } from './shared';
 
 export const BTableCheckPropsDefinition = {
@@ -13,11 +13,11 @@ export const BTableCheckPropsDefinition = {
     default: false
   },
   checkedRows: {
-    type: Array as PropType<BTableRowData[]>,
+    type: Array as PropType<BTableRow[]>,
     default: constEmptyArray()
   },
   'onUpdate:checkedRows': {
-    type: Function as PropType<FunctionN<[BTableRowData[]], void>>,
+    type: Function as PropType<FunctionN<[BTableRow[]], void>>,
     default: constant(constVoid)
   },
   checkboxVariant: {
@@ -29,11 +29,11 @@ export const BTableCheckPropsDefinition = {
     default: true
   },
   onCheckRow: {
-    type: Function as PropType<FunctionN<[BTableRowData], void>>,
+    type: Function as PropType<FunctionN<[BTableRow], void>>,
     default: constant(constVoid)
   },
   onUncheckRow: {
-    type: Function as PropType<FunctionN<[BTableRowData], void>>,
+    type: Function as PropType<FunctionN<[BTableRow], void>>,
     default: constant(constVoid)
   }
 };
@@ -67,17 +67,14 @@ export function useCheckableTable(props: BTableCheckProps, rows: Ref<BTableRow[]
   }
 
   function toggleRow(row: BTableRow) {
-    console.log('toggle-row', row.isCheckable);
     if (row.isCheckable) {
       const ids = checkedRowIds.value;
       if (ids.has(row.id)) {
-        console.log('unchecking-row', row);
         props.onUncheckRow(row)
       } else {
-        console.log('checking-row', row)
         props.onCheckRow(row)
       }
-      const cRows = toggleBTableRow(row, newCheckedRows.value as BTableRow[])
+      const cRows = toggleBTableRow(row, newCheckedRows.value)
       newCheckedRows.value = cRows;
       props['onUpdate:checkedRows'](cRows)
     }
@@ -116,7 +113,7 @@ export function useCheckableTable(props: BTableCheckProps, rows: Ref<BTableRow[]
 export interface UseCheckableTable {
   isCheckable: ComputedRef<boolean>;
   variant: ComputedRef<ColorVariant>;
-  checkedRowIds: ComputedRef<Set<string>>;
+  checkedRowIds: ComputedRef<Set<unknown>>;
   toggleAllRows: IO<void>;
   checkAllRows: IO<void>;
   uncheckAllRows: IO<void>;

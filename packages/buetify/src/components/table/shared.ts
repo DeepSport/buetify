@@ -1,9 +1,10 @@
-import { eq, Eq, eqString } from 'fp-ts/lib/Eq';
+import { FunctionN } from 'fp-ts/function';
+import { contramap, Eq, eqStrict, eqString } from 'fp-ts/lib/Eq';
 import { Ord } from 'fp-ts/lib/Ord';
 import { toggleListItem } from '../../utils/helpers';
 import { Classes } from '../../utils/mergeClasses';
 
-export interface BTableColumn<T = any> extends BTableColumnData<T> {
+export interface BTableColumn<T = BTableRow> extends BTableColumnData<T> {
   isVisible: boolean;
   position: BTableColumnPosition;
   isSortColumn: boolean;
@@ -12,11 +13,11 @@ export interface BTableColumn<T = any> extends BTableColumnData<T> {
 
 export type SortType = 'Ascending' | 'Descending';
 
-export interface BTableColumnData<T = any> {
+export interface BTableColumnData<T = BTableRow> {
   label: string;
   detail?: string;
   slotName?: string;
-  value?: string | ((val: T) => any);
+  value?: keyof T | FunctionN<[T], unknown>;
   asHtml?: boolean;
   isSortable?: boolean;
   meta?: any;
@@ -30,25 +31,19 @@ export interface BTableColumnData<T = any> {
 
 export type BTableColumnPosition = 'is-left' | 'is-centered' | 'is-right';
 
-export interface BTableRow extends BTableRowData {
-  index: number;
-  isSelectable: boolean;
-  isCheckable: boolean;
-  isDraggable: boolean;
-  isDroppable: boolean;
-}
-
-export interface BTableRowData {
-  id: string;
+export interface BTableRow {
+  id: unknown;
   isDroppable?: boolean;
   isDraggable?: boolean;
   isSelectable?: boolean;
   isCheckable?: boolean;
   classes?: Classes;
-  data: object;
 }
 
-export const eqBTableRow: Eq<BTableRow> = eq.contramap(eqString, row => row.id);
-export const eqBTableRowData: Eq<BTableRowData> = eqBTableRow as Eq<BTableRowData>;
-export const eqColumnTableData: Eq<BTableColumnData<any>> = eq.contramap(eqString, column => column.label);
-export const toggleBTableRow = toggleListItem(eqBTableRow);
+export const eqBTableRowData: Eq<BTableRow> = contramap<unknown, BTableRow>(row => row.id)(eqStrict);
+
+export const eqColumnTableData: Eq<BTableColumnData> = contramap<string, BTableColumnData>(column => column.label)(
+  eqString
+);
+
+export const toggleBTableRow = toggleListItem(eqBTableRowData);
