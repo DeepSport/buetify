@@ -1,5 +1,5 @@
 import { toUndefined } from 'fp-ts/lib/Option';
-import { defineComponent, inject, h } from 'vue';
+import { defineComponent, inject, h, computed, withDirectives, vShow } from 'vue';
 import { BStepItemPropsDefinition, DEFAULT_STEP_INJECTION, STEP_ITEM_NAME, STEPS_SYMBOL } from './shared';
 
 export default defineComponent({
@@ -8,17 +8,29 @@ export default defineComponent({
   setup(props, { slots }) {
     const injection = inject(STEPS_SYMBOL, DEFAULT_STEP_INJECTION);
 
+    const index = injection.steps.findIndex(p => p.label === props.label)
+
+    if (index > -1) {
+        injection.steps.splice(index, 1, props)
+    } else {
+        injection.steps.push(props);
+    }
+
+    const isActive = computed(() => toUndefined(injection.activeLabel.value) === props.label);
+
     return () => {
-      return [
+      return withDirectives(
         h(
           'section',
           {
+            key: props.label,
             class: 'step-item',
             'aria-label': props.label
           },
-          slots.default!({ isActive: toUndefined(injection.activeLabel.value) === props.label })
-        )
-      ];
+          slots.default && slots.default({ isActive: isActive.value })
+        ),
+        [[vShow, isActive.value]]
+      );
     };
   }
 });

@@ -13,12 +13,18 @@ export interface BStepItemData {
   render: IO<VNode[]>;
 }
 
+export type BStepItemDataRefs = {
+  [K in keyof BStepItemProps]: Ref<BStepItemProps[K]>
+}
+
 export interface StepInjection {
   activeLabel: Ref<Option<string>>;
+  steps: BStepItemProps[];
 }
 
 export const DEFAULT_STEP_INJECTION: StepInjection = {
-  activeLabel: shallowRef(none)
+  activeLabel: shallowRef(none),
+  steps: []
 };
 
 export const BStepItemPropsDefinition = {
@@ -26,12 +32,16 @@ export const BStepItemPropsDefinition = {
     type: String as PropType<string>,
     required: true as const
   },
+  step: {
+    type: String,
+    required: false
+  },
   variant: {
     type: String as PropType<ColorVariant>,
     default: '' as const
   },
   icon: {
-    type: Function as PropType<Component>
+    type: [Function, Object] as PropType<Component>
   },
   isClickable: {
     type: Boolean as PropType<boolean>,
