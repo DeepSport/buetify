@@ -1,4 +1,4 @@
-import { sort } from 'fp-ts/lib/Array';
+import {reverse, sort} from 'fp-ts/lib/Array';
 import { isSome, Option, some } from 'fp-ts/lib/Option';
 import { Ord } from 'fp-ts/lib/Ord';
 import { pipe } from 'fp-ts/lib/pipeable';
@@ -6,11 +6,11 @@ import { ExtractPropTypes, toRef, computed, Ref, watch } from 'vue';
 import { FunctionN } from 'fp-ts/lib/function';
 import { PropType } from 'vue';
 import { useProxy } from '../../../composables/proxy/useProxy';
-import { BTableColumn, BTableColumnData, BTableRow, BTableRowData, SortType } from '../shared';
+import { BTableColumn, BTableColumnData, BTableRow, SortType } from '../shared';
 
 export const BTableSortingPropsDefinition = {
   rows: {
-    type: Array as PropType<BTableRowData[]>,
+    type: Array as PropType<BTableRow[]>,
     required: true as const
   },
   sortColumn: {
@@ -32,7 +32,7 @@ export interface BTableSortingProps extends ExtractPropTypes<typeof BTableSortin
 
 export function useSorting(
   props: BTableSortingProps,
-  sortColumn: Ref<Option<BTableColumnData<unknown>>>,
+  sortColumn: Ref<Option<BTableColumnData>>,
   rows: Ref<BTableRow[]>,
   columns: Ref<BTableColumn[]>
 ) {
@@ -48,7 +48,11 @@ export function useSorting(
     }
   }
 
-  watch(() => props.rows, checkSort, {
+  watch(sortType, () => {
+    rows.value = reverse(rows.value);
+  });
+
+  watch(() => [props.rows, sortColumn.value], checkSort, {
     immediate: true
   });
 
@@ -61,7 +65,7 @@ export function useSorting(
     'onUpdate:sortType': (type: SortType) => {
       sortType.value = type;
     },
-    hasSortableColumns: computed(() => columns.value.some(column => column.isSortable))
+    hasSortableColumns: computed(() => columns.value.some(column => column.isSortable || column.ord))
   };
 }
 

@@ -1,8 +1,8 @@
 import { PropType, ExtractPropTypes, computed, shallowRef } from 'vue';
-import {isNumber} from '../../utils/helpers';
+import { constEmptyArray, isNumber } from '../../utils/helpers';
 import { getUseModelPropsDefinition, useModel } from '../model';
 
-export const DEFAULT_ITEMS_PER_PAGE = shallowRef(25)
+export const DEFAULT_ITEMS_PER_PAGE = shallowRef(25);
 
 export const UsePaginationPropsDefinition = {
   ...getUseModelPropsDefinition<number>(),
@@ -18,24 +18,33 @@ export const UsePaginationPropsDefinition = {
     type: Number as PropType<number>,
     default: () => DEFAULT_ITEMS_PER_PAGE.value,
     validator: (value: number) => isNumber(value) && value > 0
+  },
+  items: {
+    type: Array as PropType<Array<unknown>>,
+    default: constEmptyArray
   }
 };
 
 export type UsePaginationProps = ExtractPropTypes<typeof UsePaginationPropsDefinition>;
 
-export function usePagination(props: UsePaginationProps) {
+export function usePagination<T>(props: UsePaginationProps) {
   const model = useModel(props);
+  const total = computed(() => props.total ?? props.items.length);
   const current = computed(() => Math.max(model.modelValue.value as number, 1));
-  const itemsPerPage = computed(() => props.perPage <= 0 ? DEFAULT_ITEMS_PER_PAGE.value : props.perPage);
-  const numberOfPages = computed(() => Math.ceil((props.total as number) / itemsPerPage.value));
+  const itemsPerPage = computed(() => (props.perPage <= 0 ? DEFAULT_ITEMS_PER_PAGE.value : props.perPage));
+  const numberOfPages = computed(() => Math.ceil(total.value / itemsPerPage.value));
   const after = computed(() => Math.max(((model.modelValue.value as number) - 1) * itemsPerPage.value, 0));
   const nextPage = computed(() => Math.min(numberOfPages.value, (model.modelValue.value as number) + 1));
   const hasNext = computed(() => {
-    console.log(itemsPerPage.value + after.value < (props.total as number));
-    return itemsPerPage.value + after.value < (props.total as number);
+    return itemsPerPage.value + after.value < total.value;
   });
   const previousPage = computed(() => Math.max(0, (model.modelValue.value as number) - 1));
-  const hasPrevious = computed(() => after.value > 0 && (props.total as number) > 0);
+  const hasPrevious = computed(() => after.value > 0 && total.value > 0);
+
+  const paginatedItems = computed<T[]>(
+    () => (props.items ?? []).slice(after.value, after.value + itemsPerPage.value) as T[]
+  );
+
   function next(e: Event) {
     e.preventDefault();
     if (hasNext.value) {
@@ -60,6 +69,7 @@ export function usePagination(props: UsePaginationProps) {
     }
   }
   return {
+    paginatedItems,
     current,
     numberOfPages,
     after,
@@ -79,6 +89,7 @@ export type Pagination = ReturnType<typeof usePagination>;
 
 export function extractPaginationState(pagination: Pagination) {
   return {
+    paginatedItems: pagination.paginatedItems.value,
     current: pagination.current.value,
     numberOfPages: pagination.numberOfPages.value,
     after: pagination.after.value,
@@ -93,3 +104,5 @@ export function extractPaginationState(pagination: Pagination) {
     set: pagination.set
   };
 }
+
+export type ExtractedPaginationState = ReturnType<typeof extractPaginationState>;

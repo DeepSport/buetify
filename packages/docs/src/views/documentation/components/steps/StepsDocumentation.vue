@@ -36,7 +36,7 @@ import VerticalExampleCode from '!!raw-loader!./examples/VerticalExample.vue';
 import VerticalExample from './examples/VerticalExample.vue';
 
 export default defineComponent({
-	name: 'pagination-documentation',
+	name: 'steps-documentation',
 	components: {
 		ExampleView,
 		ApiView,

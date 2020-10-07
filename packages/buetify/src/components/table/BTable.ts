@@ -2,58 +2,36 @@ import { isEmpty } from 'fp-ts/lib/Array';
 import { FunctionN } from 'fp-ts/lib/function';
 import { exists, fromNullable, isSome, Option } from 'fp-ts/lib/Option';
 import { pipe } from 'fp-ts/lib/pipeable';
-import { defineComponent, h, PropType, VNode, Ref, ExtractPropTypes, computed, Slots } from 'vue';
+import { defineComponent, h, PropType, VNode, Ref, ExtractPropTypes, computed, Slots, toRef } from 'vue';
+import { ExtractedPaginationState } from '../../composables/pagination';
 import { useProxy } from '../../composables/proxy';
 import { useWindowSize } from '../../composables/windowSize';
-import { SizeVariant } from '../../types/SizeVariants';
+import {isBoolean} from '../../utils/helpers';
 import { Classes } from '../../utils/mergeClasses';
-import BSimpleTable from './BSimpleTable';
+import BPagination, { PaginationPosition, PaginationSize } from '../pagination/BPagination';
+import BSimpleTable, { BSimpleTablePropsDefinition } from './BSimpleTable';
 import BTableHeader from './BTableHeader';
 import BTableMobileSort from './BTableMobileSort';
 import BTableRowElement from './BTableRow';
 import { BTableCheckPropsDefinition, useCheckableTable } from './composables/useCheckableTable';
-import { BTableDraggablePropsDefinition, UseDraggableTable, useDraggableTable } from './composables/useDraggableTable';
-import {
-  BTableSelectablePropsDefinition,
-  useSelectableTable
-} from './composables/useSelectableTable';
+import { BTableDraggablePropsDefinition, useDraggableTable } from './composables/useDraggableTable';
+import { BTableSelectablePropsDefinition, useSelectableTable } from './composables/useSelectableTable';
 import { BTableSortingPropsDefinition, UseSorting, useSorting } from './composables/useSorting';
-import { BTableColumn, BTableColumnData, BTableRow, BTableRowData, eqBTableRow, eqColumnTableData } from './shared';
+import { BTableColumn, BTableColumnData, BTableRow, eqColumnTableData } from './shared';
 import './table.sass';
 
+interface BTablePaginationInput {
+  page?: number;
+  'onUpdate:page'?: FunctionN<[number], void>;
+  perPage?: number;
+  size?: PaginationSize;
+  isSimple?: boolean;
+  isRounded?: boolean;
+  horizontalPosition?: PaginationPosition;
+  verticalPosition?: 'is-top' | 'is-bottom';
+}
+
 export const BTablePropsDefinition = {
-  isBordered: {
-    type: Boolean as PropType<boolean>,
-    default: false
-  },
-  isStriped: {
-    type: Boolean as PropType<boolean>,
-    default: false
-  },
-  isNarrow: {
-    type: Boolean as PropType<boolean>,
-    default: false
-  },
-  isFullwidth: {
-    type: Boolean as PropType<boolean>,
-    default: true
-  },
-  size: {
-    type: String as PropType<SizeVariant>,
-    default: '' as const
-  },
-  isHoverable: {
-    type: Boolean as PropType<boolean>,
-    default: false
-  },
-  isLoading: {
-    type: Boolean as PropType<boolean>,
-    default: false
-  },
-  isScrollable: {
-    type: Boolean as PropType<boolean>,
-    default: true
-  },
   columns: {
     type: Array as PropType<BTableColumnData<unknown>[]>,
     required: true as const
@@ -61,10 +39,6 @@ export const BTablePropsDefinition = {
   isFocusable: {
     type: Boolean as PropType<boolean>,
     default: false
-  },
-  useMobileCards: {
-    type: Boolean as PropType<boolean>,
-    default: true
   },
   mobileSortPlaceholder: {
     type: String as PropType<string>
@@ -77,6 +51,11 @@ export const BTablePropsDefinition = {
     type: Function as PropType<FunctionN<[BTableRow, MouseEvent], void>>,
     required: false
   },
+  pagination: {
+    type: [Boolean, Object] as PropType<boolean | BTablePaginationInput>,
+    required: false
+  },
+  ...BSimpleTablePropsDefinition,
   ...BTableCheckPropsDefinition,
   ...BTableDraggablePropsDefinition,
   ...BTableSelectablePropsDefinition,
@@ -84,23 +63,6 @@ export const BTablePropsDefinition = {
 };
 
 export interface BTableProps extends ExtractPropTypes<typeof BTablePropsDefinition> {}
-
-interface RowProps {
-  isSelectable: boolean;
-  isCheckable: boolean;
-  isDraggable: boolean;
-}
-
-function getBTableRow(rowProps: RowProps) {
-  return (data: BTableRowData, index: number): BTableRow => ({
-    ...data,
-    index,
-    isDroppable: data.isDroppable !== undefined ? data.isDroppable : rowProps.isDraggable,
-    isDraggable: data.isDraggable !== undefined ? data.isDraggable : rowProps.isDraggable,
-    isSelectable: data.isSelectable !== undefined ? data.isSelectable : rowProps.isSelectable,
-    isCheckable: data.isCheckable !== undefined ? data.isCheckable : rowProps.isCheckable
-  });
-}
 
 function generateMobileSort(props: BTableProps, sort: UseSorting, visibleColumns: Ref<BTableColumn[]>) {
   return h(BTableMobileSort, {
@@ -116,14 +78,14 @@ function generateMobileSort(props: BTableProps, sort: UseSorting, visibleColumns
 function generateTableHeader(
   props: BTableProps,
   sort: UseSorting,
-  visibleColumns: Ref<BTableColumn[]>,
+  visibleColumns: BTableColumn[],
   slots: Slots
 ): VNode {
   return h(
     BTableHeader,
     {
       class: props.headerClasses,
-      columns: visibleColumns.value,
+      columns: visibleColumns,
       sortType: sort.sortType.value,
       'onUpdate:sortType': sort['onUpdate:sortType'],
       'onUpdate:sortColumn': sort['onUpdate:sortColumn']
@@ -132,143 +94,97 @@ function generateTableHeader(
   );
 }
 
-function generateEmptyTable(columns: Ref<BTableColumn[]>, slots: Slots): VNode {
+function generateEmptyTable(visibleColumns: BTableColumn[], slots: Slots): VNode {
   return h('tbody', [
-    h('tr', { class: 'is-empty' }, [
-      h('td', { colspan: columns.value.filter(column => column.isVisible).length }, slots.empty && slots.empty())
-    ])
+    h('tr', { class: 'is-empty' }, [h('td', { colspan: visibleColumns.length }, slots.empty && slots.empty())])
   ]);
 }
 
-function generateRows(
-  props: BTableProps,
-  rows: Ref<BTableRow[]>,
-  visibleColumns: Ref<BTableColumn[]>,
-  drag: UseDraggableTable,
-  slots: Slots
-) {
-  return rows.value.map((row, index) =>
-    h(
-      BTableRowElement,
-      {
-        key: row.id,
-        class: {
-          'is-drop-target': isSome(drag.dropTarget.value)
-            ? eqBTableRow.equals(row, drag.dropTarget.value.value)
-            : false,
-          'is-undroppable': drag.dragIsActive.value && !row.isDroppable
-        },
-        row,
-        onRowClick: props.onRowClick,
-        columns: visibleColumns.value,
-        ...drag.getRowDragListeners(row, index)
-      },
-      { ...slots }
+function generateTableBody(props: BTableProps, rows: BTableRow[], visibleColumns: BTableColumn[], slots: Slots): VNode {
+  if (isEmpty(props.rows) || isEmpty(visibleColumns)) {
+    return generateEmptyTable(visibleColumns, slots);
+  }
+  const onRowClick = props.onRowClick;
+  return h(
+    'tbody',
+    rows.map((row, index) =>
+      slots.row
+        ? slots.row({
+            row,
+            index,
+            onRowClick,
+            columns: visibleColumns
+          })
+        : h(
+            BTableRowElement,
+            {
+              key: row.id as string | number,
+              row,
+              index,
+              onRowClick,
+              columns: visibleColumns
+            },
+            { ...slots }
+          )
     )
   );
 }
 
-function generateTableBody(
-  props: BTableProps,
-  rows: Ref<BTableRow[]>,
-  visibleColumns: Ref<BTableColumn[]>,
-  drag: UseDraggableTable,
-  slots: Slots
-): VNode {
-  if (isEmpty(rows.value) || isEmpty(visibleColumns.value)) {
-    return generateEmptyTable(visibleColumns, slots);
-  }
-  if (slots.row) {
-    return h(
-      'tbody',
-      rows.value.map((row, index) =>
-        h(
-          'tr',
-          { key: row.id },
-          slots.row &&
-            slots.row({
-              row,
-              index,
-              columns: visibleColumns.value
-            })
-        )
-      )
-    );
-  } else {
-    return h('tbody', generateRows(props, rows, visibleColumns, drag, slots));
-  }
-}
-
-function generateTableFooter(visibleColumns: Ref<BTableColumn[]>, slots: Slots): VNode {
+function generateTableFooter(visibleColumns: BTableColumn[], slots: Slots): VNode {
   return h('tfoot', [
-    h('tr', { class: 'table-footer' }, slots.footer && slots.footer({ numberOfColumns: visibleColumns.value.length }))
+    h(
+      'tr',
+      { class: 'table-footer' },
+      slots.footer && slots.footer({ numberOfColumns: visibleColumns.length, columns: visibleColumns })
+    )
   ]);
 }
 
 function generateTable(
   props: BTableProps,
-  rows: Ref<BTableRow[]>,
-  visibleColumns: Ref<BTableColumn[]>,
-  drag: UseDraggableTable,
+  rows: BTableRow[],
+  visibleColumns: BTableColumn[],
   sort: UseSorting,
   slots: Slots
 ): VNode {
-  return h(
-    BSimpleTable,
-    {
-      tableClasses: [
-        {
-          'is-bordered': props.isBordered,
-          'is-striped': props.isStriped,
-          'is-narrow': props.isNarrow,
-          'is-fullwidth': props.isFullwidth,
-          'is-hoverable': props.isHoverable,
-          'has-mobile-cards': props.useMobileCards
-        },
-        props.size
-      ],
-      isLoading: props.isLoading,
-      isScrollable: props.isScrollable
-    },
-    () => {
-      const nodes = [
-        generateTableHeader(props, sort, visibleColumns, slots),
-        generateTableBody(props, rows, visibleColumns, drag, slots)
-      ];
-      if (slots.footer) {
-        nodes.push(generateTableFooter(visibleColumns, slots));
-      }
-      return nodes;
+  return h(BSimpleTable, props, () => {
+    const nodes = [
+      generateTableHeader(props, sort, visibleColumns, slots),
+      generateTableBody(props, rows, visibleColumns, slots)
+    ];
+    if (slots.footer) {
+      nodes.push(generateTableFooter(visibleColumns, slots));
     }
-  );
+    return nodes;
+  });
 }
 
 export default defineComponent({
   name: 'b-table',
   props: BTablePropsDefinition,
   setup(props, { slots }) {
-    const rows = computed(() => props.rows.map(getBTableRow(props)));
+    const { value: rows } = useProxy(toRef(props, 'rows'));
     const { value: sortColumn } = useProxy(
       computed(() => fromNullable(props.sortColumn)),
-      (column: Option<BTableColumnData<unknown>>) => {
+      (column: Option<BTableColumnData>) => {
         if (props['onUpdate:sortColumn'] && isSome(column)) {
           props['onUpdate:sortColumn'](column.value);
         }
       }
     );
 
-    function isCurrentSortColumn(column: BTableColumnData<unknown>): boolean {
+    function isCurrentSortColumn(column: BTableColumnData): boolean {
       return pipe(
         sortColumn.value,
         exists(c => eqColumnTableData.equals(column, c))
       );
     }
 
-    const columns: Ref<BTableColumn<unknown>[]> = computed(() =>
+    const columns: Ref<BTableColumn[]> = computed(() =>
       props.columns.map((column: BTableColumnData<unknown>) => {
         return {
           ...column,
-          position: column.position ?? 'is-centered',
+          position: column.position ?? 'is-left',
           isVisible: column.isVisible ?? true,
           isSortColumn: isCurrentSortColumn(column),
           isSortable: !!column.isSortable || !!column.ord
@@ -276,20 +192,59 @@ export default defineComponent({
       })
     );
     const sort = useSorting(props, sortColumn, rows, columns);
+
     useCheckableTable(props, rows);
     useSelectableTable(props);
-    const drag = useDraggableTable(props);
+    useDraggableTable(props);
 
     const windowSize = useWindowSize();
-    const useMobileSorting = computed(() => props.useMobileCards && windowSize.value.isTouch);
+    const useMobileSorting = computed(
+      () => props.useMobileCards && sort.hasSortableColumns.value && windowSize.value.isTouch
+    );
     const visibleColumns = computed(() => columns.value.filter(column => column.isVisible));
 
-    return () =>
-      h(
-        'div',
-        useMobileSorting.value
-          ? [generateMobileSort(props, sort, visibleColumns)]
-          : [generateTable(props, rows, visibleColumns, drag, sort, slots)]
-      );
+    return () => {
+      const nodes = [];
+      if (useMobileSorting.value) {
+        nodes.push(generateMobileSort(props, sort, visibleColumns));
+      }
+      if (props.pagination) {
+        nodes.push(
+          h(
+            BPagination,
+            isBoolean(props.pagination) ? {
+              total: props.rows.length,
+              items: rows.value,
+            } : {
+              isSimple: props.pagination.isSimple,
+              isRounded: props.pagination.isRounded,
+              modelValue: props.pagination.page,
+              'onUpdate:modelValue': props.pagination['onUpdate:page'],
+              total: props.rows.length,
+              items: rows.value,
+              perPage: props.pagination.perPage,
+              size: props.pagination.size,
+              position: props.pagination.horizontalPosition,
+              verticalPosition: props.pagination.verticalPosition
+            } as any,
+            {
+              default: (paginatedState: ExtractedPaginationState) => {
+                return generateTable(
+                  props,
+                  paginatedState.paginatedItems as BTableRow[],
+                  visibleColumns.value,
+                  sort,
+                  slots
+                );
+              }
+            }
+          )
+        );
+        return h('div', nodes);
+      } else {
+        nodes.push(generateTable(props, rows.value, visibleColumns.value, sort, slots));
+        return h('div', nodes);
+      }
+    };
   }
 });

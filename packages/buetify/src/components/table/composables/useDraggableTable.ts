@@ -1,15 +1,14 @@
 import { isNone, isSome, none, Option, some } from 'fp-ts/lib/Option';
-import { ExtractPropTypes, shallowRef } from 'vue';
+import { ExtractPropTypes, shallowRef, toRef, computed } from 'vue';
 import { constant, constVoid, FunctionN } from 'fp-ts/lib/function';
-import { PropType } from 'vue';
-
-import { BTableRow, BTableRowData, eqBTableRow } from '../shared';
+import { PropType, Ref, provide, inject } from 'vue';
+import { BTableRow, eqBTableRowData } from '../shared';
 
 type DropEffect = 'none' | 'copy' | 'link' | 'move';
 
 type DragHandler = FunctionN<[DragEvent], void>;
 
-type OnDragEffect = FunctionN<[BTableRowData, DragEvent, number], void>;
+type OnDragEffect = FunctionN<[BTableRow, DragEvent, number], void>;
 
 export const BTableDraggablePropsDefinition = {
   isDraggable: {
@@ -48,13 +47,22 @@ export const BTableDraggablePropsDefinition = {
 
 export interface BTableDraggableProps extends ExtractPropTypes<typeof BTableDraggablePropsDefinition> {}
 
-export function useDraggableTable(props: BTableDraggableProps) {
-  const dragIsActive = shallowRef(false);
+export interface UseDraggableTable {
+  isDraggable: Ref<boolean>;
+  isActive: Ref<boolean>;
+  target: Ref<Option<BTableRow>>;
+  useRowDragListeners: FunctionN<[BTableRow, number], Record<string, DragHandler>>;
+}
+
+const USE_DRAGGABLE_TABLE_INJECTION_SYMBOL = Symbol();
+
+export function useDraggableTable(props: BTableDraggableProps): UseDraggableTable {
   const dropTarget = shallowRef(none as Option<BTableRow>);
+
+  const dragIsActive = computed(() => props.isDraggable && isSome(dropTarget.value));
 
   function getOnDragStartListener(row: BTableRow, index: number): DragHandler {
     return (e: DragEvent) => {
-      dragIsActive.value = true;
       if (e.dataTransfer) {
         e.dataTransfer.setData('text/plain', String(index));
         e.dataTransfer.dropEffect = props.dropEffect;
@@ -70,10 +78,10 @@ export function useDraggableTable(props: BTableDraggableProps) {
         e.preventDefault();
         props.onDrop(row, e, index);
       }
-      dragIsActive.value = false;
       dropTarget.value = none;
     };
   }
+
   function getOnDragEnterListener(row: BTableRow, index: number): DragHandler {
     return (e: DragEvent) => {
       if (row.isDroppable) {
@@ -83,12 +91,13 @@ export function useDraggableTable(props: BTableDraggableProps) {
       }
     };
   }
+
   function getOnDragOverListener(row: BTableRow, index: number): DragHandler {
     return (e: DragEvent) => {
       if (row.isDroppable) {
         e.preventDefault();
         const target = dropTarget.value;
-        if (isNone(target) || (isSome(target) && !eqBTableRow.equals(target.value, row))) {
+        if (isNone(target) || (isSome(target) && !eqBTableRowData.equals(target.value, row))) {
           dropTarget.value = some(row);
         }
         props.onDragover(row, e, index);
@@ -101,7 +110,7 @@ export function useDraggableTable(props: BTableDraggableProps) {
       if (row.isDroppable) {
         e.preventDefault();
         const target = dropTarget.value;
-        if (isSome(target) && eqBTableRow.equals(target.value, row)) {
+        if (isSome(target) && eqBTableRowData.equals(target.value, row)) {
           dropTarget.value = none;
         }
         props.onDragleave(row, e, index);
@@ -115,12 +124,11 @@ export function useDraggableTable(props: BTableDraggableProps) {
       if (isSome(dropTarget.value)) {
         dropTarget.value = none;
       }
-      dragIsActive.value = false;
     };
   }
 
-  function getRowDragListeners(row: BTableRow, index: number): { [key: string]: DragHandler } {
-    if (row.isDraggable) {
+  function useRowDragListeners(row: BTableRow, index: number): { [key: string]: DragHandler } {
+    if (props.isDraggable && !!row.isDraggable) {
       return {
         onDragstart: getOnDragStartListener(row, index),
         onDrop: getOnDropListener(row, index),
@@ -134,11 +142,27 @@ export function useDraggableTable(props: BTableDraggableProps) {
     }
   }
 
+  const draggableTable: UseDraggableTable = {
+    isDraggable: toRef(props, 'isDraggable'),
+    useRowDragListeners,
+    isActive: dragIsActive,
+    target: dropTarget
+  };
+
+  provide(USE_DRAGGABLE_TABLE_INJECTION_SYMBOL, draggableTable);
+
+  return draggableTable;
+}
+
+function useDefaultDraggableTable(): UseDraggableTable {
   return {
-    getRowDragListeners,
-    dragIsActive,
-    dropTarget
+    isDraggable: shallowRef(false),
+    useRowDragListeners: constant({}),
+    isActive: shallowRef(false),
+    target: shallowRef(none)
   };
 }
 
-export type UseDraggableTable = ReturnType<typeof useDraggableTable>;
+export function useInjectedDraggableTable(): UseDraggableTable {
+  return inject(USE_DRAGGABLE_TABLE_INJECTION_SYMBOL, useDefaultDraggableTable, true);
+}

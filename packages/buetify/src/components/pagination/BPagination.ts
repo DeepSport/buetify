@@ -15,6 +15,8 @@ export type PaginationSize = 'is-small' | 'is-medium' | 'is-large' | '';
 
 export type PaginationPosition = 'is-centered' | 'is-right' | '';
 
+export type PaginationVerticalPosition = 'is-top' | '';
+
 export const BPaginationPropsDefinition = {
   ...UsePaginationPropsDefinition,
   ...DefaultThemePropsDefinition,
@@ -33,6 +35,10 @@ export const BPaginationPropsDefinition = {
   position: {
     type: String as PropType<PaginationPosition>,
     default: '' as const
+  },
+  verticalPosition: {
+    type: String as PropType<PaginationVerticalPosition>,
+    default: '' as const
   }
 };
 
@@ -41,7 +47,6 @@ export type BPaginationProps = ExtractPropTypes<typeof BPaginationPropsDefinitio
 function getAriaLabel(num: number, total: number): string {
   return `Go to page ${num} of ${total}`;
 }
-
 
 const ellipsis = h('li', [
   h('span', {
@@ -109,12 +114,13 @@ function getPageRange(props: BPaginationProps, pagination: Pagination): Page[] {
     const numberOfPages = pagination.numberOfPages.value;
     const left = currentValue === numberOfPages ? numberOfPages - 3 : Math.max(0, (currentValue as number) - 2); // internal value is 1 indexed
     const right = Math.min(left + 3, numberOfPages);
-    return range(1, numberOfPages)
+    const pages = range(1, numberOfPages)
       .map(number => ({
         number,
         isCurrent: number === currentValue
       }))
       .slice(left, right);
+    return pages;
   }
 }
 
@@ -126,13 +132,13 @@ function generatePaginationList(props: BPaginationProps, pagination: Pagination,
   if (currentValue >= 5) {
     nodes.unshift(ellipsis);
   }
-  if (currentValue >= 3) {
+  if (currentValue > 3) {
     nodes.unshift(generatePaginationListItem({ number: 1, isCurrent: currentValue === 1 }));
   }
   if (currentValue < numberOfPages - 3) {
     nodes.push(ellipsis);
   }
-  if (currentValue <= numberOfPages - 2) {
+  if (currentValue < numberOfPages - 2) {
     nodes.push(generatePaginationListItem({ number: numberOfPages, isCurrent: currentValue === numberOfPages }));
   }
   return h('ul', { class: 'pagination-list' }, nodes);
@@ -189,12 +195,14 @@ export default defineComponent({
     const pagination = usePagination(props);
     const { themeClasses } = useTheme(props);
     return () => {
-      return context.slots.default
-        ? h('article', [
-            context.slots.default(extractPaginationState(pagination)),
-            generatePaginationControls(props, context, pagination, themeClasses.value)
-          ])
-        : [generatePaginationControls(props, context, pagination, themeClasses.value)];
+      const controls = generatePaginationControls(props, context, pagination, themeClasses.value);
+      if (context.slots.default && props.verticalPosition === 'is-top') {
+          h('article', [controls, context.slots.default(extractPaginationState(pagination))])
+      }
+      if (context.slots.default && props.verticalPosition === '') {
+        return h('article', [context.slots.default(extractPaginationState(pagination)), controls]);
+      }
+      return controls;
     };
   }
 });
