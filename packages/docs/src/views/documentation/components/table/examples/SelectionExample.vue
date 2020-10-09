@@ -19,7 +19,7 @@
 <script lang="ts">
 import BButton from 'buetify/lib/components/button/BButton';
 import BTable from 'buetify/lib/components/table/BTable';
-import { BTableColumnData } from 'buetify/lib/components/table/shared';
+import { BTableColumn } from 'buetify/lib/components/table/shared';
 import BTabItem from 'buetify/lib/components/tabs/BTabItem';
 import BTabs from 'buetify/lib/components/tabs/BTabs';
 import { defineComponent, shallowRef } from 'vue';
@@ -28,7 +28,7 @@ import { people, Person } from '../../../shared/data';
 
 const rows: Person[] = people.slice(0, 5);
 
-interface PeopleTableColumn extends BTableColumnData<Person> {}
+interface PeopleTableColumn extends BTableColumn<Person> {}
 
 const columns: PeopleTableColumn[] = [
 	{

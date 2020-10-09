@@ -1,29 +1,22 @@
-import { FunctionN } from 'fp-ts/lib/function';
 import { BCheckbox } from '../form/checkbox/BCheckbox';
 import BTableColumn from './BTableColumn';
+import {useInjectedVisibleColumns} from './composables/shared';
 import { useInjectedCheckableTable } from './composables/useCheckableTable';
-import { BTableColumn as BTableColumnInterface, SortType } from './shared';
 import { SetupContext, h } from 'vue';
 
 export interface BTableHeaderProps {
-  columns: BTableColumnInterface[];
   isDisabled?: boolean;
-  sortType: SortType;
-  'onUpdate:sortType': FunctionN<[SortType], void>;
-  'onUpdate:sortColumn': FunctionN<[BTableColumnInterface], void>;
 }
 
 export default function BTableHeader(props: BTableHeaderProps, { slots }: SetupContext) {
   const { allRowsChecked, toggleAllRows, variant, isCheckable } = useInjectedCheckableTable();
-  const nodes = props.columns.map(column =>
+  const columns = useInjectedVisibleColumns()
+  const nodes = columns.value.map(column =>
     h(
       BTableColumn,
       {
         key: column.label,
-        column,
-        sortType: props.sortType,
-        'onUpdate:sortType': props['onUpdate:sortType'],
-        'onUpdate:sortColumn': props['onUpdate:sortColumn']
+        column
       },
       slots
     )

@@ -43,7 +43,7 @@ export interface BTableCheckProps extends ExtractPropTypes<typeof BTableCheckPro
 const USE_CHECKABLE_TABLE_INJECTION_SYMBOL = Symbol();
 
 export function useCheckableTable(props: BTableCheckProps, rows: Ref<BTableRow[]>): UseCheckableTable {
-  const checkableRows = computed(() => (props.isCheckable ? rows.value.filter(row => row.isCheckable) : []));
+  const checkableRows = computed(() => (props.isCheckable ? rows.value.filter(row => row.isCheckable ?? true) : []));
   const propCheckedRows = computed(() => (props.isCheckable ? props.checkedRows : []));
   const newCheckedRows = shallowRef(propCheckedRows.value);
 

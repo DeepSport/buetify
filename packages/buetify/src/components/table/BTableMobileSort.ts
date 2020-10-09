@@ -1,35 +1,26 @@
 import './table.sass';
+import { IO } from 'fp-ts/IO';
 import { FunctionN } from 'fp-ts/lib/function';
 import { BSelect } from '../form/select/BSelect';
 import VerticalExpansionIcon from '../icons/verticalExpansion/VerticalExpansionIcon';
+import { useInjectedSortableTable } from './composables/useSortableTable';
 import { BTableColumn, SortType } from './shared';
-import { findFirst } from 'fp-ts/lib/Array';
-import { isSome, map, Option, toNullable } from 'fp-ts/lib/Option';
+import { head } from 'fp-ts/lib/Array';
+import { map, toNullable } from 'fp-ts/lib/Option';
 import { pipe } from 'fp-ts/lib/pipeable';
-import { VNode, h } from 'vue';
+import { VNode, defineComponent, h } from 'vue';
 
-export interface BTableMobileSortProps {
-  sortColumn: Option<BTableColumn>;
-  'onUpdate:sortColumn': FunctionN<[BTableColumn], void>;
-  sortType: SortType;
-  'onUpdate:sortType': FunctionN<[SortType], void>;
-  columns: BTableColumn[];
-  placeholder?: string;
-}
-
-function generateSortDirectionButton(props: BTableMobileSortProps): VNode {
+function generateSortDirectionButton(sortType: SortType, toggleSortType: IO<void>): VNode {
   return h('div', { class: 'control' }, [
     h(
       'button',
       {
         class: 'button is-primary',
-        onClick: () => {
-          props['onUpdate:sortType'](props.sortType === 'Ascending' ? 'Descending' : 'Ascending');
-        }
+        onClick: toggleSortType
       },
       [
         h(VerticalExpansionIcon, {
-          isExpanded: props.sortType === 'Descending',
+          isExpanded: sortType === 'Descending',
           size: 'is-small'
         })
       ]
@@ -37,40 +28,61 @@ function generateSortDirectionButton(props: BTableMobileSortProps): VNode {
   ]);
 }
 
-function generateBSelect(props: BTableMobileSortProps): VNode {
-  const sortableColumns = props.columns.filter(c => c.isSortable);
+function generateBSelect(
+  placeholder: string | undefined,
+  sortableColumns: BTableColumn[],
+  sortBy: BTableColumn[],
+  setSortColumn: FunctionN<[string], void>
+): VNode {
   return h(BSelect, {
-    placeholder: props.placeholder,
+    placeholder,
     items: sortableColumns,
     itemKey: 'label',
     itemValue: 'label',
     itemText: 'label',
     modelValue: pipe(
-      props.sortColumn,
+      head(sortBy),
       map(column => column.label),
       toNullable
     ),
     isExpanded: true,
-    'onUpdate:modelValue': (label: string) => {
-      const newSortColumn = pipe(
-        sortableColumns,
-        findFirst(column => column.label === label)
-      );
-
-      if (isSome(newSortColumn)) {
-        props['onUpdate:sortColumn'](newSortColumn.value);
-      }
-    }
+    'onUpdate:modelValue': setSortColumn
   });
 }
 
-export default function BTableMobileSort(props: BTableMobileSortProps) {
-  return h(
-    'section',
-    {
-      class: 'field table-mobile-sort',
-      'aria-label': 'Table Sort Controls'
-    },
-    [h('div', { class: 'field has-addons' }, [generateBSelect(props), generateSortDirectionButton(props)])]
-  );
-}
+export default defineComponent({
+  name: 'b-table-mobile-sort',
+  props: {
+    placeholder: {
+      type: String
+    }
+  },
+  setup(props) {
+    const sorting = useInjectedSortableTable();
+
+    function toggleSortDirection() {
+      sorting.updateSortDirection();
+    }
+
+    return () => {
+      return h(
+        'section',
+        {
+          class: 'field table-mobile-sort',
+          'aria-label': 'Table Sort Controls'
+        },
+        [
+          h('div', { class: 'field has-addons' }, [
+            generateBSelect(
+              props.placeholder,
+              sorting.sortableColumns.value,
+              sorting.sortBy.value,
+              sorting.updateSortColumn
+            ),
+            generateSortDirectionButton(sorting.sortType.value, toggleSortDirection)
+          ])
+        ]
+      );
+    };
+  }
+});

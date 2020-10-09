@@ -5,14 +5,14 @@
 </template>
 <script lang="ts">
 import BTable from 'buetify/lib/components/table/BTable';
-import { BTableColumnData } from 'buetify/lib/components/table/shared';
+import { BTableColumn } from 'buetify/lib/components/table/shared';
 import { defineComponent, shallowRef } from 'vue';
 import { people, Person } from '../../../shared/data';
 
 
 const rows: Person[] = people.slice(0, 5)
 
-interface PeopleTableColumn extends BTableColumnData<Person> {}
+interface PeopleTableColumn extends BTableColumn<Person> {}
 
 const columns: PeopleTableColumn[] = [
 	{

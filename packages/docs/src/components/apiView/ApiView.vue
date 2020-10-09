@@ -88,7 +88,7 @@
 
 <script lang="ts">
 import { BSimpleTable, BSubtitle, BTabItem, BTabs, BTitle } from 'buetify/lib/components';
-import { BTableColumnData, BTableRow } from 'buetify/lib/components/table/shared';
+import { BTableColumn, BTableRow } from 'buetify/lib/components/table/shared';
 import { defineComponent, computed, PropType } from 'vue';
 import { toSlug, useSlug } from '../../shared/composables/useSlug';
 import { ComponentApiDescription, PropApiDescription } from './types';

@@ -74,7 +74,7 @@
 import { BSwitch } from 'buetify/lib/components';
 import BField from 'buetify/lib/components/form/field';
 import BTable from 'buetify/lib/components/table/BTable';
-import { BTableColumnData } from 'buetify/lib/components/table/shared';
+import { BTableColumn } from 'buetify/lib/components/table/shared';
 import BTag from 'buetify/lib/components/tag/BTag';
 import { defineComponent, shallowRef, computed } from 'vue';
 import FemaleIcon from '../../../../../components/icons/FemaleIcon';
@@ -83,7 +83,7 @@ import { people, Person } from '../../../shared/data';
 
 const rows: Person[] = people.slice(0, 5);
 
-interface PeopleTableColumn extends BTableColumnData<Person> {}
+interface PeopleTableColumn extends BTableColumn<Person> {}
 
 const columns: PeopleTableColumn[] = [
 	{
