@@ -3,6 +3,7 @@ import { exists } from 'fp-ts/Option';
 import { pipe } from 'fp-ts/pipeable';
 import { BCheckbox } from '../form/checkbox/BCheckbox';
 import { isString } from '../../utils/helpers';
+import { useInjectedVisibleColumns } from './composables/shared';
 import { useInjectedCheckableTable } from './composables/useCheckableTable';
 import { useInjectedDraggableTable } from './composables/useDraggableTable';
 import { useInjectedSelectableTable } from './composables/useSelectableTable';
@@ -12,10 +13,6 @@ import { h, VNode, defineComponent, computed, PropType } from 'vue';
 export default defineComponent({
   name: 'b-table-row',
   props: {
-    columns: {
-      type: Array as PropType<BTableColumn[]>,
-      required: true as const
-    },
     index: {
       type: Number as PropType<number>,
       required: true as const
@@ -32,6 +29,7 @@ export default defineComponent({
     const { checkedRowIds, variant, toggleRow, isCheckable } = useInjectedCheckableTable();
     const { selectedRowIds, toggleRowSelection, isSelectable } = useInjectedSelectableTable();
     const draggable = useInjectedDraggableTable();
+    const visibleColumns = useInjectedVisibleColumns();
     const isChecked = computed(() => checkedRowIds.value.has(props.row.id));
     const isSelected = computed(() => selectedRowIds.value.has(props.row.id));
 
@@ -62,7 +60,7 @@ export default defineComponent({
       toggleRow(props.row);
     }
 
-    function onClick(e: MouseEvent){
+    function onClick(e: MouseEvent) {
       if (props.onRowClick) {
         props.onRowClick(props.row, e);
       }
@@ -73,7 +71,7 @@ export default defineComponent({
     }
 
     return () => {
-      const columns: VNode[] = props.columns.map((column: BTableColumn) => {
+      const columns: VNode[] = visibleColumns.value.map((column: BTableColumn) => {
         const children: Array<VNode | VNode[] | string> = [];
         const value = column.value
           ? isString(column.value)
@@ -90,7 +88,9 @@ export default defineComponent({
         }
 
         const textClass =
-          column.position === 'is-left'
+          column.position === undefined
+            ? 'has-text-left'
+            : column.position === 'is-left'
             ? 'has-text-left'
             : column.position === 'is-centered'
             ? 'has-text-centered'
@@ -112,7 +112,7 @@ export default defineComponent({
             h(BCheckbox, {
               modelValue: isChecked.value,
               variant: variant.value,
-              isDisabled: !!props.row.isCheckable,
+              isDisabled: props.row.isCheckable === false,
               'onUpdate:modelValue': toggleCheck
             })
           ])

@@ -70,14 +70,24 @@
 		<b-horizontal-divider></b-horizontal-divider>
 		<example-view title="Pagination and Sorting" :code="PaginationAndSortingExampleCode">
 			<template #content>
+				<p>There are two ways to handing sorting with <code>BTable</code></p>
+				<ol>
+					<li>
+						On your definition of a <code>BColumn</code>, include a <code>sort</code> field of the form
+						<code> { ord: Ord, sortType: 'Ascending' | 'Descending' } </code>.
+					</li>
+					<li>
+						Or just include <code>sort: true</code> on your <code>BColumn</code> and handle sorting yourself
+						by listing for changes to <code>sort-by</code> and <code>sort-type</code>
+					</li>
+				</ol>
 				<p>
-					To make a column sortable, provide an <code>Ord</code> instance in the <code>ord</code> field for
-					the column. An
+					An
 					<a target="blank" href="https://github.com/gcanti/fp-ts/blob/master/src/Ord.ts"><code>Ord</code></a>
-					is simply an object with a single compare field that can provide a total ordering for two objects of
-					the same type.
-					<b>Note: </b> You are in no way required to use <code>fp-ts</code> to utilize sorting in a
-					<code>BTable</code>. Just provide your own <code>Ord</code> instance.
+					is simply an object with a compare field that can provide a total ordering for two objects of
+					the same type (in this case the row for your table).
+					<b>Note: </b> You are in no way required to use the very awesome<code>fp-ts</code> library to
+					utilize sorting in a <code>BTable</code>. Just provide your own <code>Ord</code> instance.
 				</p>
 			</template>
 			<template #component>
@@ -85,6 +95,18 @@
 			</template>
 		</example-view>
 		<b-horizontal-divider></b-horizontal-divider>
+		<example-view title="Multiple Sorting" :code="MultipleSortingExampleCode">
+			<template #content>
+				<p>
+					To sort by multiple columns, provide an array of columns to the <code>sort-by</code> prop rather
+					than a single item. Everything else is the same!
+				</p>
+			</template>
+			<template #component>
+				<multiple-sorting-example></multiple-sorting-example>
+			</template>
+		</example-view>
+    <b-horizontal-divider></b-horizontal-divider>
 		<api-view :apis="apis"> </api-view>
 	</article>
 </template>
@@ -101,6 +123,8 @@ import CustomCellsExample from './examples/CustomCellsExample.vue';
 import CustomCellsExampleCode from '!!raw-loader!./examples/CustomCellsExample.vue';
 import CustomRowsExample from './examples/CustomRowsExample.vue';
 import CustomRowsExampleCode from '!!raw-loader!./examples/CustomRowsExample.vue';
+import MultipleSortingExample from './examples/MultipleSortingExample.vue';
+import MultipleSortingExampleCode from '!!raw-loader!./examples/MultipleSortingExample.vue';
 import PaginationAndSortingExample from './examples/PaginationAndSortingExample.vue';
 import PaginationAndSortingExampleCode from '!!raw-loader!./examples/PaginationAndSortingExample.vue';
 import SelectionExample from './examples/SelectionExample.vue';
@@ -119,7 +143,8 @@ export default defineComponent({
 		CustomCellsExample,
 		SelectionExample,
 		CheckableExample,
-		PaginationAndSortingExample
+		PaginationAndSortingExample,
+		MultipleSortingExample
 	},
 	setup() {
 		return {
@@ -129,7 +154,8 @@ export default defineComponent({
 			CheckableExampleCode,
 			CustomCellsExampleCode,
 			CustomRowsExampleCode,
-			SelectionExampleCode
+			SelectionExampleCode,
+			MultipleSortingExampleCode
 		};
 	}
 });
