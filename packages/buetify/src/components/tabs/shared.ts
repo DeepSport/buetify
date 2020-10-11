@@ -5,25 +5,13 @@ export const TABS_SYMBOL = Symbol('tabs');
 
 export const TAB_ITEM_NAME = 'b-tab-item';
 
-export interface BTabItemData {
-  props: BTabItemProps;
-}
-
-export interface TabInjection {
-  activeLabel: Ref<Option<string>>;
-}
-
-export const DEFAULT_TAB_INJECTION: TabInjection = {
-  activeLabel: shallowRef(none)
-};
-
 export const BTabItemPropsDefinition = {
   label: {
     type: String as PropType<string>,
     required: true as const
   },
   icon: {
-    type: Function as PropType<Component>
+    type: [Function, Object] as PropType<Component>
   },
   isDisabled: {
     type: Boolean as PropType<boolean>,
@@ -36,3 +24,13 @@ export const BTabItemPropsDefinition = {
 };
 
 export type BTabItemProps = ExtractPropTypes<typeof BTabItemPropsDefinition>;
+
+export interface TabInjection {
+  activeLabel: Ref<Option<string>>;
+  tabs: BTabItemProps[]
+}
+
+export const DEFAULT_TAB_INJECTION: TabInjection = {
+  activeLabel: shallowRef(none),
+  tabs: []
+};

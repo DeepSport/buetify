@@ -1,10 +1,13 @@
-import './tabs.sass';
+import './tabs.scss';
+import { lookup } from 'fp-ts/Array';
+import { pipe } from 'fp-ts/function';
+import { map } from 'fp-ts/Option';
 import { getUseModelPropsDefinition, Model, useModel } from '../../composables/model';
 import { useThemePropsDefinition, useTheme } from '../../composables/theme';
 import { AllColorsVariant } from '../../types/ColorVariants';
-import { isFragment, isObject } from '../../utils/helpers';
 import BScroll from '../scroll/BScroll';
 import {
+  shallowReactive,
   PropType,
   h,
   shallowRef,
@@ -12,21 +15,25 @@ import {
   ExtractPropTypes,
   Ref,
   nextTick,
-  Transition,
   defineComponent,
   VNode,
-  Slots,
-  onBeforeMount
+  onBeforeMount,
+  computed,
+  SetupContext,
+  TransitionGroup,
+  cloneVNode,
+  withDirectives,
+  vShow
 } from 'vue';
-import { none, Option, some } from 'fp-ts/lib/Option';
-import { BTabItemData, BTabItemProps, TAB_ITEM_NAME, TabInjection, TABS_SYMBOL } from './shared';
+
+import { BTabItemProps, TabInjection, TABS_SYMBOL } from './shared';
 import { TabsThemeMap } from './theme';
 
-export type TabPosition = 'is-centered' | 'is-right' | '';
+export type TabsPosition = 'is-centered' | 'is-right' | '';
 
-export type TabType = 'is-boxed' | 'is-toggle' | 'is-toggle-rounded' | '';
+export type TabsType = 'is-boxed' | 'is-toggle' | 'is-toggle-rounded' | '';
 
-export type TabSize = 'is-small' | 'is-medium' | 'is-large' | '';
+export type TabsSize = 'is-small' | 'is-medium' | 'is-large' | '';
 
 type TabTransition = 'slide-next' | 'slide-prev';
 
@@ -38,15 +45,15 @@ export const BTabsPropsDefinition = {
     default: false
   },
   type: {
-    type: String as PropType<TabType>,
+    type: String as PropType<TabsType>,
     default: '' as const
   },
   size: {
-    type: String as PropType<TabSize>,
+    type: String as PropType<TabsSize>,
     default: '' as const
   },
   position: {
-    type: String as PropType<TabPosition>,
+    type: String as PropType<TabsPosition>,
     default: '' as const
   },
   label: {
@@ -63,62 +70,57 @@ export const BTabsPropsDefinition = {
   isScrollable: {
     type: Boolean as PropType<boolean>,
     default: false
+  },
+  isVertical: {
+    type: Boolean as PropType<boolean>,
+    default: false
   }
 };
 
 export type BTabsProps = ExtractPropTypes<typeof BTabsPropsDefinition>;
 
-function useOnTabItemClick(
-  tab: BTabItemData,
-  index: number,
-  model: Model<number>,
-  activeLabel: Ref<Option<string>>,
-  transition: Ref<TabTransition>
-) {
+function useOnTabItemClick(tab: BTabItemProps, index: number, model: Model<number>, transition: Ref<TabTransition>) {
   return () => {
     const val = model.modelValue.value || 0;
     if (val !== index) {
       transition.value = index < val ? 'slide-next' : 'slide-prev';
       nextTick(() => {
         model.modelValue.value = index;
-        activeLabel.value = some(tab.props.label);
       });
     }
   };
 }
 
-function useGenerateNavItem(
-  props: BTabsProps,
-  model: Model<number>,
-  activeLabel: Ref<Option<string>>,
-  transition: Ref<TabTransition>
-) {
-  return function generateNavItem(step: BTabItemData, index: number): VNode {
-    return h(
-      'li',
-      {
-        key: step.props.label,
-        class: [
-          {
-            'is-active': index === model.modelValue.value,
-            'is-disabled': step.props.isDisabled
-          }
+function useGenerateNavItem(props: BTabsProps, model: Model<number>, transition: Ref<TabTransition>) {
+  return function generateNavItem(tab: BTabItemProps, index: number): VNode {
+    return withDirectives(
+      h(
+        'li',
+        {
+          key: tab.label,
+          class: [
+            {
+              'is-active': index === model.modelValue.value,
+              'is-disabled': tab.isDisabled
+            }
+          ]
+        },
+        [
+          h(
+            'a',
+            { onClick: useOnTabItemClick(tab, index, model, transition) },
+            tab.icon
+              ? [
+                  h(tab.icon as any, {
+                    size: props.size
+                  }),
+                  tab.label
+                ]
+              : tab.label
+          )
         ]
-      },
-      [
-        h(
-          'a',
-          { onClick: useOnTabItemClick(step, index, model, activeLabel, transition) },
-          step.props.icon
-            ? [
-                h(step.props.icon as any, {
-                  size: props.size
-                }),
-                step.props.label
-              ]
-            : step.props.label
-        )
-      ]
+      ),
+      [[vShow, tab.isVisible]]
     );
   };
 }
@@ -135,19 +137,17 @@ function generateNavLabel(props: BTabsProps): VNode {
 
 function generateNavItems(
   props: BTabsProps,
-  tabs: BTabItemData[],
+  tabs: BTabItemProps[],
   model: Model<number>,
-  activeLabel: Ref<Option<string>>,
   transition: Ref<TabTransition>
 ) {
-  return h('ul', tabs.map(useGenerateNavItem(props, model, activeLabel, transition)));
+  return h('ul', tabs.map(useGenerateNavItem(props, model, transition)));
 }
 
 function generateNavHeaderContent(
   props: BTabsProps,
-  tabs: BTabItemData[],
+  tabs: BTabItemProps[],
   model: Model<number>,
-  activeLabel: Ref<Option<string>>,
   transition: Ref<TabTransition>,
   themeClasses: string[]
 ): VNode {
@@ -166,61 +166,27 @@ function generateNavHeaderContent(
       ].concat(props.variant === '' ? themeClasses : [props.variant])
     },
     props.label
-      ? [generateNavLabel(props), generateNavItems(props, tabs, model, activeLabel, transition)]
-      : [generateNavItems(props, tabs, model, activeLabel, transition)]
+      ? [generateNavLabel(props), generateNavItems(props, tabs, model, transition)]
+      : [generateNavItems(props, tabs, model, transition)]
   );
 }
 
 function generateNavHeader(
   props: BTabsProps,
-  tabs: BTabItemNode[],
+  tabs: BTabItemProps[],
   model: Model<number>,
-  activeLabel: Ref<Option<string>>,
   transition: Ref<TabTransition>,
   themeClasses: string[]
 ): VNode {
   return props.isScrollable
-    ? h(BScroll, { class: 'is-fullwidth' }, () => [
-        generateNavHeaderContent(props, tabs, model, activeLabel, transition, themeClasses)
+    ? h(BScroll, { class: props.isVertical ? 'is-fullheight' : 'is-fullwidth' }, () => [
+        generateNavHeaderContent(props, tabs, model, transition, themeClasses)
       ])
-    : generateNavHeaderContent(props, tabs, model, activeLabel, transition, themeClasses);
+    : generateNavHeaderContent(props, tabs, model, transition, themeClasses);
 }
 
-function generateTabContent(
-  props: BTabsProps,
-  tabs: BTabItemNode[],
-  model: Model<number>,
-  transition: Ref<TabTransition>
-): VNode {
-  return props.isAnimated
-    ? h(Transition, { name: transition.value }, () => tabs[model.modelValue.value || 0])
-    : tabs[model.modelValue.value || 0];
-}
-
-interface BTabItemNode extends VNode {
-  type: {
-    name: typeof TAB_ITEM_NAME;
-  };
-  props: BTabItemProps;
-}
-
-function isBTabItemNode(node: unknown): node is BTabItemNode {
-  return (
-    isObject(node) &&
-    isObject((node as any).type) &&
-    (node as any).type.name === TAB_ITEM_NAME &&
-    ((node as any).props['is-visible'] === undefined ||
-      (node as any).props['is-visible'] ||
-      (node as any).props.isVisible === undefined ||
-      (node as any).props.isVisible)
-  );
-}
-
-function getTabs(slots: Slots): any[] {
-  return (
-      ((slots.default && slots.default()) ||
-    []).flatMap(node => (isFragment(node) ? node.children : [node])).filter(isBTabItemNode)
-  );
+function BStaticTabContent(_: unknown, { slots }: SetupContext) {
+  return h('div', { class: 'tab-content' }, slots.default && slots.default());
 }
 
 export default defineComponent({
@@ -230,24 +196,73 @@ export default defineComponent({
     const { themeClasses } = useTheme(props);
     const model = useModel(props);
     const transition = shallowRef('slide-next' as 'slide-next' | 'slide-prev');
+    const tabs = shallowReactive([] as BTabItemProps[]);
+    const isTransitioning = shallowRef(false);
+    const activeLabel = computed(() =>
+      pipe(
+        tabs,
+        lookup(model.modelValue.value || 0),
+        map(p => p.label)
+      )
+    );
+
     const injection: TabInjection = {
-      activeLabel: shallowRef(none)
+      activeLabel,
+      tabs
     };
 
     provide(TABS_SYMBOL, injection);
 
     onBeforeMount(() => {
       if (model.modelValue.value === undefined) {
-        model.modelValue.value = 0
+        model.modelValue.value = 0;
       }
     });
 
+    function onBeforeEnter() {
+      isTransitioning.value = true;
+    }
+
+    function onAfterLeave() {
+      isTransitioning.value = false;
+    }
+
     return () => {
-      const tabs = getTabs(context.slots);
-      return h('article', { class: 'b-tabs' }, [
-        generateNavHeader(props, tabs, model, injection.activeLabel, transition, themeClasses.value),
-        generateTabContent(props, tabs, model, transition)
-      ]);
+      return h(
+        'article',
+        {
+          class: [
+            'b-tabs',
+            props.size || null,
+            {
+              'is-vertical': props.isVertical,
+              [props.position]: props.position && props.isVertical
+            }
+          ]
+        },
+        [
+          generateNavHeader(props, tabs, model, transition, themeClasses.value),
+          props.isAnimated
+            ? h(
+                'div',
+                {
+                  class: ['tab-content', { 'is-transitioning': isTransitioning.value }]
+                },
+                h(
+                  TransitionGroup,
+                  {
+                    onBeforeEnter,
+                    onAfterLeave,
+                    name: transition.value
+                  },
+                  () =>
+                    context.slots.default &&
+                    context.slots.default().map((node, index) => cloneVNode(node, { key: tabs[index]?.label ?? index }))
+                )
+              )
+            : h(BStaticTabContent, context.slots.default)
+        ]
+      );
     };
   }
 });

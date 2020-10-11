@@ -1,5 +1,3 @@
-import { VNode } from 'vue';
-import { IO } from 'fp-ts/lib/IO';
 import { Component, ExtractPropTypes, PropType, Ref, shallowRef } from 'vue';
 import { none, Option } from 'fp-ts/lib/Option';
 import { ColorVariant } from '../../types/ColorVariants';
@@ -7,15 +5,6 @@ import { ColorVariant } from '../../types/ColorVariants';
 export const STEPS_SYMBOL = Symbol('steps');
 
 export const STEP_ITEM_NAME = 'b-step-item';
-
-export interface BStepItemData {
-  props: BStepItemProps;
-  render: IO<VNode[]>;
-}
-
-export type BStepItemDataRefs = {
-  [K in keyof BStepItemProps]: Ref<BStepItemProps[K]>
-}
 
 export interface StepInjection {
   activeLabel: Ref<Option<string>>;

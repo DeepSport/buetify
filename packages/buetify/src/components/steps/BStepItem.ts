@@ -23,7 +23,6 @@ export default defineComponent({
         h(
           'section',
           {
-            key: props.label,
             class: 'step-item',
             'aria-label': props.label
           },
