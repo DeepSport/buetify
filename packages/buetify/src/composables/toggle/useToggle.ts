@@ -3,7 +3,10 @@ import { IO } from 'fp-ts/lib/IO';
 import { watch, computed, Ref, PropType, shallowRef, toRef } from 'vue';
 import { isEnterEvent } from '../../utils/eventHelpers';
 
-export function getUseTogglePropsDefinition<K extends string>(statusName: K, defaultStatus = false): UseTogglePropsDefinition<K> {
+export function getUseTogglePropsDefinition<K extends string>(
+  statusName: K,
+  defaultStatus = false
+): UseTogglePropsDefinition<K> {
   return {
     [statusName]: {
       type: Boolean,

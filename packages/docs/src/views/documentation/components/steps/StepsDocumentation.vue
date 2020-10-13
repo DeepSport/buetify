@@ -6,18 +6,18 @@
 			</template>
 		</example-view>
 		<b-horizontal-divider></b-horizontal-divider>
-    <example-view title="Icons" :code="IconsExampleCode">
-      <template #component>
-        <icons-example></icons-example>
-      </template>
-    </example-view>
-    <b-horizontal-divider></b-horizontal-divider>
-    <example-view title="Vertical" :code="VerticalExampleCode">
-      <template #component>
-        <vertical-example></vertical-example>
-      </template>
-    </example-view>
-    <b-horizontal-divider></b-horizontal-divider>
+		<example-view title="Icons" :code="IconsExampleCode">
+			<template #component>
+				<icons-example></icons-example>
+			</template>
+		</example-view>
+		<b-horizontal-divider></b-horizontal-divider>
+		<example-view title="Vertical" :code="VerticalExampleCode">
+			<template #component>
+				<vertical-example></vertical-example>
+			</template>
+		</example-view>
+		<b-horizontal-divider></b-horizontal-divider>
 		<api-view :apis="apis"> </api-view>
 	</article>
 </template>
@@ -42,15 +42,15 @@ export default defineComponent({
 		ApiView,
 		Simple,
 		BHorizontalDivider,
-    IconsExample,
-    VerticalExample
+		IconsExample,
+		VerticalExample
 	},
 	setup() {
 		return {
 			apis,
 			SimpleCode,
-      IconsExampleCode,
-      VerticalExampleCode
+			IconsExampleCode,
+			VerticalExampleCode
 		};
 	}
 });

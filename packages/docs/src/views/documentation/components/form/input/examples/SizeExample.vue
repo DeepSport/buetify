@@ -29,10 +29,10 @@ export default defineComponent({
 		BField,
 		BInput
 	},
-  setup() {
-	  return {
-	    UserIcon
-    }
-  }
+	setup() {
+		return {
+			UserIcon
+		};
+	}
 });
 </script>

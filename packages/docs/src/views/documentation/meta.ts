@@ -20,5 +20,5 @@ export const meta: Record<string, BuetifyRouteMeta> = {
 		breadcrumbs: ['/', '/documentation']
 	},
 	[summaryMeta.fullPath]: summaryMeta,
-	...componentsMeta,
+	...componentsMeta
 };

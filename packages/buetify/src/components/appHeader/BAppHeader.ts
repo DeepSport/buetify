@@ -2,7 +2,7 @@ import './app-header.sass';
 import { isSome } from 'fp-ts/lib/Option';
 import { SetupContext, h, Slots } from 'vue';
 import BNavbarBurger from '../navbar/BNavbarBurger';
-import {SidebarController, useSidebarController} from '../sidebar/composables';
+import { SidebarController, useSidebarController } from '../sidebar/composables';
 
 function generateMainSlot(injection: SidebarController, includeClickHandler: boolean, slots: Slots) {
   return h(
@@ -48,9 +48,6 @@ export default function(_: any, { attrs, slots }: SetupContext) {
         }
       ]
     },
-    [
-      generateNavigationButton(sidebarController, slots),
-      generateMainSlot(sidebarController, isInvisible, slots)
-    ]
+    [generateNavigationButton(sidebarController, slots), generateMainSlot(sidebarController, isInvisible, slots)]
   );
 }

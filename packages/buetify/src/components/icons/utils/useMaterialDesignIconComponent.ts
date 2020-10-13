@@ -60,22 +60,25 @@ export const SvgLoader = defineComponent({
     const html = shallowRef(null as null | string);
 
     watchEffect(() => {
-      html.value = null
-      load(props.src).then(svg => {
-        html.value = svg;
-        if (props.onLoad) {
-          props.onLoad()
-        }
-      }).catch((e: Error) => {
-        if (props.onError) {
-          props.onError(e);
-        }
-      })
-    })
+      html.value = null;
+      load(props.src)
+        .then(svg => {
+          html.value = svg;
+          if (props.onLoad) {
+            props.onLoad();
+          }
+        })
+        .catch((e: Error) => {
+          if (props.onError) {
+            props.onError(e);
+          }
+        });
+    });
 
-  	return () => h('i', {
-  	  class: 'is-block is-fullwidth',
-      innerHtml: html.value
-    })
+    return () =>
+      h('i', {
+        class: 'is-block is-fullwidth',
+        innerHtml: html.value
+      });
   }
 });

@@ -227,7 +227,6 @@ export function defineInput<T>() {
       const inputRef = shallowRef((null as unknown) as HTMLInputElement);
       const inputData = useInput(props as UseInputProps<T>, inputRef);
 
-
       const rightIcon = computed(() =>
         getRightIcon(
           props.inputIcons,

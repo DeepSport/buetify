@@ -47,7 +47,7 @@ const BNumberInputPropsDefinition = {
   },
   controlsRounded: {
     type: Boolean as PropType<boolean>,
-    default: false,
+    default: false
   },
   controlsPosition: {
     type: String as PropType<BNumberInputControlsPosition>,
@@ -142,9 +142,9 @@ export default defineComponent({
       toRef(props, 'onUpdate:modelValue') as Ref<FunctionN<[number | undefined], void>>
     );
 
-    const defaultMin = computed(() => props.min === Number.MIN_SAFE_INTEGER ? 0 : props.min);
+    const defaultMin = computed(() => (props.min === Number.MIN_SAFE_INTEGER ? 0 : props.min));
 
-    const defaultMax = computed(() => props.max === Number.MAX_SAFE_INTEGER ? 0 : props.max)
+    const defaultMax = computed(() => (props.max === Number.MAX_SAFE_INTEGER ? 0 : props.max));
 
     const canDecrement = computed(() => (number.value ?? defaultMax.value) - props.step >= props.min);
     function onDecrement() {
@@ -184,7 +184,11 @@ export default defineComponent({
       const nodes = props.displayControls
         ? [generateControl(props, data, true), generateInput(props, data, context), generateControl(props, data, false)]
         : [generateInput(props, data, context)];
-      return h('div', { class: ['b-number-input field', getFieldClasses(props.controlsPosition, props.isExpanded)] }, nodes);
+      return h(
+        'div',
+        { class: ['b-number-input field', getFieldClasses(props.controlsPosition, props.isExpanded)] },
+        nodes
+      );
     };
   }
 });

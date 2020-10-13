@@ -1,33 +1,33 @@
 <template>
 	<section aria-label="b-tabs types example">
-    <b-tabs>
-      <b-tab-item label="Account"> </b-tab-item>
-
-      <b-tab-item label="Profile" > </b-tab-item>
-
-      <b-tab-item label="Social"> </b-tab-item>
-    </b-tabs>
-		<b-tabs type="is-boxed">
+		<b-tabs>
 			<b-tab-item label="Account"> </b-tab-item>
 
-			<b-tab-item label="Profile" > </b-tab-item>
+			<b-tab-item label="Profile"> </b-tab-item>
 
 			<b-tab-item label="Social"> </b-tab-item>
 		</b-tabs>
-    <b-tabs type="is-toggle">
-      <b-tab-item label="Account"> </b-tab-item>
+		<b-tabs type="is-boxed">
+			<b-tab-item label="Account"> </b-tab-item>
 
-      <b-tab-item label="Profile" > </b-tab-item>
+			<b-tab-item label="Profile"> </b-tab-item>
 
-      <b-tab-item label="Social"> </b-tab-item>
-    </b-tabs>
-    <b-tabs type="is-toggle-rounded">
-      <b-tab-item label="Account"> </b-tab-item>
+			<b-tab-item label="Social"> </b-tab-item>
+		</b-tabs>
+		<b-tabs type="is-toggle">
+			<b-tab-item label="Account"> </b-tab-item>
 
-      <b-tab-item label="Profile" > </b-tab-item>
+			<b-tab-item label="Profile"> </b-tab-item>
 
-      <b-tab-item label="Social"> </b-tab-item>
-    </b-tabs>
+			<b-tab-item label="Social"> </b-tab-item>
+		</b-tabs>
+		<b-tabs type="is-toggle-rounded">
+			<b-tab-item label="Account"> </b-tab-item>
+
+			<b-tab-item label="Profile"> </b-tab-item>
+
+			<b-tab-item label="Social"> </b-tab-item>
+		</b-tabs>
 	</section>
 </template>
 <script lang="ts">

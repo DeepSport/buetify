@@ -48,7 +48,7 @@
 </template>
 <script lang="ts">
 import { BField, BSelect, BSwitch } from 'buetify/lib/components';
-import {PaginationPosition, PaginationVerticalPosition} from 'buetify/lib/components/pagination/BPagination';
+import { PaginationPosition, PaginationVerticalPosition } from 'buetify/lib/components/pagination/BPagination';
 import BTable, { BTablePaginationInput } from 'buetify/lib/components/table/BTable';
 import { BTableColumn, SortType } from 'buetify/lib/components/table/shared';
 import BTag from 'buetify/lib/components/tag/BTag';

@@ -84,8 +84,8 @@
 				<p>
 					An
 					<a target="blank" href="https://github.com/gcanti/fp-ts/blob/master/src/Ord.ts"><code>Ord</code></a>
-					is simply an object with a compare field that can provide a total ordering for two objects of
-					the same type (in this case the row for your table).
+					is simply an object with a compare field that can provide a total ordering for two objects of the
+					same type (in this case the row for your table).
 					<b>Note: </b> You are in no way required to use the very awesome<code>fp-ts</code> library to
 					utilize sorting in a <code>BTable</code>. Just provide your own <code>Ord</code> instance.
 				</p>
@@ -106,7 +106,7 @@
 				<multiple-sorting-example></multiple-sorting-example>
 			</template>
 		</example-view>
-    <b-horizontal-divider></b-horizontal-divider>
+		<b-horizontal-divider></b-horizontal-divider>
 		<api-view :apis="apis"> </api-view>
 	</article>
 </template>

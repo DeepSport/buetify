@@ -4,7 +4,7 @@ import { h, SetupContext, withDirectives, vShow } from 'vue';
 
 type OverlayPosition = 'is-left' | 'is-right' | 'is-centered';
 
-export default  defineComponent({
+export default defineComponent({
   name: 'b-overlay',
   props: {
     position: {
@@ -60,7 +60,7 @@ export default  defineComponent({
               h('div', {
                 onClick: () => {
                   console.log('overlay background-click');
-                  props.onClick && props.onClick()
+                  props.onClick && props.onClick();
                 },
                 class: 'b-overlay-background'
               }),

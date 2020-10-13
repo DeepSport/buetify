@@ -48,8 +48,8 @@ export function useCheckableTable(props: BTableCheckProps, rows: Ref<BTableRow[]
   const newCheckedRows = shallowRef(propCheckedRows.value);
 
   watch(propCheckedRows, newValue => {
-    newCheckedRows.value = newValue
-  })
+    newCheckedRows.value = newValue;
+  });
 
   const checkedRowIds = computed(() => toSet(newCheckedRows.value));
 
@@ -63,26 +63,26 @@ export function useCheckableTable(props: BTableCheckProps, rows: Ref<BTableRow[]
   function checkAllRows() {
     const cRows = checkableRows.value;
     newCheckedRows.value = cRows;
-    props['onUpdate:checkedRows'](cRows)
+    props['onUpdate:checkedRows'](cRows);
   }
 
   function toggleRow(row: BTableRow) {
     if (row.isCheckable) {
       const ids = checkedRowIds.value;
       if (ids.has(row.id)) {
-        props.onUncheckRow(row)
+        props.onUncheckRow(row);
       } else {
-        props.onCheckRow(row)
+        props.onCheckRow(row);
       }
-      const cRows = toggleBTableRow(row, newCheckedRows.value)
+      const cRows = toggleBTableRow(row, newCheckedRows.value);
       newCheckedRows.value = cRows;
-      props['onUpdate:checkedRows'](cRows)
+      props['onUpdate:checkedRows'](cRows);
     }
   }
 
   function uncheckAllRows() {
     newCheckedRows.value = [];
-    props['onUpdate:checkedRows']([])
+    props['onUpdate:checkedRows']([]);
   }
 
   function toggleAllRows() {

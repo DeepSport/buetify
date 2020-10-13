@@ -81,8 +81,8 @@ export interface OpenNoticeOptions extends RenderNoticeOptions {
   duration?: number;
   shouldQueue?: boolean;
   transition?: Transition;
-  isIndefinite?: boolean
-  onAction?: IO<void>
+  isIndefinite?: boolean;
+  onAction?: IO<void>;
 }
 
 export function useNoticeController(props: UseNoticeProps, render: Ref<FunctionN<[RenderNoticeOptions], IO<VNode[]>>>) {
@@ -100,7 +100,7 @@ export function useNoticeController(props: UseNoticeProps, render: Ref<FunctionN
       render: render.value(options),
       transition: options.transition ?? transition.value,
       shouldQueue: options.shouldQueue ?? props.shouldQueue,
-      duration: (options.isIndefinite || props.isIndefinite) ? 0 : options.duration ?? props.duration
+      duration: options.isIndefinite || props.isIndefinite ? 0 : options.duration ?? props.duration
     });
   }
 

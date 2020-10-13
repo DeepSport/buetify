@@ -18,11 +18,11 @@
 			</template>
 		</example-view>
 		<b-horizontal-divider></b-horizontal-divider>
-				<example-view title="Multiple Dates" :code="MultipleDatesExampleCode" is-vertical>
-					<template #component>
-						<multiple-dates-example></multiple-dates-example>
-					</template>
-				</example-view>
+		<example-view title="Multiple Dates" :code="MultipleDatesExampleCode" is-vertical>
+			<template #component>
+				<multiple-dates-example></multiple-dates-example>
+			</template>
+		</example-view>
 		<b-horizontal-divider></b-horizontal-divider>
 		<example-view title="Events" :code="EventsExampleCode" is-vertical>
 			<template #component>

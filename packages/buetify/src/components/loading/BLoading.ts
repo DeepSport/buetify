@@ -94,9 +94,7 @@ export default defineComponent({
       } else if (props.isFullscreen) {
         return undefined;
       } else {
-        return h(Transition as any, { name: props.transition }, () =>
-          props.isActive ? render.value() : undefined
-        );
+        return h(Transition as any, { name: props.transition }, () => (props.isActive ? render.value() : undefined));
       }
     };
   }

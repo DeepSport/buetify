@@ -6,24 +6,24 @@
 			</template>
 		</example-view>
 		<b-horizontal-divider></b-horizontal-divider>
-    <example-view title="Variants" :code="VariantsExampleCode" is-vertical>
-      <template #component>
-        <variants-example></variants-example>
-      </template>
-    </example-view>
-    <b-horizontal-divider></b-horizontal-divider>
-    <example-view title="Headerless" :code="HeaderlessExampleCode" is-vertical>
-      <template #component>
-        <headerless-example></headerless-example>
-      </template>
-    </example-view>
-    <b-horizontal-divider></b-horizontal-divider>
-    <example-view title="Icons" :code="IconsExampleCode" is-vertical>
-      <template #component>
-        <icons-example></icons-example>
-      </template>
-    </example-view>
-    <b-horizontal-divider></b-horizontal-divider>
+		<example-view title="Variants" :code="VariantsExampleCode" is-vertical>
+			<template #component>
+				<variants-example></variants-example>
+			</template>
+		</example-view>
+		<b-horizontal-divider></b-horizontal-divider>
+		<example-view title="Headerless" :code="HeaderlessExampleCode" is-vertical>
+			<template #component>
+				<headerless-example></headerless-example>
+			</template>
+		</example-view>
+		<b-horizontal-divider></b-horizontal-divider>
+		<example-view title="Icons" :code="IconsExampleCode" is-vertical>
+			<template #component>
+				<icons-example></icons-example>
+			</template>
+		</example-view>
+		<b-horizontal-divider></b-horizontal-divider>
 		<api-view :apis="apis"> </api-view>
 	</article>
 </template>
@@ -49,18 +49,18 @@ export default defineComponent({
 		ExampleView,
 		ApiView,
 		Simple,
-    VariantsExample,
-    IconsExample,
-    HeaderlessExample,
+		VariantsExample,
+		IconsExample,
+		HeaderlessExample,
 		BHorizontalDivider
 	},
 	setup() {
 		return {
 			apis,
 			SimpleCode,
-      VariantsExampleCode,
-      HeaderlessExampleCode,
-      IconsExampleCode
+			VariantsExampleCode,
+			HeaderlessExampleCode,
+			IconsExampleCode
 		};
 	}
 });

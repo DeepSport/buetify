@@ -6,30 +6,30 @@
 				id hendrerit imperdiet, elit sapien laoreet elit
 			</template>
 		</b-notification>
-    <b-notification title="Success" use-icon variant="is-success">
-      <template #default>
-        Lorem ipsum dolor sit amet, consectetur adipiscing elit. Fusce id fermentum quam. Proin sagittis, nibh
-        id hendrerit imperdiet, elit sapien laoreet elit
-      </template>
-    </b-notification>
-    <b-notification title="Danger" use-icon variant="is-danger">
-      <template #default>
-        Lorem ipsum dolor sit amet, consectetur adipiscing elit. Fusce id fermentum quam. Proin sagittis, nibh
-        id hendrerit imperdiet, elit sapien laoreet elit
-      </template>
-    </b-notification>
-    <b-notification title="Warning" use-icon variant="is-warning">
-      <template #default>
-        Lorem ipsum dolor sit amet, consectetur adipiscing elit. Fusce id fermentum quam. Proin sagittis, nibh
-        id hendrerit imperdiet, elit sapien laoreet elit
-      </template>
-    </b-notification>
-    <b-notification title="Info" use-icon variant="is-info">
-      <template #default>
-        Lorem ipsum dolor sit amet, consectetur adipiscing elit. Fusce id fermentum quam. Proin sagittis, nibh
-        id hendrerit imperdiet, elit sapien laoreet elit
-      </template>
-    </b-notification>
+		<b-notification title="Success" use-icon variant="is-success">
+			<template #default>
+				Lorem ipsum dolor sit amet, consectetur adipiscing elit. Fusce id fermentum quam. Proin sagittis, nibh
+				id hendrerit imperdiet, elit sapien laoreet elit
+			</template>
+		</b-notification>
+		<b-notification title="Danger" use-icon variant="is-danger">
+			<template #default>
+				Lorem ipsum dolor sit amet, consectetur adipiscing elit. Fusce id fermentum quam. Proin sagittis, nibh
+				id hendrerit imperdiet, elit sapien laoreet elit
+			</template>
+		</b-notification>
+		<b-notification title="Warning" use-icon variant="is-warning">
+			<template #default>
+				Lorem ipsum dolor sit amet, consectetur adipiscing elit. Fusce id fermentum quam. Proin sagittis, nibh
+				id hendrerit imperdiet, elit sapien laoreet elit
+			</template>
+		</b-notification>
+		<b-notification title="Info" use-icon variant="is-info">
+			<template #default>
+				Lorem ipsum dolor sit amet, consectetur adipiscing elit. Fusce id fermentum quam. Proin sagittis, nibh
+				id hendrerit imperdiet, elit sapien laoreet elit
+			</template>
+		</b-notification>
 	</section>
 </template>
 <script lang="ts">
@@ -42,10 +42,10 @@ export default defineComponent({
 	components: {
 		BNotification
 	},
-  setup() {
-	  return {
-	    UserIcon
-    }
-  }
+	setup() {
+		return {
+			UserIcon
+		};
+	}
 });
 </script>

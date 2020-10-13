@@ -10,29 +10,24 @@
 				v-model:selected-items="selectedFruits"
 			>
 				<template #footer>
-          <button @click="openFruitDialog">
-            Add a fruit...
-          </button>
+					<button @click="openFruitDialog">
+						Add a fruit...
+					</button>
 				</template>
 			</b-autocomplete>
 		</b-field>
-    <b-dialog v-model:is-active="isActive" >
-      <template #default>
-        <b-field label="New Fruit">
-          <b-input type="text" v-model="newFruit" placeholder="e.g. Peach"> </b-input>
-        </b-field>
-      </template>
-      <template #footer="{ close }">
-        <b-button
-            variant="is-success"
-            :is-disabled="!newFruit"
-            is-fullwidth
-            @click="addFruit(close)"
-        >
-          Add Fruit
-        </b-button>
-      </template>
-    </b-dialog>
+		<b-dialog v-model:is-active="isActive">
+			<template #default>
+				<b-field label="New Fruit">
+					<b-input type="text" v-model="newFruit" placeholder="e.g. Peach"> </b-input>
+				</b-field>
+			</template>
+			<template #footer="{ close }">
+				<b-button variant="is-success" :is-disabled="!newFruit" is-fullwidth @click="addFruit(close)">
+					Add Fruit
+				</b-button>
+			</template>
+		</b-dialog>
 	</section>
 </template>
 <script lang="ts">
@@ -56,15 +51,15 @@ export default defineComponent({
 		BInput
 	},
 	setup() {
-	  const isActive = shallowRef(false);
+		const isActive = shallowRef(false);
 		const newFruit = shallowRef('');
 		const availableFruits = reactive(fruits);
 		const selectedFruits = shallowRef([]);
 		const description = computed(() => selectedFruits.value.join(', '));
 
 		function openFruitDialog() {
-		  isActive.value = true
-    }
+			isActive.value = true;
+		}
 
 		function addFruit(close: IO<void>) {
 			const nf = newFruit.value;
@@ -77,9 +72,9 @@ export default defineComponent({
 
 		return {
 			SearchIcon,
-      isActive,
-      openFruitDialog,
-      addFruit,
+			isActive,
+			openFruitDialog,
+			addFruit,
 			newFruit,
 			availableFruits,
 			selectedFruits,

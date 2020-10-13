@@ -6,29 +6,29 @@
 					Open First Dialog
 				</b-button>
 			</template>
-      <template #header>
-        <b-title>First Dialog</b-title>
-      </template>
+			<template #header>
+				<b-title>First Dialog</b-title>
+			</template>
 			<template #default>
-        <b-dialog>
-          <template #trigger="{ props }">
-            <b-button is-fullwidth variant="is-warning" v-bind="props.value">
-              Open Nested Dialog
-            </b-button>
-          </template>
-          <template #header>
-            <b-title>Nested</b-title>
-          </template>
-          <template #default>
-            <p>
-              Nested Dialog!
-            </p>
-          </template>
-          <template #footer="{ close }">
-            <b-button is-fullwidth @click="close" variant="is-danger">Close</b-button>
-          </template>
-        </b-dialog>
-      </template>
+				<b-dialog>
+					<template #trigger="{ props }">
+						<b-button is-fullwidth variant="is-warning" v-bind="props.value">
+							Open Nested Dialog
+						</b-button>
+					</template>
+					<template #header>
+						<b-title>Nested</b-title>
+					</template>
+					<template #default>
+						<p>
+							Nested Dialog!
+						</p>
+					</template>
+					<template #footer="{ close }">
+						<b-button is-fullwidth @click="close" variant="is-danger">Close</b-button>
+					</template>
+				</b-dialog>
+			</template>
 			<template #footer="{ close }">
 				<b-button is-fullwidth @click="close" variant="is-success">
 					Submit
@@ -44,8 +44,8 @@ export default defineComponent({
 	name: 'nested-dialog-example',
 	components: {
 		BButton,
-    BDialog,
-    BTitle
+		BDialog,
+		BTitle
 	}
 });
 </script>

@@ -3,12 +3,11 @@
 		<router-link to="#api">
 			<b-title># API</b-title>
 		</router-link>
-		<section v-for="api in data" :key="api.title" :id="api.slug">
+		<section class="api-view" v-for="api in data" :key="api.title" :id="api.slug">
 			<router-link v-if="data.length > 1" :to="api.slug">
 				<b-subtitle tag="h1" class="margin-top-size-6"> # {{ api.title }}</b-subtitle>
 			</router-link>
-			<b-tabs class="margin-top-size-6">
-
+			<b-tabs class="margin-top-size-6 api-tabs">
 				<b-tab-item v-if="api.props && api.props.length" label="Props">
 					<b-simple-table>
 						<thead>
@@ -144,6 +143,7 @@ export default defineComponent({
 		return {
 			PropColumns,
 			SlotColumns,
+
 			EventsColumns,
 			MethodsColumns,
 			data: computed(() => props.apis.map(api => ({ ...api, slug: toSlug(api.title) })))
@@ -151,3 +151,11 @@ export default defineComponent({
 	}
 });
 </script>
+
+<style lang="sass">
+.api-view
+  .api-tabs
+    .tab-content
+      padding-left: 0
+      padding-right: 0
+</style>

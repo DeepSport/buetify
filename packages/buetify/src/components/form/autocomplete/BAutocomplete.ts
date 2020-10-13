@@ -206,7 +206,6 @@ function generateFooterItem(slots: Slots): VNode {
   return h('li', { class: 'dropdown-item', tabindex: -1 }, slots.footer && slots.footer());
 }
 
-
 function generateLoadingItem(slots: Slots): VNode {
   return h('li', { tabindex: -1 }, [
     h(BDropdownItem, { tag: 'div' }, () => (slots.loading ? slots.loading() : 'Loading results...'))
@@ -367,8 +366,8 @@ function defineAutocomplete<T>() {
                 if (slots.header) {
                   nodes.unshift(generateHeaderItem(slots), h(BDropdownDivider));
                 }
-                if(slots.footer) {
-                  nodes.push(h(BDropdownDivider), generateFooterItem(slots))
+                if (slots.footer) {
+                  nodes.push(h(BDropdownDivider), generateFooterItem(slots));
                 }
               }
               return nodes;

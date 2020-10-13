@@ -27,7 +27,7 @@ export type BTabItemProps = ExtractPropTypes<typeof BTabItemPropsDefinition>;
 
 export interface TabInjection {
   activeLabel: Ref<Option<string>>;
-  tabs: BTabItemProps[]
+  tabs: BTabItemProps[];
 }
 
 export const DEFAULT_TAB_INJECTION: TabInjection = {

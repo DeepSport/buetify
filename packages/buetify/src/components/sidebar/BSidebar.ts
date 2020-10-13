@@ -17,7 +17,7 @@ import {
   vShow
 } from 'vue';
 import BOverlay from '../overlay/BOverlay';
-import {SidebarController, useSidebarController} from './composables';
+import { SidebarController, useSidebarController } from './composables';
 import { SidebarThemeMap } from './theme';
 
 export const BSidebarPropsDefinition = {

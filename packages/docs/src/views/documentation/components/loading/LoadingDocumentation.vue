@@ -7,9 +7,9 @@
 		</example-view>
 		<b-horizontal-divider></b-horizontal-divider>
 		<example-view title="Templated" :code="TemplateExampleCode">
-      <template #content>
-        Use the default slot to inject custom content into the loader.
-      </template>
+			<template #content>
+				Use the default slot to inject custom content into the loader.
+			</template>
 			<template #component>
 				<template-example></template-example>
 			</template>

@@ -1,6 +1,8 @@
 @import '../../sass/helpers/animations'
 $snackbar-background-color: $dark !default
 $snackbar-color: $dark-invert !default
+$toast-background-color: $snackbar-background-color !default
+$toast-color: $snackbar-color
 $toast-border-radius: $radius !default
 $snackbar-border-radius: $radius !default
 $all-colors: mergeColorMaps($colors, $shades) !default
@@ -43,6 +45,8 @@ $all-colors: mergeColorMaps($colors, $shades) !default
 		box-shadow: 0 1px 4px rgba(0, 0, 0, 0.12), 0 0 6px rgba(0, 0, 0, 0.04)
 		border-radius: $toast-border-radius
 		padding: 0.75em 1.5em
+		background-color: $toast-background-color
+		color: $toast-color
 		//pointer-events: auto
 		opacity: 0.92
 		@each $name, $pair in mergeColorMaps($colors, $shades)

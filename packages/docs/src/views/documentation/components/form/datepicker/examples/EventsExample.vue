@@ -6,7 +6,15 @@
 			</b-radio>
 			<b-radio v-model="indicators" true-value="dots"> Dots</b-radio>
 		</b-field>
-		<b-datepicker is-inline :first-day-of-week="1" :events="events" :indicators="indicators" placeholder="Click to select" v-model="selectedDate"> </b-datepicker>
+		<b-datepicker
+			is-inline
+			:first-day-of-week="1"
+			:events="events"
+			:indicators="indicators"
+			placeholder="Click to select"
+			v-model="selectedDate"
+		>
+		</b-datepicker>
 	</section>
 </template>
 <script lang="ts">

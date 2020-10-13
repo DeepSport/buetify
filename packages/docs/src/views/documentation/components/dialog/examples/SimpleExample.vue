@@ -34,10 +34,10 @@ export default defineComponent({
 	name: 'dialog-example',
 	components: {
 		BButton,
-    BDialog,
-    BTitle,
-    BField,
-    BInput
+		BDialog,
+		BTitle,
+		BField,
+		BInput
 	}
 });
 </script>

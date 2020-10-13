@@ -1,5 +1,5 @@
 import { ComponentApiDescription } from '../../../../../components/apiView';
-import {getUseToggleEventsApi, getUseTogglePropsApi} from '../../../shared/api';
+import { getUseToggleEventsApi, getUseTogglePropsApi } from '../../../shared/api';
 
 export const apis: ComponentApiDescription[] = [
 	{

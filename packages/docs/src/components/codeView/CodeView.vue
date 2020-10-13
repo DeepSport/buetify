@@ -37,7 +37,7 @@ export default defineComponent({
 	},
 	props: {
 		lang: {
-			type: String as PType<'typescript' | 'html'>,
+			type: String as PType<'typescript' | 'html' | 'bash'>,
 			default: 'html' as const
 		},
 		code: {

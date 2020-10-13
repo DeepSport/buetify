@@ -20,12 +20,7 @@
 				</b-button>
 			</template>
 		</b-snackbar>
-		<b-snackbar
-			position="is-bottom-left"
-			variant="is-danger"
-			is-indefinite
-			:on-action="onAction"
-		>
+		<b-snackbar position="is-bottom-left" variant="is-danger" is-indefinite :on-action="onAction">
 			<template #message>
 				Snackbar with red action, positioned on bottom-left and a callback.<br />Note:
 				<em>Message can include html</em>.

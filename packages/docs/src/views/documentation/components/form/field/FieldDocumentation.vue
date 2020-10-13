@@ -34,24 +34,24 @@
 			</template>
 		</example-view>
 		<b-horizontal-divider></b-horizontal-divider>
-    <example-view title="Nested Groups" :code="NestedGroupsExampleCode">
-      <template #component>
-        <nested-groups-example></nested-groups-example>
-      </template>
-    </example-view>
-    <b-horizontal-divider></b-horizontal-divider>
-    <example-view title="Responsive Groups" :code="ResponsiveGroupsExampleCode" is-vertical>
-      <template #component>
-        <responsive-groups-example></responsive-groups-example>
-      </template>
-    </example-view>
-    <b-horizontal-divider></b-horizontal-divider>
-    <example-view title="Horizontal" :code="HorizontalExampleCode">
-      <template #component>
-        <horizontal-example></horizontal-example>
-      </template>
-    </example-view>
-    <b-horizontal-divider></b-horizontal-divider>
+		<example-view title="Nested Groups" :code="NestedGroupsExampleCode">
+			<template #component>
+				<nested-groups-example></nested-groups-example>
+			</template>
+		</example-view>
+		<b-horizontal-divider></b-horizontal-divider>
+		<example-view title="Responsive Groups" :code="ResponsiveGroupsExampleCode" is-vertical>
+			<template #component>
+				<responsive-groups-example></responsive-groups-example>
+			</template>
+		</example-view>
+		<b-horizontal-divider></b-horizontal-divider>
+		<example-view title="Horizontal" :code="HorizontalExampleCode">
+			<template #component>
+				<horizontal-example></horizontal-example>
+			</template>
+		</example-view>
+		<b-horizontal-divider></b-horizontal-divider>
 		<api-view :apis="apis"> </api-view>
 	</article>
 </template>
@@ -77,7 +77,6 @@ import SimpleCode from '!!raw-loader!./examples/SimpleExample.vue';
 import HorizontalExample from './examples/HorizontalExample.vue';
 import HorizontalExampleCode from '!!raw-loader!./examples/HorizontalExample.vue';
 
-
 export default defineComponent({
 	name: 'field-documentation',
 	components: {
@@ -87,9 +86,9 @@ export default defineComponent({
 		ApiView,
 		SimpleExample,
 		ObjectSyntaxExample,
-    NestedGroupsExample,
-    ResponsiveGroupsExample,
-    HorizontalExample,
+		NestedGroupsExample,
+		ResponsiveGroupsExample,
+		HorizontalExample,
 		BHorizontalDivider
 	},
 	setup() {
@@ -99,9 +98,9 @@ export default defineComponent({
 			AddonsExampleCode,
 			ObjectSyntaxExampleCode,
 			GroupsExampleCode,
-      NestedGroupsExampleCode,
-      ResponsiveGroupsExampleCode,
-      HorizontalExampleCode
+			NestedGroupsExampleCode,
+			ResponsiveGroupsExampleCode,
+			HorizontalExampleCode
 		};
 	}
 });

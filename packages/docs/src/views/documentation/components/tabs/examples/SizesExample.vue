@@ -1,33 +1,33 @@
 <template>
 	<section aria-label="b-tabs sizes example">
-    <b-tabs size="is-small">
-      <b-tab-item label="Account"> </b-tab-item>
-
-      <b-tab-item label="Profile" > </b-tab-item>
-
-      <b-tab-item label="Social"> </b-tab-item>
-    </b-tabs>
-		<b-tabs>
+		<b-tabs size="is-small">
 			<b-tab-item label="Account"> </b-tab-item>
 
-			<b-tab-item label="Profile" > </b-tab-item>
+			<b-tab-item label="Profile"> </b-tab-item>
 
 			<b-tab-item label="Social"> </b-tab-item>
 		</b-tabs>
-    <b-tabs size="is-medium">
-      <b-tab-item label="Account"> </b-tab-item>
+		<b-tabs>
+			<b-tab-item label="Account"> </b-tab-item>
 
-      <b-tab-item label="Profile" > </b-tab-item>
+			<b-tab-item label="Profile"> </b-tab-item>
 
-      <b-tab-item label="Social"> </b-tab-item>
-    </b-tabs>
-    <b-tabs size="is-large">
-      <b-tab-item label="Account"> </b-tab-item>
+			<b-tab-item label="Social"> </b-tab-item>
+		</b-tabs>
+		<b-tabs size="is-medium">
+			<b-tab-item label="Account"> </b-tab-item>
 
-      <b-tab-item label="Profile" > </b-tab-item>
+			<b-tab-item label="Profile"> </b-tab-item>
 
-      <b-tab-item label="Social"> </b-tab-item>
-    </b-tabs>
+			<b-tab-item label="Social"> </b-tab-item>
+		</b-tabs>
+		<b-tabs size="is-large">
+			<b-tab-item label="Account"> </b-tab-item>
+
+			<b-tab-item label="Profile"> </b-tab-item>
+
+			<b-tab-item label="Social"> </b-tab-item>
+		</b-tabs>
 	</section>
 </template>
 <script lang="ts">

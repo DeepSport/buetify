@@ -1,12 +1,11 @@
-
 export interface Person {
-	id: number,
+	id: number;
 	user: {
 		firstName: string;
 		lastName: string;
-	},
+	};
 	date: string;
-	gender: 'Male' | 'Female'
+	gender: 'Male' | 'Female';
 }
 
 export const people: Person[] = [
@@ -550,4 +549,4 @@ export const people: Person[] = [
 		date: '2016/05/24 08:58:12',
 		gender: 'Male'
 	}
-]
+];

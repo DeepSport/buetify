@@ -1,6 +1,6 @@
 import { parse as faParse, icon as faIcon } from '@fortawesome/fontawesome-svg-core';
 import { h, SetupContext, VNode, FunctionalComponent, defineComponent } from 'vue';
-import {SizeVariant} from '../../../types';
+import { SizeVariant } from '../../../types';
 // import { IconDefinition } from '@fortawesome/fontawesome-common-types';
 import { camelize } from '../../../utils/helpers';
 import { mergeClasses } from '../../../utils/mergeClasses';
@@ -140,7 +140,7 @@ const SIZE_MAP: Record<SizeVariant, string> = {
   '': '',
   'is-medium': 'fa-lg',
   'is-large': 'fa-2x'
-}
+};
 
 // eslint-disable-next-line
 export function useFontAwesomeIconComponent(name: string, iconDefinition: any) {

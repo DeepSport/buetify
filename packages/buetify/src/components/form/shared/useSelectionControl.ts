@@ -16,7 +16,7 @@ function generateInput(selectionControl: SelectionControl) {
     onChange: selectionControl.onChange,
     onBlur: selectionControl.onBlur,
     onFocus: selectionControl.onFocus,
-    ...selectionControl.attrs.value,
+    ...selectionControl.attrs.value
   });
 }
 

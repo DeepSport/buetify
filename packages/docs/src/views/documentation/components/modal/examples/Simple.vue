@@ -7,26 +7,26 @@
 				</b-button>
 			</template>
 			<template #default>
-        <b-box class="is-white-bis">
-          <p>
-            Lorem ipsum dolor sit amet, consectetur adipiscing elit. Fusce id fermentum quam. Proin sagittis,
-            nibh id hendrerit imperdiet, elit sapien laoreet elit
-          </p>
-        </b-box>
+				<b-box class="is-white-bis">
+					<p>
+						Lorem ipsum dolor sit amet, consectetur adipiscing elit. Fusce id fermentum quam. Proin
+						sagittis, nibh id hendrerit imperdiet, elit sapien laoreet elit
+					</p>
+				</b-box>
 			</template>
 		</b-modal>
-    <b-modal>
-      <template #trigger="{ open }">
-        <b-button variant="is-info" @click="open">
-          Open Image Modal
-        </b-button>
-      </template>
-      <template #default>
-        <figure class="image is-4by3">
-          <img src="@/assets/placeholder-1280x960.png" alt="Image">
-        </figure>
-      </template>
-    </b-modal>
+		<b-modal>
+			<template #trigger="{ open }">
+				<b-button variant="is-info" @click="open">
+					Open Image Modal
+				</b-button>
+			</template>
+			<template #default>
+				<figure class="image is-4by3">
+					<img src="@/assets/placeholder-1280x960.png" alt="Image" />
+				</figure>
+			</template>
+		</b-modal>
 	</section>
 </template>
 <script lang="ts">
@@ -40,7 +40,7 @@ export default defineComponent({
 	components: {
 		BModal,
 		BButton,
-    BBox
+		BBox
 	}
 });
 </script>

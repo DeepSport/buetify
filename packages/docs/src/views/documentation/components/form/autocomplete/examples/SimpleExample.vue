@@ -40,7 +40,7 @@ export default defineComponent({
 	name: 'autocomplete-example',
 	components: {
 		BAutocomplete,
-    BField
+		BField
 	},
 	setup() {
 		const selectedFrameworks = shallowRef([]);

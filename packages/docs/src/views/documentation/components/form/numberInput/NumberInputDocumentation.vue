@@ -12,24 +12,24 @@
 			</template>
 		</example-view>
 		<b-horizontal-divider></b-horizontal-divider>
-    <example-view title="Min - Max" :code="MinMaxExampleCode" is-vertical>
-      <template #component>
-        <min-max-example></min-max-example>
-      </template>
-    </example-view>
-    <b-horizontal-divider></b-horizontal-divider>
-    <example-view title="Sizes" :code="SizeExampleCode" is-vertical>
-      <template #component>
-        <size-example></size-example>
-      </template>
-    </example-view>
+		<example-view title="Min - Max" :code="MinMaxExampleCode" is-vertical>
+			<template #component>
+				<min-max-example></min-max-example>
+			</template>
+		</example-view>
 		<b-horizontal-divider></b-horizontal-divider>
-    <example-view title="Customization" :code="CustomizationExampleCode" is-vertical>
-      <template #component>
-        <customization-example></customization-example>
-      </template>
-    </example-view>
-    <b-horizontal-divider></b-horizontal-divider>
+		<example-view title="Sizes" :code="SizeExampleCode" is-vertical>
+			<template #component>
+				<size-example></size-example>
+			</template>
+		</example-view>
+		<b-horizontal-divider></b-horizontal-divider>
+		<example-view title="Customization" :code="CustomizationExampleCode" is-vertical>
+			<template #component>
+				<customization-example></customization-example>
+			</template>
+		</example-view>
+		<b-horizontal-divider></b-horizontal-divider>
 		<api-view :apis="apis"> </api-view>
 	</article>
 </template>
@@ -56,21 +56,21 @@ export default defineComponent({
 	components: {
 		ApiView,
 		SimpleExample,
-    ExampleView,
-    VariantsExample,
-    SizeExample,
-    MinMaxExample,
-    CustomizationExample,
+		ExampleView,
+		VariantsExample,
+		SizeExample,
+		MinMaxExample,
+		CustomizationExample,
 		BHorizontalDivider
 	},
 	setup() {
 		return {
 			apis,
 			SimpleCode,
-      VariantsExampleCode,
-      MinMaxExampleCode,
-      SizeExampleCode,
-      CustomizationExampleCode
+			VariantsExampleCode,
+			MinMaxExampleCode,
+			SizeExampleCode,
+			CustomizationExampleCode
 		};
 	}
 });

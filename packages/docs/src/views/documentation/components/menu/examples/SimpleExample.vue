@@ -14,19 +14,19 @@
 					</template>
 					<template #default>
 						<b-menu-list-item class="is-active">
-              <user-icon></user-icon>
+							<user-icon></user-icon>
 							<a>
-                Users
+								Users
 							</a>
 						</b-menu-list-item>
 						<b-menu-list-item>
-              <phone-icon></phone-icon>
+							<phone-icon></phone-icon>
 							<a>
-                Devices
+								Devices
 							</a>
 						</b-menu-list-item>
 						<b-menu-list-item>
-              <payments-icon></payments-icon>
+							<payments-icon></payments-icon>
 							<a>Payments</a>
 						</b-menu-list-item>
 					</template>

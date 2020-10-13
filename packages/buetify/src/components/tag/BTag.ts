@@ -21,7 +21,10 @@ export default defineComponent({
     },
     variant: {
       type: String as PropType<ColorVariant>,
-      default: 'is-primary' as const
+      default: '' as const
+    },
+    closeVariant: {
+      type: String as PropType<ColorVariant>
     },
     size: {
       type: String as PropType<SizeVariant>,
@@ -50,7 +53,7 @@ export default defineComponent({
   },
   setup(props, { slots }) {
     return () => {
-      if (props.isClosable) {
+      if (props.isAttached && props.isClosable) {
         return h(
           props.tag,
           {
@@ -65,7 +68,7 @@ export default defineComponent({
               [h('span', { class: { 'has-ellipsis': props.hasEllipsis } }, slots.default && slots.default())]
             ),
             h('button', {
-              class: ['tag is-delete has-cursor-pointer', props.size, { 'is-rounded': props.isRounded }],
+              class: ['tag is-delete', props.closeVariant, props.size, { 'is-rounded': props.isRounded }],
               tabindex: props.isTabable ? 0 : null,
               disabled: props.isDisabled,
               onClick: props.isDisabled ? undefined : props.onClose
@@ -73,12 +76,23 @@ export default defineComponent({
           ]
         );
       } else {
+        const nodes = [h('span', { class: { 'has-ellipsis': props.hasEllipsis } }, slots.default && slots.default())];
+        if (props.isClosable) {
+          nodes.push(
+            h('button', {
+              class: ['delete is-small', props.closeVariant],
+              tabindex: props.isTabable ? 0 : null,
+              disabled: props.isDisabled,
+              onClick: props.isDisabled ? undefined : props.onClose
+            })
+          );
+        }
         return h(
           props.tag,
           {
             class: ['tag', props.variant, props.size, { 'is-rounded': props.isRounded }]
           },
-          h('span', { class: { 'has-ellipsis': props.hasEllipsis } }, slots.default && slots.default())
+          nodes
         );
       }
     };

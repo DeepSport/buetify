@@ -38,9 +38,10 @@
 				Small differences in naming conventions, e.g. <code>variant</code> rather than <code>type</code> for
 				color props
 			</li>
-      <li>
-        Icons need to be passed as vue components rather than strings. This was done to simplify how icons are handled. Default icons are provided.
-      </li>
+			<li>
+				Icons need to be passed as vue components rather than strings. This was done to simplify how icons are
+				handled. Default icons are provided.
+			</li>
 		</ul>
 	</article>
 </template>

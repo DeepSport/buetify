@@ -5,7 +5,8 @@ import { ColorVariant, PositionVariant } from '../../types';
 import { constEmptyArray } from '../../utils/helpers';
 import {
   DEFAULT_USE_NOTICE_PROPS,
-  NoticeController, OpenNoticeOptions,
+  NoticeController,
+  OpenNoticeOptions,
   RenderNoticeOptions,
   useNoticeController,
   UseNoticePropsDefinition
@@ -76,7 +77,6 @@ function generateAction(
             } else {
               props.onAction();
             }
-            console.log('closing controller');
             noticeController.close();
           }
         },

@@ -4,7 +4,7 @@
 			<buetify-navbar></buetify-navbar>
 		</template>
 		<template #sidebar>
-      <buetify-menu class="is-fullheight"></buetify-menu>
+			<buetify-menu class="is-fullheight"></buetify-menu>
 		</template>
 		<template #default>
 			<div class="padding-size-3">

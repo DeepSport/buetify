@@ -6,7 +6,7 @@ import { useProxy } from '../../composables/proxy';
 import { useWindowSize } from '../../composables/windowSize';
 import { isBoolean } from '../../utils/helpers';
 import { Classes } from '../../utils/mergeClasses';
-import BPagination, {PaginationPosition, PaginationSize, PaginationVerticalPosition} from '../pagination/BPagination';
+import BPagination, { PaginationPosition, PaginationSize, PaginationVerticalPosition } from '../pagination/BPagination';
 import BSimpleTable, { BSimpleTablePropsDefinition } from './BSimpleTable';
 import BTableHeader from './BTableHeader';
 import BTableMobileSort from './BTableMobileSort';
