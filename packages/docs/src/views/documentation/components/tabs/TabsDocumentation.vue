@@ -6,30 +6,30 @@
 			</template>
 		</example-view>
 		<b-horizontal-divider></b-horizontal-divider>
-    <example-view title="Icons" :code="IconsExampleCode">
-      <template #component>
-        <icons-example></icons-example>
-      </template>
-    </example-view>
-    <b-horizontal-divider></b-horizontal-divider>
-    <example-view title="Sizes" :code="SizesExampleCode">
-      <template #component>
-        <sizes-example></sizes-example>
-      </template>
-    </example-view>
-    <b-horizontal-divider></b-horizontal-divider>
-    <example-view title="Types" :code="TypesExampleCode">
-      <template #component>
-        <types-example></types-example>
-      </template>
-    </example-view>
-    <b-horizontal-divider></b-horizontal-divider>
-    <example-view title="Vertical" :code="VerticalExampleCode">
-      <template #component>
-        <vertical-example></vertical-example>
-      </template>
-    </example-view>
-    <b-horizontal-divider></b-horizontal-divider>
+		<example-view title="Icons" :code="IconsExampleCode">
+			<template #component>
+				<icons-example></icons-example>
+			</template>
+		</example-view>
+		<b-horizontal-divider></b-horizontal-divider>
+		<example-view title="Sizes" :code="SizesExampleCode">
+			<template #component>
+				<sizes-example></sizes-example>
+			</template>
+		</example-view>
+		<b-horizontal-divider></b-horizontal-divider>
+		<example-view title="Types" :code="TypesExampleCode">
+			<template #component>
+				<types-example></types-example>
+			</template>
+		</example-view>
+		<b-horizontal-divider></b-horizontal-divider>
+		<example-view title="Vertical" :code="VerticalExampleCode">
+			<template #component>
+				<vertical-example></vertical-example>
+			</template>
+		</example-view>
+		<b-horizontal-divider></b-horizontal-divider>
 		<api-view :apis="apis"> </api-view>
 	</article>
 </template>
@@ -58,19 +58,19 @@ export default defineComponent({
 		ApiView,
 		Simple,
 		BHorizontalDivider,
-    IconsExample,
-    VerticalExample,
-    SizesExample,
-    TypesExample
+		IconsExample,
+		VerticalExample,
+		SizesExample,
+		TypesExample
 	},
 	setup() {
 		return {
 			apis,
 			SimpleCode,
-      IconsExampleCode,
-      VerticalExampleCode,
-      SizesExampleCode,
-      TypesExampleCode
+			IconsExampleCode,
+			VerticalExampleCode,
+			SizesExampleCode,
+			TypesExampleCode
 		};
 	}
 });

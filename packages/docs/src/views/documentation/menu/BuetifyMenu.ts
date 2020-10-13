@@ -32,7 +32,6 @@ const BuetifyMenuGroup = defineComponent({
 				{
 					'menu-label': () => h(BMenuLabel, () => props.group.label),
 					default: () =>
-
 						props.group.items.map(item =>
 							// eslint-disable-next-line
 							h(BuetifyMenuItem, { key: item.label, item, level: props.level + 1 })

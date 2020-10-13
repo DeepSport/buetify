@@ -1,12 +1,11 @@
+export type BuetifyMenu = BuetifyMenuNavigationItem[];
 
-export type BuetifyMenu = BuetifyMenuNavigationItem[]
-
-export type BuetifyMenuNavigationItem = BuetifyMenuNavigationGroup | BuetifyMenuNavigationLink
+export type BuetifyMenuNavigationItem = BuetifyMenuNavigationGroup | BuetifyMenuNavigationLink;
 
 export interface BuetifyMenuNavigationGroup {
 	readonly _tag: 'group';
 	readonly label: string;
-	readonly items: BuetifyMenuNavigationItem[]
+	readonly items: BuetifyMenuNavigationItem[];
 }
 
 export function group(label: string, items: BuetifyMenuNavigationItem[]): BuetifyMenuNavigationGroup {
@@ -18,7 +17,7 @@ export function group(label: string, items: BuetifyMenuNavigationItem[]): Buetif
 }
 
 export interface BuetifyMenuNavigationLink {
-	readonly _tag: 'item'
+	readonly _tag: 'item';
 	readonly label: string;
 	readonly fullPath: string;
 }
@@ -28,5 +27,5 @@ export function link(label: string, fullPath: string): BuetifyMenuNavigationLink
 		_tag: 'item',
 		label,
 		fullPath
-	}
+	};
 }

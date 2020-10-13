@@ -23,9 +23,9 @@
 		</example-view>
 		<b-horizontal-divider></b-horizontal-divider>
 		<example-view title="Password" :code="PasswordExampleCode" is-vertical>
-      <template #content>
-        <p>You can use the <code>use-password-reveal</code> prop to hide a button that reveals the password.</p>
-      </template>
+			<template #content>
+				<p>You can use the <code>use-password-reveal</code> prop to hide a button that reveals the password.</p>
+			</template>
 			<template #component>
 				<password-example></password-example>
 			</template>
@@ -58,27 +58,26 @@ import ValidationExampleCode from '!!raw-loader!./examples/ValidationExample.vue
 import VariantsAndStatesExample from './examples/VariantsAndStatesExample.vue';
 import VariantsAndStatesExampleCode from '!!raw-loader!./examples/VariantsAndStatesExample.vue';
 
-
 export default defineComponent({
 	name: 'input-documentation',
 	components: {
 		ApiView,
 		SimpleExample,
-    SizeExample,
-    ExampleView,
-    VariantsAndStatesExample,
-    PasswordExample,
-    ValidationExample,
+		SizeExample,
+		ExampleView,
+		VariantsAndStatesExample,
+		PasswordExample,
+		ValidationExample,
 		BHorizontalDivider
 	},
 	setup() {
 		return {
 			apis,
 			SimpleCode,
-      VariantsAndStatesExampleCode,
-      ValidationExampleCode,
-      PasswordExampleCode,
-      SizeExampleCode
+			VariantsAndStatesExampleCode,
+			ValidationExampleCode,
+			PasswordExampleCode,
+			SizeExampleCode
 		};
 	}
 });

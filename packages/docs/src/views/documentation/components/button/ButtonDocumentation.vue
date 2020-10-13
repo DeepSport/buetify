@@ -43,7 +43,7 @@ export default defineComponent({
 		Sizes,
 		ApiView,
 		Simple,
-    BHorizontalDivider
+		BHorizontalDivider
 	},
 	setup() {
 		return {

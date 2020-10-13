@@ -6,12 +6,12 @@
 				<b-button variant="is-primary">Search</b-button>
 			</p>
 		</b-field>
-    <b-field is-grouped message="What do you want to search?">
-      <b-input placeholder="Search..." type="search" :icon="SearchIcon" is-expanded> </b-input>
-      <p class="control">
-        <b-button variant="is-primary">Search</b-button>
-      </p>
-    </b-field>
+		<b-field is-grouped message="What do you want to search?">
+			<b-input placeholder="Search..." type="search" :icon="SearchIcon" is-expanded> </b-input>
+			<p class="control">
+				<b-button variant="is-primary">Search</b-button>
+			</p>
+		</b-field>
 	</section>
 </template>
 <script lang="ts">

@@ -20,7 +20,8 @@ import {
   shallowRef,
   withDirectives,
   SetupContext,
-  vShow, Component
+  vShow,
+  Component
 } from 'vue';
 import { constEmptyArray } from '../../../utils/helpers';
 

@@ -1,4 +1,4 @@
-import './steps.scss';
+import './steps.sass';
 import { lookup } from 'fp-ts/Array';
 import { pipe } from 'fp-ts/function';
 import { getUseModelPropsDefinition, Model, useModel } from '../../composables/model';

@@ -7,7 +7,8 @@ export const apis: ComponentApiDescription[] = [
 		props: [
 			{
 				name: '<code>v-model:is-active</code>',
-				description: 'Whether modal is active or not, omit the <code>v-model</code> modifier to make it a one way binding',
+				description:
+					'Whether modal is active or not, omit the <code>v-model</code> modifier to make it a one way binding',
 				type: 'Boolean',
 				values: '—',
 				default: '<code>false</code>',
@@ -57,7 +58,8 @@ export const apis: ComponentApiDescription[] = [
 			{
 				name: 'default',
 				description: 'Content to display inside modal',
-				props: '\'<code>toggle: { isOpen: Ref<boolean>, isClosed: Ref<boolean>, attrs: object, listeners: object, open: IO<void>, close: IO<void>, toggle: IO<void>}</code>\''
+				props:
+					"'<code>toggle: { isOpen: Ref<boolean>, isClosed: Ref<boolean>, attrs: object, listeners: object, open: IO<void>, close: IO<void>, toggle: IO<void>}</code>'"
 			}
 		]
 	}

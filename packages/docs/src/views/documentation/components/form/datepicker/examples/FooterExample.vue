@@ -1,21 +1,21 @@
 <template>
 	<section aria-label="simple footpicker example">
-    <b-datepicker placeholder="Click to select" v-model="selectedDate">
-      <template #footer>
-        <b-field is-grouped>
-          <p class="control">
-            <b-button class="is-primary" @click="setToday">
-              Today
-            </b-button>
-          </p>
-          <p class="control">
-            <b-button class="is-danger" @click="clear">
-              Clear
-            </b-button>
-          </p>
-        </b-field>
-      </template>
-    </b-datepicker>
+		<b-datepicker placeholder="Click to select" v-model="selectedDate">
+			<template #footer>
+				<b-field is-grouped>
+					<p class="control">
+						<b-button class="is-primary" @click="setToday">
+							Today
+						</b-button>
+					</p>
+					<p class="control">
+						<b-button class="is-danger" @click="clear">
+							Clear
+						</b-button>
+					</p>
+				</b-field>
+			</template>
+		</b-datepicker>
 	</section>
 </template>
 <script lang="ts">
@@ -28,23 +28,23 @@ export default defineComponent({
 	name: 'datepicker-footer-example',
 	components: {
 		BDatepicker,
-    BButton,
-    BField
+		BButton,
+		BField
 	},
 	setup() {
 		const selectedDate = shallowRef<Date | null>(null);
 
 		function setToday() {
-		  selectedDate.value = new Date();
-    }
+			selectedDate.value = new Date();
+		}
 
-    function clear() {
-		  selectedDate.value = null;
-    }
+		function clear() {
+			selectedDate.value = null;
+		}
 
 		return {
-		  setToday,
-      clear,
+			setToday,
+			clear,
 			selectedDate
 		};
 	}

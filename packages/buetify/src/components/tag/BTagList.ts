@@ -14,6 +14,7 @@ export default defineComponent({
     }
   },
   setup(props, { slots }) {
-    return () => h(props.tag, { class: ['tags', { 'has-addons': props.isAttached }]}, slots.default && slots.default());
+    return () =>
+      h(props.tag, { class: ['tags', { 'has-addons': props.isAttached }] }, slots.default && slots.default());
   }
-})
+});

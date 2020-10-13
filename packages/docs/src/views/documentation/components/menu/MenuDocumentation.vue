@@ -22,7 +22,7 @@ import { apis } from './api';
 export default defineComponent({
 	name: 'menu-documentation',
 	components: {
-	  ApiView,
+		ApiView,
 		ExampleView,
 		SimpleExample,
 		BHorizontalDivider

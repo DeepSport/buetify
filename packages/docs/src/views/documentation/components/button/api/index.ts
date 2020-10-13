@@ -1,5 +1,5 @@
 import { ComponentApiDescription } from '../../../../../components/apiView';
-import {ColorVariantPropApi} from '../../../shared/api';
+import { ColorVariantPropApi } from '../../../shared/api';
 
 export const api: ComponentApiDescription[] = [
 	{

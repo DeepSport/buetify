@@ -53,7 +53,8 @@ export default defineComponent({
 
 		function danger() {
 			snackbar.open({
-				message: 'Snackbar with red action, positioned on bottom-left and a callback.<br>Note: <em>Message can include html</em>.',
+				message:
+					'Snackbar with red action, positioned on bottom-left and a callback.<br>Note: <em>Message can include html</em>.',
 				position: 'is-bottom-left',
 				actionText: 'Retry',
 				variant: 'is-danger',

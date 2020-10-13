@@ -23,7 +23,7 @@ export default defineComponent({
 	name: 'simple-message-example',
 	components: {
 		BMessage,
-    BButton
+		BButton
 	},
 	setup() {
 		const isActive = shallowRef(false);

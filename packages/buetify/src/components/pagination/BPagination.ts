@@ -197,7 +197,7 @@ export default defineComponent({
     return () => {
       const controls = generatePaginationControls(props, context, pagination, themeClasses.value);
       if (props.verticalPosition === 'is-top' && context.slots.default) {
-          return h('article', [controls, context.slots.default(extractPaginationState(pagination))])
+        return h('article', [controls, context.slots.default(extractPaginationState(pagination))]);
       }
       if (context.slots.default) {
         return h('article', [context.slots.default(extractPaginationState(pagination)), controls]);

@@ -63,7 +63,7 @@ export const apis: ComponentApiDescription[] = [
 				values: '<code>is-boxed</code>, <code>is-toggle</code>, <code>is-toggle-rounded</code>',
 				default: '-',
 				required: 'false'
-			},
+			}
 		],
 		slots: [
 			{

@@ -179,12 +179,7 @@ const BField = defineComponent({
       }
     });
     return () => {
-      const hasAddons = !!(
-        props.hasAddons &&
-        !props.isHorizontal &&
-        slots.default &&
-        slots.default().length > 1
-      );
+      const hasAddons = !!(props.hasAddons && !props.isHorizontal && slots.default && slots.default().length > 1);
       const hasInnerField = props.isGrouped || props.isGroupedMultiline || hasAddons;
 
       const nodes: Array<VNode | undefined> = [

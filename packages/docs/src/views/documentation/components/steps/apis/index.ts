@@ -95,7 +95,7 @@ export const apis: ComponentApiDescription[] = [
 				description: 'Triggers when active step is changed',
 				parameters: '<code>value: Number</code>'
 			}
-		],
+		]
 	},
 	{
 		title: 'Item',

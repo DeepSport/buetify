@@ -1,5 +1,5 @@
 import { defineAsyncComponent } from 'vue';
-import {RouteRecordRaw} from 'vue-router';
+import { RouteRecordRaw } from 'vue-router';
 import { meta } from './meta';
 import Summary from './Summary.vue';
 

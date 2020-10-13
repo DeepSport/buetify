@@ -14,14 +14,20 @@ export function useToast(props: UseNoticeProps = DEFAULT_USE_NOTICE_PROPS, slots
   const noticeController = useNoticeController(props, renderNotification);
   renderNotification.value = options => () => {
     return [
-      h(
-        'div',
-        {
-          class: ['toast', options.variant ?? props.variant, options.position ?? props.position],
-          role: 'alert'
-        },
-        options.message ?? (slots.message && slots.message()) ?? props.message
-      )
+      slots.message
+        ? h(
+            'div',
+            {
+              class: ['toast', options.variant ?? props.variant, options.position ?? props.position],
+              role: 'alert'
+            },
+            slots.message && slots.message()
+          )
+        : h('div', {
+            class: ['toast', options.variant ?? props.variant, options.position ?? props.position],
+            role: 'alert',
+            innerHTML: options.message ?? props.message
+          })
     ];
   };
   return noticeController;

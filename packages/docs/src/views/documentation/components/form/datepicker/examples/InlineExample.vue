@@ -1,7 +1,7 @@
 <template>
 	<section aria-label="simple datepicker example">
-    <p class="content"> Selected Date: {{ selectedDate.toLocaleDateString() }}</p>
-    <b-datepicker placeholder="Click to select" is-inline v-model="selectedDate"> </b-datepicker>
+		<p class="content">Selected Date: {{ selectedDate.toLocaleDateString() }}</p>
+		<b-datepicker placeholder="Click to select" is-inline v-model="selectedDate"> </b-datepicker>
 	</section>
 </template>
 <script lang="ts">

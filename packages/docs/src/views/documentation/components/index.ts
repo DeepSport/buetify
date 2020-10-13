@@ -15,8 +15,11 @@ import * as notification from './notification';
 import * as pagination from './pagination';
 import * as snackbar from './snackbar';
 import * as steps from './steps';
-import * as table from './table'
+import * as table from './table';
 import * as tabs from './tabs';
+import * as tag from './tag';
+import * as toast from './toast';
+import * as tooltip from './tooltip';
 
 export const meta: Record<string, BuetifyRouteMeta> = {
 	[accordion.meta.fullPath]: accordion.meta,
@@ -34,7 +37,10 @@ export const meta: Record<string, BuetifyRouteMeta> = {
 	[snackbar.meta.fullPath]: snackbar.meta,
 	[steps.meta.fullPath]: steps.meta,
 	[table.meta.fullPath]: steps.meta,
-	[tabs.meta.fullPath]: tabs.meta
+	[tabs.meta.fullPath]: tabs.meta,
+	[tag.meta.fullPath]: tag.meta,
+	[toast.meta.fullPath]: tag.meta,
+	[tooltip.meta.fullPath]: tooltip.meta
 };
 
 export const routes: RouteRecordRaw[] = [
@@ -53,7 +59,10 @@ export const routes: RouteRecordRaw[] = [
 	snackbar.route,
 	steps.route,
 	table.route,
-	tabs.route
+	tabs.route,
+	tag.route,
+	toast.route,
+	tooltip.route
 ];
 
 export const menu: BuetifyMenuNavigationGroup = group('UI Components', [
@@ -72,5 +81,8 @@ export const menu: BuetifyMenuNavigationGroup = group('UI Components', [
 	snackbar.menu,
 	steps.menu,
 	table.menu,
-	tabs.menu
+	tabs.menu,
+	tag.menu,
+	toast.menu,
+	tooltip.menu
 ]);

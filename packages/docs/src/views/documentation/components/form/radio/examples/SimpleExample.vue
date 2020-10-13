@@ -14,10 +14,10 @@
 				Vane
 			</b-radio>
 		</div>
-    <p class="content">
-      <b>Selection:</b>
-      {{ radio }}
-    </p>
+		<p class="content">
+			<b>Selection:</b>
+			{{ radio }}
+		</p>
 	</section>
 </template>
 <script lang="ts">

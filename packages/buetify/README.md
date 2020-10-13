@@ -1,5 +1,5 @@
 
-> `Buetify` is a modular and lightweight library of responsive UI components for [Vue.js](https://vuejs.org/) incorporating the [Bulma](http://bulma.io/) framework and design.
+> `Buetify` is a modular library of responsive UI components for [Vue.js](https://vuejs.org/) incorporating the [Bulma](http://bulma.io/) framework and design.
 
 ## WIP
 This is a work in progress. I started `Buetify` in order to gain a better understanding of design principles, accessibility and Vue.
@@ -14,19 +14,18 @@ Since the components are in such a high state of flux I have not invested the ti
 * Written in Typescript
 * Uses only render functions to maximize type safety
 * Has light / dark theme functionality
-* Greater emphasis on performance utilizing functional components where possible
 * Completely tree-shakeable and modular. Importing an individual component only imports the styling and code relating to that component. This comes at a cost of a more manual setup which will hopefully be mitigated by a vue-cli plugin in the future.
-* Greater emphasis on accessibility. This is by no means a finished product in terms of accessibility, but I think offers an improvement
+* Greater emphasis on accessibility. This is by no means a finished product in terms of accessibility, but I think offers an improvement.
 
 ### Small Differences
 * Requires all components to be nested inside a `b-app` component for themes, notifications, and modals to work properly
-* Requires additional webpack config such that sass variables are prepended to all sass files. This prevents the need from importing all sass upfront
+* Requires additional webpack config such that sass variables are prepended to all sass files. This prevents the need from importing all sass upfront.
 * Small differences in naming conventions, e.g. `variant` rather than `type` for color props
 * Icons need to be passed as vue components rather than strings. This was done to simplify how icons are handled. Default icons are provided.
 
 ## Quick start
 
-You need [Vue.js](https://vuejs.org/) **version 2.6+**.
+You need [Vue.js](https://vuejs.org/) **version 3.0+**.
 
 ### 1 Install via npm / yarn
 

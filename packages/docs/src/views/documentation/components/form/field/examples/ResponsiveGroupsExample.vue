@@ -1,12 +1,12 @@
 <template>
 	<section aria-label="b-fields responsive groups example">
 		<b-field is-grouped is-grouped-multiline="">
-      <p v-for="i in 25" :key="i" class="control">
-        <b-button>
-          {{ i }}
-        </b-button>
-      </p>
-    </b-field>
+			<p v-for="i in 25" :key="i" class="control">
+				<b-button>
+					{{ i }}
+				</b-button>
+			</p>
+		</b-field>
 	</section>
 </template>
 <script lang="ts">
@@ -19,6 +19,6 @@ export default defineComponent({
 	components: {
 		BField,
 		BButton
-	},
+	}
 });
 </script>

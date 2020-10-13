@@ -5,19 +5,19 @@
 				<simple></simple>
 			</template>
 		</example-view>
-    <b-horizontal-divider></b-horizontal-divider>
-    <example-view title="Variants" :code="VariantsExampleCode" is-vertical>
-      <template #component>
-        <variants-example></variants-example>
-      </template>
-    </example-view>
 		<b-horizontal-divider></b-horizontal-divider>
-    <example-view title="Sizes" :code="SizesExampleCode" is-vertical>
-      <template #component>
-        <sizes-example></sizes-example>
-      </template>
-    </example-view>
-    <b-horizontal-divider></b-horizontal-divider>
+		<example-view title="Variants" :code="VariantsExampleCode" is-vertical>
+			<template #component>
+				<variants-example></variants-example>
+			</template>
+		</example-view>
+		<b-horizontal-divider></b-horizontal-divider>
+		<example-view title="Sizes" :code="SizesExampleCode" is-vertical>
+			<template #component>
+				<sizes-example></sizes-example>
+			</template>
+		</example-view>
+		<b-horizontal-divider></b-horizontal-divider>
 		<api-view :apis="apis"> </api-view>
 	</article>
 </template>
@@ -41,16 +41,16 @@ export default defineComponent({
 		ExampleView,
 		ApiView,
 		Simple,
-    SizesExample,
+		SizesExample,
 		BHorizontalDivider,
-    VariantsExample
+		VariantsExample
 	},
 	setup() {
 		return {
 			apis,
 			SimpleCode,
-      SizesExampleCode,
-      VariantsExampleCode
+			SizesExampleCode,
+			VariantsExampleCode
 		};
 	}
 });

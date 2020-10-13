@@ -44,7 +44,7 @@
 			:is-animated="isAnimated"
 			:is-rounded="isRounded"
 			:label-position="labelPosition"
-      :mobile-mode="mobileMode"
+			:mobile-mode="mobileMode"
 		>
 			<b-step-item label="Account" :is-clickable="isClickable">
 				<h1 class="title has-text-centered">Account</h1>

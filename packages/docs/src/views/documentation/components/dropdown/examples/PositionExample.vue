@@ -42,24 +42,24 @@
 				</b-dropdown-item>
 			</template>
 		</b-dropdown>
-    <b-dropdown position="is-top-right" class="margin-left-size-7">
-      <template #trigger="{ attrs }">
-        <b-button variant="is-info" v-bind="attrs.value">
-          Top Right!
-        </b-button>
-      </template>
-      <template #default>
-        <b-dropdown-item class="is-active">
-          Item A
-        </b-dropdown-item>
-        <b-dropdown-item>
-          Item B
-        </b-dropdown-item>
-        <b-dropdown-item>
-          Item C
-        </b-dropdown-item>
-      </template>
-    </b-dropdown>
+		<b-dropdown position="is-top-right" class="margin-left-size-7">
+			<template #trigger="{ attrs }">
+				<b-button variant="is-info" v-bind="attrs.value">
+					Top Right!
+				</b-button>
+			</template>
+			<template #default>
+				<b-dropdown-item class="is-active">
+					Item A
+				</b-dropdown-item>
+				<b-dropdown-item>
+					Item B
+				</b-dropdown-item>
+				<b-dropdown-item>
+					Item C
+				</b-dropdown-item>
+			</template>
+		</b-dropdown>
 		<b-dropdown position="is-top-left" class="margin-left-size-7">
 			<template #trigger="{ attrs }">
 				<b-button variant="is-warning" v-bind="attrs.value">

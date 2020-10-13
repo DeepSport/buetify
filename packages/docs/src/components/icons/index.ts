@@ -15,4 +15,4 @@ export { default as TachometerAltIcon } from './TachometerAltIcon';
 export { default as UnderlineIcon } from './UnderlineIcon';
 export { default as UserCogIcon } from './UserCogIcon';
 export { default as UserIcon } from './UserIcon';
-export { default as UsersIcon } from './UsersIcon'
+export { default as UsersIcon } from './UsersIcon';

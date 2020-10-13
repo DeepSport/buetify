@@ -19,7 +19,7 @@ export type BTableColumnPosition = 'is-left' | 'is-centered' | 'is-right';
 
 export interface BTableColumnSort<T = BTableRow> {
   ord: Ord<T>;
-  sortType?: SortType
+  sortType?: SortType;
 }
 export interface BTableColumn<T = BTableRow> {
   label: string;
@@ -36,13 +36,9 @@ export interface BTableColumn<T = BTableRow> {
   isSticky?: boolean;
 }
 
-
-
 export const eqBTableRowData: Eq<BTableRow> = contramap<unknown, BTableRow>(row => row.id)(eqStrict);
 
-export const eqBTableColumn: Eq<BTableColumn> = contramap<string, BTableColumn>(column => column.label)(
-  eqString
-);
+export const eqBTableColumn: Eq<BTableColumn> = contramap<string, BTableColumn>(column => column.label)(eqString);
 
 export const toggleBTableRow = toggleListItem(eqBTableRowData);
 

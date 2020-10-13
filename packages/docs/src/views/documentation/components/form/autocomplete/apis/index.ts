@@ -1,5 +1,5 @@
-import {ComponentApiDescription} from '../../../../../../components/apiView';
-import {EqPropApi, getBooleanPropsApi, getUseStaticInputPropsApi} from '../../../../shared/api';
+import { ComponentApiDescription } from '../../../../../../components/apiView';
+import { EqPropApi, getBooleanPropsApi, getUseStaticInputPropsApi } from '../../../../shared/api';
 
 export const apis: ComponentApiDescription[] = [
 	{

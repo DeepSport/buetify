@@ -18,16 +18,16 @@
 				Warning
 			</b-checkbox>
 		</div>
-    <div class="field">
-      <b-checkbox variant="is-success" :model-value="true">
-        Success
-      </b-checkbox>
-    </div>
-    <div class="field">
-      <b-checkbox variant="is-info" :model-value="true">
-        Info
-      </b-checkbox>
-    </div>
+		<div class="field">
+			<b-checkbox variant="is-success" :model-value="true">
+				Success
+			</b-checkbox>
+		</div>
+		<div class="field">
+			<b-checkbox variant="is-info" :model-value="true">
+				Info
+			</b-checkbox>
+		</div>
 	</section>
 </template>
 <script lang="ts">

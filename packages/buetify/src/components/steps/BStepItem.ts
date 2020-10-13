@@ -8,12 +8,12 @@ export default defineComponent({
   setup(props, { slots }) {
     const injection = inject(STEPS_SYMBOL, DEFAULT_STEP_INJECTION);
 
-    const index = injection.steps.findIndex(p => p.label === props.label)
+    const index = injection.steps.findIndex(p => p.label === props.label);
 
     if (index > -1) {
-        injection.steps.splice(index, 1, props)
+      injection.steps.splice(index, 1, props);
     } else {
-        injection.steps.push(props);
+      injection.steps.push(props);
     }
 
     const isActive = computed(() => toUndefined(injection.activeLabel.value) === props.label);

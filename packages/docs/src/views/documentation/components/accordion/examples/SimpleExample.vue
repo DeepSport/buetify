@@ -1,13 +1,13 @@
 <template>
 	<section aria-label="accordion example">
-    <b-accordion>
-      <template #title>
-        Accordion
-      </template>
-      <template #default>
-        Content to display
-      </template>
-    </b-accordion>
+		<b-accordion>
+			<template #title>
+				Accordion
+			</template>
+			<template #default>
+				Content to display
+			</template>
+		</b-accordion>
 	</section>
 </template>
 <script lang="ts">

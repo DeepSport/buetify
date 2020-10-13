@@ -157,7 +157,7 @@ export function toggleListItem<A>(E: Eq<A>) {
 }
 
 export function isFragment(node: VNode): boolean {
-  return node.type === Fragment;;
+  return node.type === Fragment;
 }
 
 export function isEmptyString(str: string): boolean {

@@ -4,7 +4,7 @@
 			Snackbars have only one button and are queued by default. They can be used programmatically or via a
 			component.
 		</p>
-    <p class="padding-bottom-size-6 padding-top-size-6"><b>Note:</b> Snackbars and Toasts will share a queue</p>
+		<p class="padding-bottom-size-6 padding-top-size-6"><b>Note:</b> Snackbars and Toasts will share a queue</p>
 		<example-view title="Template" :code="TemplateExampleCode">
 			<template #component>
 				<template-example></template-example>

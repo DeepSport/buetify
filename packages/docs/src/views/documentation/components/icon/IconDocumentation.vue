@@ -35,7 +35,7 @@ import { apis } from './api';
 export default defineComponent({
 	name: 'icon-documentation',
 	components: {
-	  ApiView,
+		ApiView,
 		ExampleView,
 		FontAwesomeExample,
 		BHorizontalDivider

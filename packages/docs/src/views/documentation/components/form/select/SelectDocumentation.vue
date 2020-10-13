@@ -12,12 +12,12 @@
 			</template>
 		</example-view>
 		<b-horizontal-divider></b-horizontal-divider>
-    <example-view title="Multiple" :code="MultipleExampleCode" is-vertical>
-      <template #component>
-        <multiple-example></multiple-example>
-      </template>
-    </example-view>
-    <b-horizontal-divider></b-horizontal-divider>
+		<example-view title="Multiple" :code="MultipleExampleCode" is-vertical>
+			<template #component>
+				<multiple-example></multiple-example>
+			</template>
+		</example-view>
+		<b-horizontal-divider></b-horizontal-divider>
 		<api-view :apis="apis"> </api-view>
 	</article>
 </template>
@@ -39,7 +39,7 @@ export default defineComponent({
 	name: 'select-documentation',
 	components: {
 		ObjectArrayExample,
-    MultipleExample,
+		MultipleExample,
 		ExampleView,
 		ApiView,
 		Simple,
@@ -50,7 +50,7 @@ export default defineComponent({
 			apis,
 			SimpleCode,
 			ObjectArrayExampleCode,
-      MultipleExampleCode
+			MultipleExampleCode
 		};
 	}
 });

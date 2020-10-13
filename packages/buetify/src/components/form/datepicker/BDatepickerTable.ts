@@ -1,5 +1,5 @@
 import './datepicker.sass';
-import {DateEvent, DEFAULT_DAY_NAMES, DEFAULT_MONTH_NAMES, MonthNumber} from './shared';
+import { DateEvent, DEFAULT_DAY_NAMES, DEFAULT_MONTH_NAMES, MonthNumber } from './shared';
 import {
   addDays,
   getDatesInWeek,
@@ -22,7 +22,7 @@ import BDatepickerTableRow from './BDatepickerTableRow';
 
 export const BDatepickerTablePropsDefinition = {
   modelValue: {
-    type: [Array, Date] as PropType<Date | Date[]>,
+    type: [Array, Date] as PropType<Date | Date[]>
   },
   'onUpdate:modelValue': {
     type: Function as PropType<FunctionN<[Date | Date[]], void>>,

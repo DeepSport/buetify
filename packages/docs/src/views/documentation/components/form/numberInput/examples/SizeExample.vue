@@ -29,6 +29,6 @@ export default defineComponent({
 	components: {
 		BField,
 		BNumberInput
-	},
+	}
 });
 </script>

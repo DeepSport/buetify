@@ -6,7 +6,8 @@ export const apis: ComponentApiDescription[] = [
 		props: [
 			{
 				name: '<code>v-model</code>',
-				description: 'Current page number, use the prop<code>model-value</code> to make it a one way binding. Page is 1-indexed',
+				description:
+					'Current page number, use the prop<code>model-value</code> to make it a one way binding. Page is 1-indexed',
 				type: 'Number',
 				values: '—',
 				default: '<code>1</code>',

@@ -20,7 +20,7 @@
 <script lang="ts">
 import { BField, BSelect } from 'buetify/lib/components';
 import BTabItem from 'buetify/lib/components/tabs/BTabItem';
-import BTabs, {TabsPosition, TabsSize} from 'buetify/lib/components/tabs/BTabs';
+import BTabs, { TabsPosition, TabsSize } from 'buetify/lib/components/tabs/BTabs';
 import { defineComponent, shallowRef } from 'vue';
 import UserCogIcon from '../../../../../components/icons/UserCogIcon';
 import UserIcon from '../../../../../components/icons/UserIcon';
@@ -75,7 +75,7 @@ export default defineComponent({
 
 		return {
 			position,
-      positions,
+			positions,
 			size,
 			sizes,
 			UserIcon,

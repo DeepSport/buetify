@@ -12,18 +12,18 @@
 			</template>
 		</example-view>
 		<b-horizontal-divider></b-horizontal-divider>
-    <example-view title="Custom Footer" :code="FooterExampleCode">
-      <template #component>
-        <footer-example></footer-example>
-      </template>
-    </example-view>
-    <b-horizontal-divider></b-horizontal-divider>
-    <example-view title="Object Array" :code="ObjectArrayExampleCode">
-      <template #component>
-        <object-array-example></object-array-example>
-      </template>
-    </example-view>
-    <b-horizontal-divider></b-horizontal-divider>
+		<example-view title="Custom Footer" :code="FooterExampleCode">
+			<template #component>
+				<footer-example></footer-example>
+			</template>
+		</example-view>
+		<b-horizontal-divider></b-horizontal-divider>
+		<example-view title="Object Array" :code="ObjectArrayExampleCode">
+			<template #component>
+				<object-array-example></object-array-example>
+			</template>
+		</example-view>
+		<b-horizontal-divider></b-horizontal-divider>
 		<api-view :apis="apis"> </api-view>
 	</article>
 </template>
@@ -43,14 +43,13 @@ import HeaderExampleCode from '!!raw-loader!./examples/HeaderExample.vue';
 import FooterExample from './examples/FooterExample.vue';
 import FooterExampleCode from '!!raw-loader!./examples/FooterExample.vue';
 
-
 export default defineComponent({
 	name: 'autocomplete-documentation',
 	components: {
-    ObjectArrayExample,
+		ObjectArrayExample,
 		ExampleView,
 		HeaderExample,
-    FooterExample,
+		FooterExample,
 		ApiView,
 		Simple,
 		BHorizontalDivider
@@ -59,9 +58,9 @@ export default defineComponent({
 		return {
 			apis,
 			SimpleCode,
-      ObjectArrayExampleCode,
+			ObjectArrayExampleCode,
 			HeaderExampleCode,
-      FooterExampleCode
+			FooterExampleCode
 		};
 	}
 });

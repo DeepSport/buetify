@@ -1,4 +1,4 @@
-import './tabs.scss';
+import './tabs.sass';
 import { lookup } from 'fp-ts/Array';
 import { pipe } from 'fp-ts/function';
 import { map } from 'fp-ts/Option';

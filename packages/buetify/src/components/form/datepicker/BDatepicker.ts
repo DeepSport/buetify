@@ -539,7 +539,9 @@ export default defineComponent({
     const setYear = getSetYear(year);
 
     function onKeydown(e: KeyboardEvent) {
-      console.log(dropdown.value === undefined || dropdown.value?.$el === undefined || !dropdown.value.$el.contains(e.target));
+      console.log(
+        dropdown.value === undefined || dropdown.value?.$el === undefined || !dropdown.value.$el.contains(e.target)
+      );
       if (dropdown.value === undefined || dropdown.value?.$el === undefined || !dropdown.value.$el.contains(e.target)) {
         return;
       }

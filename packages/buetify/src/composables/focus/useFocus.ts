@@ -24,7 +24,7 @@ export type UseFocusProps = ExtractPropTypes<typeof UseFocusPropsDefinition>;
 
 export function useFocus(props: UseFocusProps, ref: Ref<HTMLElement | VNode>) {
   const isFocused: Ref<boolean> = shallowRef(false);
-  function onFocus(e? : Event) {
+  function onFocus(e?: Event) {
     isFocused.value = true;
     if (props.onFocus) props.onFocus(e);
   }

@@ -6,12 +6,12 @@
 			</template>
 		</example-view>
 		<b-horizontal-divider></b-horizontal-divider>
-    <example-view title="Nested Dialog" :code="NestedDialogsCode" is-vertical>
-      <template #component>
-        <nested-dialogs></nested-dialogs>
-      </template>
-    </example-view>
-    <b-horizontal-divider></b-horizontal-divider>
+		<example-view title="Nested Dialog" :code="NestedDialogsCode" is-vertical>
+			<template #component>
+				<nested-dialogs></nested-dialogs>
+			</template>
+		</example-view>
+		<b-horizontal-divider></b-horizontal-divider>
 		<api-view :apis="apis"> </api-view>
 	</article>
 </template>
@@ -33,13 +33,13 @@ export default defineComponent({
 		ExampleView,
 		ApiView,
 		Simple,
-    NestedDialogs,
-    BHorizontalDivider
+		NestedDialogs,
+		BHorizontalDivider
 	},
 	setup() {
 		return {
 			apis,
-      NestedDialogsCode,
+			NestedDialogsCode,
 			SimpleCode
 		};
 	}
