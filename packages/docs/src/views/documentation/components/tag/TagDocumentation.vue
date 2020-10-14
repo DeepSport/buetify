@@ -20,7 +20,7 @@
 		<b-horizontal-divider></b-horizontal-divider>
 		<example-view :code="AttachedTagListExampleCode" is-vertical>
 			<template #content>
-				<p>use the <code>is-attached</code> prop to attach tags together</p>
+				<p>Use the <code>is-attached</code> prop to attach tags together</p>
 			</template>
 			<template #component>
 				<attached-tag-list-example></attached-tag-list-example>
@@ -29,7 +29,7 @@
 		<b-horizontal-divider></b-horizontal-divider>
 		<example-view :code="GroupedTagListExampleCode" is-vertical>
 			<template #content>
-				<p>combine with <code>b-field</code> to group tags together</p>
+				<p>Combine with <code>b-field</code> to group tags together</p>
 			</template>
 			<template #component>
 				<grouped-tag-list-example></grouped-tag-list-example>

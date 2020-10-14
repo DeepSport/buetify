@@ -9,7 +9,6 @@ import {
   h,
   PropType,
   computed,
-  watchEffect,
   watch,
   toRef,
   ExtractPropTypes,
@@ -26,10 +25,6 @@ export const BSidebarPropsDefinition = {
     type: String as PropType<string>,
     default: 'nav'
   },
-  isFullheight: {
-    type: Boolean as PropType<boolean>,
-    default: true
-  },
   currentRoute: {
     type: Object as PropType<object>,
     required: false
@@ -44,17 +39,19 @@ function generateDrawer(
   themeClasses: string[],
   context: SetupContext
 ): VNode {
+
+
   return h(
     props.tag,
     {
-      class: ['b-navigation-drawer', { 'is-fullheight': props.isFullheight }, ...themeClasses]
+      class: ['b-sidebar', ...themeClasses]
     },
-    context.slots.default &&
+      context.slots.default &&
       context.slots.default({
-        showNavigationDrawer: controller.show,
-        hideNavigationDrawer: controller.hide,
-        navigationDrawerIsVisible: controller.isVisible.value,
-        toggleNavigationDrawer: controller.toggle
+          showSidebar: controller.show,
+          hideSidebar: controller.hide,
+          sidebarIsVisible: controller.isVisible.value,
+          toggleSidebar: controller.toggle
       })
   );
 }
@@ -91,9 +88,20 @@ export default defineComponent({
     const useSideDrawer = computed(() => {
       return windowSize.value.isTouch || windowSize.value.isDesktop;
     });
-    watchEffect(() => {
-      useSideDrawer.value ? controller.hide() : controller.show();
-    });
+    watch(
+      useSideDrawer,
+      (newValue, oldValue) => {
+        if (newValue === oldValue && oldValue !== undefined) {
+          return;
+        }
+        if (newValue) {
+          controller.hide();
+        } else {
+          controller.show();
+        }
+      },
+      { immediate: true }
+    );
     watch(toRef(props, 'currentRoute'), newVal => {
       if (useSideDrawer.value) {
         controller.hide();

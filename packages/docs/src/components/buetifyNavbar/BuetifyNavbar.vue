@@ -1,65 +1,30 @@
 <template>
-	<b-navbar class="is-spaced has-shadow">
-		<b-navbar-brand>
-			<b-navbar-item href="/" @click.prevent="goToHome">
-				<b-title>Buetify</b-title>
-			</b-navbar-item>
-			<b-navbar-item target="_blank" rel="noopener" href="https://github.com/DeepSport/buetify">
-				<github-icon size="is-large" icon-class="fa-lg"></github-icon>
-			</b-navbar-item>
-		</b-navbar-brand>
-		<b-navbar-menu :is-active="isOn">
-			<b-navbar-end>
-				<b-navbar-item href="/documentation" @click.prevent="goToDocumentation">
-					Documentation
-				</b-navbar-item>
-			</b-navbar-end>
-		</b-navbar-menu>
-	</b-navbar>
+	<b-app-header tag="div">
+		<b-title class="is-size-1 has-font-lobster has-text-primary has-text-centered padding-size-6">Buetify</b-title>
+	</b-app-header>
 </template>
 
 <script lang="ts">
-import {
-	BNavbarBrand,
-	BNavbar,
-	BNavbarItem,
-	BTitle,
-	BNavbarStart,
-	BNavbarEnd,
-	BNavbarMenu
-} from 'buetify/lib/components';
-import { useToggle } from 'buetify/lib/composables';
+import { BTitle } from 'buetify/lib/components';
+import BAppHeader from 'buetify/lib/components/appHeader';
 import { defineComponent } from 'vue';
-import { useRouter } from 'vue-router';
-import GithubIcon from '../icons/GithubIcon';
+// import GithubIcon from '../icons/GithubIcon';
 
 export default defineComponent({
 	name: 'buetify-navbar',
 	components: {
-		BNavbar,
-		BNavbarEnd,
-		BNavbarMenu,
-		BNavbarBrand,
-		BNavbarItem,
-		GithubIcon,
+		BAppHeader,
+		// GithubIcon,
 		BTitle
-	},
-	setup() {
-		const router = useRouter();
-		const toggle = useToggle({ isOpen: false, hasPopup: true }, 'isOpen');
-
-		function goToHome() {
-			router.push('/').then(() => toggle.setOff());
-		}
-		function goToDocumentation() {
-			router.push('/documentation').then(() => toggle.setOff());
-		}
-
-		return {
-			goToHome,
-			goToDocumentation,
-			...toggle
-		};
 	}
 });
 </script>
+
+<style lang="sass">
+@font-face
+  font-family: 'Lobster'
+  src: url('~@/assets/Lobster-Regular.ttf') format('truetype')
+
+.has-font-lobster
+  font-family: 'Lobster', sans-serif
+</style>

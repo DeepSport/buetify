@@ -115,24 +115,20 @@ export default defineComponent({
       nodes.push(
         h(
           'div',
-          { style: { 'z-index': 0 } },
+          {
+            class: [
+              'b-app',
+              {
+                'has-navigation-drawer': hasNavigationDrawer && sidebarController.isVisible.value,
+                'has-header': !!slots.header
+              }
+            ]
+          },
           generateBodyContent(slots, hasNavigationDrawer, sidebarController, props.currentRoute)
         )
       );
 
-      return h(
-        'div',
-        {
-          class: [
-            'b-app',
-            {
-              'has-navigation-drawer': hasNavigationDrawer && sidebarController.isVisible.value,
-              'has-header': !!slots.header
-            }
-          ]
-        },
-        nodes
-      );
+      return h('div', nodes);
     };
   }
 });
