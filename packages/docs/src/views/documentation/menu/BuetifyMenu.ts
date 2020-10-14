@@ -2,15 +2,16 @@ import BMenu from 'buetify/lib/components/menu/BMenu';
 import BMenuGroup from 'buetify/lib/components/menu/BMenuGroup';
 import BMenuLabel from 'buetify/lib/components/menu/BMenuLabel';
 import BMenuListItem from 'buetify/lib/components/menu/BMenuListItem';
+import BScroll from 'buetify/lib/components/scroll/BScroll';
 import { constant } from 'fp-ts/lib/function';
 import { defineComponent, PropType, h, computed } from 'vue';
 import { useLink } from 'vue-router';
+import { menu } from '../index';
 import {
 	BuetifyMenuNavigationGroup,
 	BuetifyMenuNavigationItem,
 	BuetifyMenuNavigationLink
 } from '../shared/BuetifyMenu';
-import { menu } from '../menu';
 
 const BuetifyMenuGroup = defineComponent({
 	name: 'buetify-menu-navigation-group',
@@ -28,7 +29,7 @@ const BuetifyMenuGroup = defineComponent({
 		return () =>
 			h(
 				BMenuGroup,
-				{ isExpanded: true },
+				{ isExpanded: true, class: 'margin-bottom-size-8' },
 				{
 					'menu-label': () => h(BMenuLabel, () => props.group.label),
 					default: () =>
@@ -89,12 +90,12 @@ function BuetifyMenuItem(props: { item: BuetifyMenuNavigationItem; level?: numbe
 
 const groups = constant(menu.map(item => h(BuetifyMenuItem, { item })));
 
-const staticMenu = h(
+const StaticMenu = h(
 	BMenu,
-	{ tag: 'div', class: 'is-light padding-top-size-3 padding-bottom-size-3 padding-left-size-2 padding-right-size-2' },
+	{ tag: 'div', class: 'is-light max-height-100-percent overflow-auto padding-top-size-3 padding-bottom-size-3 padding-left-size-2 padding-right-size-3' },
 	groups
 );
 
 export default function BuetifyMenu() {
-	return staticMenu;
+	return StaticMenu;
 }

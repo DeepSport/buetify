@@ -19,7 +19,7 @@ function generateMainSlot(injection: SidebarController, includeClickHandler: boo
 
 function generateNavigationButton(injection: SidebarController, slots: Slots) {
   const listeners = isSome(injection.listeners.value) ? injection.listeners.value.value : {};
-  const attrs = isSome(injection.listeners.value) ? injection.listeners.value.value : {};
+  const attrs = isSome(injection.attrs.value) ? injection.attrs.value.value : {};
   return h(
     'button',
     {
@@ -30,23 +30,17 @@ function generateNavigationButton(injection: SidebarController, slots: Slots) {
     },
     slots.trigger
       ? slots.trigger!({ isVisible: injection.isVisible.value })
-      : h(BNavbarBurger, { isActive: !injection.isVisible.value })
+      : h(BNavbarBurger, { tag: 'span', isActive: injection.isVisible.value })
   );
 }
 
-export default function(_: any, { attrs, slots }: SetupContext) {
+export default function(props: { tag?: string }, { slots }: SetupContext) {
   const sidebarController = useSidebarController();
   const isInvisible = !sidebarController.isVisible.value;
   return h(
-    'header',
+    props.tag ?? 'header',
     {
-      ...attrs,
-      class: [
-        'b-app-header is-flex flex-direction-row justify-content-center align-items-center',
-        {
-          'has-navigation': isInvisible
-        }
-      ]
+      class: 'b-app-header is-flex flex-direction-row justify-content-center align-items-center has-navigation'
     },
     [generateNavigationButton(sidebarController, slots), generateMainSlot(sidebarController, isInvisible, slots)]
   );

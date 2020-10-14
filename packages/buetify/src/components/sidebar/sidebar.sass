@@ -1,13 +1,5 @@
-.b-navigation-drawer
-  position: fixed
-  left: 0
-  top: 0
+.b-sidebar
   width: $navigation-drawer-width
-  overflow-x: hidden
-  &.is-fullheight
-    bottom: 0
-  &.is-absolute
-    position: absolute
   @each $name, $pair in mergeColorMaps($colors, $shades)
     $color: nth($pair, 1)
     $color-invert: findColorInvert($color)

@@ -1,6 +1,6 @@
 import { constVoid } from 'fp-ts/lib/function';
 import { none, Option, some } from 'fp-ts/lib/Option';
-import { Ref, ExtractPropTypes, shallowRef, PropType, computed, provide, inject } from 'vue';
+import { Ref, ExtractPropTypes, shallowRef, PropType, computed, provide, inject, watchEffect } from 'vue';
 import { IO } from 'fp-ts/lib/IO';
 import { ToggleAttrs, ToggleListeners, useToggle } from '../../composables/toggle';
 import { DEFAULT_BREAK_POINTS } from '../../composables/windowSize/provideWindowSize';
@@ -58,6 +58,9 @@ export function provideSidebarController(props: ProvideNavigationDrawerControlle
     hide: toggle.setOff,
     toggle: toggle.toggle
   };
+  watchEffect(() => {
+    console.log(injection.isVisible.value);
+  })
   provide(SIDEBAR_CONTROLLER_INJECTION_SYMBOL, injection);
   return injection;
 }

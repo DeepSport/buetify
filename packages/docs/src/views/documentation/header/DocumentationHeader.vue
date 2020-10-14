@@ -28,7 +28,7 @@ import { defineComponent, PropType, computed } from 'vue';
 import { useRouter } from 'vue-router';
 import { BuetifyRouteMeta } from '../../../shared/types';
 import { constEmptyArray, constEmptyString } from '../../../shared/utils';
-import { meta } from '../meta';
+import {meta} from '../index';
 
 export default defineComponent({
 	name: 'documentation-header',

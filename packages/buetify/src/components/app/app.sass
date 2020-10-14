@@ -22,12 +22,23 @@ $all-colors: mergeColorMaps($colors, $shades) !default
 		+mobile
 			height: 100vh
 	&.has-navigation-drawer
+		+until-widescreen
+			.b-sidebar
+				position: absolute
+				top: 0
+				bottom: 0
+				height: auto
 		+widescreen
-			.b-app-content
-				margin-left: $navigation-drawer-width
-			.b-sheet
-				&.is-loading
-					width: calc(100% - #{$navigation-drawer-width})
+			.b-app-body-content
+				display: flex
+				flex-direction: row
+				.b-sidebar
+					flex-grow: 0
+				.b-app-content
+					flex-grow: 1
+				.b-sheet
+					&.is-loading
+						width: calc(100% - #{$navigation-drawer-width})
 	&.has-header
 		display: flex
 		flex-direction: column

@@ -1,5 +1,5 @@
 <template>
-	<b-app :is-themeable="false">
+	<b-app :is-themeable="false" :current-route="route">
 		<template #header>
 			<buetify-navbar></buetify-navbar>
 		</template>
@@ -33,6 +33,11 @@ export default defineComponent({
 		BuetifyNavbar,
 		DocumentationHeader,
 		BHorizontalDivider
-	}
+	},
+  setup() {
+	  return {
+	    route: useRouter().currentRoute
+    }
+  }
 });
 </script>
