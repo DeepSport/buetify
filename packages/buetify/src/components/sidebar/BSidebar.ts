@@ -39,19 +39,17 @@ function generateDrawer(
   themeClasses: string[],
   context: SetupContext
 ): VNode {
-
-
   return h(
     props.tag,
     {
       class: ['b-sidebar', ...themeClasses]
     },
-      context.slots.default &&
+    context.slots.default &&
       context.slots.default({
-          showSidebar: controller.show,
-          hideSidebar: controller.hide,
-          sidebarIsVisible: controller.isVisible.value,
-          toggleSidebar: controller.toggle
+        showSidebar: controller.show,
+        hideSidebar: controller.hide,
+        sidebarIsVisible: controller.isVisible.value,
+        toggleSidebar: controller.toggle
       })
   );
 }

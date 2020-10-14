@@ -1,4 +1,3 @@
-import 'bulma/sass/components/navbar.sass';
 import { makeBy } from 'fp-ts/lib/Array';
 import { h } from 'vue';
 
@@ -13,7 +12,7 @@ export default function BNavbarBurger(props: BNavbarBurgerProps) {
   return h(
     props.tag || 'button',
     {
-      class: ['navbar-burger', { 'is-active': !!props.isActive }],
+      class: ['b-navbar-burger', 'navbar-burger', { 'is-active': !!props.isActive }],
       'aria-expanded': !!props.isActive
     },
     hamburgerLines

@@ -60,7 +60,7 @@ export function provideSidebarController(props: ProvideNavigationDrawerControlle
   };
   watchEffect(() => {
     console.log(injection.isVisible.value);
-  })
+  });
   provide(SIDEBAR_CONTROLLER_INJECTION_SYMBOL, injection);
   return injection;
 }

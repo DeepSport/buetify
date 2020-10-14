@@ -16,9 +16,9 @@ module.exports = {
 						options: {
 							// This is the path to your variables
 							prependData: "@import '@/styles/variables.scss'"
-						},
-					},
-				],
+						}
+					}
+				]
 			},
 			// SCSS has different line endings than SASS
 			// and needs a semicolon after the import.
@@ -33,10 +33,10 @@ module.exports = {
 						options: {
 							// This is the path to your variables
 							prependData: "@import '@/styles/variables.scss';"
-						},
-					},
-				],
-			},
-		],
-	},
-}
+						}
+					}
+				]
+			}
+		]
+	}
+};

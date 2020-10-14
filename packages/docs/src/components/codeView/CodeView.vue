@@ -51,11 +51,11 @@ export default defineComponent({
 			type: Boolean,
 			default: true
 		},
-    useToggle: {
-		  type: Boolean,
-      default: true
-    },
-		...getUseTogglePropsDefinition('isExpanded'),
+		useToggle: {
+			type: Boolean,
+			default: true
+		},
+		...getUseTogglePropsDefinition('isExpanded')
 	},
 	setup(props) {
 		const toggle = useToggle(props, 'isExpanded');
@@ -78,7 +78,7 @@ export default defineComponent({
 .codeview {
 	.codeview-title {
 		// background: lighten($primary, 10%);
-		background: $grey;
+		background: $grey-dark;
 		padding-left: 1rem;
 		padding-right: 1rem;
 		line-height: 2;
