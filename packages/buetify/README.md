@@ -36,7 +36,7 @@ yarn install buetify
 
 ### 2 Create a variables.sass file
 ```sass
-// variables.sass
+// initial-variables.sass
 
 // provide any variable overrides here. Be careful to not include 
 // any actual styles as they will be prepended to every sass file in your bundle.
@@ -62,11 +62,6 @@ module.exports = {
           'css-loader',
           {
             loader: 'sass-loader',
-            // Requires sass-loader@^7.0.0
-            options: {
-              // This is the path to your variables
-              data: "@import '@/styles/variables.scss'"
-            },
             // Requires sass-loader@^8.0.0
             options: {
               // This is the path to your variables
@@ -84,11 +79,6 @@ module.exports = {
           'css-loader',
           {
             loader: 'sass-loader',
-            // Requires sass-loader@^7.0.0
-            options: {
-              // This is the path to your variables
-              data: "@import '@/styles/variables.scss';"
-            },
             // Requires sass-loader@^8.0.0
             options: {
               // This is the path to your variables

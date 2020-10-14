@@ -1,14 +1,14 @@
 <template>
 	<header>
-		<nav v-if="crumbs.length" class="breadcrumb" aria-label="breadcrumbs">
-			<ul>
-				<li v-for="(crumb, index) in crumbs" :key="crumb" :class="{ 'is-active': index === crumbs.length - 1 }">
-					<router-link :to="meta[crumb].fullPath">
-						{{ meta[crumb].title }}
-					</router-link>
-				</li>
-			</ul>
-		</nav>
+<!--		<nav v-if="crumbs.length" class="breadcrumb" aria-label="breadcrumbs">-->
+<!--			<ul>-->
+<!--				<li v-for="(crumb, index) in crumbs" :key="crumb" :class="{ 'is-active': index === crumbs.length - 1 }">-->
+<!--					<router-link :to="meta[crumb].fullPath">-->
+<!--						{{ meta[crumb].title }}-->
+<!--					</router-link>-->
+<!--				</li>-->
+<!--			</ul>-->
+<!--		</nav>-->
 		<b-container>
 			<b-title>
 				{{ title }}

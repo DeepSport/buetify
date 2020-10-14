@@ -35,10 +35,7 @@ function generateSidebarSlot(
     BSidebar,
     {
       currentRoute,
-      isFullheight: true,
-      class: {
-        'is-absolute': hasHeader
-      }
+      isFullheight: true
     },
     () => slots.sidebar && slots.sidebar(sidebar)
   );

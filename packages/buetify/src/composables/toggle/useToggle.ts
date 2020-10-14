@@ -1,6 +1,6 @@
 import { FunctionN } from 'fp-ts/lib/function';
 import { IO } from 'fp-ts/lib/IO';
-import { watch, computed, Ref, PropType, shallowRef, toRef } from 'vue';
+import { watch, watchEffect, computed, Ref, PropType, shallowRef, toRef } from 'vue';
 import { isEnterEvent } from '../../utils/eventHelpers';
 
 export function getUseTogglePropsDefinition<K extends string>(
@@ -140,6 +140,10 @@ export function useToggle<K extends string>(
     e && e?.stopPropagation();
     value.value = !value.value;
   }
+
+  watchEffect(() => {
+    console.log(value.value);
+  })
 
   const attrs = getToggleAttrs(value, toRef(props, 'hasPopup'));
   const listeners = getListeners(toggle);

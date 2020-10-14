@@ -1,7 +1,7 @@
 import { BuetifyRouteMeta } from '../../../shared/types';
 
 export const meta: BuetifyRouteMeta = {
-	title: 'Buetify',
+	title: 'Summary',
 	subtitle: 'Bulma and Vue - so happy together',
 	fullPath: '/documentation/summary',
 	subPath: 'summary',
