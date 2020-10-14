@@ -1,6 +1,14 @@
 <template>
 	<b-app-header tag="div">
-		<b-title class="is-size-1 has-font-lobster has-text-primary has-text-centered padding-size-6">Buetify</b-title>
+		<router-link to="/">
+			<template #default="{ href, navigate}">
+				<a :href="href" @click="navigate">
+					<b-title class="is-size-1 has-font-lobster has-text-primary has-text-centered padding-size-6"
+						>Buetify</b-title
+					>
+				</a>
+			</template>
+		</router-link>
 	</b-app-header>
 </template>
 

@@ -58,24 +58,27 @@ const BuetifyMenuLink = defineComponent({
 		const link = useLink({
 			to: computed(() => props.link.fullPath)
 		});
-		return () =>
-			h(BMenuListItem, () =>
-				h(
-					'a',
-					{
-						href: link.href.value,
-						class: [
-							'margin-bottom-size-9',
-							{
-								'has-text-weight-semibold': props.level < 2,
-								'is-active': link.isActive.value
-							}
-						],
-						onClick: link.navigate
-					},
-					props.link.label
-				)
+
+		function toAnchor() {
+			return h(
+				'a',
+				{
+					href: link.href.value,
+					class: [
+						'is-block',
+						{
+							'margin-bottom-size-8': props.level === 0,
+							'margin-bottom-size-9': props.level,
+							'has-text-weight-semibold': props.level < 2,
+							'is-active': link.isActive.value
+						}
+					],
+					onClick: link.navigate
+				},
+				props.link.label
 			);
+		}
+		return () => (props.level === 0 ? toAnchor() : h(BMenuListItem, toAnchor));
 	}
 });
 
@@ -92,7 +95,11 @@ const groups = constant(menu.map(item => h(BuetifyMenuItem, { item })));
 
 const StaticMenu = h(
 	BMenu,
-	{ tag: 'div', class: 'is-light max-height-100-percent overflow-auto padding-top-size-3 padding-bottom-size-3 padding-left-size-2 padding-right-size-3' },
+	{
+		tag: 'div',
+		class:
+			'is-light max-height-100-percent overflow-auto padding-top-size-3 padding-bottom-size-3 padding-left-size-2 padding-right-size-3'
+	},
 	groups
 );
 

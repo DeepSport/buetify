@@ -3,16 +3,16 @@
 		<b-title v-if="title" class="codeview-title">{{ title }}</b-title>
 		<figure class="highlight" :class="classes">
 			<div class="button-container">
-				<b-button v-if="isOn" class="is-text is-small" @click="setOff">
+				<b-button v-if="isOn && useToggle" class="is-text is-small" @click="setOff">
 					Hide
 				</b-button>
 			</div>
 			<pre><code class="hljs" :class="lang === 'html' ? 'xml' : lang" v-html="highlightedCode.value"></code></pre>
-			<b-button v-if="isOff" class="is-fullheight codeview-showcode" @click="setOn">
+			<b-button v-if="isOff && useToggle" class="is-fullheight codeview-showcode" @click="setOn">
 				<code-icon size="is-small"></code-icon>
 				Show Code
 			</b-button>
-			<b-button v-if="isOn" class="codeview-hidecode" @click="setOff">
+			<b-button v-if="useToggle" class="codeview-hidecode" @click="setOff">
 				<eye-slash-icon size="is-small"></eye-slash-icon>
 			</b-button>
 		</figure>
@@ -22,7 +22,7 @@
 <script lang="ts">
 import { BButton, BTitle } from 'buetify/lib/components';
 import { getUseTogglePropsDefinition, useToggle } from 'buetify/lib/composables';
-import { defineComponent, computed, PropType as PType, shallowRef } from 'vue';
+import { defineComponent, computed, PropType as PType, shallowRef, reactive } from 'vue';
 import { useHighlightedCode } from '../../shared/composables/useHighlightedCode';
 import CodeIcon from '../icons/CodeIcon';
 import EyeSlashIcon from '../icons/EyeSlashIcon';
@@ -51,13 +51,17 @@ export default defineComponent({
 			type: Boolean,
 			default: true
 		},
-		...getUseTogglePropsDefinition('isExpanded')
+    useToggle: {
+		  type: Boolean,
+      default: true
+    },
+		...getUseTogglePropsDefinition('isExpanded'),
 	},
 	setup(props) {
 		const toggle = useToggle(props, 'isExpanded');
 		const classes = computed(() => ({
-			'is-collapsed': !props.isBordered && !toggle.isOn.value,
-			'is-expanded': toggle.isOn.value
+			'is-collapsed': !props.isBordered && !toggle.isOn.value && props.useToggle,
+			'is-expanded': toggle.isOn.value || !props.useToggle
 		}));
 
 		return {
