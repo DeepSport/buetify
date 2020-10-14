@@ -1,15 +1,8 @@
 import './table.sass';
-import { DefaultThemePropsDefinition, ThemeProps, useTheme } from '../../composables/theme';
+import { DefaultThemePropsDefinition, useTheme } from '../../composables/theme';
 import { SizeVariant } from '../../types';
-import { Classes } from '../../utils/mergeClasses';
 import BScroll from '../scroll/BScroll';
 import { defineComponent, h, PropType } from 'vue';
-
-export interface BSimpleTableProps extends Partial<ThemeProps> {
-  isLoading?: boolean;
-  isScrollable?: boolean;
-  tableClasses?: Classes;
-}
 
 export const BSimpleTablePropsDefinition = {
   ...DefaultThemePropsDefinition,
@@ -34,8 +27,7 @@ export const BSimpleTablePropsDefinition = {
     default: true
   },
   size: {
-    type: String as PropType<SizeVariant>,
-    default: '' as const
+    type: String as PropType<SizeVariant>
   },
   isHoverable: {
     type: Boolean as PropType<boolean>,
@@ -51,7 +43,7 @@ export const BSimpleTablePropsDefinition = {
   },
   useMobileCards: {
     type: Boolean as PropType<boolean>,
-    default: true
+    default: false
   }
 };
 

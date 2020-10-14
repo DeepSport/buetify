@@ -2,7 +2,6 @@ import BMenu from 'buetify/lib/components/menu/BMenu';
 import BMenuGroup from 'buetify/lib/components/menu/BMenuGroup';
 import BMenuLabel from 'buetify/lib/components/menu/BMenuLabel';
 import BMenuListItem from 'buetify/lib/components/menu/BMenuListItem';
-import BScroll from 'buetify/lib/components/scroll/BScroll';
 import { constant } from 'fp-ts/lib/function';
 import { defineComponent, PropType, h, computed } from 'vue';
 import { useLink } from 'vue-router';

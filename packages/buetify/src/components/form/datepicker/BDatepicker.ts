@@ -539,9 +539,6 @@ export default defineComponent({
     const setYear = getSetYear(year);
 
     function onKeydown(e: KeyboardEvent) {
-      console.log(
-        dropdown.value === undefined || dropdown.value?.$el === undefined || !dropdown.value.$el.contains(e.target)
-      );
       if (dropdown.value === undefined || dropdown.value?.$el === undefined || !dropdown.value.$el.contains(e.target)) {
         return;
       }
@@ -594,7 +591,6 @@ export default defineComponent({
     watch(
       focusedDate,
       fd => {
-        console.log(fd);
         const m = month.value;
         const y = year.value;
         if (isSome(fd)) {

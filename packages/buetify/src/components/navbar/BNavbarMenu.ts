@@ -1,4 +1,3 @@
-import 'bulma/sass/components/navbar.sass';
 import { h, defineComponent } from 'vue';
 
 export default defineComponent({

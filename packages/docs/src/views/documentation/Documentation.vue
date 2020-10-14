@@ -1,7 +1,7 @@
 <template>
 	<b-app :is-themeable="false" :current-route="route">
 		<template #header>
-			<buetify-navbar></buetify-navbar>
+			<buetify-documentation-navbar></buetify-documentation-navbar>
 		</template>
 		<template #sidebar>
 			<buetify-menu class="is-fullheight"></buetify-menu>
@@ -21,7 +21,7 @@ import { BApp } from 'buetify/lib/components';
 import BHorizontalDivider from 'buetify/lib/components/layout/divider/BHorizontalDivider';
 import { defineComponent } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
-import BuetifyNavbar from '../../components/buetifyNavbar/BuetifyNavbar.vue';
+import BuetifyDocumentationNavbar from '../../components/buetifyNavbar/BuetifyDocumentationNavbar.vue';
 import BuetifyMenu from './menu/BuetifyMenu';
 import { DocumentationHeader } from './header';
 
@@ -30,14 +30,14 @@ export default defineComponent({
 	components: {
 		BApp,
 		BuetifyMenu,
-		BuetifyNavbar,
+		BuetifyDocumentationNavbar,
 		DocumentationHeader,
 		BHorizontalDivider
 	},
-  setup() {
-	  return {
-	    route: useRouter().currentRoute
-    }
-  }
+	setup() {
+		return {
+			route: useRouter().currentRoute
+		};
+	}
 });
 </script>

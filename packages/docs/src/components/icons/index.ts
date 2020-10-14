@@ -10,6 +10,7 @@ export { default as GithubIcon } from './GithubIcon';
 export { default as HomeIcon } from './HomeIcon';
 export { default as ItalicIcon } from './ItalicIcon';
 export { default as MaleIcon } from './MaleIcon';
+export { default as SadTearIcon } from './SadTearIcon';
 export { default as SearchIcon } from './SearchIcon';
 export { default as TachometerAltIcon } from './TachometerAltIcon';
 export { default as UnderlineIcon } from './UnderlineIcon';

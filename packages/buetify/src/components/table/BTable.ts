@@ -58,7 +58,11 @@ export const BTablePropsDefinition = {
   ...BTableCheckPropsDefinition,
   ...BTableDraggablePropsDefinition,
   ...BTableSelectablePropsDefinition,
-  ...BTableSortingPropsDefinition
+  ...BTableSortingPropsDefinition,
+  useMobileCards: {
+    type: Boolean as PropType<boolean>,
+    default: true
+  }
 };
 
 export interface BTableProps extends ExtractPropTypes<typeof BTablePropsDefinition> {}
