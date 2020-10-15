@@ -6,10 +6,10 @@ module.exports = {
 	css: {
 		loaderOptions: {
 			sass: {
-				prependData: `@import "~@/assets/variables"`
+				additionalData: `@import "~@/assets/variables"`
 			},
 			scss: {
-				prependData: `@import "~@/assets/variables";`
+				additionalData: `@import "~@/assets/variables";`
 			}
 		}
 	},
