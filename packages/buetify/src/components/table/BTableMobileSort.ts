@@ -1,4 +1,3 @@
-import './table.sass';
 import { IO } from 'fp-ts/IO';
 import { FunctionN } from 'fp-ts/lib/function';
 import { BSelect } from '../form/select/BSelect';
