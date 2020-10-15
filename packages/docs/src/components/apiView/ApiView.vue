@@ -9,7 +9,7 @@
 			</router-link>
 			<b-tabs class="margin-top-size-6 api-tabs">
 				<b-tab-item v-if="api.props && api.props.length" label="Props">
-					<b-styled-table>
+					<b-styled-table class="is-fullwidth">
 						<thead>
 							<tr>
 								<th v-for="column in PropColumns" :key="column.label">{{ column.label }}</th>
@@ -27,7 +27,7 @@
 					</b-styled-table>
 				</b-tab-item>
 				<b-tab-item v-if="api.slots && api.slots.length" label="Slots">
-					<b-styled-table>
+					<b-styled-table class="is-fullwidth">
 						<thead>
 							<tr>
 								<th v-for="column in SlotColumns" :key="column.name">{{ column.label }}</th>
@@ -45,7 +45,7 @@
 					</b-styled-table>
 				</b-tab-item>
 				<b-tab-item v-if="api.events && api.events.length" label="Events">
-					<b-styled-table>
+					<b-styled-table class="is-fullwidth">
 						<thead>
 							<tr>
 								<th v-for="column in EventsColumns" :key="column.name" v-text="column.label"></th>
@@ -63,7 +63,7 @@
 					</b-styled-table>
 				</b-tab-item>
 				<b-tab-item v-if="api.methods && api.methods.length" label="Methods">
-					<b-styled-table>
+					<b-styled-table class="is-fullwidth">
 						<thead>
 							<tr>
 								<th v-for="column in MethodsColumns" :key="column.name" v-text="column.name"></th>
@@ -88,8 +88,8 @@
 <script lang="ts">
 import { BStyledTable, BSubtitle, BTabItem, BTabs, BTitle } from 'buetify/lib/components';
 import { defineComponent, computed, PropType } from 'vue';
-import { toSlug, useSlug } from '../../shared/composables/useSlug';
-import { ComponentApiDescription, PropApiDescription } from './types';
+import { toSlug } from '../../shared/composables/useSlug';
+import { ComponentApiDescription } from './types';
 
 interface Column {
 	label: string;
@@ -142,7 +142,6 @@ export default defineComponent({
 		return {
 			PropColumns,
 			SlotColumns,
-
 			EventsColumns,
 			MethodsColumns,
 			data: computed(() => props.apis.map(api => ({ ...api, slug: toSlug(api.title) })))
