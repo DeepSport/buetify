@@ -43,7 +43,6 @@ import BBox from 'buetify/lib/components/layout/box/BBox';
 import BContainer from 'buetify/lib/components/layout/container/BContainer';
 import BHero from 'buetify/lib/components/layout/hero/BHero';
 import BHeroBody from 'buetify/lib/components/layout/hero/BHeroBody';
-import BTitle from 'buetify/lib/components/title/BTitle';
 import { defineComponent } from 'vue';
 import BuetifyHomeNavbar from '../../components/buetifyNavbar/BuetifyHomeNavbar.vue';
 
@@ -55,7 +54,6 @@ export default defineComponent({
 		BHero,
 		BHeroBody,
 		BContainer,
-		BTitle,
 		BButton
 	}
 });

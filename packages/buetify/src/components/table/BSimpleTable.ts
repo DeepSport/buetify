@@ -1,4 +1,3 @@
-import './table.sass';
 import { DefaultThemePropsDefinition, useTheme } from '../../composables/theme';
 import { SizeVariant } from '../../types';
 import BScroll from '../scroll/BScroll';

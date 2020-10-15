@@ -17,7 +17,6 @@ import { BTableDraggablePropsDefinition, useDraggableTable } from './composables
 import { BTableSelectablePropsDefinition, useSelectableTable } from './composables/useSelectableTable';
 import { BTableSortingPropsDefinition, useSortableTable } from './composables/useSortableTable';
 import { BTableColumn, BTableRow } from './shared';
-import './table.sass';
 
 export interface BTablePaginationInput {
   page?: number;
@@ -193,7 +192,7 @@ export default defineComponent({
                   size: props.pagination.size,
                   position: props.pagination.horizontalPosition,
                   verticalPosition: props.pagination.verticalPosition
-                } as any),
+                } as any), // eslint-disable-line
             {
               default: (paginatedState: ExtractedPaginationState) => {
                 return generateTable(props, paginatedState.paginatedItems as BTableRow[], visibleColumns, slots);

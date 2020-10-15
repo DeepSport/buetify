@@ -1,4 +1,3 @@
-import './menu.sass';
 import { getUseTogglePropsDefinition, useToggle } from '../../composables/toggle';
 import VerticalExpandTransition from '../../transitions/verticalExpandTransition';
 import { Classes } from '../../utils/mergeClasses';
