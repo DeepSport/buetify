@@ -214,6 +214,7 @@ export interface BFieldBodyProps {
   tag?: string;
 }
 
+// eslint-disable-next-line
 function BFieldBody(props: BFieldBodyProps, { attrs, slots }: SetupContext) {
   const nodes = slots.default ? slots.default() : [];
   return h(
@@ -221,7 +222,6 @@ function BFieldBody(props: BFieldBodyProps, { attrs, slots }: SetupContext) {
     {
       class: 'field-body'
     },
-
     nodes.map((element: VNode) => (element.el ? element : h(BField, props, constant(element))))
   );
 }

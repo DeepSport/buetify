@@ -1,7 +1,7 @@
 import 'bulma/sass/components/card.sass';
 import '../../sass/helpers/animations.sass';
 import './accordion.sass';
-import { defineComponent, h, Slots, Ref, vShow, withDirectives } from 'vue';
+import { defineComponent, h, Slots, Ref, vShow, withDirectives, Transition } from 'vue';
 import { DefaultThemePropsDefinition, useTheme } from '../../composables/theme';
 import { getUseTogglePropsDefinition, Toggle, useToggle } from '../../composables/toggle';
 import { FadeTransitionPropsDefinition, useTransition } from '../../composables/transition';

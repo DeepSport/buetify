@@ -147,7 +147,7 @@ function generateMobileBackground(
         'div',
         {
           class: 'background',
-            'aria-hidden': toggle.isOff.value,
+          'aria-hidden': toggle.isOff.value,
           onClick: toggle.setOff
         },
         [generateDropdownMenu(menuTag, toggle, computedId, themeClasses, transition, slots, false)]

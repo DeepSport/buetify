@@ -10,7 +10,6 @@ import { VNode } from 'vue';
 import { DEFAULT_INPUT_ICONS, InputIcons } from '../shared/types';
 import { Component, defineComponent, PropType, shallowRef, h, Ref, computed, SetupContext } from 'vue';
 
-
 export function getBInputPropsDefinition<T>() {
   return {
     ...getUseInputPropsDefinition<T>(),
@@ -241,6 +240,7 @@ export function defineInput<T>() {
           !!inputData.maxlength &&
           props.hasCounter
       );
+
       const { themeClasses } = useTheme(props);
 
       return () => {

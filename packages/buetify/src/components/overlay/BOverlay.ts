@@ -1,6 +1,6 @@
 import './overlay.sass';
-import { Classes, mergeClasses } from '../../utils/mergeClasses';
-import { h, SetupContext, withDirectives, vShow } from 'vue';
+import { IO } from 'fp-ts/lib/IO';
+import { h, withDirectives, vShow, defineComponent, PropType } from 'vue';
 
 type OverlayPosition = 'is-left' | 'is-right' | 'is-centered';
 
