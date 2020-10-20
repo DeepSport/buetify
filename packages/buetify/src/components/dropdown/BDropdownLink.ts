@@ -1,4 +1,3 @@
-import './dropdown.sass';
 import { useTheme, useThemePropsDefinition } from '../../composables/theme';
 import { h, defineComponent, PropType } from 'vue';
 import { DropdownThemeMap } from './theme';

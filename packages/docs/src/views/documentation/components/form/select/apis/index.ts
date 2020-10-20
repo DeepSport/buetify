@@ -1,5 +1,5 @@
 import { ComponentApiDescription } from '../../../../../../components/apiView';
-import { EqPropApi, getBooleanPropsApi, getUseStaticInputPropsApi } from '../../../../shared/api';
+import { EqPropApi, getUseStaticInputPropsApi } from '../../../../shared/api';
 
 export const apis: ComponentApiDescription[] = [
 	{
@@ -22,7 +22,7 @@ export const apis: ComponentApiDescription[] = [
 				required: 'true'
 			},
 			{
-				name: '<code>itemText</code>',
+				name: '<code>item-text</code>',
 				description: 'Keyof item or function from item to string',
 				type: '[String, Function]',
 				values: `-`,
@@ -30,7 +30,7 @@ export const apis: ComponentApiDescription[] = [
 				required: 'false'
 			},
 			{
-				name: '<code>itemFilter</code>',
+				name: '<code>item-filter</code>',
 				description: 'Function that takes in current search value and returns a predicate for an item',
 				type: 'Function',
 				values: `-`,
@@ -38,7 +38,7 @@ export const apis: ComponentApiDescription[] = [
 				required: 'false'
 			},
 			{
-				name: '<code>itemId</code>',
+				name: '<code>item-id</code>',
 				description: 'Keyof item or function from item to string',
 				type: '[String, Function]',
 				values: `-`,
@@ -46,7 +46,7 @@ export const apis: ComponentApiDescription[] = [
 				required: 'false'
 			},
 			{
-				name: '<code>itemDisabled</code>',
+				name: '<code>item-disabled</code>',
 				description: 'Keyof item or function from item to string',
 				type: '[String, Function]',
 				values: `-`,

@@ -33,12 +33,12 @@ export function usePagination<T>(props: UsePaginationProps) {
   const current = computed(() => Math.max(model.modelValue.value as number, 1));
   const itemsPerPage = computed(() => (props.perPage <= 0 ? DEFAULT_ITEMS_PER_PAGE.value : props.perPage));
   const numberOfPages = computed(() => Math.ceil(total.value / itemsPerPage.value));
-  const after = computed(() => Math.max(((model.modelValue.value as number) - 1) * itemsPerPage.value, 0));
-  const nextPage = computed(() => Math.min(numberOfPages.value, (model.modelValue.value as number) + 1));
+  const after = computed(() => Math.max((current.value - 1) * itemsPerPage.value, 0));
+  const nextPage = computed(() => Math.min(numberOfPages.value, current.value + 1));
   const hasNext = computed(() => {
     return itemsPerPage.value + after.value < total.value;
   });
-  const previousPage = computed(() => Math.max(0, (model.modelValue.value as number) - 1));
+  const previousPage = computed(() => Math.max(0, current.value - 1));
   const hasPrevious = computed(() => after.value > 0 && total.value > 0);
 
   const paginatedItems = computed<T[]>(
@@ -46,13 +46,12 @@ export function usePagination<T>(props: UsePaginationProps) {
   );
 
   function next(e: Event) {
-    e.preventDefault();
+    console.log('here', e, current.value, hasNext.value);
     if (hasNext.value) {
       model.modelValue.value = nextPage.value;
     }
   }
   function previous(e: Event) {
-    e.preventDefault();
     if (hasPrevious.value) {
       model.modelValue.value = previousPage.value;
     }

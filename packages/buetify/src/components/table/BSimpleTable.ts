@@ -2,6 +2,7 @@ import { DefaultThemePropsDefinition, useTheme } from '../../composables/theme';
 import { SizeVariant } from '../../types';
 import BScroll from '../scroll/BScroll';
 import { defineComponent, h, PropType } from 'vue';
+import BStyledTable from './BStyledTable';
 
 export const BSimpleTablePropsDefinition = {
   ...DefaultThemePropsDefinition,
@@ -57,10 +58,9 @@ export default defineComponent({
       return [
         h('div', { class: 'table-wrapper' }, [
           h(
-            'table',
+            BStyledTable,
             {
               class: [
-                'table',
                 props.size,
                 {
                   'is-bordered': props.isBordered,
@@ -73,7 +73,7 @@ export default defineComponent({
                 ...themeClasses.value
               ]
             },
-            slots.default && slots.default()
+            slots.default
           )
         ])
       ];

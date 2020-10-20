@@ -1,3 +1,5 @@
+import '../../pagination/pagination.sass';
+import '../../dropdown/dropdown.sass';
 import './datepicker.sass';
 import { IO } from 'fp-ts/es6/IO';
 import { useDisable, UseDisablePropsDefinition } from '../../../composables/disable';

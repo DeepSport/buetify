@@ -12,7 +12,7 @@
 <script lang="ts">
 import BTabItem from 'buetify/lib/components/tabs/BTabItem';
 import BTabs from 'buetify/lib/components/tabs/BTabs';
-import { defineComponent, shallowRef } from 'vue';
+import { defineComponent } from 'vue';
 import UserCogIcon from '../../../../../components/icons/UserCogIcon';
 import UserIcon from '../../../../../components/icons/UserIcon';
 import UsersIcon from '../../../../../components/icons/UsersIcon';

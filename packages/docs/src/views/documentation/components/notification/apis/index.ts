@@ -97,9 +97,9 @@ export const apis: ComponentApiDescription[] = [
 				default: '—',
 				required: 'false'
 			},
-			...getUseTogglePropsApi('isActive', true)
+			...getUseTogglePropsApi('is-active', true)
 		],
-		events: getUseToggleEventsApi('isActive'),
+		events: getUseToggleEventsApi('is-active'),
 		slots: [
 			{
 				name: 'default',

@@ -1,3 +1,4 @@
+import 'bulma/sass/components/modal.sass';
 import './dialog.sass';
 import BOverlay from '../overlay/BOverlay';
 import { h, SetupContext } from 'vue';

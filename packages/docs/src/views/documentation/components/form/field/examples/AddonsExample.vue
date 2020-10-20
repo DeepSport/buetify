@@ -61,10 +61,7 @@
 <script lang="ts">
 import { BInput, BSelect } from 'buetify/lib/components';
 import BButton from 'buetify/lib/components/button/BButton';
-import BDropdown from 'buetify/lib/components/dropdown/BDropdown';
-import BDropdownItem from 'buetify/lib/components/dropdown/BDropdownItem';
 import BField from 'buetify/lib/components/form/field';
-import AngleDownIcon from 'buetify/lib/components/icons/angleDown/AngleDownIcon';
 import { defineComponent } from 'vue';
 import AlignCenterIcon from '../../../../../../components/icons/AlignCenterIcon';
 import AlignLeftIcon from '../../../../../../components/icons/AlignLeftIcon';

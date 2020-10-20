@@ -15,7 +15,7 @@
 	</section>
 </template>
 <script lang="ts">
-import { BInput, BSelect } from 'buetify/lib/components';
+import { BInput } from 'buetify/lib/components';
 import BButton from 'buetify/lib/components/button/BButton';
 import BField from 'buetify/lib/components/form/field';
 import { defineComponent } from 'vue';

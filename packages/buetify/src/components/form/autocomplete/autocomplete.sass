@@ -1,5 +1,5 @@
-@import '../sass/form'
-@import '../../dropdown/dropdown'
+$autocomplete-item-hover-color: $black !default
+$autocomplete-item-hover-background-color: $background !default
 
 .b-autocomplete
 	position: relative
@@ -20,8 +20,8 @@
 		white-space: normal
 		overflow: hidden
 		&.is-hovered 
-			background: $dropdown-item-hover-background-color
-			color: $dropdown-item-hover-color
+			background: $autocomplete-item-hover-background-color
+			color: $autocomplete-item-hover-color
 		&.is-disabled 
 			opacity: 0.5
 			cursor: not-allowed

@@ -1,3 +1,4 @@
+import '../../sass/helpers/flex-helpers.sass';
 import './menu.sass';
 import { getThemeableFunctionalComponent } from '../../utils/getThemeableFunctionalComponent';
 import { MenuThemeMap } from './theme';

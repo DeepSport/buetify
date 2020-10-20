@@ -1,3 +1,5 @@
+import '../sass/form.sass';
+import '../../dropdown/dropdown.sass';
 import './autocomplete.sass';
 import { Eq } from 'fp-ts/lib/Eq';
 import { IO } from 'fp-ts/lib/IO';

@@ -4,10 +4,10 @@
 	</section>
 </template>
 <script lang="ts">
-import BTable, { BTablePaginationInput } from 'buetify/lib/components/table/BTable';
-import { BTableColumn, SortType } from 'buetify/lib/components/table/shared';
+import BTable from 'buetify/lib/components/table/BTable';
+import { BTableColumn } from 'buetify/lib/components/table/shared';
 import { contramap, ordNumber, ordString } from 'fp-ts/lib/Ord';
-import { defineComponent, shallowRef, computed } from 'vue';
+import { defineComponent, shallowRef } from 'vue';
 
 interface Person {
 	id: number;

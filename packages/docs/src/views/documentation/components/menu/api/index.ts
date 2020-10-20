@@ -33,7 +33,7 @@ export const apis: ComponentApiDescription[] = [
 				default: '<code>false</code>',
 				required: 'false'
 			},
-			...getUseTogglePropsApi('isExpanded', false),
+			...getUseTogglePropsApi('is-expanded', false),
 			{
 				name: '<code>menu-label-class</code>',
 				description: 'Class to apply to <code>menu-label</code>',

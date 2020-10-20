@@ -18,11 +18,9 @@
 	</section>
 </template>
 <script lang="ts">
-import { BInput } from 'buetify/lib/components';
 import BField from 'buetify/lib/components/form/field';
 import BNumberInput from 'buetify/lib/components/form/numberInput/BNumberInput';
 import { defineComponent } from 'vue';
-import UserIcon from '../../../../../../components/icons/UserIcon';
 
 export default defineComponent({
 	name: 'size-example',

@@ -1,3 +1,6 @@
+import 'bulma/sass/components/card.sass';
+import 'bulma/sass/components/modal.sass';
+import '../../sass/helpers/animations.sass';
 import './modal.sass';
 import { IO } from 'fp-ts/lib/IO';
 import { usePopupController, UsePopupControllerPropsDefinition } from '../../composables/popupController';

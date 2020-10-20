@@ -1,4 +1,3 @@
-import './pricing-table.sass';
 import { SetupContext, h } from 'vue';
 import { BPricingPlanProps } from './BPricingPlan';
 

@@ -33,7 +33,7 @@
 import BButton from 'buetify/lib/components/button/BButton';
 import BBox from 'buetify/lib/components/layout/box/BBox';
 import BModal from 'buetify/lib/components/modal/BModal';
-import { defineComponent, shallowRef } from 'vue';
+import { defineComponent } from 'vue';
 
 export default defineComponent({
 	name: 'simple-modal-example',

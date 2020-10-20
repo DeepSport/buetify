@@ -1,11 +1,4 @@
 import { ComponentApiDescription } from '../../../../../../components/apiView';
-import {
-	ColorVariantPropApi,
-	EqPropApi,
-	getBooleanPropsApi,
-	getUseStaticInputPropsApi,
-	SizeVariantPropApi
-} from '../../../../shared/api';
 
 export const apis: ComponentApiDescription[] = [
 	{

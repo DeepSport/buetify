@@ -11,8 +11,8 @@
 </template>
 <script lang="ts">
 import BStepItem from 'buetify/lib/components/steps/BStepItem';
-import BSteps, { StepLabelPosition, StepsMobileMode, StepsSize } from 'buetify/lib/components/steps/BSteps';
-import { defineComponent, shallowRef } from 'vue';
+import BSteps from 'buetify/lib/components/steps/BSteps';
+import { defineComponent } from 'vue';
 import UserCogIcon from '../../../../../components/icons/UserCogIcon';
 import UserIcon from '../../../../../components/icons/UserIcon';
 import UsersIcon from '../../../../../components/icons/UsersIcon';

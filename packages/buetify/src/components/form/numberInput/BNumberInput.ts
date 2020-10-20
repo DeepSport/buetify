@@ -1,4 +1,4 @@
-import './b-numberinput.sass';
+import './number-input.sass';
 import { IO } from 'fp-ts/lib/IO';
 import { getUseInputPropsDefinition } from '../../../composables/input/useInput';
 import { constant, FunctionN } from 'fp-ts/lib/function';

@@ -53,8 +53,8 @@ export const apis: ComponentApiDescription[] = [
 				default: '<code>id</code>',
 				required: 'true'
 			},
-			getBooleanPropsApi('closeOnSelect', 'Close dropdown on item selection', true),
-			getBooleanPropsApi('clearOnSelect', 'Clear search value on item selection', true),
+			getBooleanPropsApi('close-on-select', 'Close dropdown on item selection', true),
+			getBooleanPropsApi('clear-on-select', 'Clear search value on item selection', true),
 			EqPropApi,
 			...getUseStaticInputPropsApi()
 		],

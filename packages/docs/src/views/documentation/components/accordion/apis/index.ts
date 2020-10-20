@@ -4,8 +4,8 @@ import { getUseToggleEventsApi, getUseTogglePropsApi } from '../../../shared/api
 export const apis: ComponentApiDescription[] = [
 	{
 		title: 'Accordion',
-		props: getUseTogglePropsApi('isExpanded', false),
-		events: getUseToggleEventsApi('isExpanded'),
+		props: getUseTogglePropsApi('is-expanded', false),
+		events: getUseToggleEventsApi('is-expanded'),
 		slots: [
 			{
 				name: 'default',

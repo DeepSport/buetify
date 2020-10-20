@@ -5,7 +5,7 @@ export const apis: ComponentApiDescription[] = [
 	{
 		title: 'Dropdown',
 		props: [
-			...getUseTogglePropsApi('isExpanded', true),
+			...getUseTogglePropsApi('is-expanded', true),
 			getUseTransitionPropsApi('fade'),
 			{
 				name: '<code>position</code>',
@@ -16,7 +16,7 @@ export const apis: ComponentApiDescription[] = [
 				required: '<code>false</code>'
 			},
 			{
-				name: '<code>isDisabled</code>',
+				name: '<code>is-disabled</code>',
 				description: 'Disables dropdown',
 				type: 'Boolean',
 				values: '—',
@@ -24,7 +24,7 @@ export const apis: ComponentApiDescription[] = [
 				required: '<code>false</code>'
 			},
 			{
-				name: '<code>isInline</code>',
+				name: '<code>is-inline</code>',
 				description: 'Dropdown content (items) are shown inline, trigger is removed',
 				type: 'Boolean',
 				values: '—',
@@ -32,7 +32,7 @@ export const apis: ComponentApiDescription[] = [
 				required: '<code>false</code>'
 			},
 			{
-				name: '<code>isMobileModal</code>',
+				name: '<code>is-mobile-modal</code>',
 				description: 'Dropdown content (items) are shown into a modal on mobile',
 				type: 'Boolean',
 				values: '—',

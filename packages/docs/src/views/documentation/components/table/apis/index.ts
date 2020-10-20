@@ -156,7 +156,7 @@ export const apis: ComponentApiDescription[] = [
 		slots: [
 			{
 				name: 'default',
-				description: '<strong>Required</strong>, table body and header',
+				description: '<strong>Optional</strong>, table body and header',
 				props:
 					'<code>row: Object</code>, <code>column: Vue Object</code>, <code>index: Number</code>, <code>colindex: Number</code>,'
 			},
@@ -246,17 +246,17 @@ export const apis: ComponentApiDescription[] = [
 				name: '<code>dragleave</code>',
 				description: 'Triggers after dragging over a row',
 				parameters: '<code> row: Object </code>, <code> dragover: Event </code>, <code> index: Number </code>'
-			},
-			{
-				name: '<code>mouseenter</code>',
-				description: 'Triggers when mouse enters a row',
-				parameters: '<code> row: Object </code>'
-			},
-			{
-				name: '<code>mouseleave</code>',
-				description: 'Triggers when mouse leaves a row',
-				parameters: '<code> row: Object </code>'
 			}
+			// {
+			// 	name: '<code>mouseenter</code>',
+			// 	description: 'Triggers when mouse enters a row',
+			// 	parameters: '<code> row: Object </code>'
+			// },
+			// {
+			// 	name: '<code>mouseleave</code>',
+			// 	description: 'Triggers when mouse leaves a row',
+			// 	parameters: '<code> row: Object </code>'
+			// }
 		]
 	},
 	{

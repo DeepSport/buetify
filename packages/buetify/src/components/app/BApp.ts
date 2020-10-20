@@ -1,3 +1,4 @@
+import '../../sass/helpers/animations.sass';
 import './app.sass';
 import { defineComponent, shallowRef, h, Slots, Ref, vShow, withDirectives, VNode } from 'vue';
 import { provideNoticeController, ShowNoticeOptions } from '../../composables/noticeController';
@@ -28,7 +29,7 @@ function generatePopupContainer(ref: Ref<PopupContainer>) {
 function generateSidebarSlot(
   slots: Slots,
   hasHeader: boolean,
-  currentRoute: Record<string, unknown> | undefined,
+  currentRoute: unknown | undefined,
   sidebar: SidebarController
 ) {
   return h(
@@ -45,7 +46,7 @@ function generateBodyContent(
   slots: Slots,
   hasNavigationDrawer: boolean,
   sidebar: SidebarController,
-  currentRoute: Record<string, unknown> | undefined
+  currentRoute: unknown | undefined
 ) {
   const nodes: Array<VNode | VNode[]> = [];
   if (slots.header) {

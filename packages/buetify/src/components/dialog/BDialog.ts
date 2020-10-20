@@ -1,3 +1,4 @@
+import 'bulma/sass/components/modal.sass';
 import './dialog.sass';
 import { head } from 'fp-ts/lib/Array';
 import { pipe } from 'fp-ts/lib/function';

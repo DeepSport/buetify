@@ -6,7 +6,7 @@
 <script lang="ts">
 import BTable from 'buetify/lib/components/table/BTable';
 import { BTableColumn } from 'buetify/lib/components/table/shared';
-import { defineComponent, shallowRef } from 'vue';
+import { defineComponent } from 'vue';
 import { people, Person } from '../../../shared/data';
 
 const rows: Person[] = people.slice(0, 5);

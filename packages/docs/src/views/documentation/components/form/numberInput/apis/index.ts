@@ -1,12 +1,4 @@
 import { ComponentApiDescription } from '../../../../../../components/apiView';
-import {
-	ColorVariantPropApi,
-	EqPropApi,
-	getBooleanPropsApi,
-	getUseStaticInputPropsApi,
-	SizeVariantPropApi
-} from '../../../../shared/api';
-
 export const apis: ComponentApiDescription[] = [
 	{
 		title: 'Input',
@@ -17,14 +9,6 @@ export const apis: ComponentApiDescription[] = [
 				type: 'String, Number',
 				values: '—',
 				default: '—',
-				required: 'false'
-			},
-			{
-				name: '<code>type</code>',
-				description: 'Input type, like native',
-				type: 'String',
-				values: 'Any native input type, and <code>textarea</code>',
-				default: '<code>text</code>',
 				required: 'false'
 			},
 			{
@@ -44,14 +28,6 @@ export const apis: ComponentApiDescription[] = [
 				required: 'false'
 			},
 			{
-				name: '<code>use-password-reveal</code>',
-				description: 'Add the reveal password functionality',
-				type: 'Boolean',
-				values: '—',
-				default: '<code>false</code>',
-				required: 'false'
-			},
-			{
 				name: '<code>is-loading</code>',
 				description: 'Add the loading state to the input',
 				type: 'Boolean',
@@ -65,22 +41,6 @@ export const apis: ComponentApiDescription[] = [
 				type: 'Function',
 				values: '—',
 				default: '—',
-				required: 'false'
-			},
-			{
-				name: '<code>maxlength</code>',
-				description: 'Same as native <code>maxlength</code>, plus character counter',
-				type: 'Number',
-				values: '—',
-				default: '—',
-				required: 'false'
-			},
-			{
-				name: '<code>has-counter</code>',
-				description: 'Show character counter when <code>maxlength</code> prop is passed',
-				type: 'Boolean',
-				values: '—',
-				default: '<code>true</code>',
 				required: 'false'
 			},
 			{

@@ -1,3 +1,4 @@
+import 'bulma/sass/components/modal.sass';
 import './dialog.sass';
 import { useThemePropsDefinition, useTheme } from '../../composables/theme';
 import { SizeVariant } from '../../types/SizeVariants';

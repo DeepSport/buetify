@@ -1,3 +1,5 @@
+import 'bulma/sass/components/card.sass';
+import '../../sass/helpers/animations.sass';
 import './accordion.sass';
 import { defineComponent, h, Slots, Ref, vShow, withDirectives } from 'vue';
 import { DefaultThemePropsDefinition, useTheme } from '../../composables/theme';

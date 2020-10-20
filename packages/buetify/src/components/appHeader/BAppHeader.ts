@@ -1,4 +1,5 @@
 import './app-header.sass';
+import '../../sass/helpers/flex-helpers.sass';
 import { isSome } from 'fp-ts/lib/Option';
 import { SetupContext, h, Slots } from 'vue';
 import BNavbarBurger from '../navbar/BNavbarBurger';
