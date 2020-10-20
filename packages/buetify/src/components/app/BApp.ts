@@ -62,9 +62,9 @@ function generateBodyContent(
             withDirectives(generateSidebarSlot(slots, !!slots.header, currentRoute, sidebar), [
               [vShow, sidebar.isVisible.value]
             ]),
-            h('div', { class: 'b-app-content' }, slots.default!(sidebar))
+            h('div', { class: 'b-app-content' }, slots.default && slots.default(sidebar))
           ]
-        : [h('div', { class: 'b-app-content' }, slots.default!(sidebar))]
+        : [h('div', { class: 'b-app-content' }, slots.default && slots.default(sidebar))]
     )
   );
   return nodes;
@@ -126,7 +126,7 @@ export default defineComponent({
         )
       );
 
-      return h('div', nodes);
+      return h('div', { class: 'b-notices-container' }, nodes);
     };
   }
 });
