@@ -1,7 +1,4 @@
 @import '../../sass/helpers/functions'
-@import '../../sass/helpers/animations'
-@import '../../sass/helpers/height-width-helpers'
-@import '../../sass/helpers/cursor-helpers'
 
 $table-cell-border: 1px solid $grey-lighter !default
 $table-cell-border-width: 0 0 1px !default
@@ -103,7 +100,7 @@ $all-colors: mergeColorMaps($colors, $shades)
 			border-color: $grey
 			font-weight: $weight-bold
 		&.is-sortable:hover
-			border-color: $grey
+			border-color: $grey-dark
 		&.is-sortable,
 		&.is-sortable .th-wrap
 			cursor: pointer
@@ -360,6 +357,9 @@ $all-colors: mergeColorMaps($colors, $shades)
 			height: 2em
 			border-width: 0.25em
 			z-index: 1
+
+.b-column-delete
+	margin-left: 0.5rem
 
 .table-container
 	@extend %block

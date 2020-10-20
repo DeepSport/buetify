@@ -1,3 +1,5 @@
+import '../../../sass/helpers/animations.sass';
+import '../sass/form.sass';
 import './switch.sass';
 import { useSelectionControl } from '../shared/useSelectionControl';
 

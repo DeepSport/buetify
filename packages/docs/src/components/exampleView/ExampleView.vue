@@ -40,7 +40,7 @@ export default defineComponent({
 			default: false
 		}
 	},
-	setup(props, { slots }) {
+	setup(props) {
 		return {
 			slug: useSlug(computed(() => props.title || ''))
 		};

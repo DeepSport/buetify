@@ -1,3 +1,4 @@
+import '../sass/form.sass';
 import './radio.sass';
 import { useSelectionControl } from '../shared/useSelectionControl';
 

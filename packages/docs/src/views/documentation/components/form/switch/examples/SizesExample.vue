@@ -24,7 +24,7 @@
 </template>
 <script lang="ts">
 import { BSwitch } from 'buetify/lib/components';
-import { defineComponent, shallowRef } from 'vue';
+import { defineComponent } from 'vue';
 
 export default defineComponent({
 	name: 'checkbox-sizes-example',

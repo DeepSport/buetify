@@ -1,3 +1,4 @@
+import '../../sass/helpers/animations.sass';
 import './tooltip.sass';
 import { ColorVariant } from '../../types/ColorVariants';
 import { SizeVariant } from '../../types/SizeVariants';

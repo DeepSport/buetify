@@ -38,9 +38,12 @@ export type ProvideThemeProps = ExtractPropTypes<typeof ProvideThemePropDefiniti
 
 export function provideTheme(props: ProvideThemeProps) {
   const isThemeable = shallowRef(props.isThemeable);
-  watch(props, newProps => {
-    isThemeable.value = newProps.isThemeable;
-  });
+  watch(
+    () => props.isThemeable,
+    themeable => {
+      isThemeable.value = themeable;
+    }
+  );
   const currentTheme = shallowRef(some(persistentTheme));
   function setTheme(newTheme: ThemeVariant) {
     currentTheme.value = some(newTheme);

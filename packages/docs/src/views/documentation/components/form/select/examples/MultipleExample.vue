@@ -21,7 +21,7 @@
 <script lang="ts">
 import { BSelect } from 'buetify/lib/components';
 import BField from 'buetify/lib/components/form/field';
-import { defineComponent, shallowRef, computed, reactive } from 'vue';
+import { defineComponent, shallowRef, computed } from 'vue';
 import { people, Person } from '../../../../shared/data';
 
 export default defineComponent({

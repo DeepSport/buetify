@@ -1,3 +1,6 @@
+import '../../sass/helpers/animations.sass';
+import '../../sass/helpers/flex-helpers.sass';
+import '../../sass/helpers/padding-margin-helpers.sass';
 import './tabs.sass';
 import { lookup } from 'fp-ts/Array';
 import { pipe } from 'fp-ts/function';

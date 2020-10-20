@@ -13,12 +13,11 @@ Since the components are in such a high state of flux I have not invested the ti
 ### Main Differences
 * Written in Typescript
 * Uses only render functions to maximize type safety
-* Has light / dark theme functionality
 * Completely tree-shakeable and modular. Importing an individual component only imports the styling and code relating to that component. This comes at a cost of a more manual setup which will hopefully be mitigated by a vue-cli plugin in the future.
 * Greater emphasis on accessibility. This is by no means a finished product in terms of accessibility, but I think offers an improvement.
 
 ### Small Differences
-* Requires all components to be nested inside a `b-app` component for themes, notifications, and modals to work properly
+* Requires all components to be nested inside a `b-app` component for themes (in the future), notifications, and modals to work properly
 * Requires additional webpack config such that sass variables are prepended to all sass files. This prevents the need from importing all sass upfront.
 * Small differences in naming conventions, e.g. `variant` rather than `type` for color props
 * Icons need to be passed as vue components rather than strings. This was done to simplify how icons are handled. Default icons are provided.
@@ -62,10 +61,10 @@ module.exports = {
           'css-loader',
           {
             loader: 'sass-loader',
-            // Requires sass-loader@^8.0.0
+            // Requires sass-loader@^9.0.0
             options: {
               // This is the path to your variables
-              prependData: "@import '@/styles/variables.scss'"
+              additionalData: "@import '@/styles/variables.scss'"
             },
           },
         ],
@@ -79,10 +78,10 @@ module.exports = {
           'css-loader',
           {
             loader: 'sass-loader',
-            // Requires sass-loader@^8.0.0
+            // Requires sass-loader@^9.0.0
             options: {
               // This is the path to your variables
-              prependData: "@import '@/styles/variables.scss';"
+              additionalData: "@import '@/styles/variables.scss';"
             },
           },
         ],

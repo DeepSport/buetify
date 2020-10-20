@@ -1,5 +1,4 @@
 import { ComponentApiDescription } from '../../../../../components/apiView';
-import { getUseToggleEventsApi, getUseTogglePropsApi } from '../../../shared/api';
 
 export const apis: ComponentApiDescription[] = [
 	{
@@ -44,7 +43,7 @@ export const apis: ComponentApiDescription[] = [
 				required: 'false'
 			},
 			{
-				name: '<code>shouldQueue</code>',
+				name: '<code>should-queue</code>',
 				description: 'If should queue with others notices (snackbar/toast/notification)',
 				type: 'Boolean',
 				values: '—',

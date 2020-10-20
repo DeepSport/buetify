@@ -22,9 +22,9 @@
 import 'bulma/sass/components/breadcrumb.sass';
 import BContainer from 'buetify/lib/components/layout/container/BContainer';
 import BTitle from 'buetify/lib/components/title/BTitle';
-import { constant, pipe } from 'fp-ts/lib/function';
-import { fold, fromNullable, getOrElse, mapNullable, Option } from 'fp-ts/lib/Option';
-import { defineComponent, PropType, computed } from 'vue';
+import { pipe } from 'fp-ts/lib/function';
+import { fromNullable, getOrElse, mapNullable, Option } from 'fp-ts/lib/Option';
+import { defineComponent, computed } from 'vue';
 import { useRouter } from 'vue-router';
 import { BuetifyRouteMeta } from '../../../shared/types';
 import { constEmptyArray, constEmptyString } from '../../../shared/utils';
@@ -60,8 +60,6 @@ export default defineComponent({
 				getOrElse<string[]>(constEmptyArray)
 			)
 		);
-
-		console.log(meta, crumbs.value);
 
 		return {
 			title,

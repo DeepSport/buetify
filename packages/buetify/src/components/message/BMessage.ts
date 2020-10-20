@@ -1,3 +1,6 @@
+import 'bulma/sass/components/message.sass';
+import 'bulma/sass/elements/notification.sass';
+import '../../sass/helpers/animations.sass';
 import './message.sass';
 import { Message, useMessage, UseMessageProps, UseMessagePropsDefinition } from '../../composables/message';
 import { FadeTransitionPropsDefinition, useTransition } from '../../composables/transition';

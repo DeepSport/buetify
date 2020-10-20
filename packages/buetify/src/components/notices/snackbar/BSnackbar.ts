@@ -1,3 +1,4 @@
+import '../../../sass/helpers/animations.sass';
 import '../sass/notices.sass';
 import { defineComponent } from 'vue';
 import { SnackbarPropsDefinition, useSnackbar } from '../../../composables/snackbar';

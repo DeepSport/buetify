@@ -26,7 +26,6 @@ export const BSidebarPropsDefinition = {
     default: 'nav'
   },
   currentRoute: {
-    type: Object as PropType<object>,
     required: false
   }
 };
@@ -100,11 +99,17 @@ export default defineComponent({
       },
       { immediate: true }
     );
-    watch(toRef(props, 'currentRoute'), newVal => {
-      if (useSideDrawer.value) {
-        controller.hide();
+    watch(
+      toRef(props, 'currentRoute'),
+      newVal => {
+        if (useSideDrawer.value) {
+          controller.hide();
+        }
+      },
+      {
+        deep: false
       }
-    });
+    );
     return () => {
       if (useSideDrawer.value) {
         return generateMobileDrawer(props, controller, themeClasses.value, context);

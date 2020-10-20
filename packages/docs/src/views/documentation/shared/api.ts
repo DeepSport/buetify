@@ -1,4 +1,4 @@
-import { EventApiDescription, PropApiDescription, SlotApiDescription } from '../../../components/apiView';
+import { EventApiDescription, PropApiDescription } from '../../../components/apiView';
 
 export const ColorVariantPropApi: PropApiDescription = {
 	name: '<code>variant</code>',
@@ -53,7 +53,7 @@ export function getUseTogglePropsApi(statusName: string, defaultHasPopup = true)
 			required: 'false'
 		},
 		{
-			name: '<code>hasPopup</code>',
+			name: '<code>has-popup</code>',
 			description: 'Used to set <code>aria-haspopup</code> attribute',
 			type: 'Boolean',
 			values: '-',
@@ -130,10 +130,10 @@ export function getUseStaticInputPropsApi(): PropApiDescription[] {
 			default: '-',
 			required: 'false'
 		},
-		getBooleanPropsApi('isRounded', 'Use rounded input'),
-		getBooleanPropsApi('isExpanded', 'Expand input to take up all available space'),
-		getBooleanPropsApi('isLoading', 'Show loading indicator'),
-		getBooleanPropsApi('isRequired', 'Make input required', true),
+		getBooleanPropsApi('is-rounded', 'Use rounded input'),
+		getBooleanPropsApi('is-expanded', 'Expand input to take up all available space'),
+		getBooleanPropsApi('is-loading', 'Show loading indicator'),
+		getBooleanPropsApi('is-required', 'Make input required', true),
 		{
 			name: '<code>icon</code>',
 			description: 'Icon component to display in left icon position',
@@ -151,11 +151,11 @@ export function getUseStaticInputPropsApi(): PropApiDescription[] {
 			required: 'false'
 		},
 		getBooleanPropsApi(
-			'usePasswordReveal',
+			'use-password-reveal',
 			'Show toggle to make password visible to user, defaults to <code>true</code> if type is <code>password</code>, false otherwise',
 			false
 		),
-		getBooleanPropsApi('useNativeValidation', 'Use native platform input validation', true),
+		getBooleanPropsApi('use-native-validation', 'Use native platform input validation', true),
 		{
 			name: '<code>v-model:is-valid</code>',
 			description: 'Binding for <code>is-valid</code>',

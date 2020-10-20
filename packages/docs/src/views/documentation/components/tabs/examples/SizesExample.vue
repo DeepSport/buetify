@@ -33,7 +33,7 @@
 <script lang="ts">
 import BTabItem from 'buetify/lib/components/tabs/BTabItem';
 import BTabs from 'buetify/lib/components/tabs/BTabs';
-import { defineComponent, shallowRef } from 'vue';
+import { defineComponent } from 'vue';
 
 export default defineComponent({
 	name: 'tabs-sizes-example',

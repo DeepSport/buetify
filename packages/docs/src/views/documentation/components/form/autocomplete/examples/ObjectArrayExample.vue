@@ -16,9 +16,9 @@
 	</section>
 </template>
 <script lang="ts">
-import { BAutocomplete, BInput } from 'buetify/lib/components';
+import { BAutocomplete } from 'buetify/lib/components';
 import BField from 'buetify/lib/components/form/field';
-import { defineComponent, shallowRef, computed, reactive } from 'vue';
+import { defineComponent, shallowRef, computed } from 'vue';
 import SearchIcon from '../../../../../../components/icons/SearchIcon';
 import { people, Person } from '../../../../shared/data';
 

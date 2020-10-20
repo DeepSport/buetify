@@ -1,3 +1,4 @@
+import '../sass/form.sass';
 import './select.sass';
 import { Eq } from 'fp-ts/lib/Eq';
 import { getUseInputPropsDefinition, Input, useInput, UseInputProps } from '../../../composables/input/useInput';

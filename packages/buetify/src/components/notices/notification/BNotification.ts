@@ -1,3 +1,4 @@
+import '../../../sass/helpers/animations.sass';
 import '../sass/notices.sass';
 import { constant, FunctionN } from 'fp-ts/lib/function';
 import { IO } from 'fp-ts/lib/IO';

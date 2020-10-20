@@ -1,4 +1,3 @@
-import './tabs.sass';
 import { toUndefined } from 'fp-ts/lib/Option';
 import { defineComponent, h, inject, withDirectives, vShow, computed } from 'vue';
 import { BTabItemPropsDefinition, DEFAULT_TAB_INJECTION, TAB_ITEM_NAME, TABS_SYMBOL } from './shared';

@@ -65,7 +65,7 @@ export default defineComponent({
             icon,
             sortColumn.value.sortIndex + 1,
             h('button', {
-              class: 'delete is-small margin-left-size-8',
+              class: 'delete is-small b-column-delete',
               onClick: updateColumn
             })
           );

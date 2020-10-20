@@ -1,4 +1,4 @@
-<template>
++<template>
 	<section class="codeview">
 		<b-title v-if="title" class="codeview-title">{{ title }}</b-title>
 		<figure class="highlight" :class="classes">
@@ -22,7 +22,7 @@
 <script lang="ts">
 import { BButton, BTitle } from 'buetify/lib/components';
 import { getUseTogglePropsDefinition, useToggle } from 'buetify/lib/composables';
-import { defineComponent, computed, PropType as PType, shallowRef, reactive } from 'vue';
+import { defineComponent, computed, PropType as PType } from 'vue';
 import { useHighlightedCode } from '../../shared/composables/useHighlightedCode';
 import CodeIcon from '../icons/CodeIcon';
 import EyeSlashIcon from '../icons/EyeSlashIcon';

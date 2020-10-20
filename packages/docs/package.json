@@ -6,7 +6,7 @@
     "serve": "vue-cli-service serve",
     "build": "vue-cli-service build",
     "test:unit": "vue-cli-service test:unit",
-    "lint": "vue-cli-service lint"
+    "lint": "vue-cli-service lint src"
   },
   "dependencies": {
     "@fortawesome/fontawesome-svg-core": "1.2.25",
@@ -19,6 +19,7 @@
     "fp-ts-local-storage": "1.0.3",
     "highlight.js": "^10.2.0",
     "register-service-worker": "^1.7.1",
+    "serve": "^11.3.2",
     "vue": "^3.0.0",
     "vue-router": "^4.0.0-0"
   },
@@ -43,5 +44,14 @@
     "sass": "^1.27.0",
     "sass-loader": "^10.0.3",
     "typescript": "~3.9.7"
+  },
+  "gitHooks": {
+    "pre-commit": "lint-staged"
+  },
+  "lint-staged": {
+    "*.{ts,vue}": [
+      "vue-cli-service lint",
+      "git add"
+    ]
   }
 }

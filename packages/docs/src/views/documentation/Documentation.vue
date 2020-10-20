@@ -20,7 +20,7 @@
 import { BApp } from 'buetify/lib/components';
 import BHorizontalDivider from 'buetify/lib/components/layout/divider/BHorizontalDivider';
 import { defineComponent } from 'vue';
-import { useRoute, useRouter } from 'vue-router';
+import { useRouter } from 'vue-router';
 import BuetifyDocumentationNavbar from '../../components/buetifyNavbar/BuetifyDocumentationNavbar.vue';
 import BuetifyMenu from './menu/BuetifyMenu';
 import { DocumentationHeader } from './header';

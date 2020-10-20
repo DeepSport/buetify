@@ -1,3 +1,5 @@
+import '../../sass/helpers/border-helpers.sass';
+import '../../sass/helpers/height-width-helpers.sass';
 import './sheet.sass';
 import { h, defineComponent } from 'vue';
 import { DefaultThemePropsDefinition, useTheme } from '../../composables/theme';

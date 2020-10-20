@@ -50,7 +50,6 @@ import { faTachometerAlt } from '@fortawesome/free-solid-svg-icons/faTachometerA
 import { faUser } from '@fortawesome/free-solid-svg-icons/faUser';
 import { BButton } from 'buetify/lib/components';
 import { useFontAwesomeIconComponent } from 'buetify/lib/components/icons/utils';
-import { useToast } from 'buetify/lib/composables';
 import { defineComponent } from 'vue';
 
 const TachometerAltIcon = useFontAwesomeIconComponent('TachometerAlt', faTachometerAlt);
