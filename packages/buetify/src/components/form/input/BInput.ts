@@ -71,6 +71,7 @@ function getRightIcon(
 }
 
 function generateLeftIcon(icon: Component, size: SizeVariant): VNode {
+  // eslint-disable-next-line
   return h(icon as any, {
     class: 'is-left',
     size
@@ -84,7 +85,7 @@ function generateRightIcon(
   usePasswordReveal: boolean,
   passwordToggle: Toggle
 ): VNode {
-  console.log(usePasswordReveal);
+  // eslint-disable-next-line
   return h(icon as any, {
     class: ['is-right', { 'is-clickable': usePasswordReveal }],
     variant,

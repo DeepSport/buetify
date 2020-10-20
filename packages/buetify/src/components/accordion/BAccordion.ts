@@ -15,7 +15,7 @@ function generateTitle(slots: Slots) {
     {
       class: 'card-header-title'
     },
-    slots.title && slots.title!()
+    slots.title && slots.title()
   );
 }
 

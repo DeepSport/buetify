@@ -7,7 +7,7 @@ export const apis: ComponentApiDescription[] = [
 		props: [
 			getUseTransitionPropsApi('fade'),
 			{
-				name: '<code>isActive</code>',
+				name: '<code>is-active</code>',
 				description: 'Can be used by parent to open / close dialog',
 				type: 'Boolean',
 				values: '—',
