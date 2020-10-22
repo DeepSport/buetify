@@ -1,1 +1,0 @@
-{"version":3,"sources":["../../../../src/components/icons/adjust/index.ts"],"names":[],"mappings":"AAAA,OAAO,UAAP,MAAuB,cAAvB;AAEA,SAAS,UAAT;AAEA,eAAe,UAAf","sourcesContent":["import AdjustIcon from './AdjustIcon';\n\nexport { AdjustIcon };\n\nexport default AdjustIcon;\n"],"sourceRoot":"","file":"index.js"}

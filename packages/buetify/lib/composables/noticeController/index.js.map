@@ -1,1 +1,0 @@
-{"version":3,"sources":["../../../src/composables/noticeController/index.ts"],"names":[],"mappings":"AAAA,cAAc,2BAAd;AACA,cAAc,uBAAd","sourcesContent":["export * from './provideNoticeController';\nexport * from './useNoticeController';\n"],"sourceRoot":"","file":"index.js"}

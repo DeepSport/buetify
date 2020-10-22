@@ -1,1 +1,0 @@
-{"version":3,"sources":["../../../../src/components/layout/hero/index.ts"],"names":[],"mappings":"AAAA,OAAO,KAAP,MAAkB,SAAlB;AACA,OAAO,SAAP,MAAsB,aAAtB;AAEA,SAAS,KAAT,EAAgB,SAAhB","sourcesContent":["import BHero from './BHero';\nimport BHeroBody from './BHeroBody';\n\nexport { BHero, BHeroBody };\n"],"sourceRoot":"","file":"index.js"}

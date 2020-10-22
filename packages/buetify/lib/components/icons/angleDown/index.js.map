@@ -1,1 +1,0 @@
-{"version":3,"sources":["../../../../src/components/icons/angleDown/index.ts"],"names":[],"mappings":"AAAA,OAAO,aAAP,MAA0B,iBAA1B;AAEA,SAAS,aAAT;AAEA,eAAe,aAAf","sourcesContent":["import AngleDownIcon from './AngleDownIcon';\n\nexport { AngleDownIcon };\n\nexport default AngleDownIcon;\n"],"sourceRoot":"","file":"index.js"}

@@ -1,1 +1,0 @@
-{"version":3,"sources":["../../../src/composables/disable/index.ts"],"names":[],"mappings":"AAAA,cAAc,cAAd","sourcesContent":["export * from './useDisable';\n"],"sourceRoot":"","file":"index.js"}

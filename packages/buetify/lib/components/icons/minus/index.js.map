@@ -1,1 +1,0 @@
-{"version":3,"sources":["../../../../src/components/icons/minus/index.ts"],"names":[],"mappings":"AAAA,OAAO,SAAP,MAAsB,aAAtB;AAEA,SAAS,SAAT;AACA,eAAe,SAAf","sourcesContent":["import MinusIcon from './MinusIcon';\n\nexport { MinusIcon };\nexport default MinusIcon;\n"],"sourceRoot":"","file":"index.js"}

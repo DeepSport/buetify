@@ -1,1 +1,0 @@
-{"version":3,"sources":["../../../../src/components/form/switch/index.ts"],"names":[],"mappings":"AAAA,SAAS,OAAT,EAAkB,YAAlB,QAAsC,WAAtC;AAEA,eAAe,OAAf;AAEA,SAAS,OAAT,EAAkB,YAAlB","sourcesContent":["import { BSwitch, defineSwitch } from './BSwitch';\n\nexport default BSwitch;\n\nexport { BSwitch, defineSwitch };\n"],"sourceRoot":"","file":"index.js"}

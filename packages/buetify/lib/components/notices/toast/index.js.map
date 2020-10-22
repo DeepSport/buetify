@@ -1,1 +1,0 @@
-{"version":3,"sources":["../../../../src/components/notices/toast/index.ts"],"names":[],"mappings":"AAAA,OAAO,MAAP,MAAmB,UAAnB;AAEA,SAAS,MAAT;AAEA,eAAe,MAAf","sourcesContent":["import BToast from './BToast';\n\nexport { BToast };\n\nexport default BToast;\n"],"sourceRoot":"","file":"index.js"}

@@ -1,1 +1,0 @@
-{"version":3,"sources":["../../../../src/components/icons/utils/index.ts"],"names":[],"mappings":"AAAA,cAAc,+BAAd;AACA,cAAc,kCAAd","sourcesContent":["export * from './useFontAwesomeIconComponent';\r\nexport * from './useMaterialDesignIconComponent';\r\n"],"sourceRoot":"","file":"index.js"}

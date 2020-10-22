@@ -1,1 +1,0 @@
-{"version":3,"sources":["../../../../src/components/layout/box/index.ts"],"names":[],"mappings":"AAAA,OAAO,IAAP,MAAiB,QAAjB;AAEA,SAAS,IAAT;AAEA,eAAe,IAAf","sourcesContent":["import BBox from './BBox';\n\nexport { BBox };\n\nexport default BBox;\n"],"sourceRoot":"","file":"index.js"}

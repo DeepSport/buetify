@@ -1,1 +1,0 @@
-{"version":3,"sources":["../../../../src/components/form/select/index.ts"],"names":[],"mappings":"AAAA,cAAc,WAAd","sourcesContent":["export * from './BSelect';\n"],"sourceRoot":"","file":"index.js"}

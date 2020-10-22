@@ -1,1 +1,0 @@
-{"version":3,"sources":["../../../../src/components/notices/noticeContainer/index.ts"],"names":[],"mappings":"AAAA,OAAO,gBAAP,MAA6B,oBAA7B;AAEA,SAAS,gBAAT;AAEA,eAAe,gBAAf","sourcesContent":["import BNoticeContainer from './BNoticeContainer';\n\nexport { BNoticeContainer };\n\nexport default BNoticeContainer;\n"],"sourceRoot":"","file":"index.js"}

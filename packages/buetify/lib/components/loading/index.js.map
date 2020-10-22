@@ -1,1 +1,0 @@
-{"version":3,"sources":["../../../src/components/loading/index.ts"],"names":[],"mappings":"AAAA,OAAO,QAAP,MAAqB,YAArB;AAEA,SAAS,QAAT;AAEA,eAAe,QAAf","sourcesContent":["import BLoading from './BLoading';\n\nexport { BLoading };\n\nexport default BLoading;\n"],"sourceRoot":"","file":"index.js"}
