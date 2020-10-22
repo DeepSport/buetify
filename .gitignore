@@ -2,7 +2,7 @@
 node_modules
 packages/buetify/lib
 packages/buetify/lib-temp
-es5
+packages/docs/dist
 
 # local env files
 .env.local
