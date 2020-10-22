@@ -26,7 +26,8 @@ import {
   TransitionGroup,
   cloneVNode,
   withDirectives,
-  vShow
+  vShow,
+  ComponentOptions
 } from 'vue';
 
 import { BTabItemProps, TabInjection, TABS_SYMBOL } from './shared';
@@ -114,7 +115,7 @@ function useGenerateNavItem(props: BTabsProps, model: Model<number>, transition:
             { onClick: useOnTabItemClick(tab, index, model, transition) },
             tab.icon
               ? [
-                  h(tab.icon as any, {
+                  h(tab.icon as ComponentOptions, {
                     size: props.size
                   }),
                   tab.label

@@ -31,8 +31,8 @@ export function getUseModelPropsDefinition<
   T,
   ValueKey extends string = 'modelValue',
   UpdateKey extends string = 'onUpdate:modelValue'
+  // eslint-disable-next-line
 >(valueKey: ValueKey = 'modelValue' as ValueKey, updateKey: UpdateKey = 'onUpdate:modelValue' as UpdateKey): any {
-  // eslint-disable-line
   return {
     [valueKey]: null,
     [updateKey]: {

@@ -155,5 +155,5 @@ export function useFontAwesomeIconComponent(name: string, iconDefinition: any) {
     setup(props) {
       return () => h(BIcon, props, () => h(icon, { class: [props.iconClass, SIZE_MAP[props.size]] }));
     }
-  }) as any;
+  }) as any; // eslint-disable-line
 }

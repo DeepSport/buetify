@@ -64,7 +64,6 @@ export function getUseInputPropsDefinition<T>() {
 }
 
 export type UseInputProps<T> = UseModelProps<T> & StaticInputProps;
-
 function getIconSize(size?: SizeVariant) {
   switch (size) {
     case 'is-small':
@@ -78,7 +77,7 @@ function getMessageVariant(variant: undefined | AllColorsVariant | Partial<{ [K 
   if (isString(variant)) {
     return variant;
   } else if (isObject(variant)) {
-    return Object.values(variant)[0] as any;
+    return Object.values(variant)[0] as any; // eslint-disable-line
   } else {
     return undefined;
   }

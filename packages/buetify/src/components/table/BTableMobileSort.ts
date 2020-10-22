@@ -1,13 +1,15 @@
 import { IO } from 'fp-ts/IO';
 import { FunctionN } from 'fp-ts/lib/function';
-import { BSelect } from '../form/select/BSelect';
+import { defineSelect } from '../form/select/BSelect';
 import VerticalExpansionIcon from '../icons/verticalExpansion/VerticalExpansionIcon';
 import { useInjectedSortableTable } from './composables/useSortableTable';
-import { BTableColumn, SortType } from './shared';
+import { BTableColumn, eqBTableColumn, SortType } from './shared';
 import { head } from 'fp-ts/lib/Array';
-import { map, toNullable } from 'fp-ts/lib/Option';
+import { toUndefined } from 'fp-ts/lib/Option';
 import { pipe } from 'fp-ts/lib/pipeable';
 import { VNode, defineComponent, h } from 'vue';
+
+const SelectBTableColumn = defineSelect<BTableColumn>(eqBTableColumn);
 
 function generateSortDirectionButton(sortType: SortType, toggleSortType: IO<void>): VNode {
   return h('div', { class: 'control' }, [
@@ -31,19 +33,14 @@ function generateBSelect(
   placeholder: string | undefined,
   sortableColumns: BTableColumn[],
   sortBy: BTableColumn[],
-  setSortColumn: FunctionN<[string], void>
+  setSortColumn: FunctionN<[BTableColumn], void>
 ): VNode {
-  return h(BSelect, {
+  return h(SelectBTableColumn, {
     placeholder,
     items: sortableColumns,
     itemKey: 'label',
-    itemValue: 'label',
     itemText: 'label',
-    modelValue: pipe(
-      head(sortBy),
-      map(column => column.label),
-      toNullable
-    ),
+    modelValue: pipe(head(sortBy), toUndefined),
     isExpanded: true,
     'onUpdate:modelValue': setSortColumn
   });
@@ -63,6 +60,12 @@ export default defineComponent({
       sorting.updateSortDirection();
     }
 
+    function updateSortColumn(column?: BTableColumn) {
+      if (column) {
+        sorting.updateSortColumn(column.label);
+      }
+    }
+
     return () => {
       return h(
         'section',
@@ -72,12 +75,7 @@ export default defineComponent({
         },
         [
           h('div', { class: 'field has-addons' }, [
-            generateBSelect(
-              props.placeholder,
-              sorting.sortableColumns.value,
-              sorting.sortBy.value,
-              sorting.updateSortColumn
-            ),
+            generateBSelect(props.placeholder, sorting.sortableColumns.value, sorting.sortBy.value, updateSortColumn),
             generateSortDirectionButton(sorting.sortType.value, toggleSortDirection)
           ])
         ]

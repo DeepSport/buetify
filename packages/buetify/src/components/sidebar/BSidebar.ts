@@ -101,7 +101,7 @@ export default defineComponent({
     );
     watch(
       toRef(props, 'currentRoute'),
-      newVal => {
+      () => {
         if (useSideDrawer.value) {
           controller.hide();
         }

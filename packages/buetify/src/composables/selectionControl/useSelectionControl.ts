@@ -92,7 +92,7 @@ function getOnChange<T>(
   isMultiple: Ref<boolean>,
   eq: Ref<Eq<T>>
 ) {
-  return function onChange(e?: Event) {
+  return function onChange() {
     if (isDisabled.value) return;
     if (trueValue.value === undefined) return;
     const currentValue = value.value;
@@ -196,7 +196,7 @@ export function useSelectionControl<T>(
     }
   }
 
-  function onClick(e: MouseEvent) {
+  function onClick() {
     focus.focus();
   }
 

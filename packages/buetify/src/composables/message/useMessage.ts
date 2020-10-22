@@ -1,12 +1,12 @@
 import { constant } from 'fp-ts/lib/function';
-import { defineAsyncComponent, PropType, ExtractPropTypes, Component, computed } from 'vue';
+import { defineAsyncComponent, PropType, ExtractPropTypes, ComponentOptions, FunctionalComponent, computed } from 'vue';
 import { AllColorsVariant } from '../../types/ColorVariants';
 import { getUseTogglePropsDefinition, useToggle } from '../toggle';
 
 export type MessageSize = 'is-small' | 'is-medium' | 'is-large' | '';
 
 export type MessageIcons = {
-  [K in AllColorsVariant]: Component;
+  [K in AllColorsVariant]: ComponentOptions | FunctionalComponent;
 };
 
 const DEFAULT_MESSAGE_ICONS: Partial<MessageIcons> = {
@@ -64,7 +64,7 @@ export const UseMessagePropsDefinition = {
     default: constant(DEFAULT_MESSAGE_ICONS)
   },
   icon: {
-    type: Object as PropType<Component>
+    type: [Object, Function] as PropType<ComponentOptions | FunctionalComponent>
   }
 };
 

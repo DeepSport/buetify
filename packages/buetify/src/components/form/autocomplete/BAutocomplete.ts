@@ -8,8 +8,16 @@ import { getUseModelPropsDefinition } from '../../../composables/model/useModel'
 import { useProxy } from '../../../composables/proxy';
 import { getEqPropsDefinition } from '../../../composables/shared';
 import { useThemePropsDefinition } from '../../../composables/theme';
-import { Toggle } from '../../../composables/toggle';
-import { constEmptyArray, Extractor, extractProp, toggleListItem } from '../../../utils/helpers';
+import {
+  constEmptyArray,
+  Extractor,
+  extractProp,
+  isFunction,
+  isHTMLElement,
+  isObject,
+  isString,
+  toggleListItem
+} from '../../../utils/helpers';
 import { DropdownThemeMap } from '../../dropdown';
 import BDropdown from '../../dropdown/BDropdown';
 import { isArrowDownEvent, isArrowUpEvent, isEnterEvent, isEscEvent, isTabEvent } from '../../../utils/eventHelpers';
@@ -44,11 +52,28 @@ export interface AutocompleteItem<T> {
   index: number;
 }
 
-function getActiveDescendentId<T>(selectedItems: T[], itemId: keyof T | ((item: T) => string)): string | undefined {
+function getActiveDescendentId<T>(
+  selectedItems: T[],
+  itemId: keyof T | ((item: T) => string) | string
+): string | undefined {
   return pipe(
     selectedItems,
     head,
-    map(item => extractProp(itemId as any, item) as any),
+    chain(item => {
+      if (isString(item) && isFunction(itemId)) {
+        const id = extractProp(itemId, item);
+        return isString(id) ? some(id) : none;
+      }
+      if (isString(item)) {
+        return some(item);
+      }
+      if (isString(itemId) && isObject(item) && Object.hasOwnProperty.call(item, itemId as string)) {
+        const id = item[itemId as keyof T];
+        return isString(id) ? some(id) : none;
+      }
+      const id = extractProp(itemId as Extractor<T>, item);
+      return isString(id) ? some(id) : (none as Option<string>);
+    }),
     toUndefined
   );
 }
@@ -61,19 +86,24 @@ function getAutocompleteItems<T>(
   eq: Eq<T>,
   hoveredItem: Option<AutocompleteItem<T>>
 ): AutocompleteItem<T>[] {
-  return items.map((item, index) => ({
-    id: extractProp(itemId as any, item) as any,
-    isSelected: selectedItems.some(i => eq.equals(i, item)),
-    isHovered: isSome(hoveredItem) ? hoveredItem.value.id === (extractProp(itemId as any, item) as any) : false,
-    text: extractProp(itemText as any, item) as any,
-    value: item,
-    index
-  }));
+  return items.map((item, index) => {
+    const id = extractProp(itemId, item);
+    const nid = isString(id) ? id : String(id);
+    const text = extractProp(itemText, item);
+    return {
+      id: nid,
+      isSelected: selectedItems.some(i => eq.equals(i, item)),
+      isHovered: isSome(hoveredItem) ? hoveredItem.value.id === nid : false,
+      text: isString(text) ? text : String(text),
+      value: item,
+      index
+    };
+  });
 }
 
 interface GetSetSelectedProps<T> {
   eq: Eq<T>;
-  itemText: any;
+  itemText: Extractor<T>;
   clearOnSelect: boolean;
   closeOnSelect: boolean;
 }
@@ -86,7 +116,8 @@ function getSetSelected<T>(
 ): SetSelected<T> {
   const toggle = toggleListItem(props.eq);
   return (item: AutocompleteItem<T>) => {
-    inputModel.value = props.clearOnSelect ? '' : (extractProp(props.itemText, item.value) as any);
+    const text = extractProp(props.itemText, item.value);
+    inputModel.value = props.clearOnSelect ? '' : isString(text) ? text : String(text);
     selectedItemsModel.value = toggle(item.value, selectedItemsModel.value || []);
     if (props.closeOnSelect) {
       closeDropdown();
@@ -182,8 +213,10 @@ function getGenerateItem<T>(
       BDropdownItem,
       {
         key: item.id,
-        ref: (el: any) => {
-          itemsRef.value[index] = el;
+        ref: (el: unknown) => {
+          if (isHTMLElement(el)) {
+            itemsRef.value[index] = el;
+          }
         },
         id: item.id,
         isActive: item.isSelected,
@@ -254,11 +287,11 @@ function defineAutocomplete<T>() {
         required: false
       },
       itemId: {
-        type: [String, Function] as PropType<keyof T | ((item: T) => string)>,
+        type: [String, Function] as PropType<Extractor<T>>,
         default: 'id'
       },
       itemText: {
-        type: [String, Function] as PropType<keyof T | ((item: T) => string)>,
+        type: [String, Function] as PropType<Extractor<T>>,
         default: 'text'
       },
       closeOnSelect: {
@@ -305,19 +338,21 @@ function defineAutocomplete<T>() {
         dropdown.value && dropdown.value.toggle.setOff();
       }
       const hoveredItem = shallowRef(none as Option<AutocompleteItem<T>>);
-      const activeDescendentId = computed(() => getActiveDescendentId(props.selectedItems, props.itemId as any));
+      const activeDescendentId = computed(() =>
+        getActiveDescendentId(props.selectedItems, props.itemId as Extractor<T>)
+      );
       const autocompleteItems = computed(() =>
         getAutocompleteItems(
           filteredItems.value,
           selectedItems.value,
-          props.itemId as any,
-          props.itemText as any,
+          props.itemId as Extractor<T>,
+          props.itemText as Extractor<T>,
           props.eq,
           hoveredItem.value
         )
       );
       const numberOfItems = computed(() => autocompleteItems.value.length);
-      const setSelected = getSetSelected(props, close, searchValue, selectedItems);
+      const setSelected = getSetSelected(props as GetSetSelectedProps<T>, close, searchValue, selectedItems);
       const setHovered = getSetHovered(hoveredItem, itemsRef);
       const onKeydown = getOnKeydown(autocompleteItems, hoveredItem, close, setSelected, setHovered);
       const generateItem = getGenerateItem(itemsRef, numberOfItems, onKeydown, setSelected, setHovered, slots);
@@ -330,7 +365,7 @@ function defineAutocomplete<T>() {
             class: ['b-autocomplete', { 'is-expanded': props.isExpanded }]
           },
           {
-            trigger: (toggle: Toggle) => {
+            trigger: () => {
               return h(BInput, {
                 modelValue: searchValue.value,
                 type: 'text',
@@ -381,4 +416,4 @@ function defineAutocomplete<T>() {
   });
 }
 
-export const BAutocomplete = defineAutocomplete<any>();
+export const BAutocomplete = defineAutocomplete<unknown>();

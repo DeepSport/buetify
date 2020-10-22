@@ -1,17 +1,15 @@
 import './divider.sass';
 import { DEFAULT_THEME_COLOR_MAP, useTheme } from '../../../composables/theme';
-import { Classes, mergeClasses } from '../../../utils/mergeClasses';
-import { h, SetupContext } from 'vue';
+import { h } from 'vue';
 import { BDividerProps } from './BHorizontalDivider';
 
-export default function BVerticalDivider(props: BDividerProps, { attrs }: SetupContext) {
+export default function BVerticalDivider(props: BDividerProps) {
   const { themeClasses } = useTheme({
     themeMap: props.themeMap ?? DEFAULT_THEME_COLOR_MAP,
     isThemeable: props.isThemeable ?? true
   });
-  attrs.class = mergeClasses(attrs.class as Classes, ['is-divider-vertical', ...themeClasses.value]);
-  if (props.text) {
-    attrs['data-content'] = props.text;
-  }
-  return h(props.tag ?? 'div', attrs);
+  return h(props.tag ?? 'hr', {
+    class: ['is-divider-vertical', ...themeClasses.value],
+    'data-content': props.text || null
+  });
 }

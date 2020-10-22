@@ -51,7 +51,7 @@ export function usePagination<T>(props: UsePaginationProps) {
       model.modelValue.value = nextPage.value;
     }
   }
-  function previous(e: Event) {
+  function previous() {
     if (hasPrevious.value) {
       model.modelValue.value = previousPage.value;
     }

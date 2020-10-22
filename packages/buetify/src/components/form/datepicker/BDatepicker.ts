@@ -7,7 +7,6 @@ import { useEqRef } from '../../../composables/eqRef';
 import { useFieldData } from '../../../composables/fieldData';
 import { getUseInputPropsDefinition } from '../../../composables/input/useInput';
 import { useProxy } from '../../../composables/proxy/useProxy';
-import { Toggle } from '../../../composables/toggle';
 import { DateEvent, DEFAULT_DAY_NAMES, DEFAULT_MONTH_NAMES, EventIndicator, MonthNumber } from './shared';
 import { addDays, eqSerialDate, isDate, WeekdayNumber } from './utils';
 import { BInput } from '../input/BInput';
@@ -37,7 +36,8 @@ import {
   defineAsyncComponent,
   defineComponent,
   h,
-  Component,
+  ComponentOptions,
+  FunctionalComponent,
   ExtractPropTypes,
   shallowRef,
   SetupContext,
@@ -48,6 +48,8 @@ import {
 import { constEmptyArray, isString, toggleListItem } from '../../../utils/helpers';
 
 type Dropdown = InstanceType<typeof BDropdown>;
+
+type Component = ComponentOptions | FunctionalComponent;
 
 export type DatepickerPosition = 'is-top-right' | 'is-top-left' | 'is-bottom-left';
 
@@ -209,7 +211,7 @@ function parseInputString(str: string): Date[] {
   return splits.map(s => new Date(s)).filter(d => isDate(d) && !isNaN(d.getTime()));
 }
 
-function generateInput(props: BDatepickerProps, context: SetupContext, data: BDatepickerData, toggle?: Toggle): VNode {
+function generateInput(props: BDatepickerProps, context: SetupContext, data: BDatepickerData): VNode {
   const isMobile = useNative(props);
   return h(BInput, {
     max: props.maxDate ? useFormattedDate(props.maxDate) : null,
@@ -255,7 +257,7 @@ function generateButton(props: BDatepickerProps, data: BDatepickerData, isNext: 
       }
     },
     [
-      h(isNext ? props.icons.next : (props.icons.previous as any), {
+      h(isNext ? props.icons.next : props.icons.previous, {
         variant: 'is-link',
         isThemeable: false
       })
@@ -370,8 +372,8 @@ function generateDropdown(
       isInline: props.isInline
     },
     {
-      trigger: (toggle: Toggle) => {
-        return generateInput(props, context, data, toggle);
+      trigger: () => {
+        return generateInput(props, context, data);
       },
       default: () => generateDatepickerBody(props, context, data)
     }

@@ -165,9 +165,9 @@ export function isEmptyString(str: string): boolean {
 }
 
 // eslint-disable-next-line
-export type Result<T, P> = P extends keyof T ? T[P] : P extends (item: T) => any ? ReturnType<P> : T;
+export type Result<T, P> = P extends keyof T ? T[P] : P extends (item: T) => any ? ReturnType<P> : never;
 // eslint-disable-next-line
-export type Extractor<T> = string | ((item: T) => any);
+export type Extractor<T> = keyof T | ((item: T) => any);
 
 function prop<T extends object, K extends keyof T>(key: K, obj: T): T[K] {
   return obj[key];

@@ -14,7 +14,7 @@ function generateMainSlot(injection: SidebarController, includeClickHandler: boo
         ? { onClick: injection.listeners.value.value.onClick }
         : {})
     },
-    slots.default!()
+    slots.default && slots.default()
   );
 }
 
@@ -30,7 +30,7 @@ function generateNavigationButton(injection: SidebarController, slots: Slots) {
       'aria-label': 'Toggle navigation pane'
     },
     slots.trigger
-      ? slots.trigger!({ isVisible: injection.isVisible.value })
+      ? slots.trigger({ isVisible: injection.isVisible.value })
       : h(BNavbarBurger, { tag: 'span', isActive: injection.isVisible.value })
   );
 }

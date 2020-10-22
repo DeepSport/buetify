@@ -6,7 +6,7 @@ import { deepEqual } from '../../utils/helpers';
 
 export type Remove = IO<void>;
 
-const eqDeep: Eq<any> = fromEquals(deepEqual);
+const eqDeep: Eq<unknown> = fromEquals(deepEqual);
 
 export function getEqPropsDefinition<T>(eq: Eq<T> = eqDeep) {
   return {

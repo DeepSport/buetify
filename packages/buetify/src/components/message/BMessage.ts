@@ -11,7 +11,7 @@ function generateBody(props: UseMessageProps, context: SetupContext, message: Me
   if (!!message.icon.value && props.useIcon) {
     nodes.push(
       h('div', { class: 'media-left' }, [
-        h(message.icon.value as any, {
+        h(message.icon.value, {
           size: message.iconSize.value,
           variant: props.variant,
           class: props.variant

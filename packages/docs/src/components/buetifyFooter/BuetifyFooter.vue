@@ -16,6 +16,14 @@
 								>.
 							</small>
 						</p>
+						<p>
+							<small>
+								This site is powered by
+								<a class="has-text-link" target="_blank" rel="noopener" href="https://www.netlify.com"
+									>Netlify</a
+								>
+							</small>
+						</p>
 					</b-column>
 
 					<b-column>

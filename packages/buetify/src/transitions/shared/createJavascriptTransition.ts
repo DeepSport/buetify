@@ -1,40 +1,41 @@
-import { FunctionalComponent, SetupContext, h, Transition, TransitionGroup } from 'vue';
+import {
+  FunctionalComponent,
+  SetupContext,
+  h,
+  Transition,
+  TransitionGroup,
+  TransitionProps,
+  BaseTransitionProps,
+  TransitionGroupProps,
+  RendererElement
+} from 'vue';
 
-export interface JavascriptTransitionProps {
-  mode?: string;
-}
-
-export function createJavascriptTransition(
+export function createJavascriptTransition<Element = RendererElement>(
   name: string,
-  functions: Record<string, any>,
-  mode = 'in-out'
+  staticProps: BaseTransitionProps<Element>
 ): FunctionalComponent {
-  return (props: JavascriptTransitionProps, { attrs, slots }: SetupContext) => {
+  return (dynamicProps: TransitionProps, { slots }: SetupContext) => {
     return h(
-      Transition as any,
+      Transition,
       {
-        mode: props.mode ?? (mode as 'in-out' | 'out-in' | 'default'),
-        ...functions,
-        ...attrs
-      },
+        name,
+        ...staticProps,
+        ...dynamicProps
+      } as TransitionProps,
       slots.default
     );
   };
 }
 
-export function createJavascriptTransitionGroup(
-  name: string,
-  functions: Record<string, any>,
-  mode = 'in-out'
-): FunctionalComponent {
-  return (props: JavascriptTransitionProps, { attrs, slots }: SetupContext) => {
+export function createJavascriptTransitionGroup(name: string, staticProps: TransitionGroupProps): FunctionalComponent {
+  return (dynamicProps: TransitionGroupProps, { slots }: SetupContext) => {
     return h(
       TransitionGroup,
       {
-        mode: props.mode ?? mode,
-        ...functions,
-        ...attrs
-      },
+        name,
+        ...staticProps,
+        ...dynamicProps
+      } as TransitionGroupProps,
       slots.default
     );
   };

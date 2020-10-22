@@ -93,7 +93,8 @@ function generatePlaceholder<T>(props: BSelectProps<T>, context: SetupContext): 
   return h(
     'option',
     {
-      value: '',
+      value: null,
+      hidden: true,
       disabled: true,
       selected: true
     },
@@ -152,7 +153,7 @@ function generateSelect<T>(
         ref,
         required: props.isRequired,
         disabled: props.isDisabled,
-        size: props.displayCount,
+        // size: props.displayCount || null,
         multiple: isMultiple(props, input),
         class: themeClasses,
         onBlur: input.onBlur,
@@ -163,7 +164,7 @@ function generateSelect<T>(
         ? [generatePlaceholder(props, context), ...generateOptions(props, context, input)]
         : generateOptions(props, context, input)
     ),
-    [[vModelSelect, value]]
+    [[vModelSelect, value || null]]
   );
 }
 
@@ -188,7 +189,7 @@ export function defineSelect<T>(eq?: Eq<T>) {
 
         if (input.icon && input.icon.value) {
           nodes.push(
-            h(input.icon.value as any, {
+            h(input.icon.value, {
               class: 'is-left',
               size: input.size.value
             })

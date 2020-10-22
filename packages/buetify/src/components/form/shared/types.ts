@@ -1,4 +1,6 @@
-import { Component, defineAsyncComponent } from 'vue';
+import { FunctionalComponent, ComponentOptions, defineAsyncComponent } from 'vue';
+
+type Component = FunctionalComponent | ComponentOptions;
 
 export interface InputIcons {
   isSuccess: Component;

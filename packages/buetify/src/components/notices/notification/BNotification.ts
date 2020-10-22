@@ -22,7 +22,8 @@ import {
   withDirectives,
   SetupContext,
   vShow,
-  Component
+  ComponentOptions,
+  FunctionalComponent
 } from 'vue';
 import { constEmptyArray } from '../../../utils/helpers';
 
@@ -34,7 +35,7 @@ export const BNotificationPropsDefinition = {
     default: false
   },
   icon: {
-    type: Object as PropType<Component>
+    type: [Object, Function] as PropType<ComponentOptions | FunctionalComponent>
   }
 };
 
@@ -51,10 +52,9 @@ function generateCloseButton(
   });
 }
 
-function generateIcon(messageController: Message): VNode {
-  return h('div', { class: 'media-left' }, [
-    h(messageController.icon.value as any, { size: messageController.iconSize.value })
-  ]);
+function generateIcon(messageController: Message): VNode | undefined {
+  const icon = messageController.icon.value;
+  return icon ? h('div', { class: 'media-left' }, [h(icon, { size: messageController.iconSize.value })]) : undefined;
 }
 
 function generateNoticeContent(context: SetupContext, message?: string): VNode {

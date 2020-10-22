@@ -10,8 +10,8 @@ import BOverlay from '../overlay/BOverlay';
 import BDialogContent, { B_DIALOG_CONTENT_NAME } from './BDialogContent';
 import { defineComponent, VNode, shallowRef, h } from 'vue';
 
-function containsBDialogContent(node: any) {
-  const components = (isObject(node) && (node as any)?.type?.components) || {};
+function containsBDialogContent(node: any) { //eslint-disable-line
+  const components = (isObject(node) && (node as any)?.type?.components) || {}; // eslint-disable-line
   for (const k in components) {
     if (components[k]?.name === B_DIALOG_CONTENT_NAME) {
       return true;

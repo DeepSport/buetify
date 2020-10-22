@@ -16,7 +16,8 @@ import {
   toRefs,
   reactive,
   computed,
-  watchEffect
+  watchEffect,
+  TransitionProps
 } from 'vue';
 import { constEmptyArray } from '../../utils/helpers';
 
@@ -94,7 +95,9 @@ export default defineComponent({
       } else if (props.isFullscreen) {
         return undefined;
       } else {
-        return h(Transition as any, { name: props.transition }, () => (props.isActive ? render.value() : undefined));
+        return h(Transition, { name: props.transition } as TransitionProps, () =>
+          props.isActive ? render.value() : undefined
+        );
       }
     };
   }

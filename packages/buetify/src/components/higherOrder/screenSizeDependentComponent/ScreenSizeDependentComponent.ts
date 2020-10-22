@@ -1,16 +1,16 @@
 import { useWindowSize } from '../../../composables/windowSize';
-import { SetupContext, h, ConcreteComponent } from 'vue';
+import { SetupContext, h, ComponentOptions, FunctionalComponent } from 'vue';
 
 export interface ComponentsByBreakPoint {
-  mobile: ConcreteComponent;
-  tablet: ConcreteComponent;
-  desktop: ConcreteComponent;
-  widescreen: ConcreteComponent;
-  fullHD: ConcreteComponent;
+  mobile: ComponentOptions | FunctionalComponent;
+  tablet: ComponentOptions | FunctionalComponent;
+  desktop: ComponentOptions | FunctionalComponent;
+  widescreen: ComponentOptions | FunctionalComponent;
+  fullHD: ComponentOptions | FunctionalComponent;
 }
 
 export const ScreenSizeDependentComponent = (components: ComponentsByBreakPoint) => (
-  props: any,
+  props: any, // eslint-disable-line
   context: SetupContext
 ) => {
   const windowSize = useWindowSize();

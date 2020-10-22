@@ -22,7 +22,7 @@ export const BDatepickerTableRowPropsDefinition = {
     required: true as const
   },
   'onUpdate:focusedDate': {
-    type: Function as PropType<FunctionN<[Option<Date>], any>>,
+    type: Function as PropType<FunctionN<[Option<Date>], unknown>>,
     required: true as const
   },
   showWeekNumber: {

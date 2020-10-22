@@ -43,7 +43,7 @@ export function getThemeableFunctionalComponent({
       const themeInjection = inject(THEME_INJECTION_SYMBOL, DEFAULT_THEME_INJECTION);
       return () =>
         h(
-          props.tag as any,
+          props.tag as string,
           {
             class: isThemeable(props, themeInjection)
               ? mergeClasses(getThemeClasses(props.themeMap, themeInjection), cls)

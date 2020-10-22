@@ -17,11 +17,28 @@
 					<pre
 						class="npm margin-top-size-4"
 					><code><span class="is-unselectable">$ </span>yarn add buetify</code></pre>
+					<div class="margin-top-size-4">
+						<iframe
+							src="https://ghbtns.com/github-btn.html?user=kightlingerh&repo=buetify&type=star&count=true&size=large"
+							frameborder="0"
+							scrolling="0"
+							width="160px"
+							height="30px"
+						/>
+
+						<iframe
+							src="https://ghbtns.com/github-btn.html?user=kightlingerh&repo=buetify&type=fork&count=false&size=large"
+							frameborder="0"
+							scrolling="0"
+							width="80px"
+							height="30px"
+						/>
+					</div>
 					<router-link custom to="/documentation/start">
 						<template #default="{ href, navigate }">
 							<b-button
 								tag="a"
-								class="margin-top-size-1"
+								class="margin-top-size-4"
 								variant="is-primary"
 								size="is-large"
 								:href="href"

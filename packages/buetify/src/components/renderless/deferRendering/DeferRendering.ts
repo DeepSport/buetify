@@ -29,8 +29,8 @@ export const DeferRendering = defineComponent({
     }
     onMounted(checkRenderingStatus);
     return () => {
-      if (currentFrame.value >= props.frames) {
-        return slots.default!();
+      if (currentFrame.value >= props.frames && slots.default) {
+        return slots.default();
       } else {
         return undefined;
       }

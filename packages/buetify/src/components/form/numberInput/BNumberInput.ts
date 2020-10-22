@@ -95,7 +95,7 @@ function generateControl(props: BNumberInputProps, data: BNumberInputData, isDec
           onClick: isDecrement ? data.onDecrement : data.onIncrement
         },
         () =>
-          h((isDecrement ? props.numberInputIcons.minus : props.numberInputIcons.plus) as any, {
+          h(isDecrement ? props.numberInputIcons.minus : props.numberInputIcons.plus, {
             size: props.size
           })
       )

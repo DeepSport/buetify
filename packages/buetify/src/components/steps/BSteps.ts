@@ -21,7 +21,8 @@ import {
   withDirectives,
   vShow,
   shallowReactive,
-  SetupContext
+  SetupContext,
+  ComponentOptions
 } from 'vue';
 import { BStepItemProps, StepInjection, STEPS_SYMBOL } from './shared';
 
@@ -125,7 +126,7 @@ function getGenerateNavItem(
               h(
                 'div',
                 { class: 'step-marker' },
-                step.icon ? h(step.icon as any, { size: props.size }) : step.step ?? `${index + 1}`
+                step.icon ? h(step.icon as ComponentOptions, { size: props.size }) : step.step ?? `${index + 1}`
               ), //eslint-disable-line
               h('div', { class: 'step-details' }, [h('span', { class: 'step-title' }, step.label)])
             ]

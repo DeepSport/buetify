@@ -19,7 +19,7 @@ function defaultConditional() {
 }
 
 function directive(e: PointerEvent, el: HTMLElement, binding: ClickOutsideDirectiveBinding): void {
-  const handler = typeof binding.value === 'function' ? binding.value : binding.value!.handler;
+  const handler = typeof binding.value === 'function' ? binding.value : binding.value.handler;
 
   const isActive = (typeof binding.value === 'object' && binding.value.closeConditional) || defaultConditional;
 
