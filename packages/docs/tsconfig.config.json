@@ -1,0 +1,12 @@
+{
+  "extends": "./tsconfig.json",
+  "compilerOptions": {
+    "target": "ES5",
+    "module": "CommonJS",
+    "types": [
+      "node",
+      "webpack-env"
+    ]
+  },
+  "include": ["vue.config.ts", "src/shims-vue.d.ts"]
+}
