@@ -3,9 +3,10 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "compile:config": "tsc --project tsconfig.config.json",
-    "serve": "yarn compile:config && vue-cli-service serve",
-    "build": "yarn compile:config && vue-cli-service build",
+    "clean": "find src -name \"*.js*\" -type f -delete",
+    "compile:config": "tsc --project tsconfig.config.json" ,
+    "serve": "yarn compile:config && vue-cli-service serve && yarn clean",
+    "build": "yarn compile:config && vue-cli-service build --modern && yarn clean",
     "test:unit": "vue-cli-service test:unit",
     "lint": "vue-cli-service lint src"
   },
@@ -40,7 +41,6 @@
     "eslint-plugin-vue": "^7.0.0-0",
     "prerender-spa-plugin": "^3.4.0",
     "prettier": "^1.19.1",
-    "puppeteer": "^5.3.1",
     "raw-loader": "^4.0.1",
     "sass": "^1.27.0",
     "sass-loader": "^10.0.3",

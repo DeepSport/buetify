@@ -3,6 +3,10 @@ import App from './App.vue';
 import './registerServiceWorker';
 import router from './router';
 
-createApp(App)
+const app = createApp(App)
 	.use(router)
-	.mount('#app');
+
+
+document.addEventListener('DOMContentLoaded', function () {
+	app.mount('#app');
+})
