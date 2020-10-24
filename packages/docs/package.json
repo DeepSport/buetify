@@ -3,12 +3,13 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "clean": "find src -name \"*.js*\" -type f -delete",
-    "compile:config": "tsc --project tsconfig.config.json" ,
-    "serve": "yarn compile:config && vue-cli-service serve && yarn clean",
-    "build": "yarn compile:config && vue-cli-service build --modern && yarn clean",
+    "serve": "vue-cli-service serve",
+    "prerender": "ts-node build/prerender",
+    "build": "vue-cli-service build && yarn prerender",
     "test:unit": "vue-cli-service test:unit",
-    "lint": "vue-cli-service lint src"
+    "lint": "vue-cli-service lint src",
+    "clean": "find src -name \"*.js*\" -type f -delete",
+    "compile:config": "tsc --project tsconfig.config.json"
   },
   "dependencies": {
     "@fortawesome/fontawesome-svg-core": "1.2.25",
@@ -24,6 +25,7 @@
     "vue-router": "4.0.0-beta.13"
   },
   "devDependencies": {
+    "@prerenderer/prerenderer": "^0.7.2",
     "@typescript-eslint/eslint-plugin": "^2.33.0",
     "@typescript-eslint/parser": "^2.33.0",
     "@vue/cli-plugin-babel": "4.5.8",
@@ -39,11 +41,13 @@
     "eslint": "^6.7.2",
     "eslint-plugin-prettier": "^3.1.3",
     "eslint-plugin-vue": "^7.0.0-0",
-    "prerender-spa-plugin": "^3.4.0",
+    "fs-extra": "^9.0.1",
+    "html-minifier": "^4.0.0",
     "prettier": "^1.19.1",
     "raw-loader": "^4.0.1",
     "sass": "^1.27.0",
     "sass-loader": "^10.0.3",
+    "ts-node": "^9.0.0",
     "typescript": "~3.9.7"
   },
   "gitHooks": {

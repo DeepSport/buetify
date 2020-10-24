@@ -1,6 +1,6 @@
 <template>
-  <router-view></router-view>
-  <buetify-footer class="has-background-white-bis padding-top-size-1"></buetify-footer>
+	<router-view></router-view>
+	<buetify-footer class="has-background-white-bis padding-top-size-1"></buetify-footer>
 </template>
 
 <script lang="ts">
@@ -11,9 +11,7 @@ export default defineComponent({
 	name: 'buetify',
 	components: {
 		BuetifyFooter
-	},
-  setup() {
-    onMounted(() => document.dispatchEvent(new Event('custom-render-trigger')))  }
+	}
 });
 </script>
 
