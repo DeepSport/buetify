@@ -21,7 +21,9 @@ module.exports = {
 					? path.resolve(__dirname, '../../node_modules/vue/dist/vue.runtime.esm-browser.js')
 					: path.resolve(__dirname, '../../node_modules/vue'),
 				'fp-ts/lib': 'fp-ts/es6/',
-				'io-ts/lib': 'io-ts/es6/'
+				'io-ts/lib': 'io-ts/es6/',
+				'buetify/src': path.resolve(__dirname, '../buetify/src/'),
+				'buetify/lib': path.resolve(__dirname, '../buetify/src/')
 			}
 		}
 	},
