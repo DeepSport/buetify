@@ -15,7 +15,7 @@ export const api: ComponentApiDescription[] = [
 				required: 'false'
 			},
 			{
-				name: '<code>isLoading</code>',
+				name: '<code>is-loading</code>',
 				description: 'Add the loading state to the button',
 				type: 'Boolean',
 				values: '—',
@@ -23,7 +23,7 @@ export const api: ComponentApiDescription[] = [
 				required: 'false'
 			},
 			{
-				name: '<code>isRounded</code>',
+				name: '<code>is-rounded</code>',
 				description: 'Rounded style',
 				type: 'Boolean',
 				values: '—',
@@ -31,7 +31,7 @@ export const api: ComponentApiDescription[] = [
 				required: 'false'
 			},
 			{
-				name: '<code>isOutlined</code>',
+				name: '<code>is-outlined</code>',
 				description: 'Outlined style',
 				type: 'Boolean',
 				values: '—',
@@ -39,7 +39,7 @@ export const api: ComponentApiDescription[] = [
 				required: 'false'
 			},
 			{
-				name: '<code>isFocused</code>',
+				name: '<code>is-focused</code>',
 				description: 'Focused style',
 				type: 'Boolean',
 				values: '—',
@@ -47,7 +47,7 @@ export const api: ComponentApiDescription[] = [
 				required: 'false'
 			},
 			{
-				name: '<code>isInverted</code>',
+				name: '<code>is-inverted</code>',
 				description: 'Inverted style',
 				type: 'Boolean',
 				values: '—',
@@ -55,7 +55,7 @@ export const api: ComponentApiDescription[] = [
 				required: 'false'
 			},
 			{
-				name: '<code>isHovered</code>',
+				name: '<code>is-hovered</code>',
 				description: 'Hovered style',
 				type: 'Boolean',
 				values: '—',
@@ -63,7 +63,7 @@ export const api: ComponentApiDescription[] = [
 				required: 'false'
 			},
 			{
-				name: '<code>isActive</code>',
+				name: '<code>is-active</code>',
 				description: 'Active style',
 				type: 'Boolean',
 				values: '—',
@@ -71,7 +71,7 @@ export const api: ComponentApiDescription[] = [
 				required: 'false'
 			},
 			{
-				name: '<code>isSelected</code>',
+				name: '<code>is-selected</code>',
 				description: 'Selected style',
 				type: 'Boolean',
 				values: '—',
@@ -79,7 +79,7 @@ export const api: ComponentApiDescription[] = [
 				required: 'false'
 			},
 			{
-				name: '<code>isExpanded</code>',
+				name: '<code>is-expanded</code>',
 				description: 'Button will be expanded (full-width)',
 				type: 'Boolean',
 				values: '—',
