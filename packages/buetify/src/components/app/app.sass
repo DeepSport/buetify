@@ -132,10 +132,11 @@ $all-colors: mergeColorMaps($colors, $shades) !default
 	&.has-navigation-drawer
 		+until-widescreen
 			.b-sidebar
-				position: absolute
+				height: 100%
+				position: fixed
 				top: 0
-				bottom: 0
-				height: auto
+				left: 0
+				overflow-y: scroll
 		+widescreen
 			.b-app-body-content
 				display: flex

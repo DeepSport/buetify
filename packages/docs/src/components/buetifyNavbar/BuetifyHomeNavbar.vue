@@ -4,7 +4,7 @@
 			<router-link to="/" custom>
 				<template #default="{ href, navigate}">
 					<b-navbar-item tag="a" :href="href" @click="navigate">
-						<b-title class="is-size-1 has-font-lobster has-text-centered">Buetify</b-title>
+						<b-title class="is-size-1 is-size-3-touch has-font-lobster has-text-centered">Buetify</b-title>
 					</b-navbar-item>
 				</template>
 			</router-link>

@@ -7,9 +7,7 @@
     "prerender": "ts-node build/prerender",
     "build": "vue-cli-service build && yarn prerender",
     "test:unit": "vue-cli-service test:unit",
-    "lint": "vue-cli-service lint src",
-    "clean": "find src -name \"*.js*\" -type f -delete",
-    "compile:config": "tsc --project tsconfig.config.json"
+    "lint": "vue-cli-service lint src"
   },
   "dependencies": {
     "@fortawesome/fontawesome-svg-core": "1.2.25",
