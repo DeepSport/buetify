@@ -3,7 +3,6 @@ node_modules
 packages/buetify/lib
 packages/buetify/lib-temp
 packages/docs/dist
-packages/docs/vue.config.js
 # local env files
 .env.local
 .env.*.local statu
