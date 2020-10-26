@@ -32,7 +32,14 @@ module.exports = {
             }
         },
         // @ts-ignore
-        plugins: isProduction ? [new prerender_spa_plugin_1.default(path_1.default.resolve(__dirname, 'dist'), Object.keys(documentation_1.meta))] : []
+        plugins: isProduction
+            ? [
+                new prerender_spa_plugin_1.default({
+                    staticDir: path_1.default.resolve(__dirname, 'dist'),
+                    routes: Object.keys(documentation_1.meta)
+                })
+            ]
+            : []
     },
     pwa: {
         workboxOptions: {

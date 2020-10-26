@@ -4,19 +4,10 @@
 			<router-link to="/" custom>
 				<template #default="{ href, navigate}">
 					<b-navbar-item tag="a" :href="href" @click="navigate">
-						<b-title class="is-size-1 has-font-lobster has-text-primary has-text-centered">Buetify</b-title>
+						<b-title class="is-size-1 is-size-3-touch has-font-lobster has-text-primary has-text-centered"
+							>Buetify</b-title
+						>
 					</b-navbar-item>
-				</template>
-			</router-link>
-			<router-link to="/documentation" custom>
-				<template #default="{ isActive, href, navigate }">
-					<a
-						:href="href"
-						@click="navigate"
-						class="navbar-item is-hidden-desktop"
-						:class="{ 'is-active': isActive }"
-						>Documentation</a
-					>
 				</template>
 			</router-link>
 			<a

@@ -9,7 +9,7 @@
 							Buetify
 						</h1>
 					</b-box>
-					<b-subtitle class="is-size-4">
+					<b-subtitle class="is-size-4 has-text-centered-touch">
 						<strong>Modular</strong> UI Components for
 						<strong><a href="https://v3.vuejs.org/" target="_blank" rel="noopener">Vue</a></strong> based on
 						<strong><a href="http://bulma.io/" target="_blank" rel="noopener">Bulma</a></strong>
@@ -79,6 +79,8 @@ export default defineComponent({
 <style lang="sass">
 .main-title
   font-size: 6rem
+  +touch
+    font-size: 4rem
 .main-box
   max-width: 30rem
   border-radius: $size-1
