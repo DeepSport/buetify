@@ -7,7 +7,8 @@
     "serve": "yarn compile:config && vue-cli-service serve",
     "build": "yarn compile:config && vue-cli-service build",
     "test:unit": "vue-cli-service test:unit",
-    "lint": "vue-cli-service lint src"
+    "lint": "vue-cli-service lint src",
+    "clean": "find src -type f -name '*.js*' -exec rm {} +"
   },
   "dependencies": {
     "@fortawesome/fontawesome-svg-core": "1.2.25",
