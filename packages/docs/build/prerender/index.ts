@@ -31,7 +31,7 @@ function main() {
 			staticDir: path.resolve(__dirname, '../../dist'),
 			renderer: new Renderer({
 				maxConcurrentRoutes: 1,
-				renderAfterTime: 10000
+				renderAfterDocumentEvent: 'networkidle0'
 			})
 		});
 		console.log('initializing prerenderer');
@@ -39,7 +39,7 @@ function main() {
 			.then(() => {
 				const routes = Object.keys(meta)
 				console.log('Routes: ', JSON.stringify(routes))
-				return prerenderer.renderRoutes(['/'])
+				return prerenderer.renderRoutes([''])
 			})
 			.then(renderedRoutes => {
 				console.log ('post processing routes');

@@ -4,8 +4,8 @@
   "private": true,
   "scripts": {
     "serve": "vue-cli-service serve",
-    "prerender": "ts-node build/prerender",
-    "build": "vue-cli-service build && yarn prerender",
+    "prerender": "ts-node --project tsconfig.build.json --log-error build/prerender/index.ts",
+    "build": "vue-cli-service build",
     "test:unit": "vue-cli-service test:unit",
     "lint": "vue-cli-service lint src"
   },
@@ -24,6 +24,7 @@
   },
   "devDependencies": {
     "@prerenderer/prerenderer": "^0.7.2",
+    "@prerenderer/renderer-puppeteer": "^0.2.0",
     "@typescript-eslint/eslint-plugin": "^2.33.0",
     "@typescript-eslint/parser": "^2.33.0",
     "@vue/cli-plugin-babel": "4.5.8",
