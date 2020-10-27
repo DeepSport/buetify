@@ -1,5 +1,8 @@
 <template>
 	<article>
+		<p class="is-hidden-desktop content padding-bottom-size-6">
+			<b>Note: </b>Tooltips will not work on touch devices
+		</p>
 		<example-view :code="SimpleExampleCode" is-vertical>
 			<template #component>
 				<simple-example></simple-example>
@@ -58,8 +61,13 @@ export default defineComponent({
 
 <style lang="sass">
 .b-tooltips
-  .b-tooltip:not(:last-child)
-    margin-right: .5em
+  display: flex
+  flex-direction: row
+  justify-content: flex-start
+  flex-wrap: wrap
   .b-tooltip
-    margin-bottom: .5em
+    margin-bottom: 1rem
+    inline-block: block
+    &:not(:last-child)
+      margin-right: .5em
 </style>

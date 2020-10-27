@@ -61,7 +61,7 @@ export const apis: ComponentApiDescription[] = [
 				required: 'false'
 			},
 			{
-				name: '<code>is-narrowed</code>',
+				name: '<code>is-narrow</code>',
 				description: 'Makes the cells narrower',
 				type: 'Boolean',
 				values: '—',

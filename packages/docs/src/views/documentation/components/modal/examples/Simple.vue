@@ -7,7 +7,7 @@
 				</b-button>
 			</template>
 			<template #default>
-				<b-box class="is-white-bis">
+				<b-box class="is-white-bis margin-size-3">
 					<p>
 						Lorem ipsum dolor sit amet, consectetur adipiscing elit. Fusce id fermentum quam. Proin
 						sagittis, nibh id hendrerit imperdiet, elit sapien laoreet elit

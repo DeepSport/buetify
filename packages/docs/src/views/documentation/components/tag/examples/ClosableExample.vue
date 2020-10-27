@@ -7,7 +7,7 @@
 		</div>
 		<div class="field">
 			<b-tag v-if="isActive.b" variant="is-success" is-closable close-variant="is-danger" @close="close('b')">
-				Colored closable tag label with colored closed icon
+				Success tag w/ danger close
 			</b-tag>
 		</div>
 
@@ -23,7 +23,7 @@
 		</div>
 		<div class="field">
 			<b-tag v-if="isActive.e" close-variant="is-danger" is-attached is-closable @close="close('e')">
-				Attached tag label with colored close type
+				Attached label with danger close
 			</b-tag>
 		</div>
 	</section>

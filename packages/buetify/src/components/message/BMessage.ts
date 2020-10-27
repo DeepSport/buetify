@@ -63,7 +63,9 @@ export default defineComponent({
   setup(props, context) {
     const message = useMessage(props);
     const transition = useTransition(props);
-    const showMessage = computed(() => message.isOn.value || (props.title === undefined && !!context.slots.title));
+    const showMessage = computed(
+      () => message.isOn.value || (props.title === undefined && context.slots.title === undefined)
+    );
     return () =>
       h(Transition, transition.value, () => (showMessage.value ? generateMessage(props, context, message) : undefined));
   }

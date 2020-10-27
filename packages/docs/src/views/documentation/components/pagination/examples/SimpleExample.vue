@@ -15,18 +15,18 @@
 					<b-select :items="sizes" v-model="size"> </b-select>
 				</b-field>
 			</b-field>
-			<b-field is-grouped is-grouped-multiline>
-				<p class="control">
-					<b-switch v-model="isSimple">
-						Simple
-					</b-switch>
-				</p>
-				<p class="control">
-					<b-switch v-model="isRounded">
-						Rounded
-					</b-switch>
-				</p>
-			</b-field>
+		</b-field>
+		<b-field is-grouped is-grouped-multiline class="padding-top-size-6">
+			<p class="control">
+				<b-switch v-model="isSimple">
+					Simple
+				</b-switch>
+			</p>
+			<p class="control">
+				<b-switch v-model="isRounded">
+					Rounded
+				</b-switch>
+			</p>
 		</b-field>
 		<p class="padding-top-size-6 has-text-centered"><b>Current Page: </b>{{ currentPage }}</p>
 		<b-horizontal-divider></b-horizontal-divider>

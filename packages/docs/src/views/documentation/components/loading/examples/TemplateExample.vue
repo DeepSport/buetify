@@ -12,7 +12,7 @@
 			Lorem ipsum dolor sit amet, consectetur adipiscing elit. Fusce id fermentum quam. Proin sagittis, nibh id
 			hendrerit imperdiet, elit sapien laoreet elit
 			<b-loading :is-fullscreen="isFullscreen" v-model:is-active="isLoading" can-cancel>
-				<b-box class="is-dark">
+				<b-box class="is-dark margin-size-3">
 					Please be patient and refrain from refreshing the page.
 				</b-box>
 			</b-loading>
