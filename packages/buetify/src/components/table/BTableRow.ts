@@ -1,6 +1,6 @@
 import { FunctionN } from 'fp-ts/lib/function';
-import { exists } from 'fp-ts/Option';
-import { pipe } from 'fp-ts/pipeable';
+import { exists } from 'fp-ts/lib/Option';
+import { pipe } from 'fp-ts/lib/pipeable';
 import { BCheckbox } from '../form/checkbox/BCheckbox';
 import { isString } from '../../utils/helpers';
 import { useInjectedVisibleColumns } from './composables/shared';

@@ -1,7 +1,7 @@
 import { findFirst, isEmpty, isNonEmpty, reverse, snoc, sortBy as sortBy_ } from 'fp-ts/lib/Array';
 import { fromCompare, Ord } from 'fp-ts/lib/Ord';
 import { Ordering } from 'fp-ts/lib/Ordering';
-import { alt, isNone, isSome, none } from 'fp-ts/Option';
+import { alt, isNone, isSome, none } from 'fp-ts/lib/Option';
 import { ExtractPropTypes, toRef, computed, Ref, watch, ComputedRef, shallowRef, provide, inject } from 'vue';
 import { constFalse, constVoid, FunctionN, pipe } from 'fp-ts/lib/function';
 import { PropType } from 'vue';

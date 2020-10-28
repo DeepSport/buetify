@@ -1,6 +1,6 @@
 import './steps.sass';
-import { lookup } from 'fp-ts/Array';
-import { pipe } from 'fp-ts/function';
+import { lookup } from 'fp-ts/lib/Array';
+import { pipe } from 'fp-ts/lib/function';
 import { getUseModelPropsDefinition, Model, useModel } from '../../composables/model';
 import { DefaultThemePropsDefinition, useTheme } from '../../composables/theme';
 import { ColorVariant } from '../../types/ColorVariants';

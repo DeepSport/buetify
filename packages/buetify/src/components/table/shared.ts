@@ -1,4 +1,4 @@
-import { FunctionN } from 'fp-ts/function';
+import { FunctionN } from 'fp-ts/lib/function';
 import { contramap, Eq, eqStrict, eqString } from 'fp-ts/lib/Eq';
 import { Ord } from 'fp-ts/lib/Ord';
 import { toggleListItem } from '../../utils/helpers';
