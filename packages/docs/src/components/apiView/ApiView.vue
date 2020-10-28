@@ -9,7 +9,7 @@
 			</router-link>
 			<b-tabs class="margin-top-size-6 api-tabs">
 				<b-tab-item v-if="api.props && api.props.length" label="Props">
-					<b-styled-table class="is-fullwidth">
+					<b-simple-table is-striped>
 						<thead>
 							<tr>
 								<th v-for="column in PropColumns" :key="column.label">{{ column.label }}</th>
@@ -24,10 +24,10 @@
 								></td>
 							</tr>
 						</tbody>
-					</b-styled-table>
+					</b-simple-table>
 				</b-tab-item>
 				<b-tab-item v-if="api.slots && api.slots.length" label="Slots">
-					<b-styled-table class="is-fullwidth">
+					<b-simple-table is-striped>
 						<thead>
 							<tr>
 								<th v-for="column in SlotColumns" :key="column.name">{{ column.label }}</th>
@@ -42,10 +42,10 @@
 								></td>
 							</tr>
 						</tbody>
-					</b-styled-table>
+					</b-simple-table>
 				</b-tab-item>
 				<b-tab-item v-if="api.events && api.events.length" label="Events">
-					<b-styled-table class="is-fullwidth">
+					<b-simple-table is-striped>
 						<thead>
 							<tr>
 								<th v-for="column in EventsColumns" :key="column.name" v-text="column.label"></th>
@@ -60,10 +60,10 @@
 								></td>
 							</tr>
 						</tbody>
-					</b-styled-table>
+					</b-simple-table>
 				</b-tab-item>
 				<b-tab-item v-if="api.methods && api.methods.length" label="Methods">
-					<b-styled-table class="is-fullwidth">
+					<b-simple-table is-striped>
 						<thead>
 							<tr>
 								<th v-for="column in MethodsColumns" :key="column.name" v-text="column.name"></th>
@@ -78,7 +78,7 @@
 								></td>
 							</tr>
 						</tbody>
-					</b-styled-table>
+					</b-simple-table>
 				</b-tab-item>
 			</b-tabs>
 		</section>
@@ -86,7 +86,8 @@
 </template>
 
 <script lang="ts">
-import { BStyledTable, BSubtitle, BTabItem, BTabs, BTitle } from 'buetify/lib/components';
+import { BSubtitle, BTabItem, BTabs, BTitle } from 'buetify/lib/components';
+import BSimpleTable from 'buetify/lib/components/table/BSimpleTable';
 import { defineComponent, computed, PropType } from 'vue';
 import { toSlug } from '../../shared/composables/useSlug';
 import { ComponentApiDescription } from './types';
@@ -126,7 +127,7 @@ const MethodsColumns: Column[] = [
 export default defineComponent({
 	name: 'api-view',
 	components: {
-		BStyledTable,
+		BSimpleTable,
 		BTitle,
 		BSubtitle,
 		BTabs,

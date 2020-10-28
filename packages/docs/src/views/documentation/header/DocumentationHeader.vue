@@ -9,18 +9,17 @@
 				</li>
 			</ul>
 		</nav>
-		<b-container>
+		<div>
 			<b-title>
 				{{ title }}
 			</b-title>
 			<p v-text="subtitle"></p>
-		</b-container>
+		</div>
 	</header>
 </template>
 
 <script lang="ts">
 import 'bulma/sass/components/breadcrumb.sass';
-import BContainer from 'buetify/lib/components/layout/container/BContainer';
 import BTitle from 'buetify/lib/components/title/BTitle';
 import { pipe } from 'fp-ts/lib/function';
 import { fromNullable, getOrElse, mapNullable, Option } from 'fp-ts/lib/Option';
@@ -33,7 +32,6 @@ import { meta } from '../index';
 export default defineComponent({
 	name: 'documentation-header',
 	components: {
-		BContainer,
 		BTitle
 	},
 	setup() {

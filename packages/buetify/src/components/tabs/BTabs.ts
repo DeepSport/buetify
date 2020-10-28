@@ -31,6 +31,7 @@ import {
 } from 'vue';
 
 import { BTabItemProps, TabInjection, TABS_SYMBOL } from './shared';
+
 import { TabsThemeMap } from './theme';
 
 export type TabsPosition = 'is-centered' | 'is-right' | '';

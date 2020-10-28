@@ -19,10 +19,14 @@ export const eqPopup: Eq<Popup> = eq.contramap(eqNumber, popup => popup.id);
 
 export const removePopup = removeListItem(eqPopup);
 
+const z = 999;
+
 let id = 0;
 
 function generatePopup(popup: Popup, index: number): VNode {
-  return h('div', { key: popup.id, style: { 'z-index': index + 1 } }, [h(transition, popup.transition, popup.render)]);
+  return h('div', { key: popup.id, style: { 'z-index': z + index + 1 } }, [
+    h(transition, popup.transition, popup.render)
+  ]);
 }
 
 const BPopupContainer = defineComponent({
@@ -50,7 +54,7 @@ const BPopupContainer = defineComponent({
         }, 250);
       };
     }
-    const rootZ = computed(() => (popups.length ? 1 : -1));
+    const rootZ = computed(() => (popups.length ? z : -1));
     return {
       showPopup,
       popups,

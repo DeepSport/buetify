@@ -106,7 +106,7 @@ function getGenerateNavItem(
             'step-item',
             {
               'is-previous': index < currentIndex,
-              'is-active': index === model.modelValue.value
+              'is-active': index === currentIndex
             }
           ]
         },
@@ -237,7 +237,7 @@ export default defineComponent({
                       .map((node, index) => cloneVNode(node, { key: steps[index]?.label ?? index }))
                 )
               )
-            : h(BStaticStepContent, context.slots.default)
+            : h(BStaticStepContent, () => context.slots.default && context.slots.default())
         ]
       );
     };

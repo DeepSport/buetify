@@ -1,6 +1,6 @@
 {
   "name": "buetify",
-  "version": "0.1.4",
+  "version": "0.1.7",
   "description": "A Vue component framework based on Bulma",
   "main": "lib/index.js",
   "module": "lib/index.js",
@@ -11,8 +11,6 @@
   },
   "scripts": {
     "test": "echo \"No tests specified\"",
-    "pub": "yarn run build && yarn run np",
-    "np": "np",
     "build": "node build/build-lib.js",
     "prettier-write": "prettier --write \"./src/**/*.ts\"",
     "prettier-check": "prettier --list-different \"src/**/*.ts\"",
@@ -32,7 +30,7 @@
     "url": "https://github.com/kightlingerh/buetify/issues"
   },
   "files": [
-    "src/*.sass",
+    "src/",
     "lib/"
   ],
   "keywords": [
@@ -65,11 +63,10 @@
     "babel-plugin-detective": "^2.0.0",
     "babel-plugin-module-resolver": "^4.0.0",
     "babel-plugin-transform-define": "^2.0.0",
-    "bulma": "^0.8.0",
+    "bulma": "^0.9.1",
     "cross-env": "^7.0.0",
     "fp-ts": "^2.6.5",
     "fp-ts-local-storage": "^1.0.3",
-    "np": "^6.5.0",
     "prettier": "^1.19.1",
     "rimraf": "^3.0.1",
     "shelljs": "^0.8.3",

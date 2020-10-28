@@ -9,7 +9,7 @@
 							Buetify
 						</h1>
 					</b-box>
-					<b-subtitle class="is-size-4">
+					<b-subtitle class="is-size-4 has-text-centered-touch">
 						<strong>Modular</strong> UI Components for
 						<strong><a href="https://v3.vuejs.org/" target="_blank" rel="noopener">Vue</a></strong> based on
 						<strong><a href="http://bulma.io/" target="_blank" rel="noopener">Bulma</a></strong>
@@ -60,6 +60,7 @@ import BBox from 'buetify/lib/components/layout/box/BBox';
 import BContainer from 'buetify/lib/components/layout/container/BContainer';
 import BHero from 'buetify/lib/components/layout/hero/BHero';
 import BHeroBody from 'buetify/lib/components/layout/hero/BHeroBody';
+import BSubtitle from 'buetify/lib/components/title/BSubtitle';
 import { defineComponent } from 'vue';
 import BuetifyHomeNavbar from '../../components/buetifyNavbar/BuetifyHomeNavbar.vue';
 
@@ -71,7 +72,8 @@ export default defineComponent({
 		BHero,
 		BHeroBody,
 		BContainer,
-		BButton
+		BButton,
+		BSubtitle
 	}
 });
 </script>
@@ -79,6 +81,8 @@ export default defineComponent({
 <style lang="sass">
 .main-title
   font-size: 6rem
+  +touch
+    font-size: 4rem
 .main-box
   max-width: 30rem
   border-radius: $size-1

@@ -31,14 +31,13 @@ const BNoticeContainer = defineComponent({
   setup() {
     const notices = reactive([] as Notice[]);
 
-    const rootZ = computed(() => (notices.length ? 1 : -1));
+    const rootZ = computed(() => (notices.length ? 999 : -1));
 
     function addNotice(options: NoticeOptions): IO<void> {
       const nId = id++;
       function remove() {
         const index = notices.findIndex(n => n.id === nId);
         if (index > -1) {
-          console.log('removing notice', nId);
           notices.splice(index, 1);
         }
       }

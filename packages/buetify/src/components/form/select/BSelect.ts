@@ -153,7 +153,7 @@ function generateSelect<T>(
         ref,
         required: props.isRequired,
         disabled: props.isDisabled,
-        // size: props.displayCount || null,
+        size: props.displayCount || null,
         multiple: isMultiple(props, input),
         class: themeClasses,
         onBlur: input.onBlur,
@@ -164,7 +164,7 @@ function generateSelect<T>(
         ? [generatePlaceholder(props, context), ...generateOptions(props, context, input)]
         : generateOptions(props, context, input)
     ),
-    [[vModelSelect, value || null]]
+    [[vModelSelect, value ?? null]]
   );
 }
 

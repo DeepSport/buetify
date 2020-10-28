@@ -1,5 +1,5 @@
 <template>
-	<section aria-label="b-dropdown position example" class="is-flex flex-direction-row justify-content-space-between">
+	<section aria-label="b-dropdown position example" class="buttons">
 		<b-dropdown>
 			<template #trigger="{ props }">
 				<b-button v-bind="props.value">

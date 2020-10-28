@@ -3,7 +3,6 @@ node_modules
 packages/buetify/lib
 packages/buetify/lib-temp
 packages/docs/dist
-
 # local env files
 .env.local
 .env.*.local statu
