@@ -35,8 +35,7 @@ function generateSidebarSlot(
   return h(
     BSidebar,
     {
-      currentRoute,
-      isFullheight: true
+      currentRoute
     },
     () => slots.sidebar && slots.sidebar(sidebar)
   );

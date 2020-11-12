@@ -144,8 +144,10 @@ $all-colors: mergeColorMaps($colors, $shades) !default
 				.b-sidebar
 					flex-grow: 0
 					flex-shrink: 0
+					flex-basis: auto
 				.b-app-content
-					flex-grow: 1
+					flex: 1
+					min-height: 0
 				.b-sheet
 					&.is-loading
 						flex-grow: 1
