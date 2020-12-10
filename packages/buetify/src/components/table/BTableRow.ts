@@ -82,7 +82,7 @@ export default defineComponent({
         const columnSlot = slots[column.slotName || column.label];
 
         if (columnSlot) {
-          children.push(columnSlot({ row: props.row, column, value }));
+          children.push(columnSlot({ row: props.row, column, value, index: props.index }));
         } else if (value !== null) {
           children.push(String(value));
         }

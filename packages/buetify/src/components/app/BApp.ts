@@ -1,5 +1,6 @@
 import '../../sass/helpers/animations.sass';
 import './app.sass';
+import { toUndefined } from 'fp-ts/lib/Option';
 import { defineComponent, shallowRef, h, Slots, Ref, vShow, withDirectives, VNode } from 'vue';
 import { provideNoticeController, ShowNoticeOptions } from '../../composables/noticeController';
 import { providePopupController, ShowPopupOptions } from '../../composables/popupController';
@@ -95,7 +96,7 @@ export default defineComponent({
         transition: params.transition ? formatTransition(params.transition) : DEFAULT_TRANSITION
       });
     }
-    provideTheme(props);
+    const { currentTheme } = provideTheme(props);
     provideNoticeController(showNotice);
     providePopupController(showPopup);
     provideWindowSize(props);
@@ -115,6 +116,7 @@ export default defineComponent({
           {
             class: [
               'b-app',
+              toUndefined(currentTheme.value),
               {
                 'has-navigation-drawer': hasNavigationDrawer && sidebarController.isVisible.value,
                 'has-header': !!slots.header

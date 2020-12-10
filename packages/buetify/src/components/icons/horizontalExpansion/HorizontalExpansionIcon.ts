@@ -1,11 +1,19 @@
 import './horizontal-expansion-icon.sass';
-import { h, SetupContext } from 'vue';
-import { Classes, mergeClasses } from '../../../utils/mergeClasses';
+import { defineComponent, h } from 'vue';
 import { AngleRightIcon } from '../angleRight';
 
-export default function HorizontalExpansionIcon(props: { isExpanded: boolean }, { attrs }: SetupContext) {
-  return h(AngleRightIcon, {
-    ...attrs,
-    class: mergeClasses(attrs.class as Classes, ['horizontal-expansion-icon', { 'is-expanded': props.isExpanded }])
-  });
-}
+export default defineComponent({
+  name: 'horizontal-expansion-icon',
+  props: {
+    isExpanded: {
+      type: Boolean,
+      default: false
+    }
+  },
+  setup(props) {
+    return () =>
+      h(AngleRightIcon, {
+        class: ['horizontal-expansion-icon', { 'is-expanded': props.isExpanded }]
+      });
+  }
+});

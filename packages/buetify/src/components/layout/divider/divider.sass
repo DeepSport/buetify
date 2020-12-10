@@ -5,9 +5,9 @@ $divider-color: $grey-light !default
 .is-divider, .is-divider-vertical
     display: block
     position: relative
+    background-color: inherit
 
 .is-divider[data-content]::after, .is-divider-vertical[data-content]::after
-    background: $divider-background-color
     color: $divider-color
     content: attr(data-content)
     display: inline-block
@@ -17,25 +17,18 @@ $divider-color: $grey-light !default
     -ms-transform: translateY(-1rem)
     transform: translateY(-1rem)
     text-align: center
-    @each $name, $pair in mergeColorMaps($colors, $shades)
-        $color: nth($pair, 1)
-        $color-invert: nth($pair, 2)
-        .is-#{$name}.is-divider[data-content]::after, .is-#{$name}.is-divider-vertical[data-content]::after
-            background: $color
-            color: darken($color-invert, 25%)
 
 .is-divider
-    border-top: .1rem solid $divider-background-color
+    border-top: .1rem solid $divider-color
     height: .1rem
     margin: 2rem 0
     text-align: center
 
 .is-divider-vertical
-    display: block
     padding: 2rem
-    position: relative
+    height: auto
     &::before
-        border-left: .1rem solid $divider-background-color
+        border-left: .1rem solid $divider-color
         bottom: 1rem
         content: ""
         display: block

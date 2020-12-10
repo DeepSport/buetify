@@ -2,6 +2,7 @@ import { FunctionN } from 'fp-ts/lib/function';
 import { IO } from 'fp-ts/lib/IO';
 import { watch, computed, Ref, PropType, shallowRef, toRef } from 'vue';
 import { isEnterEvent } from '../../utils/eventHelpers';
+import { isFunction } from '../../utils/helpers';
 
 export function getUseTogglePropsDefinition<K extends string>(
   statusName: K,
@@ -129,11 +130,11 @@ export function useToggle<K extends string>(
   );
 
   function setOn(e?: Event) {
-    e && e?.stopPropagation();
+    e && isFunction(e.stopPropagation) && e.stopPropagation();
     value.value = true;
   }
   function setOff(e?: Event) {
-    e && e?.stopPropagation();
+    e && isFunction(e.stopPropagation) && e.stopPropagation();
     value.value = false;
   }
   function toggle(e?: Event) {
