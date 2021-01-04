@@ -1,4 +1,4 @@
-import {shallowRef, onMounted, defineComponent, Ref} from 'vue';
+import { shallowRef, onMounted, defineComponent, Ref } from 'vue';
 
 function useCheckRenderingStatus(frames: number, currentFrame: Ref<number>) {
   return () => {
@@ -16,7 +16,8 @@ function useCheckRenderingStatus(frames: number, currentFrame: Ref<number>) {
       } else {
         setTimeout(() => (currentFrame.value = frames), frames * 16);
       }
-  }
+    }
+  };
 }
 
 export const DeferRendering = defineComponent({
