@@ -1,4 +1,23 @@
-import { shallowRef, onMounted, defineComponent } from 'vue';
+import {shallowRef, onMounted, defineComponent, Ref} from 'vue';
+
+function useCheckRenderingStatus(frames: number, currentFrame: Ref<number>) {
+  return () => {
+    if (frames > 0) {
+      if (window && window.requestAnimationFrame) {
+        const step = () => {
+          requestAnimationFrame(() => {
+            if (currentFrame.value < frames) {
+              currentFrame.value++;
+              step();
+            }
+          });
+        };
+        step();
+      } else {
+        setTimeout(() => (currentFrame.value = frames), frames * 16);
+      }
+  }
+}
 
 export const DeferRendering = defineComponent({
   name: 'defer-rendering',
@@ -10,24 +29,7 @@ export const DeferRendering = defineComponent({
   },
   setup(props, { slots }) {
     const currentFrame = shallowRef(0);
-    function checkRenderingStatus() {
-      if (props.frames > 0) {
-        if (window && window.requestAnimationFrame) {
-          const step = () => {
-            requestAnimationFrame(() => {
-              if (currentFrame.value < props.frames) {
-                currentFrame.value++;
-                step();
-              }
-            });
-          };
-          step();
-        } else {
-          setTimeout(() => (currentFrame.value = props.frames), props.frames * 16);
-        }
-      }
-    }
-    onMounted(checkRenderingStatus);
+    onMounted(useCheckRenderingStatus(props.frames, currentFrame));
     return () => {
       if (currentFrame.value >= props.frames && slots.default) {
         return slots.default();

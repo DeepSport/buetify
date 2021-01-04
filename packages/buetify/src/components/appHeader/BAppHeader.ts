@@ -1,7 +1,7 @@
 import './app-header.sass';
 import '../../sass/helpers/flex-helpers.sass';
 import { isSome } from 'fp-ts/lib/Option';
-import { SetupContext, h, Slots } from 'vue';
+import { h, Slots, defineComponent, computed } from 'vue';
 import BNavbarBurger from '../navbar/BNavbarBurger';
 import { SidebarController, useSidebarController } from '../sidebar/composables';
 
@@ -35,14 +35,27 @@ function generateNavigationButton(injection: SidebarController, slots: Slots) {
   );
 }
 
-export default function(props: { tag?: string }, { slots }: SetupContext) {
-  const sidebarController = useSidebarController();
-  const isInvisible = !sidebarController.isVisible.value;
-  return h(
-    props.tag ?? 'header',
-    {
-      class: 'b-app-header is-flex flex-direction-row justify-content-center align-items-center has-navigation'
-    },
-    [generateNavigationButton(sidebarController, slots), generateMainSlot(sidebarController, isInvisible, slots)]
-  );
-}
+export default defineComponent({
+  name: 'b-app-header',
+  props: {
+    tag: {
+      type: String,
+      default: 'header'
+    }
+  },
+  setup(props, { slots }) {
+    const sidebarController = useSidebarController();
+    const isInvisible = computed(() => !sidebarController.isVisible.value);
+    return () =>
+      h(
+        props.tag,
+        {
+          class: 'b-app-header is-flex flex-direction-row justify-content-center align-items-center has-navigation'
+        },
+        [
+          generateNavigationButton(sidebarController, slots),
+          generateMainSlot(sidebarController, isInvisible.value, slots)
+        ]
+      );
+  }
+});

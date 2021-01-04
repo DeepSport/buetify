@@ -1,6 +1,6 @@
 import 'bulma/sass/elements/image.sass';
 import { Classes } from '../../utils/mergeClasses';
-import { SetupContext, h } from 'vue';
+import { h, FunctionalComponent } from 'vue';
 
 export interface BImageProps {
   src: string;
@@ -9,11 +9,10 @@ export interface BImageProps {
   imgClass?: Classes;
 }
 
-export default function BImage(props: BImageProps, { attrs }: SetupContext) {
+const BImage_: FunctionalComponent<BImageProps> = function BImage(props) {
   return h(
     'figure',
     {
-      ...attrs,
       class: 'image'
     },
     [
@@ -29,4 +28,6 @@ export default function BImage(props: BImageProps, { attrs }: SetupContext) {
       })
     ]
   );
-}
+};
+
+export default BImage_;

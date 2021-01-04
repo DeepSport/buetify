@@ -8,7 +8,7 @@ export const UsePaginationPropsDefinition = {
   ...getUseModelPropsDefinition<number>(),
   modelValue: {
     type: Number as PropType<number>,
-    default: 0
+    default: 1
   },
   total: {
     type: Number as PropType<number>,
