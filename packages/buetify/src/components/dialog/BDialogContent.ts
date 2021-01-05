@@ -22,6 +22,10 @@ export default defineComponent({
     asCard: {
       type: Boolean as PropType<boolean>,
       default: true
+    },
+    hideOverflow: {
+      type: Boolean,
+      default: true
     }
   },
   setup(props, { slots }) {
@@ -41,7 +45,7 @@ export default defineComponent({
       if (slots.footer) {
         nodes.push(h('footer', { class: 'modal-card-foot' }, slots.footer()));
       }
-      return h('div', { class: [props.size, 'b-dialog'] }, [
+      return h('div', { class: [props.size, 'b-dialog', { 'hide-overflow': props.hideOverflow }] }, [
         h(
           'article',
           {

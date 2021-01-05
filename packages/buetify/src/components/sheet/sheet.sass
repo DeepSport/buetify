@@ -9,6 +9,7 @@ $sheet-background-color: $white !default
         flex-direction: column
         justify-content: center
     &.is-fullheight
+        height: auto
         min-height: 100vh
     @each $name, $pair in mergeColorMaps($colors, $shades)
         $color: nth($pair, 1)

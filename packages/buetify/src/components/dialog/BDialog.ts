@@ -10,7 +10,8 @@ import BOverlay from '../overlay/BOverlay';
 import BDialogContent, { B_DIALOG_CONTENT_NAME } from './BDialogContent';
 import { defineComponent, VNode, shallowRef, h } from 'vue';
 
-function containsBDialogContent(node: any) { //eslint-disable-line
+function containsBDialogContent(node: any) {
+  //eslint-disable-line
   const components = (isObject(node) && (node as any)?.type?.components) || {}; // eslint-disable-line
   for (const k in components) {
     if (components[k]?.name === B_DIALOG_CONTENT_NAME) {
@@ -22,7 +23,14 @@ function containsBDialogContent(node: any) { //eslint-disable-line
 
 export default defineComponent({
   name: 'b-dialog',
-  props: UsePopupControllerPropsDefinition,
+  inheritAttrs: false,
+  props: {
+    ...UsePopupControllerPropsDefinition,
+    hideOverflow: {
+      type: Boolean,
+      default: true
+    }
+  },
   setup(props, { attrs, slots }) {
     const generateDialog = shallowRef(constEmptyArray as IO<VNode[]>);
     const popup = usePopupController(props, generateDialog);
@@ -32,7 +40,6 @@ export default defineComponent({
           BOverlay,
           {
             ...attrs,
-            class: 'dialog',
             isActive: true,
             onClick: popup.close
           },
@@ -44,7 +51,8 @@ export default defineComponent({
               : h(
                   BDialogContent,
                   {
-                    asCard: false
+                    asCard: false,
+                    hideOverflow: props.hideOverflow
                   },
                   {
                     header: slots.header ? () => slots.header && slots.header(popup) : undefined,

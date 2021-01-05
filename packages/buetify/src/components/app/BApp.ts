@@ -1,7 +1,19 @@
 import '../../sass/helpers/animations.sass';
 import './app.sass';
 import { toUndefined } from 'fp-ts/lib/Option';
-import { defineComponent, shallowRef, h, Slots, Ref, vShow, withDirectives, VNode } from 'vue';
+import {
+  defineComponent,
+  shallowRef,
+  h,
+  Slots,
+  Ref,
+  vShow,
+  withDirectives,
+  VNode,
+  onMounted,
+  onUnmounted,
+  watch
+} from 'vue';
 import { provideNoticeController, ShowNoticeOptions } from '../../composables/noticeController';
 import { providePopupController, ShowPopupOptions } from '../../composables/popupController';
 import { provideTheme, ProvideThemePropDefinitions } from '../../composables/theme';
@@ -99,8 +111,28 @@ export default defineComponent({
     const { currentTheme } = provideTheme(props);
     provideNoticeController(showNotice);
     providePopupController(showPopup);
-    provideWindowSize(props);
+    const { windowSize } = provideWindowSize(props);
     const sidebarController = provideSidebarController(props);
+
+    onMounted(() => {
+      if (document && !windowSize.value.isTouch) {
+        document.documentElement.classList.add('overflow-hidden');
+      }
+    })
+
+    onUnmounted(() => {
+      if (document) {
+        document.documentElement.classList.remove('overflow-hidden');
+      }
+    })
+
+    watch(() => windowSize.value.isTouch, (newVal, oldVal) => {
+      if (document && newVal) {
+        document.documentElement.classList.remove('overflow-hidden');
+      } else if (document && newVal === false) {
+        document.documentElement.classList.add('overflow-hidden');
+      }
+    })
 
     return () => {
       const hasNavigationDrawer = !!slots['sidebar'];
@@ -115,8 +147,7 @@ export default defineComponent({
           'div',
           {
             class: [
-              'b-app',
-              toUndefined(currentTheme.value),
+              'b-app-container',
               {
                 'has-navigation-drawer': hasNavigationDrawer && sidebarController.isVisible.value,
                 'has-header': !!slots.header
@@ -127,7 +158,7 @@ export default defineComponent({
         )
       );
 
-      return h('div', { class: 'b-notices-container' }, nodes);
+      return h('div', { class: ['b-app', toUndefined(currentTheme.value)] }, nodes);
     };
   }
 });

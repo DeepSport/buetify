@@ -5,10 +5,6 @@ import { isBoolean, isString } from '../../utils/helpers';
 import { useInjectedSortableTable } from './composables/useSortableTable';
 import { BTableColumn, SortType } from './shared';
 
-function formatWidth(width: string | number, suffix: 'rem' | 'em' | 'px' = 'px'): string {
-  return isString(width) ? width : `${width}${suffix}`;
-}
-
 function useSortType(sortType: SortType, column?: BTableColumn): SortType {
   return column === undefined || isBoolean(column.sort) || column.sort === undefined
     ? sortType
@@ -76,12 +72,15 @@ export default defineComponent({
       return h(
         'th',
         {
-          class: {
-            'is-sortable': isSortable.value,
-            'is-sticky-left': !!props.column.isSticky
-          },
+          class: [
+            {
+              'is-sortable': isSortable.value,
+              'is-sticky-left': !!props.column.isSticky
+            },
+            props.column.classes
+          ],
           onClick: isSortable.value ? onClick : undefined,
-          style: props.column.width !== undefined ? { 'min-width': formatWidth(props.column.width) } : undefined
+          style: props.column.style
         },
         [
           h(

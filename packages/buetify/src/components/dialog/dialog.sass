@@ -7,10 +7,12 @@
 		max-width: 540px
 		width: auto
 		background-color: inherit
+		overflow: visible
 		.modal-card-head 
 			font-size: $size-5
 			font-weight: $weight-semibold
-		.modal-card-body 
+		.modal-card-body
+			overflow: visible
 			& > .field
 				margin-top: 1rem
 				&:first-child
@@ -32,6 +34,12 @@
 				.modal-card-body
 					background-color: $color
 					color: $color-invert
+	&.hide-overflow
+		.modal-card
+			overflow: auto
+			.modal-card-body
+				overflow: auto
+
 
 	&.is-small 
 		.modal-card,

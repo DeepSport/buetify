@@ -31,7 +31,7 @@ export interface BTableColumn<T = BTableRow> {
   meta?: unknown;
   isVisible?: boolean;
   position?: BTableColumnPosition;
-  width?: string | number;
+  style?: Record<string, string>;
   classes?: Classes;
   isSticky?: boolean;
 }

@@ -1,5 +1,6 @@
 @import '~bulma/sass/components/pagination'
 .pagination
+	voice-balance:
 	.pagination-next,
 	.pagination-previous
 		padding-left: 0.25em
@@ -18,3 +19,12 @@
 	.is-current
 		pointer-events: none
 		cursor: not-allowed
+	.pagination-previous,
+	.pagination-next,
+	.pagination-link
+		color: inherit
+	.pagination-link
+		&.is-current
+			background-color: $pagination-current-background-color
+			border-color: $pagination-current-border-color
+			color: $pagination-current-color

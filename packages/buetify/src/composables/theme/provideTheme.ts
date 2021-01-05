@@ -19,14 +19,15 @@ export const DEFAULT_THEME_INJECTION: ThemeInjection = {
 
 export const THEME_INJECTION_SYMBOL = Symbol('theme');
 
-const persistentTheme = getOrElse<ThemeVariant>(constant<ThemeVariant>('dark'))(
-  getItem('theme')() as Option<ThemeVariant>
-);
 
 export const ProvideThemePropDefinitions = {
   isThemeable: {
     type: Boolean as PropType<boolean>,
     default: true
+  },
+  defaultTheme: {
+    type: String as PropType<ThemeVariant>,
+    default: 'dark'
   },
   persistTheme: {
     type: Boolean as PropType<boolean>,
@@ -44,6 +45,10 @@ export function provideTheme(props: ProvideThemeProps) {
       isThemeable.value = themeable;
     }
   );
+  const persistentTheme = getOrElse<ThemeVariant>(constant<ThemeVariant>(props.defaultTheme))(
+      getItem('theme')() as Option<ThemeVariant>
+  );
+
   const currentTheme = shallowRef(some(persistentTheme));
   function setTheme(newTheme: ThemeVariant) {
     currentTheme.value = some(newTheme);

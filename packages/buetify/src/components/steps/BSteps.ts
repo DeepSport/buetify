@@ -61,7 +61,7 @@ export const BStepsPropsDefinition = {
   },
   mobileMode: {
     type: String as PropType<StepsMobileMode>,
-    default: 'minimal' as const
+    default: '' as const
   },
   isRounded: {
     type: Boolean,

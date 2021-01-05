@@ -16,4 +16,16 @@
 			font-style: normal
 			padding: 0.25em 0
 	&.is-empty select
-		color: rgba($grey, 0.7)
+		color: bulmaRgba($grey, 0.7)
+
+
+.b-app.dark
+	.select
+		select
+			color: findColorInvert($black-ter)
+			option
+				background-color: $grey-dark
+				color: findColorInvert($grey-dark)
+	&.is-empty select
+		color: bulmaRgba(findColorInvert($black-ter), 0.7)
+
