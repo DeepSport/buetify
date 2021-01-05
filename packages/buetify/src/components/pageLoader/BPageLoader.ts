@@ -1,8 +1,8 @@
 import './pageloader.sass';
-import { h, SetupContext } from 'vue';
+import { h, FunctionalComponent } from 'vue';
 import BTitle from '../title/BTitle';
 
-export default function BPageLoader(props: { text?: string }, { slots }: SetupContext) {
+const BPageLoader_: FunctionalComponent<{ text?: string }> = function BPageLoader(props, { slots }) {
   return h(
     'div',
     {
@@ -18,4 +18,6 @@ export default function BPageLoader(props: { text?: string }, { slots }: SetupCo
         )
       : undefined
   );
-}
+};
+
+export default BPageLoader_;

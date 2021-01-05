@@ -58,10 +58,7 @@ export default defineComponent({
             },
             [
               h('div', {
-                onClick: () => {
-                  console.log('overlay background-click');
-                  props.onClick && props.onClick();
-                },
+                onClick: props.onClick,
                 class: 'b-overlay-background'
               }),
               h(
