@@ -24,6 +24,7 @@ export type BModalProps = ExtractPropTypes<typeof BModalPropsDefinition>;
 
 export default defineComponent({
   name: 'b-modal',
+  inheritAttrs: false,
   props: BModalPropsDefinition,
   setup(props, { attrs, slots }) {
     const generateModal = shallowRef(constEmptyArray as IO<VNode[]>);

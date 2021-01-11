@@ -1,18 +1,16 @@
-
+$modal-content-spacing-mobilecontent-spacing-mobile: 160px !default
 
 .b-dialog
 	z-index: 1
 	.modal-card
-		max-height: none
 		max-width: 540px
+		max-height: none
 		width: auto
 		background-color: inherit
-		overflow: visible
 		.modal-card-head 
 			font-size: $size-5
 			font-weight: $weight-semibold
 		.modal-card-body
-			overflow: visible
 			& > .field
 				margin-top: 1rem
 				&:first-child
@@ -34,11 +32,6 @@
 				.modal-card-body
 					background-color: $color
 					color: $color-invert
-	&.hide-overflow
-		.modal-card
-			overflow: auto
-			.modal-card-body
-				overflow: auto
 
 
 	&.is-small 
@@ -56,3 +49,10 @@
 		.input,
 		.button 
 			@include control-large
+
+.b-overlay
+	.b-dialog
+		.modal-card
+			max-height: calc(100vh - #{$modal-content-spacing-mobile})
+			.modal-card-body
+				overflow: auto

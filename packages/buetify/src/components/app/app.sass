@@ -118,27 +118,20 @@ $all-colors: mergeColorMaps($colors, $shades) !default
 		position: fixed
 
 .b-app-container
-	&.is-fullheight
-		height: 100vh
-		.b-app-body-content
-			height: 100%
 	.b-app-content
 		.b-sheet
 			&.is-loading
 				width: 100%
-	&.is-fullheight-mobile
-		+mobile
-			height: 100vh
 	&.has-navigation-drawer
+		height: 100vh
 		+until-widescreen
 			.b-sidebar
-				height: 100%
 				position: fixed
 				top: 0
 				left: 0
+				height: calc(var(--vh, 1vh) * 100)
 		+widescreen
 			.b-app-body-content
-				height: 100vh
 				display: flex
 				flex-direction: row
 				.b-sidebar

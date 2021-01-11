@@ -1,3 +1,4 @@
+import debounce from 'lodash.debounce';
 import '../../sass/helpers/animations.sass';
 import './app.sass';
 import { toUndefined } from 'fp-ts/lib/Option';
@@ -12,7 +13,8 @@ import {
   VNode,
   onMounted,
   onUnmounted,
-  watch
+  watch,
+  onBeforeMount
 } from 'vue';
 import { provideNoticeController, ShowNoticeOptions } from '../../composables/noticeController';
 import { providePopupController, ShowPopupOptions } from '../../composables/popupController';
@@ -82,6 +84,10 @@ function generateBodyContent(
   return nodes;
 }
 
+const updateVisualHeight = debounce(function updateVisualHeight() {
+  document.documentElement.style.setProperty('--vh', `${window.innerHeight / 100}px`);
+}, 50);
+
 export default defineComponent({
   name: 'b-app',
   props: {
@@ -114,25 +120,36 @@ export default defineComponent({
     const { windowSize } = provideWindowSize(props);
     const sidebarController = provideSidebarController(props);
 
+    onBeforeMount(() => {
+      window.addEventListener('resize', updateVisualHeight);
+      window.addEventListener('orientationchange', updateVisualHeight);
+      updateVisualHeight()
+    });
+
     onMounted(() => {
       if (document && !windowSize.value.isTouch) {
         document.documentElement.classList.add('overflow-hidden');
       }
-    })
+    });
 
     onUnmounted(() => {
       if (document) {
         document.documentElement.classList.remove('overflow-hidden');
       }
-    })
+      window.removeEventListener('resize', updateVisualHeight);
+      window.removeEventListener('orientationchange', updateVisualHeight);
+    });
 
-    watch(() => windowSize.value.isTouch, (newVal, oldVal) => {
-      if (document && newVal) {
-        document.documentElement.classList.remove('overflow-hidden');
-      } else if (document && newVal === false) {
-        document.documentElement.classList.add('overflow-hidden');
+    watch(
+      () => windowSize.value.isTouch,
+      (newVal, oldVal) => {
+        if (document && newVal) {
+          document.documentElement.classList.remove('overflow-hidden');
+        } else if (document && newVal === false) {
+          document.documentElement.classList.add('overflow-hidden');
+        }
       }
-    })
+    );
 
     return () => {
       const hasNavigationDrawer = !!slots['sidebar'];
@@ -142,7 +159,7 @@ export default defineComponent({
         generatePopupContainer(popup)
       ];
 
-      nodes.push(
+      nodes.unshift(
         h(
           'div',
           {

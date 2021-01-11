@@ -6,9 +6,10 @@ import { IO } from 'fp-ts/lib/IO';
 import { exists } from 'fp-ts/lib/Option';
 import { usePopupController, UsePopupControllerPropsDefinition } from '../../composables/popupController';
 import { constEmptyArray, isObject } from '../../utils/helpers';
+import BModal from '../modal/BModal';
 import BOverlay from '../overlay/BOverlay';
 import BDialogContent, { B_DIALOG_CONTENT_NAME } from './BDialogContent';
-import { defineComponent, VNode, shallowRef, h } from 'vue';
+import { defineComponent, VNode, shallowRef, h, PropType } from 'vue';
 
 function containsBDialogContent(node: any) {
   //eslint-disable-line
@@ -26,15 +27,54 @@ export default defineComponent({
   inheritAttrs: false,
   props: {
     ...UsePopupControllerPropsDefinition,
-    hideOverflow: {
-      type: Boolean,
+    showExit: {
+      type: Boolean as PropType<boolean>,
       default: true
+    },
+    isFullscreen: {
+      type: Boolean as PropType<boolean>,
+      default: false
     }
   },
   setup(props, { attrs, slots }) {
     const generateDialog = shallowRef(constEmptyArray as IO<VNode[]>);
     const popup = usePopupController(props, generateDialog);
+    function setIsActive(val: boolean) {
+      val ? popup.open() : popup.close();
+    }
     generateDialog.value = () => {
+      const content = () => {
+        const nodes = slots.default ? slots.default(popup) : [];
+        const isDialogContent = pipe(head(nodes), exists(containsBDialogContent));
+        return isDialogContent
+          ? nodes
+          : h(
+              BDialogContent,
+              {
+                asCard: false
+              },
+              {
+                header: slots.header ? () => slots.header && slots.header(popup) : undefined,
+                default: () => nodes,
+                footer: () => slots.footer && slots.footer(popup)
+              }
+            );
+      };
+
+      if (props.isFullscreen) {
+        return [
+          h(
+            BModal,
+            {
+              isFullscreen: true,
+              isActive: popup.isOpen.value,
+              'onUpdate:isActive': setIsActive
+            },
+            content
+          )
+        ];
+      }
+
       return [
         h(
           BOverlay,
@@ -43,25 +83,9 @@ export default defineComponent({
             isActive: true,
             onClick: popup.close
           },
-          () => {
-            const nodes = slots.default ? slots.default(popup) : [];
-            const isDialogContent = pipe(head(nodes), exists(containsBDialogContent));
-            return isDialogContent
-              ? nodes
-              : h(
-                  BDialogContent,
-                  {
-                    asCard: false,
-                    hideOverflow: props.hideOverflow
-                  },
-                  {
-                    header: slots.header ? () => slots.header && slots.header(popup) : undefined,
-                    default: () => nodes,
-                    footer: () => slots.footer && slots.footer(popup)
-                  }
-                );
-          }
-        )
+          content
+        ),
+        h('button', { class: 'modal-close is-large', onClick: popup.close })
       ];
     };
     return { popup };
