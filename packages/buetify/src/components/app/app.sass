@@ -123,15 +123,16 @@ $all-colors: mergeColorMaps($colors, $shades) !default
 			&.is-loading
 				width: 100%
 	&.has-navigation-drawer
-		height: 100vh
 		+until-widescreen
 			.b-sidebar
 				position: fixed
 				top: 0
 				left: 0
+				height: 100vh
 				height: calc(var(--vh, 1vh) * 100)
 		+widescreen
 			.b-app-body-content
+				height: 100vh
 				display: flex
 				flex-direction: row
 				.b-sidebar
