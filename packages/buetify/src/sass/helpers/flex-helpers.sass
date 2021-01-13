@@ -18,84 +18,84 @@ $flex-justify-content-alignments: flex-start flex-end center space-between space
   flex-wrap: nowrap !important
 
 .align-content-stretch
-  align-content: stretch
+  align-content: stretch !important
 
 @each $level in $flex-grow-levels
   .flex-grow-#{$level}
-    flex-grow: $level
+    flex-grow: $level !important
   .flex-shrink-#{$level}
-    flex-shrink: $level
+    flex-shrink: $level !important
 
 @each $alignment in $flex-align-items-alignments
   .align-items-#{$alignment}
-    align-items: $alignment 
+    align-items: $alignment !important
   .align-self-#{$alignment}
-    align-self: $alignment 
+    align-self: $alignment !important
   +mobile
     .align-items-#{$alignment}-mobile
-      align-items: $alignment 
+      align-items: $alignment !important
     .align-self-#{$alignment}-mobile
-      align-self: $alignment 
+      align-self: $alignment !important
   +tablet
     .align-items-#{$alignment}-tablet
-      align-items: $alignment 
+      align-items: $alignment !important
     .align-self-#{$alignment}-tablet
-      align-self: $alignment
+      align-self: $alignment !important
   +touch
     .align-items-#{$alignment}-touch
-      align-items: $alignment
+      align-items: $alignment !important
     .align-self-#{$alignment}-touch
-      align-self: $alignment
+      align-self: $alignment !important
   +desktop
     .align-items-#{$alignment}-desktop
-      align-items: $alignment 
+      align-items: $alignment !important
     .align-self-#{$alignment}-desktop
-      align-self: $alignment 
+      align-self: $alignment !important
   +widescreen
     .align-items-#{$alignment}-widescreen
-      align-items: $alignment 
+      align-items: $alignment !important
     .align-self-#{$alignment}-widescreen
-      align-self: $alignment 
+      align-self: $alignment !important
   +fullhd
     .align-items-#{$alignment}-fullhd
-      align-items: $alignment 
+      align-items: $alignment !important
     .align-self-#{$alignment}-fullhd
-      align-self: $alignment 
+      align-self: $alignment !important
 
       
 @each $alignment in $flex-justify-content-alignments
   .justify-content-#{$alignment}
-    justify-content: $alignment 
+    justify-content: $alignment !important
   .align-content-#{$alignment}
-    align-content: $alignment 
+    align-content: $alignment !important
   +mobile
     .justify-content-#{$alignment}-mobile
-      justify-content: $alignment 
+      justify-content: $alignment !important
     .align-content-#{$alignment}-mobile
-      align-content: $alignment
+      align-content: $alignment !important
   +tablet
     .justify-content-#{$alignment}-tablet
-      justify-content: $alignment
+      justify-content: $alignment !important
     .align-content-#{$alignment}-tablet
-      align-content: $alignment
+      align-content: $alignment !important
   +touch
     .justify-content-#{$alignment}-touch
-      justify-content: $alignment
+      justify-content: $alignment !important
     .align-content-#{$alignment}-touch
-      align-content: $alignment
+      align-content: $alignment !important
   +desktop
     .justify-content-#{$alignment}-desktop
-      justify-content: $alignment
+      justify-content: $alignment !important
     .align-content-#{$alignment}-desktop
-      align-content: $alignment
+      align-content: $alignment !important
   +widescreen
     .justify-content-#{$alignment}-widescreen
-      justify-content: $alignment
+      justify-content: $alignment !important
     .align-content-#{$alignment}-widescreen
-      align-content: $alignment
+      align-content: $alignment !important
   +fullhd
     .justify-content-#{$alignment}-fullhd
-      justify-content: $alignment
+      justify-content: $alignment !important
     .align-content-#{$alignment}-fullhd
-      align-content: $alignment
+      align-content: $alignment !important
 

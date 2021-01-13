@@ -1,6 +1,5 @@
 import { constant } from 'fp-ts/lib/function';
 import { none, Option, some } from 'fp-ts/lib/Option';
-import debounce from 'lodash.debounce';
 import {
   watchEffect,
   provide,
@@ -12,6 +11,7 @@ import {
   onMounted,
   onUnmounted
 } from 'vue';
+import { debounce } from '../../utils/helpers';
 
 export interface WindowSize {
   windowWidth: number;

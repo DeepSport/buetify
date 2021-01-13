@@ -1,3 +1,4 @@
+import { IO } from 'fp-ts/lib/IO';
 import { VNode, Fragment } from 'vue';
 import { snoc, unsafeDeleteAt } from 'fp-ts/lib/Array';
 import { Eq } from 'fp-ts/lib/Eq';
@@ -188,4 +189,13 @@ export function extractProp<T, P extends (item: T) => any | keyof T>(extractor: 
 const camelizeRE = /-(\w)/g;
 export function camelize(str: string): string {
   return str.replace(camelizeRE, (_, c) => (c ? c.toUpperCase() : ''));
+}
+
+export function debounce(func: IO<void>, wait: number) {
+  let timeout: number;
+  return () => {
+    clearTimeout(timeout)
+    // @ts-ignore
+    timeout = setTimeout(func, wait)
+  }
 }

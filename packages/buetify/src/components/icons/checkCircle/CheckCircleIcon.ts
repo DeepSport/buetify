@@ -1,4 +1,4 @@
-import { faCheckCircle } from '@fortawesome/free-solid-svg-icons/faCheckCircle';
+import { faCheckCircle } from '@fortawesome/free-solid-svg-icons';
 import { useFontAwesomeIconComponent } from '../utils';
 
 export default useFontAwesomeIconComponent('CheckCircle', faCheckCircle);

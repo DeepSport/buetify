@@ -1,4 +1,3 @@
-import debounce from 'lodash.debounce';
 import '../../sass/helpers/animations.sass';
 import './app.sass';
 import { toUndefined } from 'fp-ts/lib/Option';
@@ -84,9 +83,10 @@ function generateBodyContent(
   return nodes;
 }
 
-const updateVisualHeight = debounce(function updateVisualHeight() {
-  document.documentElement.style.setProperty('--vh', `${window.innerHeight / 100}px`);
-}, 50);
+const updateVisualHeight = () =>
+  requestAnimationFrame(function updateVisualHeight() {
+    document.documentElement.style.setProperty('--vh', `${window.innerHeight / 100}px`);
+  });
 
 export default defineComponent({
   name: 'b-app',
@@ -123,7 +123,7 @@ export default defineComponent({
     onBeforeMount(() => {
       window.addEventListener('resize', updateVisualHeight);
       window.addEventListener('orientationchange', updateVisualHeight);
-      updateVisualHeight()
+      updateVisualHeight();
     });
 
     onMounted(() => {
