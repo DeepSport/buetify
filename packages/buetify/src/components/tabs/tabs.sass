@@ -8,7 +8,10 @@
 				pointer-events: none
 				cursor: not-allowed
 				opacity: 0.5
-
+		&.is-fullwidth
+			width: 100%
+			li
+				flex: 1 0 0
 	.tab-content
 		position: relative
 		overflow: visible
@@ -24,9 +27,6 @@
 
 	&:not(:last-child)
 		margin-bottom: 1.5rem
-
-	&.is-fullwidth
-		width: 100%
 
 	&.is-vertical
 		display: flex

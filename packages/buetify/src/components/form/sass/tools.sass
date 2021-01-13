@@ -118,11 +118,12 @@ $help-size: $size-small !default
   display: flex
   .label
     font-size: inherit
-    align-self: flex-start
+    align-self: center
     text-align: right
     justify-content: flex-end
   +mobile
     margin-right: 0.5rem
+    margin-bottom: 0.5rem
   +tablet
     flex-basis: 0
     flex-shrink: 0
@@ -131,15 +132,10 @@ $help-size: $size-small !default
     justify-content: flex-end
     &.is-small
       font-size: $size-small
-      padding-top: 0.375em
-    &.is-normal
-      padding-top: 0.375em
     &.is-medium
       font-size: $size-medium
-      padding-top: 0.375em
     &.is-large
       font-size: $size-large
-      padding-top: 0.375em
 
 .field-body
   .field .field
