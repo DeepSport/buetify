@@ -34,6 +34,10 @@ export default defineComponent({
     isFullscreen: {
       type: Boolean as PropType<boolean>,
       default: false
+    },
+    showOverflow: {
+      type: Boolean,
+      default: false
     }
   },
   setup(props, { attrs, slots }) {
@@ -51,7 +55,8 @@ export default defineComponent({
           : h(
               BDialogContent,
               {
-                asCard: false
+                asCard: false,
+                showOverflow: props.showOverflow
               },
               {
                 header: slots.header ? () => slots.header && slots.header(popup) : undefined,
@@ -83,9 +88,11 @@ export default defineComponent({
             isActive: true,
             onClick: popup.close
           },
-          content
-        ),
-        h('button', { class: 'modal-close is-large', onClick: popup.close })
+          () =>
+            props.showExit
+              ? [content(), h('button', { class: 'modal-close is-large', onClick: popup.close })]
+              : content()
+        )
       ];
     };
     return { popup };
