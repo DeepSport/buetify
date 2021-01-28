@@ -1,6 +1,8 @@
 import './slide-right-transition.sass';
-import { SetupContext, h, Transition } from 'vue';
+import { h, Transition, FunctionalComponent } from 'vue';
 
-export default function SlideRightTransition(_: unknown, { slots }: SetupContext) {
+const SlideRightTransition: FunctionalComponent = (_: unknown, { slots }) => {
   return h(Transition, { name: 'slide-right', css: true }, slots.default);
 }
+
+export default SlideRightTransition

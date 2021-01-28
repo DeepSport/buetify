@@ -1,6 +1,5 @@
 import {
   FunctionalComponent,
-  SetupContext,
   h,
   Transition,
   TransitionGroup,
@@ -13,8 +12,8 @@ import {
 export function createJavascriptTransition<Element = RendererElement>(
   name: string,
   staticProps: BaseTransitionProps<Element>
-): FunctionalComponent {
-  return (dynamicProps: TransitionProps, { slots }: SetupContext) => {
+): FunctionalComponent<TransitionProps> {
+  return (dynamicProps, { slots }) => {
     return h(
       Transition,
       {
@@ -27,8 +26,8 @@ export function createJavascriptTransition<Element = RendererElement>(
   };
 }
 
-export function createJavascriptTransitionGroup(name: string, staticProps: TransitionGroupProps): FunctionalComponent {
-  return (dynamicProps: TransitionGroupProps, { slots }: SetupContext) => {
+export function createJavascriptTransitionGroup(name: string, staticProps: TransitionGroupProps): FunctionalComponent<TransitionGroupProps> {
+  return (dynamicProps, { slots }) => {
     return h(
       TransitionGroup,
       {

@@ -12,7 +12,7 @@ import {
   shallowRef,
   watch,
   Slots,
-  SetupContext
+  FunctionalComponent
 } from 'vue';
 import { AllColorsVariant } from '../../../types/ColorVariants';
 import { Classes } from '../../../utils/mergeClasses';
@@ -215,7 +215,7 @@ export interface BFieldBodyProps {
 }
 
 // eslint-disable-next-line
-function BFieldBody(props: BFieldBodyProps, { slots }: SetupContext) {
+const BFieldBody: FunctionalComponent<BFieldBodyProps> = (props: BFieldBodyProps, { slots }) => {
   const nodes = slots.default ? slots.default() : [];
   return h(
     props.tag ?? 'div',
@@ -225,5 +225,4 @@ function BFieldBody(props: BFieldBodyProps, { slots }: SetupContext) {
     nodes.map((element: VNode) => (element.el ? element : h(BField, props, constant(element))))
   );
 }
-
 export default BField;

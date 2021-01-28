@@ -1,5 +1,5 @@
 import { constant, constVoid, FunctionN, Lazy } from 'fp-ts/lib/function';
-import { PropType, shallowRef, watch, toRef, Ref, computed } from 'vue';
+import { PropType, shallowRef, watch, Ref, computed } from 'vue';
 import { exists, isObject } from '../../utils/helpers';
 
 export function getUseModelPropsDefinition<T>(): {
@@ -61,7 +61,7 @@ export function useModel<T, ValueKey extends string = 'modelValue', UpdateKey ex
 ): Model<T> {
   const internalValue: Ref<T | undefined> = shallowRef(props[valueKey]);
 
-  watch(toRef(props, valueKey), newVal => {
+  watch(() => props[valueKey], newVal => {
     internalValue.value = newVal;
   });
 

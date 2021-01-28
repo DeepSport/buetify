@@ -1,5 +1,5 @@
 import { parse as faParse, icon as faIcon } from '@fortawesome/fontawesome-svg-core';
-import { h, SetupContext, VNode, FunctionalComponent, defineComponent } from 'vue';
+import { h, VNode, FunctionalComponent, defineComponent } from 'vue';
 import { SizeVariant } from '../../../types';
 // import { IconDefinition } from '@fortawesome/fontawesome-common-types';
 import { camelize } from '../../../utils/helpers';
@@ -120,7 +120,7 @@ function convert(element: any, attrs: any = {}): VNode {
 
 // eslint-disable-next-line
 function useFontAwesomeIconComponent_(iconArgs: any): FunctionalComponent {
-  return function FontAwesomeIcon(_, { attrs }: SetupContext): VNode {
+  return function FontAwesomeIcon(_, { attrs }): VNode {
     const { mask: maskArgs, symbol, title } = attrs as any; // eslint-disable-line
     const icon = normalizeIconArgs(iconArgs);
     const classes = objectWithKey('classes', classList(attrs));

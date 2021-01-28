@@ -19,6 +19,7 @@ export function createExpandTransition(expandedParentClass = '', x = false): Bas
     const size = el._initialStyle[sizeProperty];
     el.style.overflow = el._initialStyle.overflow as string;
     if (size != null) el.style[sizeProperty] = size;
+    // @ts-ignore
     delete el._initialStyle;
   }
 

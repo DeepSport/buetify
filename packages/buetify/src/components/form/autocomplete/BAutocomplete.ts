@@ -316,7 +316,7 @@ function defineAutocomplete<T>() {
         computed(() => props.modelValue ?? ''),
         toRef(props, 'onUpdate:modelValue')
       );
-      const { value: selectedItems } = useProxy(toRef(props, 'selectedItems'), toRef(props, 'onUpdate:selectedItems'));
+      const { value: selectedItems } = useProxy(toRef(props, 'selectedItems') as Ref<T[]>, toRef(props, 'onUpdate:selectedItems'));
 
       const itemsRef = shallowRef([] as HTMLElement[]);
       const filteredItems = computed(() => {

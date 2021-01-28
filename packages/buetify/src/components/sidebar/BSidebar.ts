@@ -3,17 +3,16 @@ import { useThemePropsDefinition, useTheme } from '../../composables/theme';
 import { useWindowSize } from '../../composables/windowSize';
 import { SlideRightTransition } from '../../transitions/slideRightTransition';
 import {
-  defineComponent,
-  SetupContext,
-  VNode,
-  h,
-  PropType,
-  computed,
-  watch,
-  toRef,
-  ExtractPropTypes,
-  withDirectives,
-  vShow
+    defineComponent,
+    VNode,
+    h,
+    PropType,
+    computed,
+    watch,
+    toRef,
+    ExtractPropTypes,
+    withDirectives,
+    vShow, SetupContext
 } from 'vue';
 import BOverlay from '../overlay/BOverlay';
 import { SidebarController, useSidebarController } from './composables';

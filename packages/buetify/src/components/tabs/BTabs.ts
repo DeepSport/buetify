@@ -22,12 +22,11 @@ import {
   VNode,
   onBeforeMount,
   computed,
-  SetupContext,
   TransitionGroup,
   cloneVNode,
   withDirectives,
   vShow,
-  ComponentOptions
+  ComponentOptions, FunctionalComponent
 } from 'vue';
 
 import { BTabItemProps, TabInjection, TABS_SYMBOL } from './shared';
@@ -190,7 +189,7 @@ function generateNavHeader(
     : generateNavHeaderContent(props, tabs, model, transition, themeClasses);
 }
 
-function BStaticTabContent(_: unknown, { slots }: SetupContext) {
+const BStaticTabContent: FunctionalComponent = (_, { slots }) => {
   return h('div', { class: 'tab-content' }, slots.default && slots.default());
 }
 

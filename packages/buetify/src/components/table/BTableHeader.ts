@@ -2,13 +2,13 @@ import { BCheckbox } from '../form/checkbox/BCheckbox';
 import BTableColumn from './BTableColumn';
 import { useInjectedVisibleColumns } from './composables/shared';
 import { useInjectedCheckableTable } from './composables/useCheckableTable';
-import { SetupContext, h } from 'vue';
+import { h, FunctionalComponent } from 'vue';
 
 export interface BTableHeaderProps {
   isDisabled?: boolean;
 }
 
-export default function BTableHeader(props: BTableHeaderProps, { slots }: SetupContext) {
+const BTableHeader: FunctionalComponent<BTableHeaderProps> = (props, { slots }) =>{
   const { allRowsChecked, toggleAllRows, variant, isCheckable } = useInjectedCheckableTable();
   const columns = useInjectedVisibleColumns();
   const nodes = columns.value.map(column =>
@@ -45,3 +45,5 @@ export default function BTableHeader(props: BTableHeaderProps, { slots }: SetupC
   }
   return h('thead', [h('tr', nodes)]);
 }
+
+export default BTableHeader

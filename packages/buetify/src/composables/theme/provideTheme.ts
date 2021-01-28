@@ -1,4 +1,4 @@
-import { getItem, setItem } from 'fp-ts/lib-local-storage';
+import { getItem, setItem } from 'fp-ts-local-storage/lib';
 import { constant, constVoid } from 'fp-ts/lib/function';
 import { getOrElse, none, Option, some } from 'fp-ts/lib/Option';
 import { provide, shallowRef, Ref, watch, ExtractPropTypes, PropType } from 'vue';

@@ -166,7 +166,7 @@ export function useSelectionControl<T>(
   const onChange = getOnChange(
     modelValue,
     trueValue,
-    toRef(props, 'falseValue'),
+    toRef(props, 'falseValue') as Ref<T | undefined>,
     isDisabled,
     isMultiple,
     toRef(props, 'eq')

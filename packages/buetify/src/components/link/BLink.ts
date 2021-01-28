@@ -1,7 +1,7 @@
 import './link.sass';
 import { FunctionN } from 'fp-ts/lib/function';
 import { FunctionalThemeProps, useTheme } from '../../composables/theme';
-import { FunctionalComponent, h, SetupContext } from 'vue';
+import { FunctionalComponent, h } from 'vue';
 import { LinkThemeMap } from './theme';
 
 export interface BLinkProps extends FunctionalThemeProps {
@@ -11,7 +11,7 @@ export interface BLinkProps extends FunctionalThemeProps {
   onClick?: FunctionN<[Event], void>;
 }
 
-const BLink_: FunctionalComponent<BLinkProps> = function BLink(props, { slots }: SetupContext) {
+const BLink: FunctionalComponent<BLinkProps> = function BLink(props, { slots }) {
   const { themeClasses } = useTheme({
     isThemeable: props.isThemeable ?? true,
     themeMap: props.themeMap ?? LinkThemeMap
@@ -26,4 +26,4 @@ const BLink_: FunctionalComponent<BLinkProps> = function BLink(props, { slots }:
   );
 };
 
-export default BLink_;
+export default BLink;

@@ -21,8 +21,7 @@ import {
   withDirectives,
   vShow,
   shallowReactive,
-  SetupContext,
-  ComponentOptions
+  ComponentOptions, FunctionalComponent
 } from 'vue';
 import { BStepItemProps, StepInjection, STEPS_SYMBOL } from './shared';
 
@@ -167,7 +166,7 @@ function generateNavHeader(
   );
 }
 
-function BStaticStepContent(_: unknown, { slots }: SetupContext) {
+const BStaticStepContent: FunctionalComponent = (_, { slots }) => {
   return h('div', { class: 'step-content' }, slots.default && slots.default());
 }
 

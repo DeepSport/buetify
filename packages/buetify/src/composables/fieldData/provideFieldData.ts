@@ -99,7 +99,7 @@ export function provideFieldData(props: ProvideFieldDataProps) {
     variant.value = newVariant;
   });
   const message = shallowRef(props.message);
-  watch(toRef(props, 'message'), newMessage => {
+  watch(() => props.message, newMessage => {
     message.value = newMessage;
   });
   const formattedMessage = computed(() => formatMessage(message.value));

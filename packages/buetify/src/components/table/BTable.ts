@@ -202,6 +202,7 @@ export default defineComponent({
         );
         return h('div', nodes);
       } else {
+        // @ts-ignore
         nodes.push(generateTable(props, rows.value, visibleColumns, slots));
         return h('div', nodes);
       }
