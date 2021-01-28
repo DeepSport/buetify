@@ -72,7 +72,7 @@ export function useSortableTable(props: BTableSortingProps, rows: Ref<BTableRow[
 
   const { value: sortType } = useProxy(toRef(props, 'sortType'), toRef(props, 'onUpdate:sortType'));
   /*
-    fp-ts sorts in ascending order so we need to reverse the ords if the initial sort type is 'Descending'
+    fp-ts/lib sorts in ascending order so we need to reverse the ords if the initial sort type is 'Descending'
     Future sortType changes just reverse the array so we don't need to readjust the ords
    */
 

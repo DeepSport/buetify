@@ -1,4 +1,4 @@
-import { IO } from 'fp-ts/IO';
+import { IO } from 'fp-ts/lib/IO';
 import { FunctionN } from 'fp-ts/lib/function';
 import { defineSelect } from '../form/select/BSelect';
 import VerticalExpansionIcon from '../icons/verticalExpansion/VerticalExpansionIcon';

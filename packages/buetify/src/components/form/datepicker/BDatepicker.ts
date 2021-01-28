@@ -1,7 +1,7 @@
 import '../../pagination/pagination.sass';
 import '../../dropdown/dropdown.sass';
 import './datepicker.sass';
-import { IO } from 'fp-ts/es6/IO';
+import { IO } from 'fp-ts/lib/es6/IO';
 import { useDisable, UseDisablePropsDefinition } from '../../../composables/disable';
 import { useEqRef } from '../../../composables/eqRef';
 import { useFieldData } from '../../../composables/fieldData';
