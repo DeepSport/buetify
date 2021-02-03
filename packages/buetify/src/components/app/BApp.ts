@@ -127,7 +127,7 @@ export default defineComponent({
     });
 
     onMounted(() => {
-      if (document && !windowSize.value.isTouch) {
+      if (document && slots.sidebar !== undefined && !windowSize.value.isTouch) {
         document.documentElement.classList.add('overflow-hidden');
       }
     });
@@ -143,7 +143,7 @@ export default defineComponent({
     watch(
       () => windowSize.value.isTouch,
       (newVal, oldVal) => {
-        if (document && newVal) {
+        if (document && slots.sidebar !== undefined && newVal) {
           document.documentElement.classList.remove('overflow-hidden');
         } else if (document && newVal === false) {
           document.documentElement.classList.add('overflow-hidden');
