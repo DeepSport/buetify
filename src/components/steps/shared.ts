@@ -9,10 +9,12 @@ export const STEP_ITEM_NAME = 'b-step-item';
 export interface StepInjection {
   activeLabel: Ref<Option<string>>;
   steps: BStepItemProps[];
+  destroyOnHide: Ref<boolean>
 }
 
 export const DEFAULT_STEP_INJECTION: StepInjection = {
   activeLabel: shallowRef(none),
+  destroyOnHide: shallowRef(false),
   steps: []
 };
 
@@ -43,6 +45,9 @@ export const BStepItemPropsDefinition = {
   isVisible: {
     type: Boolean as PropType<boolean>,
     default: true
+  },
+  destroyOnHide: {
+    type: Boolean as PropType<boolean>
   }
 };
 

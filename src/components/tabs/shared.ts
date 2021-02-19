@@ -20,6 +20,9 @@ export const BTabItemPropsDefinition = {
   isVisible: {
     type: Boolean as PropType<boolean>,
     default: true
+  },
+  destroyOnHide: {
+    type: Boolean as PropType<boolean>
   }
 };
 
@@ -27,10 +30,12 @@ export type BTabItemProps = ExtractPropTypes<typeof BTabItemPropsDefinition>;
 
 export interface TabInjection {
   activeLabel: Ref<Option<string>>;
+  destroyOnHide: Ref<boolean>;
   tabs: BTabItemProps[];
 }
 
 export const DEFAULT_TAB_INJECTION: TabInjection = {
   activeLabel: shallowRef(none),
+  destroyOnHide: shallowRef(false),
   tabs: []
 };

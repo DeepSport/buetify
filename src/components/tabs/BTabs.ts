@@ -26,7 +26,7 @@ import {
   cloneVNode,
   withDirectives,
   vShow,
-  ComponentOptions, FunctionalComponent
+  ComponentOptions, FunctionalComponent, toRef
 } from 'vue';
 
 import { BTabItemProps, TabInjection, TABS_SYMBOL } from './shared';
@@ -76,6 +76,10 @@ export const BTabsPropsDefinition = {
     default: false
   },
   isVertical: {
+    type: Boolean as PropType<boolean>,
+    default: false
+  },
+  destroyOnHide: {
     type: Boolean as PropType<boolean>,
     default: false
   }
@@ -212,7 +216,8 @@ export default defineComponent({
 
     const injection: TabInjection = {
       activeLabel,
-      tabs
+      tabs,
+      destroyOnHide: toRef(props, 'destroyOnHide')
     };
 
     provide(TABS_SYMBOL, injection);

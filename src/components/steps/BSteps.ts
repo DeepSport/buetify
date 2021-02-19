@@ -21,7 +21,7 @@ import {
   withDirectives,
   vShow,
   shallowReactive,
-  ComponentOptions, FunctionalComponent
+  ComponentOptions, FunctionalComponent, toRef
 } from 'vue';
 import { BStepItemProps, StepInjection, STEPS_SYMBOL } from './shared';
 
@@ -67,6 +67,10 @@ export const BStepsPropsDefinition = {
     default: true
   },
   isVertical: {
+    type: Boolean,
+    default: false
+  },
+  destroyOnHide: {
     type: Boolean,
     default: false
   }
@@ -188,6 +192,7 @@ export default defineComponent({
     );
     const injection: StepInjection = {
       activeLabel,
+      destroyOnHide: toRef(props, 'destroyOnHide'),
       steps
     };
 

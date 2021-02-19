@@ -18,7 +18,21 @@ export default defineComponent({
 
     const isActive = computed(() => toUndefined(injection.activeLabel.value) === props.label);
 
+    const destroyOnHide = computed(() => props.destroyOnHide ?? injection.destroyOnHide.value);
+
     return () => {
+      if (destroyOnHide.value) {
+        return isActive.value
+          ? h(
+              'section',
+              {
+                class: 'step-item',
+                'aria-label': props.label
+              },
+              slots.default && slots.default({ isActive: isActive.value })
+            )
+          : undefined;
+      }
       return withDirectives(
         h(
           'section',
