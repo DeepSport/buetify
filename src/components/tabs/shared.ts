@@ -22,7 +22,8 @@ export const BTabItemPropsDefinition = {
     default: true
   },
   destroyOnHide: {
-    type: Boolean as PropType<boolean>
+    type: Boolean as PropType<boolean>,
+    default: undefined
   }
 };
 
