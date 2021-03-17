@@ -21,17 +21,19 @@ export default defineComponent({
     const destroyOnHide = computed(() => props.destroyOnHide ?? injection.destroyOnHide.value);
 
     return () => {
+      const a = isActive.value;
       if (destroyOnHide.value) {
-        return isActive.value
-          ? h(
-              'section',
-              {
-                class: 'step-item',
-                'aria-label': props.label
-              },
-              slots.default && slots.default({ isActive: isActive.value })
-            )
-          : undefined;
+        return withDirectives(
+          h(
+            'section',
+            {
+              class: 'step-item',
+              'aria-label': props.label
+            },
+            a ? slots.default && slots.default() : undefined
+          ),
+          [[vShow, a]]
+        );
       }
       return withDirectives(
         h(

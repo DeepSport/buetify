@@ -21,17 +21,21 @@ export default defineComponent({
     const destroyOnHide = computed(() => props.destroyOnHide ?? injection.destroyOnHide.value);
 
     return () => {
+      const a = isActive.value;
       if (destroyOnHide.value) {
-        return isActive.value
-          ? h(
-              'section',
-              {
-                class: 'tab-item',
-                'aria-label': props.label
-              },
-              slots.default && slots.default({ isActive: toUndefined(injection.activeLabel.value) === props.label })
-            )
-          : undefined;
+        return withDirectives(
+          h(
+            'section',
+            {
+              class: 'tab-item',
+              'aria-label': props.label
+            },
+            a
+              ? slots.default && slots.default()
+              : undefined
+          ),
+          [[vShow, a]]
+        );
       }
       return withDirectives(
         h(
@@ -42,7 +46,7 @@ export default defineComponent({
           },
           slots.default && slots.default({ isActive: toUndefined(injection.activeLabel.value) === props.label })
         ),
-        [[vShow, isActive.value]]
+        [[vShow, a]]
       );
     };
   }
