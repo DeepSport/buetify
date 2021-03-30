@@ -9,7 +9,6 @@
     "email": "kightlingerh@gmail.com"
   },
   "scripts": {
-    "prepare": "yarn build",
     "tsc": "node_modules/.bin/tsc",
     "test": "echo \"No tests specified\"",
     "build": "node build/build-lib.js",
